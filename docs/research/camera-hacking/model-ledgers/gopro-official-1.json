@@ -1,0 +1,90 @@
+{
+  "manufacturer": "gopro",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "MISSION 1",
+      "category": "shop/compare body labels; HERO year unresolved in bare label",
+      "source": "gopro-cameras",
+      "url": "https://gopro.com/en/us/shop/cameras"
+    },
+    {
+      "name": "MISSION 1 PRO",
+      "category": "shop/compare body labels; HERO year unresolved in bare label",
+      "source": "gopro-cameras",
+      "url": "https://gopro.com/en/us/shop/cameras"
+    },
+    {
+      "name": "MISSION 1 PRO ILS",
+      "category": "shop/compare body labels; HERO year unresolved in bare label",
+      "source": "gopro-cameras",
+      "url": "https://gopro.com/en/us/shop/cameras"
+    },
+    {
+      "name": "HERO13 Black",
+      "category": "shop/compare body labels; HERO year unresolved in bare label",
+      "source": "gopro-cameras",
+      "url": "https://gopro.com/en/us/shop/cameras"
+    },
+    {
+      "name": "HERO12 Black",
+      "category": "shop/compare body labels; HERO year unresolved in bare label",
+      "source": "gopro-cameras",
+      "url": "https://gopro.com/en/us/shop/cameras"
+    },
+    {
+      "name": "MAX2",
+      "category": "shop/compare body labels; HERO year unresolved in bare label",
+      "source": "gopro-cameras",
+      "url": "https://gopro.com/en/us/shop/cameras"
+    },
+    {
+      "name": "MAX",
+      "category": "shop/compare body labels; HERO year unresolved in bare label",
+      "source": "gopro-cameras",
+      "url": "https://gopro.com/en/us/shop/cameras"
+    },
+    {
+      "name": "LIT HERO",
+      "category": "shop/compare body labels; HERO year unresolved in bare label",
+      "source": "gopro-cameras",
+      "url": "https://gopro.com/en/us/shop/cameras"
+    },
+    {
+      "name": "HERO",
+      "category": "shop/compare body labels; HERO year unresolved in bare label",
+      "source": "gopro-cameras",
+      "url": "https://gopro.com/en/us/shop/cameras"
+    },
+    {
+      "name": "HERO11 Black",
+      "category": "shop/compare body labels; HERO year unresolved in bare label",
+      "source": "gopro-cameras",
+      "url": "https://gopro.com/en/us/shop/cameras"
+    },
+    {
+      "name": "HERO11 Black Mini",
+      "category": "shop/compare body labels; HERO year unresolved in bare label",
+      "source": "gopro-cameras",
+      "url": "https://gopro.com/en/us/shop/cameras"
+    },
+    {
+      "name": "HERO10 Black",
+      "category": "shop/compare body labels; HERO year unresolved in bare label",
+      "source": "gopro-cameras",
+      "url": "https://gopro.com/en/us/shop/cameras"
+    },
+    {
+      "name": "HERO10 Black Bones",
+      "category": "shop/compare body labels; HERO year unresolved in bare label",
+      "source": "gopro-cameras",
+      "url": "https://gopro.com/en/us/shop/cameras"
+    },
+    {
+      "name": "HERO9 Black",
+      "category": "shop/compare body labels; HERO year unresolved in bare label",
+      "source": "gopro-cameras",
+      "url": "https://gopro.com/en/us/shop/cameras"
+    }
+  ]
+}

@@ -1,0 +1,334 @@
+{
+  "manufacturer": "panasonic",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "DMC-CM1",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-FZ8",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-FZ18",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-FZ28",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-FZ30",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-FZ35 / FZ38",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-FZ40 / FZ42 / FZ45",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-FZ50",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-FZ70 / FZ72",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-FZ80 / FZ81 / FZ82 / FZ83 / FZ85",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-FZ100",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-FZ150",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-FZ200",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-FZ300 / FZ330",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-FZ1000",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-FZ1000 II / FZ1000M2 / DC-FZ10002",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-FZ2000 / FZ2500 / FZH1",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-FX150 / FX180",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-G1",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-G10",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-G2",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-G3",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-G5",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-G6",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-G7 / G70",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-G8 / G80 / G81 / G85",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-G9",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-G9 Mark II",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-G90 / G95 / G91 / G99",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-G100 / G110",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-GF1",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-GF2",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-GF3",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-GF5",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-GF6",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-GF7",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-GF10 / GF90",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-GH1",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-GH2",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-GH3",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-GH4",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "AG-GH4",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-GH5",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-GH5S",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-GH5 Mark II",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-GH6",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-GH7",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-GM1",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-GM1s",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-GM5",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-GX1",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-GX7",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-GX8",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-GX9 / GX7mkIII",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-GX80 / GX85, DMC-GX7mkII",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-GX800 / GX850, DC-GF9",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-L1",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-L10",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-LC1",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-LF1",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-LX1",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-LX2",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-LX3",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-LX5",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-LX7",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-LX9 / LX10 / LX15",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-LX100",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-LX100M2",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-S1",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-S1H",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-S1R",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-S5",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-S5 MkII",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-S9",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-ZS40, DMC-TZ60 / TZ61",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-ZS50, DMC-TZ70 / TZ71",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-ZS60, DMC-TZ80 / TZ81 / TZ82 / TZ85",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-ZS70, DC-TZ90 / TZ91 / TZ92 / TZ93",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-ZS80, DC-TZ95 / TZ96 / TZ97",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DMC-ZS100 / ZS110, DMC-TZ100 / TZ101 / TZ110, DMC-TX1",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-ZS200 / ZS220, DC-TZ200 / TZ202 / TZ220, DC-TX2",
+      "source_brand_label": "Panasonic"
+    },
+    {
+      "name": "DC-ZS200D / ZS220D, DC-TZ200D / TZ202D / TZ220D",
+      "source_brand_label": "Panasonic"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "manufacturer": "yashica",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "Y16 Pocket Camera",
+      "category": "home-page digital product sample; includes preorder Y16/Crew",
+      "source": "yashica-home",
+      "url": "https://www.yashica.com/"
+    },
+    {
+      "name": "Crew Digital Camera",
+      "category": "home-page digital product sample; includes preorder Y16/Crew",
+      "source": "yashica-home",
+      "url": "https://www.yashica.com/"
+    },
+    {
+      "name": "Funtastic Keychain Camera",
+      "category": "home-page digital product sample; includes preorder Y16/Crew",
+      "source": "yashica-home",
+      "url": "https://www.yashica.com/"
+    },
+    {
+      "name": "FX-D S300",
+      "category": "home-page digital product sample; includes preorder Y16/Crew",
+      "source": "yashica-home",
+      "url": "https://www.yashica.com/"
+    },
+    {
+      "name": "Tank",
+      "category": "home-page digital product sample; includes preorder Y16/Crew",
+      "source": "yashica-home",
+      "url": "https://www.yashica.com/"
+    },
+    {
+      "name": "City 300",
+      "category": "home-page digital product sample; includes preorder Y16/Crew",
+      "source": "yashica-home",
+      "url": "https://www.yashica.com/"
+    },
+    {
+      "name": "FX-D 300",
+      "category": "home-page digital product sample; includes preorder Y16/Crew",
+      "source": "yashica-home",
+      "url": "https://www.yashica.com/"
+    }
+  ]
+}

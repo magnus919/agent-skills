@@ -1,0 +1,676 @@
+{
+  "schema_version": 1,
+  "objective": "Audit each other manufacturer for completeness of digital camera offerings and online reverse engineering / hacking references; deliver through merged PR and sync local main.",
+  "scope": "All 43 manufacturer/brand-family entries already in the discovery index; current photographic/cinema/action cameras and available historical digital-camera rosters. Fujifilm and Ricoh prior audits retained. No camera operations or operational skill release.",
+  "manufacturers": [
+    {
+      "id": "agfaphoto",
+      "reference": "references/manufacturer-agfaphoto.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "agfaphoto-cameras",
+        "gphoto-cameras",
+        "libraw-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/agfaphoto-official-1.json",
+        "model-ledgers/agfaphoto-gphoto-1.json",
+        "model-ledgers/agfaphoto-libraw-1.json"
+      ],
+      "evidence": "The requested category URL resolves to a home-page canonical. Its six visible model names are a sample, not the full shop. Agfa ePhoto interoperability belongs to a different era and is kept separately labeled."
+    },
+    {
+      "id": "akaso",
+      "reference": "references/manufacturer-akaso.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "akaso-cameras",
+        "akaso-shop"
+      ],
+      "model_ledger": [
+        "model-ledgers/akaso-official-1.json"
+      ],
+      "evidence": "Action marketing page covers five labels; the shop collection could not be retrieved. Older EK/V50/BRAVE variants and SKU-specific boards remain unenumerated."
+    },
+    {
+      "id": "arri",
+      "reference": "references/manufacturer-arri.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "arri-cameras",
+        "arri-legacy",
+        "arri-legacy-index"
+      ],
+      "model_ledger": [
+        "model-ledgers/arri-official-1.json"
+      ],
+      "evidence": "Current and legacy landing pages extracted. ALEXA Classic, Plus, Studio, XT, SXT subvariants, 65 rental bodies, and D-20/D-21 need linked historical records; three legacy landing cards are not a full history."
+    },
+    {
+      "id": "benq",
+      "reference": "references/manufacturer-benq.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "benq-cameras",
+        "gphoto-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/benq-gphoto-1.json"
+      ],
+      "evidence": "The legacy manufacturer camera-download route was unavailable. One gPhoto camera row is an interoperability lead, not a brand roster."
+    },
+    {
+      "id": "blackmagic-design",
+      "reference": "references/manufacturer-blackmagic-design.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "blackmagic-products",
+        "libraw-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/blackmagic-design-official-1.json",
+        "model-ledgers/blackmagic-design-libraw-1.json"
+      ],
+      "evidence": "Current products page yields 16 camera/family headings after excluding accessories and the phone app. URSA Cine sensor/mount variants and discontinued bodies require product/support detail pages; the list is not every SKU."
+    },
+    {
+      "id": "canon",
+      "reference": "references/manufacturer-canon.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "canon-chdk",
+        "canon-current",
+        "canon-ml-platforms",
+        "canon-museum",
+        "gphoto-cameras",
+        "libraw-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/canon-official-1.json",
+        "model-ledgers/canon-official-2.json",
+        "model-ledgers/canon-official-3.json",
+        "model-ledgers/canon-official-4.json",
+        "model-ledgers/canon-official-5.json",
+        "model-ledgers/canon-gphoto-1.json",
+        "model-ledgers/canon-gphoto-2.json",
+        "model-ledgers/canon-gphoto-3.json",
+        "model-ledgers/canon-gphoto-4.json",
+        "model-ledgers/canon-libraw-1.json",
+        "model-ledgers/canon-libraw-2.json"
+      ],
+      "evidence": "466 museum product entries extracted from digital categories, excluding film, analog still-video and 8mm tape. Regional aliases may share entries. Current store retrieval failed; museum coverage is not a verified current worldwide offering list."
+    },
+    {
+      "id": "casio",
+      "reference": "references/manufacturer-casio.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "casio-cameras",
+        "casio-manual-models",
+        "casio-manuals",
+        "casio-protocol",
+        "casio-wqv",
+        "gphoto-cameras",
+        "libraw-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/casio-gphoto-1.json",
+        "model-ledgers/casio-libraw-1.json"
+      ],
+      "evidence": "Official regional manual search loads but warns some products are absent and does not render a complete model list. Thirteen gPhoto and 53 LibRaw labels are independent subsets, not the full QV/EX catalog."
+    },
+    {
+      "id": "contax-kyocera",
+      "reference": "references/manufacturer-contax-kyocera.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "kyocera-cameras",
+        "libraw-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/contax-kyocera-libraw-1.json"
+      ],
+      "evidence": "Vendor optical support page survives as a service notice, not a model archive. LibRaw identifies N Digital only; the other bodies and regional Finecam variants need archived manuals."
+    },
+    {
+      "id": "digital-bolex",
+      "reference": "references/manufacturer-digital-bolex.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "bolex-source",
+        "libraw-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/digital-bolex-libraw-1.json"
+      ],
+      "evidence": "LibRaw enumerates both digital bodies. Original manual/spec links survive in search, while home capture returned a short shell. Full configuration and firmware history not reconstructed."
+    },
+    {
+      "id": "dji",
+      "reference": "references/manufacturer-dji.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "dji-cameras",
+        "libraw-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/dji-official-1.json",
+        "model-ledgers/dji-libraw-1.json"
+      ],
+      "evidence": "All 15 retained handheld headings exclude phone-only gimbals/mics. Drone-integrated cameras and Zenmuse payloads are a separate unenumerated product track, not silently covered."
+    },
+    {
+      "id": "epson",
+      "reference": "references/manufacturer-epson.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "epson-cameras",
+        "epson-models",
+        "gphoto-cameras",
+        "libraw-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/epson-official-1.json",
+        "model-ledgers/epson-gphoto-1.json",
+        "model-ledgers/epson-libraw-1.json"
+      ],
+      "evidence": "Japanese vendor index yields 20 download identities. CP regional names and international PhotoPC aliases need reconciliation; R-D1xG is the vendor grip-kit identity."
+    },
+    {
+      "id": "fujifilm",
+      "reference": "references/manufacturer-fujifilm.md",
+      "status": "prior-family-audit-with-supplementary-gaps",
+      "roster_sources": [
+        "gphoto-cameras",
+        "libraw-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/fujifilm-gphoto-1.json",
+        "model-ledgers/fujifilm-libraw-1.json"
+      ],
+      "evidence": "X-series coverage is source-bound to 53 identities in family-coverage.json, not all Fuji products. FinePix and GFX worldwide/history completeness remains outside that denominator."
+    },
+    {
+      "id": "general-imaging",
+      "reference": "references/manufacturer-general-imaging.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "ge-cameras"
+      ],
+      "model_ledger": [],
+      "evidence": "Former general-imaging.com now serves unrelated magazine content and is rejected as a camera source. No authoritative complete roster recovered; neither a zero row count nor the Kodak license history resolves this gap."
+    },
+    {
+      "id": "gopro",
+      "reference": "references/manufacturer-gopro.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "gopro-cameras",
+        "gopro-labs",
+        "gopro-manuals",
+        "gphoto-cameras",
+        "libraw-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/gopro-official-1.json",
+        "model-ledgers/gopro-gphoto-1.json",
+        "model-ledgers/gopro-libraw-1.json"
+      ],
+      "evidence": "Shop/compare labels and Labs release list retained. Bare HERO is ambiguous across years; editions/creator kits are not separate bodies. Early Digital HERO and all historical Silver/White/Session variants are not fully reconciled."
+    },
+    {
+      "id": "hasselblad",
+      "reference": "references/manufacturer-hasselblad.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "hasselblad-download",
+        "hasselblad-h",
+        "hasselblad-products",
+        "hasselblad-v",
+        "hasselblad-x",
+        "libraw-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/hasselblad-official-1.json",
+        "model-ledgers/hasselblad-libraw-1.json"
+      ],
+      "evidence": "X/V/H vendor pages and 39 LibRaw labels retained. H6X is a host body rather than a standalone digital capture device. Older H sensor/multishot/CF/back combinations, rebadges and all editions remain a roster gap."
+    },
+    {
+      "id": "hp",
+      "reference": "references/manufacturer-hp.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "gphoto-cameras",
+        "hp-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/hp-gphoto-1.json"
+      ],
+      "evidence": "Current HP support shell does not enumerate the discontinued camera range. Fifty-three gPhoto rows retain exact interoperability names; printers and scanners excluded."
+    },
+    {
+      "id": "insta360",
+      "reference": "references/manufacturer-insta360.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "insta360-cameras",
+        "insta360-downloads"
+      ],
+      "model_ledger": [
+        "model-ledgers/insta360-official-1.json"
+      ],
+      "evidence": "Product navigation and download data extracted; hot downloads are not the full catalog. Original ONE/RS lens-module bundles, EVO/Nano/Air and region-specific retired models need support archive closure. Phone-only Flow and microphones excluded."
+    },
+    {
+      "id": "jvc",
+      "reference": "references/manufacturer-jvc.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "jvc-api",
+        "jvc-cameras",
+        "jvc-consumer",
+        "jvc-models",
+        "jvc-sg"
+      ],
+      "model_ledger": [
+        "model-ledgers/jvc-official-1.json"
+      ],
+      "evidence": "Five Singapore professional camcorder identities extracted. Official API found via search has family wildcards, not exact product identities; direct API-page capture was unavailable. Current and legacy consumer/pro regional catalogs have not been reconciled."
+    },
+    {
+      "id": "kinefinity",
+      "reference": "references/manufacturer-kinefinity.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "kinefinity-firmware",
+        "kinefinity-products",
+        "libraw-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/kinefinity-official-1.json",
+        "model-ledgers/kinefinity-libraw-1.json"
+      ],
+      "evidence": "Four current family cards and seven historical firmware labels extracted. mark2 S35/LF, slash-bundled MAVO LF/MAVO and VISTA configuration details still need detail pages. Some migrated old KineOS cards carry newer Edge model tags; do not treat those tags as validated backward compatibility."
+    },
+    {
+      "id": "kodak",
+      "reference": "references/manufacturer-kodak.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "gphoto-cameras",
+        "kodak-cameras",
+        "kodak-legacy",
+        "libraw-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/kodak-official-1.json",
+        "model-ledgers/kodak-gphoto-1.json",
+        "model-ledgers/kodak-libraw-1.json"
+      ],
+      "evidence": "PIXPRO support yields 44 current/previous labels plus 100 gPhoto and 42 LibRaw rows. Serial-number firmware branches matter. No single Kodak page covers every historical/licensee line; Charmera and other licensed mini/hybrid bodies need separate catalogs."
+    },
+    {
+      "id": "konica-minolta",
+      "reference": "references/manufacturer-konica-minolta.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "gphoto-cameras",
+        "konica-cameras",
+        "libraw-cameras",
+        "libraw-z2"
+      ],
+      "model_ledger": [
+        "model-ledgers/konica-minolta-gphoto-1.json",
+        "model-ledgers/konica-minolta-libraw-1.json"
+      ],
+      "evidence": "Vendor support root unavailable. Fourteen gPhoto rows and 17 LibRaw names cover subsets; cameras across both brands and premerger naming need authored archive records. Modern licensed Minolta products are another unresolved catalog."
+    },
+    {
+      "id": "leica",
+      "reference": "references/manufacturer-leica.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "gphoto-cameras",
+        "leica-cameras",
+        "leica-download",
+        "libraw-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/leica-official-1.json",
+        "model-ledgers/leica-gphoto-1.json",
+        "model-ledgers/leica-libraw-1.json"
+      ],
+      "evidence": "Fourteen current digital/hybrid navigation labels plus legacy LibRaw subset retained. Analog M6/MP/M-A and original analog SOFORT excluded. Legacy firmware/download taxonomy is not a complete model census or full special-edition roster."
+    },
+    {
+      "id": "lytro",
+      "reference": "references/manufacturer-lytro.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "lytro-illum-archive",
+        "lytro-source"
+      ],
+      "model_ledger": [],
+      "evidence": "Original-camera project and mirrored vendor ILLUM release notes establish distinct tracks. Storage/color editions and professional prototypes were not exhaustively enumerated."
+    },
+    {
+      "id": "nikon",
+      "reference": "references/manufacturer-nikon.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "gphoto-cameras",
+        "libraw-cameras",
+        "nikon-archive",
+        "nikon-categories",
+        "nikon-hacker",
+        "nikon-products"
+      ],
+      "model_ledger": [
+        "model-ledgers/nikon-official-1.json",
+        "model-ledgers/nikon-official-2.json",
+        "model-ledgers/nikon-gphoto-1.json",
+        "model-ledgers/nikon-gphoto-2.json",
+        "model-ledgers/nikon-gphoto-3.json",
+        "model-ledgers/nikon-libraw-1.json",
+        "model-ledgers/nikon-libraw-2.json"
+      ],
+      "evidence": "192 names extracted from five camera categories in the official selector XML, excluding lenses/accessories. The separately inspected archive currently lists software, not additional cameras; older COOLPIX/E-series and regional names must be reconciled before declaring all-time completeness."
+    },
+    {
+      "id": "olympus-om-system",
+      "reference": "references/manufacturer-olympus-om-system.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "gphoto-cameras",
+        "libraw-cameras",
+        "om-download",
+        "om-ilc-firmware",
+        "om-legacy-manuals",
+        "om-pen-manuals",
+        "om-tg-manuals"
+      ],
+      "model_ledger": [
+        "model-ledgers/olympus-om-system-official-1.json",
+        "model-ledgers/olympus-om-system-gphoto-1.json",
+        "model-ledgers/olympus-om-system-libraw-1.json"
+      ],
+      "evidence": "Body/manual and firmware tables merged as source rows, with no-update E-PL10 and TG-6 retained. Compact and early Four Thirds archive completeness remains unresolved; firmware availability is not the model denominator."
+    },
+    {
+      "id": "panasonic",
+      "reference": "references/manufacturer-panasonic.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "gphoto-cameras",
+        "libraw-cameras",
+        "panasonic-compact",
+        "panasonic-firmware",
+        "panasonic-fullframe",
+        "panasonic-manuals",
+        "panasonic-mft"
+      ],
+      "model_ledger": [
+        "model-ledgers/panasonic-official-1.json",
+        "model-ledgers/panasonic-official-2.json",
+        "model-ledgers/panasonic-gphoto-1.json",
+        "model-ledgers/panasonic-libraw-1.json"
+      ],
+      "evidence": "118 firmware source rows preserve regional alias bundles and exceptions. Models without updates, legacy Four Thirds and HC/AG/AU/V broadcast/camcorder lines are not a complete worldwide census. The initial /fts/index.html was an empty redirect stub, not a roster."
+    },
+    {
+      "id": "pentax",
+      "reference": "references/manufacturer-pentax.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "gphoto-cameras",
+        "libraw-cameras",
+        "pentax-archive",
+        "pentax-download",
+        "pentax-products",
+        "pentax-wg-archive"
+      ],
+      "model_ledger": [
+        "model-ledgers/pentax-official-1.json",
+        "model-ledgers/pentax-official-2.json",
+        "model-ledgers/pentax-gphoto-1.json",
+        "model-ledgers/pentax-libraw-1.json"
+      ],
+      "evidence": "Firmware plus current product and Optio/WG archive records retained. Regional K-m/K2000 labels and slash-bundled K-5II/IIs are not silently deduplicated. Earliest compact/Optio bodies and all WG/GPS/region variants need archive reconciliation. Ricoh business/GR rows are kept in Ricoh."
+    },
+    {
+      "id": "phase-one-mamiya",
+      "reference": "references/manufacturer-phase-one-mamiya.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "libraw-cameras",
+        "phaseone-iiq",
+        "phaseone-lifecycle",
+        "phaseone-sdk",
+        "phaseone-serials"
+      ],
+      "model_ledger": [
+        "model-ledgers/phase-one-mamiya-official-1.json",
+        "model-ledgers/phase-one-mamiya-libraw-1.json"
+      ],
+      "evidence": "Official serial catalog captures photographic bodies/backs, with LibRaw subsets. Regional back mounts and body/back combinations are not one firmware target. Leaf Credo/Aptus/Valeo and early scanning back model/variant closure remains incomplete. Aerial/industrial systems excluded from this photographic ledger."
+    },
+    {
+      "id": "polaroid",
+      "reference": "references/manufacturer-polaroid.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "gphoto-cameras",
+        "libraw-cameras",
+        "polaroid-cameras",
+        "polaroid-home"
+      ],
+      "model_ledger": [
+        "model-ledgers/polaroid-gphoto-1.json",
+        "model-ledgers/polaroid-libraw-1.json"
+      ],
+      "evidence": "Current polaroid.com is dominated by analog instant cameras (including Mod), not an exhaustive licensed digital archive. Six gPhoto entries and x530 LibRaw support are subsets. No complete current/historical licensee roster recovered."
+    },
+    {
+      "id": "red",
+      "reference": "references/manufacturer-red.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "red-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/red-official-1.json"
+      ],
+      "evidence": "Current camera category explicitly lists eight entries, all captured. Its product-option counts describe kits, not extra body models. Legacy bodies and sensor generations require support archives before historical completeness can be claimed."
+    },
+    {
+      "id": "ricoh",
+      "reference": "references/manufacturer-ricoh.md",
+      "status": "prior-family-audit-with-supplementary-gaps",
+      "roster_sources": [
+        "gphoto-cameras",
+        "libraw-cameras",
+        "pentax-download"
+      ],
+      "model_ledger": [
+        "model-ledgers/ricoh-official-1.json",
+        "model-ledgers/ricoh-gphoto-1.json",
+        "model-ledgers/ricoh-libraw-1.json"
+      ],
+      "evidence": "GR source-bound coverage is 23 identities in family-coverage.json. Supplementary Ricoh firmware/gPhoto/LibRaw lists do not establish completeness of the other families. GXR modules and THETA require model-level records."
+    },
+    {
+      "id": "rollei",
+      "reference": "references/manufacturer-rollei.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "gphoto-cameras",
+        "libraw-cameras",
+        "rollei-cameras",
+        "rollei-digital",
+        "rollei-models",
+        "rollei-protocol-search"
+      ],
+      "model_ledger": [
+        "model-ledgers/rollei-gphoto-1.json",
+        "model-ledgers/rollei-libraw-1.json"
+      ],
+      "evidence": "Current catalog retrieval failed; search located /collections/kameras but not a full extract. Two gPhoto rows and d530flex raw support are narrow subsets. Include db20p digital back via Phase One source; no all-model claim."
+    },
+    {
+      "id": "samsung",
+      "reference": "references/manufacturer-samsung.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "gphoto-cameras",
+        "libraw-cameras",
+        "samsung-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/samsung-gphoto-1.json",
+        "model-ledgers/samsung-libraw-1.json"
+      ],
+      "evidence": "Manufacturer downloads shell does not yield the retired camera roster. Six gPhoto and 44 LibRaw labels do not cover every digital compact or regional NX/GX variant."
+    },
+    {
+      "id": "sanyo",
+      "reference": "references/manufacturer-sanyo.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "gphoto-cameras",
+        "sanyo-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/sanyo-gphoto-1.json"
+      ],
+      "evidence": "Former Panasonic/Sanyo page unavailable. Eight gPhoto names are only an interoperability subset; VPC/DMX regional aliases and extensive camcorder generations remain unenumerated."
+    },
+    {
+      "id": "sigma",
+      "reference": "references/manufacturer-sigma.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "gphoto-cameras",
+        "libraw-cameras",
+        "sigma-firmware"
+      ],
+      "model_ledger": [
+        "model-ledgers/sigma-official-1.json",
+        "model-ledgers/sigma-gphoto-1.json",
+        "model-ledgers/sigma-libraw-1.json"
+      ],
+      "evidence": "Twenty-two camera-only firmware rows extracted, excluding all lens/accessory rows. LibRaw adds SD10/DP1s leads absent from that table. No-update and regional/kit variants need reconciliation."
+    },
+    {
+      "id": "sjcam",
+      "reference": "references/manufacturer-sjcam.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "sjcam-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/sjcam-official-1.json"
+      ],
+      "evidence": "Catalog/navigation labels extracted with NEW badges removed. Home S1 and accessory/use-case links excluded. Original SJ4000/5000/6/7/8/9/10 generations and hardware revisions need historical support closure."
+    },
+    {
+      "id": "sony",
+      "reference": "references/manufacturer-sony.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "gphoto-cameras",
+        "libraw-cameras",
+        "sony-alpha-support",
+        "sony-cameras",
+        "sony-cybershot-support",
+        "sony-pmca-devices",
+        "sony-uk"
+      ],
+      "model_ledger": [
+        "model-ledgers/sony-gphoto-1.json",
+        "model-ledgers/sony-gphoto-2.json",
+        "model-ledgers/sony-libraw-1.json",
+        "model-ledgers/sony-libraw-2.json"
+      ],
+      "evidence": "Official support shows 643 digital-category entries but includes lenses and exposes only initial results; video support is separately paginated. Direct captures failed. The 158 gPhoto and 115 LibRaw rows are subsets, not 643 cameras or a full Sony census."
+    },
+    {
+      "id": "toshiba",
+      "reference": "references/manufacturer-toshiba.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "gphoto-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/toshiba-gphoto-1.json"
+      ],
+      "evidence": "Five gPhoto names cannot enumerate the legacy PDR/CAMILEO range. No complete manufacturer camera roster recovered; historical storage-capacity updates are maintenance leads."
+    },
+    {
+      "id": "vivitar",
+      "reference": "references/manufacturer-vivitar.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "gphoto-cameras",
+        "vivitar-cameras",
+        "vivitar-home"
+      ],
+      "model_ledger": [
+        "model-ledgers/vivitar-gphoto-1.json"
+      ],
+      "evidence": "Manufacturer retrieval failed. Seven gPhoto labels are old transfer entries; current licensed digital models and firmware/board revisions remain a roster gap."
+    },
+    {
+      "id": "xiaomi-yi",
+      "reference": "references/manufacturer-xiaomi-yi.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "libraw-cameras",
+        "yi-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/xiaomi-yi-libraw-1.json"
+      ],
+      "evidence": "Current YI homepage promotes home/security systems and is not an action-camera archive. LibRaw identifies YI 4K and M1 only. Older action/4K+ and Xiaomi/Mijia regional/hardware revisions need separate manuals."
+    },
+    {
+      "id": "yashica",
+      "reference": "references/manufacturer-yashica.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "yashica-cameras",
+        "yashica-home"
+      ],
+      "model_ledger": [
+        "model-ledgers/yashica-official-1.json"
+      ],
+      "evidence": "Homepage captures seven visible digital product labels including preorders, not the complete store/archive. Color SKUs and in-body film looks do not establish common firmware."
+    },
+    {
+      "id": "z-cam",
+      "reference": "references/manufacturer-z-cam.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "zcam-cameras"
+      ],
+      "model_ledger": [
+        "model-ledgers/z-cam-official-1.json"
+      ],
+      "evidence": "Current professional page/nav retains eight model labels, including four Mark II sensor bodies sharing a family route. Old E1/E2/VR and PTZ catalogs are not exhaustively reconciled."
+    },
+    {
+      "id": "zeiss",
+      "reference": "references/manufacturer-zeiss.md",
+      "status": "audited-with-gaps",
+      "roster_sources": [
+        "libraw-cameras",
+        "zeiss-zx1"
+      ],
+      "model_ledger": [
+        "model-ledgers/zeiss-official-1.json",
+        "model-ledgers/zeiss-libraw-1.json"
+      ],
+      "evidence": "Former vendor ZX1 URL redirects to a generic photography page with no ZX1 record and is rejected as model evidence. LibRaw identifies ZX1, but no complete vendor archive or current OTA/recovery availability was verified."
+    }
+  ]
+}

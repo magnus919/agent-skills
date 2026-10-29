@@ -1,0 +1,506 @@
+{
+  "manufacturer": "canon",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Canon Digital IXUS",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 100 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 110 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 120 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 130",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 132",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 180",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 185",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 255HS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 30 (normal mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 300",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 300 HS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 330",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 40 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 400 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 430 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 50 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 500 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 55 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 60 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 65 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 70 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 700 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 75 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 750 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 80 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 800 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 85 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 850 IS (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 860 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 90 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 900Ti (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 95 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 950 IS (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 960 IS (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 970 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 980 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS 990 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS i (normal mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS i (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS i5 (normal mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS II (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS IIs (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS iZ (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS v",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS v2",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS v3 (normal mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS v3 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital IXUS Wireless (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital PowerShot SX730HS",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital Rebel XT (normal mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Digital unknown 3",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Elura 50 (normal mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Elura 50 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Elura 65 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS (WLAN)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Canon EOS 1000D",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 100D",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 10D",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 10D (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 1100D",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 1200D",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 1300D",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 1500D",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 1D C",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 1D Mark II (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 1D Mark III (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 1D Mark IV",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 1D X",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 1D X MarkII",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 1D X MarkIII",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 2000D",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 200D",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 20D (normal mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 20D (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 250D",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 300D (normal mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 300D (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 30D (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 350D",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 350D (normal mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 350D (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 4000D",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 400D (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 40D (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 450D (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 500D",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 50D",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 550D",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 5D (normal mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 5D (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 5D Mark II",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 5D Mark III",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 5D Mark IV",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 5DS",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 5DS R",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 5Rm2",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 600D",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 60D",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon EOS 650D",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    }
+  ]
+}

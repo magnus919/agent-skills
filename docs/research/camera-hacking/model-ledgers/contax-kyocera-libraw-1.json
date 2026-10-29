@@ -1,0 +1,10 @@
+{
+  "manufacturer": "contax-kyocera",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "Contax N Digital",
+      "source_brand_label": "Contax N Digital"
+    }
+  ]
+}

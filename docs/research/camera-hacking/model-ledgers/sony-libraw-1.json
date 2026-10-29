@@ -1,0 +1,406 @@
+{
+  "manufacturer": "sony",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "ILCE-1 (A1)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-7 (A7)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-7M2 (A7 II)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-7M3 (A7 III)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-7M4 (A7 IV)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-7C (A7C)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-7CR (A7CR)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-7CM2 (A7C II)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-7R (A7R)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-7RM2 (A7R II)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-7RM3 (A7R III)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-7RM3A (A7R IIIA)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-7RM4 (A7R IV)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-7RM4A (A7R IVA)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-7RM5 (A7R V)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-7S (A7S)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-7SM2 (A7S II)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-7SM3 (A7S III)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-9 (A9)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-9M2 (A9 II)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-9M3 (A9 III)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCA-68 (A68)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCA-77M2 (A77-II)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCA-99M2 (A99-II)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-3000 / 3500",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-5000",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-5100",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-6000",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-6100",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-6300",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-6400",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-6500",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-6600",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-6700",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILCE-QX1 / UMC-R10C",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILX-LR1",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-F828",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-HX95",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-HX99",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-R1",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-RX0",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-RX0 II",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-RX1",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-RX1R",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-RX1R II",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-RX10",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-RX10 II",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-RX10 III",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-RX10 IV",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-RX100",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-RX100 II",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-RX100 III",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-RX100 IV",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-RX100 V",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-RX100 VA",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-RX100 VI",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-RX100 VII",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSC-V3",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSLR-A100",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSLR-A200",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSLR-A230",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSLR-A290",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSLR-A300",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSLR-A330",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSLR-A350",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSLR-A380 / A390",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSLR-A450",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSLR-A500",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSLR-A550",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSLR-A560",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSLR-A580",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSLR-A700",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSLR-A850",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "DSLR-A900",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "NEX-3",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "NEX-3N",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "NEX-5",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "NEX-5N",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "NEX-5R",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "NEX-5T",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "NEX-6",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "NEX-7",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "NEX-C3",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "NEX-F3",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "NEX-VG20",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "NEX-VG30",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "NEX-VG900",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "SLT-A33",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "SLT-A35",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "SLT-A37",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "SLT-A55(V)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "SLT-A57",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "SLT-A58",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "SLT-A65(V)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "SLT-A77(V)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "SLT-A99(V)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "XCD-SX910CR",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "IMX135-mipi 13mp",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "IMX135-QCOM",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "IMX072-mipi",
+      "source_brand_label": "Sony"
+    }
+  ]
+}

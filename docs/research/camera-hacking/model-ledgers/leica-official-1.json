@@ -1,0 +1,90 @@
+{
+  "manufacturer": "leica",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "Leica Q3 43 Formula 1® Edition",
+      "category": "digital/hybrid photography model",
+      "source": "leica-cameras",
+      "url": "https://leica-camera.com/en-int/photography/cameras/q/q3-43-formula-1-edition"
+    },
+    {
+      "name": "M EV1",
+      "category": "digital/hybrid photography model",
+      "source": "leica-cameras",
+      "url": "https://leica-camera.com/en-int/photography/cameras/m/m-ev1-black"
+    },
+    {
+      "name": "M11-P",
+      "category": "digital/hybrid photography model",
+      "source": "leica-cameras",
+      "url": "https://leica-camera.com/en-int/photography/cameras/m/m11-p-black"
+    },
+    {
+      "name": "M11-D",
+      "category": "digital/hybrid photography model",
+      "source": "leica-cameras",
+      "url": "https://leica-camera.com/en-int/photography/cameras/m/m11-d-black"
+    },
+    {
+      "name": "M11 Monochrom",
+      "category": "digital/hybrid photography model",
+      "source": "leica-cameras",
+      "url": "https://leica-camera.com/en-int/photography/cameras/m/m11-monochrom"
+    },
+    {
+      "name": "M11",
+      "category": "digital/hybrid photography model",
+      "source": "leica-cameras",
+      "url": "https://leica-camera.com/en-int/photography/cameras/m/m11-black"
+    },
+    {
+      "name": "SL3-P",
+      "category": "digital/hybrid photography model",
+      "source": "leica-cameras",
+      "url": "https://leica-camera.com/en-int/photography/cameras/sl/sl3-p-black"
+    },
+    {
+      "name": "SL3-S",
+      "category": "digital/hybrid photography model",
+      "source": "leica-cameras",
+      "url": "https://leica-camera.com/en-int/photography/cameras/sl/sl3-s-black"
+    },
+    {
+      "name": "SL3",
+      "category": "digital/hybrid photography model",
+      "source": "leica-cameras",
+      "url": "https://leica-camera.com/en-int/photography/cameras/sl/sl3-black"
+    },
+    {
+      "name": "Q3 43",
+      "category": "digital/hybrid photography model",
+      "source": "leica-cameras",
+      "url": "https://leica-camera.com/en-int/photography/cameras/q/q3-43-black"
+    },
+    {
+      "name": "Q3",
+      "category": "digital/hybrid photography model",
+      "source": "leica-cameras",
+      "url": "https://leica-camera.com/en-int/photography/cameras/q/q3-black"
+    },
+    {
+      "name": "Q3 Monochrom",
+      "category": "digital/hybrid photography model",
+      "source": "leica-cameras",
+      "url": "https://leica-camera.com/en-int/photography/cameras/q/q3-monochrom"
+    },
+    {
+      "name": "D-Lux 8",
+      "category": "digital/hybrid photography model",
+      "source": "leica-cameras",
+      "url": "https://leica-camera.com/en-int/photography/cameras/d-lux/d-lux-8"
+    },
+    {
+      "name": "SOFORT 2",
+      "category": "digital/hybrid photography model",
+      "source": "leica-cameras",
+      "url": "https://leica-camera.com/en-int/photography/cameras/instant-cameras"
+    }
+  ]
+}

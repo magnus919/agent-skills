@@ -1,0 +1,14 @@
+{
+  "manufacturer": "digital-bolex",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "D16",
+      "source_brand_label": "Digital Bolex"
+    },
+    {
+      "name": "D16M",
+      "source_brand_label": "Digital Bolex"
+    }
+  ]
+}

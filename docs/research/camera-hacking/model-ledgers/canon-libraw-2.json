@@ -1,0 +1,290 @@
+{
+  "manufacturer": "canon",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "EOS R100",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS D30",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS D60",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 5DS",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 5DS R",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 5D",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 5D Mark II",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 5D Mark III",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 5D Mark IV",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 6D",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 6D Mark II",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 7D",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 7D Mark II",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 10D",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 20D",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 20Da",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 30D",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 40D",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 50D",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 60D",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 60Da",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 70D",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 77D / 9000D",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 80D",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 90D",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 100D / Rebel SL1 / Kiss X7",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 200D / Rebel SL2 / Kiss X9",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 250D / 200D II / Rebel SL3 / Kiss X10",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 300D / Digital Rebel / Kiss Digital",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 350D / Digital Rebel XT / Kiss Digital N",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 400D / Digital Rebel XTi / Kiss Digital X",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 450D / Digital Rebel XSi / Kiss X2",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 500D / Rebel T1i / Kiss X3",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 550D / Rebel T2i / Kiss X4",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 600D / Rebel T3i / Kiss X5",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 650D / Rebel T4i / Kiss X6i",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 700D / Rebel T5i / Kiss X7i",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 750D / Rebel T6i / Kiss X8i",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 760D / Rebel T6S / 8000D",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 800D / Rebel T7i / Kiss X9i",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 850D / Rebel T8i / Kiss X10i",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 1000D / Digital Rebel XS / Kiss F",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 1100D / Rebel T3 / Kiss X50",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 1200D / Kiss X70 / REBEL T5 / Hi",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 1300D / Rebel T6 / Kiss X80",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 1500D / 2000D / Rebel T7 / Kiss X90",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS 3000D / 4000D / Rebel T100",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS D2000",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS M",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS M2",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS M3",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS M5",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS M6",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS M6 Mark II",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS M10",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS M50 / Kiss M",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS M50 Mark II",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS M100",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS M200",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS-1D C",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS-1D X",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS-1D X Mark II",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS-1D X Mark III",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS-1D",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS-1D Mark II",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS-1D Mark II N",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS-1D Mark III",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS-1D Mark IV",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS-1Ds",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS-1Ds Mark II",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS-1Ds Mark III",
+      "source_brand_label": "Canon"
+    }
+  ]
+}

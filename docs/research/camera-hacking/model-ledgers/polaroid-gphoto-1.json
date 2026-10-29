@@ -1,0 +1,36 @@
+{
+  "manufacturer": "polaroid",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Polaroid 640SE",
+      "additional_abilities": "",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Polaroid DC700",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Polaroid Fun Flash 640",
+      "additional_abilities": "Image Capture",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Polaroid Fun! 320",
+      "additional_abilities": "",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Polaroid PDC 2300Z",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Polaroid PDC 640",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    }
+  ]
+}

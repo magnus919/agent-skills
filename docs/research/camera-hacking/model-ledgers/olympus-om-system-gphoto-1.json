@@ -1,0 +1,401 @@
+{
+  "manufacturer": "olympus-om-system",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Olympus C-1000L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-1400L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-1400XL",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-2000Z",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-2020Z",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-2040Z",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-2100UZ",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-2500L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-3000Z",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-3020Z",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-3030Z",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-3040Z",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-310Z",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-350Z",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-370Z",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-400",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-400L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-4040Z",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-410",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-410L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-420",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-420L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-5050Z",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-5500Z",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-55Z",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-700UZ",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-750UZ",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-770UZ",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-800",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-800L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-820",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-820L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-830L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-840L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-860L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-900 Zoom",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-900L Zoom",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus C-990 Zoom",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-100Z",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-200L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-220L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-300L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-320L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-330R",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-340L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-340R",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-360L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-400L Zoom",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-450Z",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-460Z",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-500L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-535Z",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-540Z",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-560Z",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-600L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-600XL",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus D-620L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus E series (Control)",
+      "additional_abilities": "",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Olympus E-M1",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus E-M1 Mark II",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus E-M1 MII",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus E-M5",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Olympus E-M5 Mark II",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus E-PL5",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Olympus fe-200",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus FE4000",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Olympus IR-300",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Olympus mju 500",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Olympus OM-1",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus OM-1MarkII",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus SP-500UZ",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus SP-720UZ",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Olympus TG-620",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Olympus VR360",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Olympus X-100",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Olympus X-250",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Olympus X-450",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Olympus X920",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Olympus X925",
+      "additional_abilities": "",
+      "comments": ""
+    }
+  ]
+}

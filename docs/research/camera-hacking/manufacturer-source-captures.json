@@ -1,0 +1,879 @@
+{
+  "schema_version": 1,
+  "source_storage": "Public metadata only. Full documentation captures are retained with the separate local research artifacts; upstream firmware was not downloaded.",
+  "sources": {
+    "canon-museum": {
+      "url": "https://global.canon/en/c-museum/camera.html",
+      "final_url": "https://global.canon/en/c-museum/camera.html",
+      "retrieved_at": "2026-10-29T16:12:04.892296+00:00",
+      "sha256": "4ec6ca4b61324234db49da4b1472294a8dbd7f0ebce037285f88726ddee32a1a",
+      "bytes": 396680,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "nikon-download": {
+      "url": "https://downloadcenter.nikonimglib.com/en/index.html",
+      "final_url": "https://downloadcenter.nikonimglib.com/en/index.html",
+      "retrieved_at": "2026-10-29T16:12:03.836642+00:00",
+      "sha256": "5233179b75aae9c093d465716ac1d1f00148589260e1e3246badd893d47c5491",
+      "bytes": 9406,
+      "status": "retrieved",
+      "disposition": "inspected during discovery; no model rows retained"
+    },
+    "om-ilc-firmware": {
+      "url": "https://support.jp.omsystem.com/en/support/imsg/digicamera/download/software/firm/e1/",
+      "final_url": "https://support.jp.omsystem.com/en/support/imsg/digicamera/download/software/firm/e1/",
+      "retrieved_at": "2026-10-29T16:12:03.851304+00:00",
+      "sha256": "400a050b4fdc5f77aa714a3dc916d2cdc81857c7ef1b191f43a7860a1bd32ea2",
+      "bytes": 81559,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "om-download": {
+      "url": "https://support.jp.omsystem.com/en/support/imsg/digicamera/download/software/",
+      "final_url": "https://support.jp.omsystem.com/en/support/imsg/digicamera/download/software/",
+      "retrieved_at": "2026-10-29T16:12:03.836500+00:00",
+      "sha256": "4bdda810ba618abcb560cbca191bc8e166c1a6f31713259e7e9c20552441c7a1",
+      "bytes": 34035,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "panasonic-firmware": {
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/fts/index.html",
+      "final_url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/fts/index.html",
+      "retrieved_at": "2026-10-29T16:12:04.171072+00:00",
+      "sha256": "7a2f2fea66c95663f8be33117b290e9092ee4aff4f7a8b10e0ff424fbf323d65",
+      "bytes": 577,
+      "status": "retrieved",
+      "disposition": "rejected as roster: 577-byte redirect stub"
+    },
+    "sony-alpha-support": {
+      "url": "https://www.sony.com/electronics/support/interchangeable-lens-cameras-e-mount-body",
+      "status": "unavailable",
+      "error": "HTTP Error 403: Forbidden",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "sony-cybershot-support": {
+      "url": "https://www.sony.com/electronics/support/compact-cameras-dsc-rx-series",
+      "status": "unavailable",
+      "error": "HTTP Error 403: Forbidden",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "gphoto-cameras": {
+      "url": "https://gphoto.sourceforge.io/proj/libgphoto2/support.php",
+      "final_url": "https://gphoto.sourceforge.io/proj/libgphoto2/support.php",
+      "retrieved_at": "2026-10-29T16:12:04.179420+00:00",
+      "sha256": "1759c4bb88209acecfd9ca5e285a31324c7f3c9b3b6859e3c42e18fb53f59006",
+      "bytes": 213236,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "leica-download": {
+      "url": "https://leica-camera.com/en-int/downloads",
+      "final_url": "https://leica-camera.com/en-int/downloads",
+      "retrieved_at": "2026-10-29T16:12:04.535448+00:00",
+      "sha256": "33bf7e99f2a37a562cea1c7208e4a04fd93b85c1c6fdbf77abb1989bee999067",
+      "bytes": 1157356,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "pentax-download": {
+      "url": "https://www.ricoh-imaging.co.jp/english/support/download_digital.html",
+      "final_url": "https://www.ricoh-imaging.co.jp/english/support/download_digital.html",
+      "retrieved_at": "2026-10-29T16:12:05.251373+00:00",
+      "sha256": "3d6c6ced29d03b1482dd697ad7ebaebd08d897aca880a760d10be3d2e0169927",
+      "bytes": 33118,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "sigma-firmware": {
+      "url": "https://www.sigma-global.com/en/support/firmware/",
+      "final_url": "https://www.sigma-global.com/en/support/firmware/",
+      "retrieved_at": "2026-10-29T16:12:04.334611+00:00",
+      "sha256": "4f3d8ded9150d459b0e9c22946c197388797df29c387f88cc0d3f00a91ee50af",
+      "bytes": 166280,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "hasselblad-download": {
+      "url": "https://www.hasselblad.com/support/downloads/",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "gopro-cameras": {
+      "url": "https://gopro.com/en/us/shop/cameras",
+      "final_url": "https://gopro.com/en/us/shop/cameras",
+      "retrieved_at": "2026-10-29T16:12:04.844110+00:00",
+      "sha256": "fc2a0ff8e05853839f222a533c798384154435fd46f965bc348edc1ad98858e0",
+      "bytes": 488020,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "insta360-cameras": {
+      "url": "https://www.insta360.com/product",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "dji-cameras": {
+      "url": "https://www.dji.com/products/handheld-imaging-devices",
+      "final_url": "https://www.dji.com/products/handheld-imaging-devices",
+      "retrieved_at": "2026-10-29T16:12:05.270893+00:00",
+      "sha256": "55bbecda692f5d02de149e74d0a20642f4e9cfb16f6238ea329d831ac746b545",
+      "bytes": 174365,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "nikon-products": {
+      "url": "https://downloadcenter.nikonimglib.com/en/1/product_data.xml",
+      "final_url": "https://downloadcenter.nikonimglib.com/en/1/product_data.xml",
+      "retrieved_at": "2026-10-29T16:16:00.790280+00:00",
+      "sha256": "887dd3f1b86f31dc67bf03b10a15e065194d657936a1f0c8e32bf20103710636",
+      "bytes": 78537,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "nikon-categories": {
+      "url": "https://downloadcenter.nikonimglib.com/en/0/product_data.xml",
+      "final_url": "https://downloadcenter.nikonimglib.com/en/0/product_data.xml",
+      "retrieved_at": "2026-10-29T16:16:01.166093+00:00",
+      "sha256": "8c5331a037c258ae68f20c0e2c8b3f5bb759077b650d8db25bd70250a4540da2",
+      "bytes": 78249,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "panasonic-mft": {
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html",
+      "final_url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html",
+      "retrieved_at": "2026-10-29T16:16:00.976053+00:00",
+      "sha256": "c1c499df1d653bf104e85caaeee660bfb227a7a92ef102f5300b42de663a1b41",
+      "bytes": 38806,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "panasonic-fullframe": {
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index4.html",
+      "final_url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index4.html",
+      "retrieved_at": "2026-10-29T16:16:00.293462+00:00",
+      "sha256": "30a3aacadeda72e6a32fa229169f3e5c1fff2e0c81d4200baf0aef29d8f64a7b",
+      "bytes": 22920,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "panasonic-compact": {
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html",
+      "final_url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html",
+      "retrieved_at": "2026-10-29T16:16:00.974796+00:00",
+      "sha256": "2893d6c7344e3f6fb0f294246576106da50f9bead257962cc359ff6aca75b62f",
+      "bytes": 40513,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "arri-cameras": {
+      "url": "https://www.arri.com/en/cine-systems/cine-cameras",
+      "final_url": "https://www.arri.com/en/cine-systems/cine-cameras",
+      "retrieved_at": "2026-10-29T16:16:01.324282+00:00",
+      "sha256": "9b6d0477e58ac2fa2b081c6ae40bdd1fd494c51a2e4dc4c7bff6e783818ce1e5",
+      "bytes": 228296,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "blackmagic-products": {
+      "url": "https://www.blackmagicdesign.com/products",
+      "final_url": "https://www.blackmagicdesign.com/products",
+      "retrieved_at": "2026-10-29T16:16:01.195347+00:00",
+      "sha256": "360780fb3981f474c92e96bcb74cd2d6c93e69ead21567ed9dee0f2694fe70c2",
+      "bytes": 293404,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "red-cameras": {
+      "url": "https://www.reddigitalcinema.com/productcategory/Camera-BRAINs",
+      "final_url": "https://www.reddigitalcinema.com/productcategory/Camera-BRAINs",
+      "retrieved_at": "2026-10-29T16:16:01.308795+00:00",
+      "sha256": "0438ad23900d8df15bc0d4c9d6e5bc41c683595ea5431c79456646dd679ec7c5",
+      "bytes": 68006,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "zcam-cameras": {
+      "url": "https://www.z-cam.com/products/professional-cameras/",
+      "final_url": "https://www.z-cam.com/products/professional-cameras/",
+      "retrieved_at": "2026-10-29T16:16:01.786432+00:00",
+      "sha256": "43599a342d466e979c79316bb8dd0895c407f383de7f91faade991f3b0ac2b6b",
+      "bytes": 237733,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "akaso-cameras": {
+      "url": "https://www.akasotech.com/action-camera",
+      "final_url": "https://www.akasotech.com/action-camera",
+      "retrieved_at": "2026-10-29T16:16:02.014943+00:00",
+      "sha256": "456f1ef67356304424262d483eada0acd8bf987d14f06f2c2aca709bbe4c55bc",
+      "bytes": 71101,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "insta360-downloads": {
+      "url": "https://www.insta360.com/download",
+      "final_url": "https://www.insta360.com/download",
+      "retrieved_at": "2026-10-29T16:16:02.796499+00:00",
+      "sha256": "31eaddb8fb2aaac567d7e4b3c8b8401eb6743ad1f3adadb78dbdb302a4b719e4",
+      "bytes": 518748,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "sjcam-cameras": {
+      "url": "https://www.sjcam.com/cameras/",
+      "final_url": "https://www.sjcam.com/cameras/",
+      "retrieved_at": "2026-10-29T16:16:03.275018+00:00",
+      "sha256": "b98a72f8d84a60842a5ab42cebc8e51c6c868d83c57e1a5881fbf06938b1c7f8",
+      "bytes": 336062,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "kinefinity-cameras": {
+      "url": "https://www.kinefinity.com/en/",
+      "final_url": "https://kinefinity.com/",
+      "retrieved_at": "2026-10-29T16:16:03.590293+00:00",
+      "sha256": "f2b91e621cd40ff0b4a2f994db75bebedb02a00e3ca8db6aac568f7ec6e453c2",
+      "bytes": 115019,
+      "status": "retrieved",
+      "disposition": "inspected during discovery; no model rows retained"
+    },
+    "phaseone-cameras": {
+      "url": "https://www.phaseone.com/photography/iq4-camera-systems/",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "kodak-cameras": {
+      "url": "https://kodakpixpro.com/cameras/",
+      "final_url": "https://kodakpixpro.com/cameras/",
+      "retrieved_at": "2026-10-29T16:16:03.447093+00:00",
+      "sha256": "ab7b409f72f75b546802480f524426f6c1be71f36e831ffd8266d1b2964c4de5",
+      "bytes": 13326,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "agfaphoto-cameras": {
+      "url": "https://www.agfaphoto-gtc.com/en/20-digital-cameras",
+      "final_url": "https://www.agfaphoto-gtc.com/en/2-accueil",
+      "retrieved_at": "2026-10-29T16:16:07.659099+00:00",
+      "sha256": "74970a8d6ff45de2730069b6792cb3a4cc67eeeb968505cf5815634d6c342451",
+      "bytes": 687127,
+      "status": "retrieved",
+      "disposition": "partial: requested category has homepage canonical; retain named homepage sample only"
+    },
+    "rollei-cameras": {
+      "url": "https://www.rollei.com/collections/digitalkameras",
+      "status": "unavailable",
+      "error": "HTTP Error 429: Too Many Requests",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "casio-cameras": {
+      "url": "https://support.casio.com/en/dc/manual/",
+      "status": "unavailable",
+      "error": "HTTP Error 503: Service Temporarily Unavailable",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "epson-cameras": {
+      "url": "https://www.epson.jp/support/portal/download/rd-1.htm",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "leica-cameras": {
+      "url": "https://leica-camera.com/en-int/photography/cameras",
+      "final_url": "https://leica-camera.com/en-int/camera",
+      "retrieved_at": "2026-10-29T16:16:04.989737+00:00",
+      "sha256": "db2d30b42717368f72c30e99a1119a85cadd5a564fcb03669d189cd85b3078d5",
+      "bytes": 1335954,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "hasselblad-products": {
+      "url": "https://www.hasselblad.com/products/",
+      "final_url": "https://www.hasselblad.com/products/",
+      "retrieved_at": "2026-10-29T16:16:04.867396+00:00",
+      "sha256": "d8c937efbb13676b36bd7d2d8b20f9961dffc4115a0634f4f44616b6e445c313",
+      "bytes": 482363,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "sony-cameras": {
+      "url": "https://www.sony.com/electronics/support/cameras-camcorders-digital-cameras",
+      "status": "unavailable",
+      "error": "HTTP Error 403: Forbidden",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "jvc-cameras": {
+      "url": "https://www.jvc.com/global/pro/camcorders/",
+      "status": "unavailable",
+      "error": "HTTP Error 403: Forbidden",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "polaroid-cameras": {
+      "url": "https://www.polaroid.com/collections/digital-cameras",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "yashica-cameras": {
+      "url": "https://www.yashica.com/digital-cameras",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "zeiss-zx1": {
+      "url": "https://www.zeiss.com/consumer-products/us/photography/zx1.html",
+      "final_url": "https://www.zeiss.com/photonics-and-optics/us/photography.html",
+      "retrieved_at": "2026-10-29T16:16:05.857412+00:00",
+      "sha256": "93ac2f9892c6e06ceaa87677df8a41b292ef907ee8273148b5f0ca476908a13e",
+      "bytes": 113112,
+      "status": "retrieved",
+      "disposition": "rejected as model evidence: former ZX1 path redirects to generic photography page containing no ZX1 record"
+    },
+    "samsung-cameras": {
+      "url": "https://www.samsung.com/us/support/downloads/",
+      "final_url": "https://www.samsung.com/us/support/downloads/",
+      "retrieved_at": "2026-10-29T16:16:06.931659+00:00",
+      "sha256": "f0b5a6d9e0df2ee565d6557f632ccd688c2608b215a3ef4915108fc96c263e38",
+      "bytes": 179217,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "benq-cameras": {
+      "url": "https://www.benq.com/en-us/support/downloads-faq/products/camera.html",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "vivitar-cameras": {
+      "url": "https://www.vivitar.com/collections/digital-cameras",
+      "status": "unavailable",
+      "error": "HTTP Error 429: Too Many Requests",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "yi-cameras": {
+      "url": "https://www.yitechnology.com/",
+      "final_url": "https://www.yitechnology.com/",
+      "retrieved_at": "2026-10-29T16:16:09.406919+00:00",
+      "sha256": "77c37c213a92c7804aef28fecb97f6c1d3c4180b1c6334509f3f15d5c41280ee",
+      "bytes": 401256,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "kyocera-cameras": {
+      "url": "https://global.kyocera.com/prdct/optical/support/download.html",
+      "final_url": "https://global.kyocera.com/prdct/optical/index.html",
+      "retrieved_at": "2026-10-29T16:16:08.415397+00:00",
+      "sha256": "0c979f038538e74cb1864eadca13bd10ca67e786b8e219052d38d2b540f7f548",
+      "bytes": 8141,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "konica-cameras": {
+      "url": "https://www.konicaminoltasupport.com/",
+      "status": "unavailable",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1035)>",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "hp-cameras": {
+      "url": "https://support.hp.com/us-en",
+      "final_url": "https://support.hp.com/us-en",
+      "retrieved_at": "2026-10-29T16:16:07.427524+00:00",
+      "sha256": "539f9cafcc98817e2eaadc28b9d675556410d0c890af0b1ecad08847ef21c6ae",
+      "bytes": 7087,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "lytro-source": {
+      "url": "https://github.com/kmader/lytro-power-tools",
+      "final_url": "https://github.com/kmader/lytro-power-tools",
+      "retrieved_at": "2026-10-29T16:16:08.336812+00:00",
+      "sha256": "f713dac73869ba56200a29ddb659f6ee99e6a12bc08bc96419651394b5dd2758",
+      "bytes": 218978,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "bolex-source": {
+      "url": "https://www.digitalbolex.com/",
+      "final_url": "https://www.digitalbolex.com/",
+      "retrieved_at": "2026-10-29T16:16:10.128899+00:00",
+      "sha256": "6fbd9458c472fc238f48dfcf6268f203cb2c136cce166598a43d32c8fa504133",
+      "bytes": 2004,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "sanyo-cameras": {
+      "url": "https://panasonic.jp/sanyo-dsc/",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "ge-cameras": {
+      "url": "https://general-imaging.com/",
+      "final_url": "https://general-imaging.com/",
+      "retrieved_at": "2026-10-29T16:16:08.897171+00:00",
+      "sha256": "beb35e9bc7889099d4ce443dc2becd4ec895d000f0702d2c459d409c01cdb1f1",
+      "bytes": 87067,
+      "status": "retrieved",
+      "disposition": "rejected: former domain now unrelated magazine content"
+    },
+    "pentax-products": {
+      "url": "https://www.ricoh-imaging.co.jp/english/products/",
+      "final_url": "https://www.ricoh-imaging.co.jp/english/products/",
+      "retrieved_at": "2026-10-29T16:16:09.258310+00:00",
+      "sha256": "dc08dc5bd00ceac01a563e828acad7a30af6fe4a88ef5f27fcf9f701e49a6704",
+      "bytes": 48207,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "casio-manuals": {
+      "url": "https://support.casio.jp/manuallist.php?cid=001",
+      "status": "unavailable",
+      "error": "HTTP Error 503: Service Temporarily Unavailable",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "epson-models": {
+      "url": "https://www.epson.jp/support/download/ks/13.htm",
+      "final_url": "https://www.epson.jp/support/download/ks/13.htm",
+      "retrieved_at": "2026-10-29T16:17:02.321431+00:00",
+      "sha256": "ad23a0342390cfcc75ab925957db993172123c654efa5715718549a4d799e277",
+      "bytes": 25196,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "pentax-archive": {
+      "url": "https://www.ricoh-imaging.co.jp/english/products/past/",
+      "final_url": "https://www.ricoh-imaging.co.jp/english/products/past/",
+      "retrieved_at": "2026-10-29T16:17:02.123569+00:00",
+      "sha256": "ec7485679d5f31ae8d0d48d78744ad7d9a1860171c9e96623cfc7b09e539fd7c",
+      "bytes": 20386,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "pentax-wg-archive": {
+      "url": "https://www.ricoh-imaging.co.jp/english/products/past/wg/",
+      "final_url": "https://www.ricoh-imaging.co.jp/english/products/past/wg/",
+      "retrieved_at": "2026-10-29T16:17:01.842275+00:00",
+      "sha256": "7477d2d8bf5aa81c03d16fef292320f6b76aad1f9551754a11e935f267a4e665",
+      "bytes": 13882,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "panasonic-manuals": {
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/oi/index.html",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "arri-legacy": {
+      "url": "https://www.arri.com/en/camera-systems/cameras/legacy-cameras",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "hasselblad-x": {
+      "url": "https://www.hasselblad.com/x-system/",
+      "final_url": "https://www.hasselblad.com/x-system/",
+      "retrieved_at": "2026-10-29T16:17:02.113398+00:00",
+      "sha256": "6fcb3f1ae81dd75dd1b6ca0b034927e32d8a67a3cf6d0dc783f1c400eebc6b89",
+      "bytes": 491926,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "hasselblad-v": {
+      "url": "https://www.hasselblad.com/v-system/",
+      "final_url": "https://www.hasselblad.com/v-system/",
+      "retrieved_at": "2026-10-29T16:17:02.147879+00:00",
+      "sha256": "d28210e7a4daf86d36b59b14a85df0813e52dc3dc3c984448a94278e1c51d2af",
+      "bytes": 486855,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "hasselblad-h": {
+      "url": "https://www.hasselblad.com/h-system/",
+      "final_url": "https://www.hasselblad.com/h-system/",
+      "retrieved_at": "2026-10-29T16:17:02.389285+00:00",
+      "sha256": "b9284bd3ad6da2b7ce1e38f8a21533f03069db873a157526f55798286c75548b",
+      "bytes": 490216,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "kodak-friendly": {
+      "url": "https://kodakpixpro.com/cameras/friendly-zoom/",
+      "final_url": "https://kodakpixpro.com/cameras/friendly-zoom/",
+      "retrieved_at": "2026-10-29T16:17:02.354124+00:00",
+      "sha256": "4118f340b4f5de30cbf6b12cf8b30fd30d9e166279e1d51eadc96b7beb7083d9",
+      "bytes": 14889,
+      "status": "retrieved",
+      "disposition": "inspected during discovery; no model rows retained"
+    },
+    "kodak-astro": {
+      "url": "https://kodakpixpro.com/cameras/astro-zoom/",
+      "final_url": "https://kodakpixpro.com/cameras/astro-zoom/",
+      "retrieved_at": "2026-10-29T16:17:02.353858+00:00",
+      "sha256": "95e9581a3c07dd861f4a966bb37add1d0ff67c0a1c4daed1ad80f25addd7f4c6",
+      "bytes": 16398,
+      "status": "retrieved",
+      "disposition": "inspected during discovery; no model rows retained"
+    },
+    "kodak-360": {
+      "url": "https://kodakpixpro.com/cameras/360-vr/",
+      "final_url": "https://kodakpixpro.com/cameras/360-vr/",
+      "retrieved_at": "2026-10-29T16:17:02.429635+00:00",
+      "sha256": "4f286d3c83403c24846ba5e039df327cb00a9c58fe216a48591a9240ed7bd6d4",
+      "bytes": 14534,
+      "status": "retrieved",
+      "disposition": "inspected during discovery; no model rows retained"
+    },
+    "kodak-legacy": {
+      "url": "https://kodakpixpro.com/support/downloads/",
+      "final_url": "https://kodakpixpro.com/support/downloads/",
+      "retrieved_at": "2026-10-29T16:17:02.505790+00:00",
+      "sha256": "75a0c87739dc599a9d009dd16d6f4a9297cd532b9929b7f63f7df485fab65205",
+      "bytes": 81924,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "kinefinity-products": {
+      "url": "https://www.kinefinity.com/en/products",
+      "final_url": "https://kinefinity.com/products",
+      "retrieved_at": "2026-10-29T16:17:02.643661+00:00",
+      "sha256": "6851cf791f38ca97a28fc8b095dc2198532fce98c52e86d1a2ccd32ab2888183",
+      "bytes": 104593,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "akaso-shop": {
+      "url": "https://shopakaso.com/collections/action-camera",
+      "status": "unavailable",
+      "error": "HTTP Error 429: Too Many Requests",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "gopro-manuals": {
+      "url": "https://gopro.com/en/us/update",
+      "status": "unavailable",
+      "error": "HTTP Error 403: HTTP Forbidden",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "phaseone-sdk": {
+      "url": "https://developer.phaseone.com/sdk/index.html",
+      "final_url": "https://developer.phaseone.com/sdk/index.html",
+      "retrieved_at": "2026-10-29T16:17:03.544816+00:00",
+      "sha256": "39fcfce276bb2cb94c6901c3554874fdef1218aa8e7dee6687374e96c267358e",
+      "bytes": 141028,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "om-manuals": {
+      "url": "https://support.jp.omsystem.com/en/support/imsg/digicamera/download/manual/",
+      "final_url": "https://support.jp.omsystem.com/en/support/imsg/digicamera/download/manual/",
+      "retrieved_at": "2026-10-29T16:17:02.595502+00:00",
+      "sha256": "cd725077a735d5442fd59f2ebcf356348382ba7af172ede3f2da13b8666730e3",
+      "bytes": 9352,
+      "status": "retrieved",
+      "disposition": "inspected during discovery; no model rows retained"
+    },
+    "canon-current": {
+      "url": "https://www.usa.canon.com/shop/cameras",
+      "status": "unavailable",
+      "error": "HTTP Error 403: Forbidden",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "yashica-home": {
+      "url": "https://www.yashica.com/",
+      "final_url": "https://www.yashica.com/",
+      "retrieved_at": "2026-10-29T16:17:03.077966+00:00",
+      "sha256": "7cd1451d79bcc1f7db86f9b107ca340bc1ffbcda1bd4ab14f2d8e5499b7450ca",
+      "bytes": 2487386,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "rollei-digital": {
+      "url": "https://www.rollei.de/collections/digitalkameras",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "vivitar-home": {
+      "url": "https://www.vivitar.com/",
+      "status": "unavailable",
+      "error": "HTTP Error 429: Too Many Requests",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "polaroid-home": {
+      "url": "https://www.polaroid.com/",
+      "final_url": "https://www.polaroid.com/en_us",
+      "retrieved_at": "2026-10-29T16:17:03.225659+00:00",
+      "sha256": "f1a822187eb882411cd43bbc6384db4b13aa560edd2deccbbc16fc1ae312c250",
+      "bytes": 847537,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "jvc-pro": {
+      "url": "https://www.jvc.com/usa/professional/camcorders/",
+      "status": "unavailable",
+      "error": "HTTP Error 403: Forbidden",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "jvc-consumer": {
+      "url": "https://www.jvc.com/global/download/camcorder.html",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "sony-uk": {
+      "url": "https://www.sony.co.uk/electronics/support/cameras-camcorders-digital-cameras",
+      "status": "unavailable",
+      "error": "HTTP Error 403: Forbidden",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "ge-archived-models": {
+      "url": "https://github.com/gphoto/libgphoto2/blob/master/camlibs/ptp2/library.c",
+      "final_url": "https://github.com/gphoto/libgphoto2/blob/master/camlibs/ptp2/library.c",
+      "retrieved_at": "2026-10-29T16:17:04.510957+00:00",
+      "sha256": "a54678ad0516c97c175ecabf539c2ea7d73753dd7fdb8efa7fed134058d858a2",
+      "bytes": 1685853,
+      "status": "retrieved",
+      "disposition": "inspected during discovery; no model rows retained"
+    },
+    "libraw-cameras": {
+      "url": "https://www.libraw.org/supported-cameras",
+      "final_url": "https://www.libraw.org/supported-cameras",
+      "retrieved_at": "2026-10-29T16:18:55.317423+00:00",
+      "sha256": "09a412107701fba91d4166b30f347d1517608a8ef7a9b6e7fcc66a81561abdb7",
+      "bytes": 58620,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "phaseone-lifecycle": {
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01373/en-us",
+      "final_url": "https://support.phaseone.com/knowledgebase/article/KA-01373/en-us",
+      "retrieved_at": "2026-10-29T16:18:55.883730+00:00",
+      "sha256": "7e659c4316c5f230bbee9f9531485f1a12152a82d1a49cf8e148e00c014cdf6b",
+      "bytes": 68506,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "phaseone-serials": {
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us",
+      "final_url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us",
+      "retrieved_at": "2026-10-29T16:18:56.149657+00:00",
+      "sha256": "cdc2431a6f2e12bba269ccfcb8530cc9527f688ca982ec01a756c17a82b027af",
+      "bytes": 241947,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "jvc-models": {
+      "url": "https://www.jvc.com/usa/pro/professional-video/",
+      "status": "unavailable",
+      "error": "HTTP Error 403: Forbidden",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "rollei-models": {
+      "url": "https://www.rollei.de/collections/kameras",
+      "status": "unavailable",
+      "error": "HTTP Error 429: Too Many Requests",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "casio-manual-models": {
+      "url": "https://www.casio.com/sg/support/digital-cameras/manual/",
+      "final_url": "https://www.casio.com/sg/support/digital-cameras/manual/",
+      "retrieved_at": "2026-10-29T16:18:57.244524+00:00",
+      "sha256": "739aaa6e478cb3f0a67677562a9a6da188e50b8ba14a0d994e754a21de003842",
+      "bytes": 241933,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "om-pen-manuals": {
+      "url": "https://support.jp.omsystem.com/en/support/imsg/digicamera/download/manual/pen.html",
+      "final_url": "https://support.jp.omsystem.com/en/support/imsg/digicamera/download/manual/pen.html",
+      "retrieved_at": "2026-10-29T16:18:55.238119+00:00",
+      "sha256": "c9eeddc5911d28d5c2160929574b8477ed806c0331a3603fc75e0bd52dc33b9c",
+      "bytes": 53021,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "om-tg-manuals": {
+      "url": "https://support.jp.omsystem.com/en/support/imsg/digicamera/download/manual/tg.html",
+      "final_url": "https://support.jp.omsystem.com/en/support/imsg/digicamera/download/manual/tg.html",
+      "retrieved_at": "2026-10-29T16:18:55.291765+00:00",
+      "sha256": "c34e2efc5f990eaff363727079a0612a18d9d16e3c2bdaee27c5d0b31a300126",
+      "bytes": 12549,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "canon-museum-digital": {
+      "url": "https://global.canon/en/c-museum/product/dcc468.html",
+      "final_url": "https://global.canon/en/c-museum/product/dcc468.html",
+      "retrieved_at": "2026-10-29T16:18:56.055441+00:00",
+      "sha256": "06d731d497079f5e061ef0332bac9d2867c728a9fa1a5fe37b3ae0903014d784",
+      "bytes": 19592,
+      "status": "retrieved",
+      "disposition": "inspected during discovery; no model rows retained"
+    },
+    "arri-legacy-index": {
+      "url": "https://www.arri.com/en/cine-systems/cine-cameras/legacy-cine-cameras",
+      "final_url": "https://www.arri.com/en/cine-systems/cine-cameras/legacy-cine-cameras",
+      "retrieved_at": "2026-10-29T16:18:55.874653+00:00",
+      "sha256": "be3d27d2c2434dac76419f50994fc19e1008643c1889fc470b9e598e4b13b9c9",
+      "bytes": 194443,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "lytro-illum-archive": {
+      "url": "https://optics.miloush.net/lytro/TheResources/Archive/Support/202777394-ILLUM-Camera-Software-Release-Notes.html",
+      "final_url": "https://optics.miloush.net/lytro/TheResources/Archive/Support/202777394-ILLUM-Camera-Software-Release-Notes.html",
+      "retrieved_at": "2026-10-29T16:18:56.685281+00:00",
+      "sha256": "ac553523b18db31798d1a43e7c97fa9a2a879887eee5dd36db21a904d378405b",
+      "bytes": 9210,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "casio-wqv": {
+      "url": "https://raw.githubusercontent.com/partlyhuman/wqv-blink/main/README.md",
+      "final_url": "https://raw.githubusercontent.com/partlyhuman/wqv-blink/main/README.md",
+      "retrieved_at": "2026-10-29T16:18:56.055613+00:00",
+      "sha256": "e115b06cdf2e288e0eb81b75cef361cfbd2f636186dab66b39b41999a6914bc4",
+      "bytes": 3708,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "rollei-protocol-search": {
+      "url": "https://api.github.com/search/repositories?q=rollei+camera+protocol",
+      "final_url": "https://api.github.com/search/repositories?q=rollei+camera+protocol",
+      "retrieved_at": "2026-10-29T16:18:56.321437+00:00",
+      "sha256": "4af480b8ee5b87b369a76c49bd22c9a783908272ebffbe97898f8ab0f0772a5f",
+      "bytes": 55,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "canon-chdk": {
+      "url": "https://build.chdk.photos/",
+      "final_url": "https://build.chdk.photos/",
+      "retrieved_at": "2026-10-29T16:18:56.386710+00:00",
+      "sha256": "c22db4f2b33c269070a36a900911190691598df646c0b4af801cd33b391eec98",
+      "bytes": 6617,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "canon-ml-platforms": {
+      "url": "https://api.github.com/repos/reticulatedpines/magiclantern_simplified/git/trees/dev?recursive=1",
+      "final_url": "https://api.github.com/repos/reticulatedpines/magiclantern_simplified/git/trees/dev?recursive=1",
+      "retrieved_at": "2026-10-29T16:18:56.837410+00:00",
+      "sha256": "c87e8c352b5d1c47c56056fbcf9cc36367f8feef5d0d7354b8d3b1c3e50d15ab",
+      "bytes": 665349,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "sony-pmca-devices": {
+      "url": "https://raw.githubusercontent.com/ma1co/Sony-PMCA-RE/master/README.md",
+      "final_url": "https://raw.githubusercontent.com/ma1co/Sony-PMCA-RE/master/README.md",
+      "retrieved_at": "2026-10-29T16:18:56.580804+00:00",
+      "sha256": "779f36d8cf20c878ff8245d2d69fab1fcf0f77c2c5a58f00dddbb99c44379fa3",
+      "bytes": 5548,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "gopro-labs": {
+      "url": "https://raw.githubusercontent.com/gopro/labs/master/README.md",
+      "final_url": "https://raw.githubusercontent.com/gopro/labs/master/README.md",
+      "retrieved_at": "2026-10-29T16:18:56.581523+00:00",
+      "sha256": "0de9b67d03801fe3cabd9716f5d4c41a99cdc286a2509657af9a1f25d168381f",
+      "bytes": 14851,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "nikon-hacker": {
+      "url": "https://raw.githubusercontent.com/simeonpilgrim/nikon-firmware-tools/master/README.md",
+      "final_url": "https://raw.githubusercontent.com/simeonpilgrim/nikon-firmware-tools/master/README.md",
+      "retrieved_at": "2026-10-29T16:18:56.793845+00:00",
+      "sha256": "7895c9aa5fd1f5ccb26d97f9892363a3c0ef1762cf7268fd85ddbe3e40e491ba",
+      "bytes": 436,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "samsung-nx": {
+      "url": "https://raw.githubusercontent.com/ge0rg/samsung-nx-hacks/master/README.md",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "kinefinity-firmware": {
+      "url": "https://kinefinity.com/firmware",
+      "final_url": "https://kinefinity.com/firmware",
+      "retrieved_at": "2026-10-29T16:22:44.826730+00:00",
+      "sha256": "a779cd7c6a21d02d849530d43c0db63ccfc66d50895ccc6b1dea3cd805efb38e",
+      "bytes": 215346,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "phaseone-iiq": {
+      "url": "https://raw.githubusercontent.com/Alexey-Danilchenko/PhaseOne-IIQ-Tools/master/README.md",
+      "final_url": "https://raw.githubusercontent.com/Alexey-Danilchenko/PhaseOne-IIQ-Tools/master/README.md",
+      "retrieved_at": "2026-10-29T16:22:44.247663+00:00",
+      "sha256": "7a90992e22264537b41ca86334b86fe146b306d24b8d749e527541a60d8c6135",
+      "bytes": 1188,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "libraw-z2": {
+      "url": "https://raw.githubusercontent.com/LibRaw/LibRaw/master/src/metadata/identify.cpp",
+      "final_url": "https://raw.githubusercontent.com/LibRaw/LibRaw/master/src/metadata/identify.cpp",
+      "retrieved_at": "2026-10-29T16:22:44.329760+00:00",
+      "sha256": "b567a246aefb53249c5af413c61c259249cb3b4e13adbf1b41469a5434f151d9",
+      "bytes": 111075,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "jvc-api": {
+      "url": "https://www.jvc.com/ca/pro/professional-video/documents/manuals/jvccamcorderapireference-v120-public/",
+      "status": "unavailable",
+      "error": "HTTP Error 403: Forbidden",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "jvc-sg": {
+      "url": "https://www.jvc.com/sg/pro/professional-camcorders/",
+      "final_url": "https://www.jvc.com/sg/pro/professional-camcorders/",
+      "retrieved_at": "2026-10-29T16:22:44.646574+00:00",
+      "sha256": "cb4667e253191d87958fb65fe0b90bb3c1a9632a4d7cb532e4d8eb793f3d7aa7",
+      "bytes": 40448,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "nikon-archive": {
+      "url": "https://downloadcenter.nikonimglib.com/en/archive.html",
+      "final_url": "https://downloadcenter.nikonimglib.com/en/archive.html",
+      "retrieved_at": "2026-10-29T16:22:45.288275+00:00",
+      "sha256": "11de2817c634ac38b8eb12d226a2ea6a2e71a7e1cb99b6626ad57368d2ce8494",
+      "bytes": 4359,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "om-legacy-manuals": {
+      "url": "https://support.jp.omsystem.com/en/support/imsg/digicamera/download/manual/compact.html",
+      "status": "unavailable",
+      "error": "HTTP Error 404: Not Found",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    },
+    "casio-protocol": {
+      "url": "https://www.mgroeber.de/wqvprot.html",
+      "final_url": "https://www.mgroeber.de/wqvprot.html",
+      "retrieved_at": "2026-10-29T16:22:45.168598+00:00",
+      "sha256": "f09f2a71483dbaef5b4966bf44e815716f4b5f86ee6f0b3877291612294f546c",
+      "bytes": 21748,
+      "status": "retrieved",
+      "disposition": "retained audit source or documented source limitation"
+    },
+    "canon-chdk-js": {
+      "url": "https://build.chdk.photos/builds.js",
+      "status": "unavailable",
+      "error": "HTTP Error 403: Forbidden",
+      "disposition": "unavailable: no content claim made from this retrieval"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "manufacturers": 43,
+  "model_ledger_pages": 93,
+  "source_rows": 3656,
+  "family_identities": {
+    "fujifilm": 53,
+    "ricoh": 23
+  },
+  "local_links_checked": 422,
+  "largest_reference_characters": 14343,
+  "private_capture_hashes_checked": 75,
+  "camera_behavior": "not_assessed",
+  "errors": []
+}

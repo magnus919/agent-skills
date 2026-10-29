@@ -1,0 +1,14 @@
+{
+  "manufacturer": "xiaomi-yi",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "Xiaoyi YIAC3 (YI 4k)",
+      "source_brand_label": "Xiaoyi YIAC3 (YI 4k)"
+    },
+    {
+      "name": "Yi M1",
+      "source_brand_label": "Yi M1"
+    }
+  ]
+}

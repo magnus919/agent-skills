@@ -1,0 +1,71 @@
+{
+  "manufacturer": "casio",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Casio EX-S770",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Casio EX-Z120",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Casio EX-Z65",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Casio EX-Z700",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Casio EX-ZR700",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Casio LV 10",
+      "additional_abilities": "",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Casio QV10",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Casio QV100",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Casio QV10A",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Casio QV300",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Casio QV70",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Casio QV700",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Casio QV770",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    }
+  ]
+}

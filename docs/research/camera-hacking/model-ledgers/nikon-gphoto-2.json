@@ -1,0 +1,506 @@
+{
+  "manufacturer": "nikon",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Nikon Coolpix S225 (PTP mode)",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S2500 (PTP mode)",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S2600 (PTP mode)",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S2700",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S2900",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S3000 (PTP mode)",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S3100 (PTP mode)",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S3200",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S3300 (PTP mode)",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S3500",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S3600",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S3700",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S4 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S4300 (PTP mode)",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S500 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S5100 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S6 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S60 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S6000 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S620 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S6300 (PTP mode)",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S6800",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S7c (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S8000 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S8200",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S9100 (PTP mode)",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S9500 (PTP mode)",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix S9700",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Coolpix SQ (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Nikon D100 (Sierra Mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon D2H SLR (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Nikon D2Hs (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon D2X SLR (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon D3 (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon D50 (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D100 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D200 (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D2Xs (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D300 (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D3000 (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D300s (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D3100 (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D3200",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D3300",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D3400",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D3500",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D3s (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D3x (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D4",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D40 (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D40x (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D4s",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D5",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D500",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D5000 (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D5100 (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D5200",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D5300",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D5500",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D5600",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D6",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D60 (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D600",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D610",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D70 (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D700 (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D7000 (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D70s (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D7100",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D7200",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D750",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D7500",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D780",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D80 (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D800",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D800E",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D810",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D810A",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D850",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC D90 (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSC Df",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon DSLR (WLAN)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Nikon J1",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon J2",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon J3",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon J4",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon J5",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon KeyMission 170",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon KeyMission 360 (PTP mode)",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon P950",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon S1",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon S2",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon V1",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon V2",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon V3",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Z30",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Z5",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Z50",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Z50_2",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Z6",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    }
+  ]
+}

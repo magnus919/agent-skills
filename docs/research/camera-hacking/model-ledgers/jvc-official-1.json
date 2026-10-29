@@ -1,0 +1,36 @@
+{
+  "manufacturer": "jvc",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "GY-HC900RCHE",
+      "category": "Singapore professional camcorder category; accessories excluded",
+      "source": "jvc-sg",
+      "url": "https://www.jvc.com/sg/pro/professional-camcorders/"
+    },
+    {
+      "name": "GY-HC500E",
+      "category": "Singapore professional camcorder category; accessories excluded",
+      "source": "jvc-sg",
+      "url": "https://www.jvc.com/sg/pro/professional-camcorders/"
+    },
+    {
+      "name": "GY-HM250E",
+      "category": "Singapore professional camcorder category; accessories excluded",
+      "source": "jvc-sg",
+      "url": "https://www.jvc.com/sg/pro/professional-camcorders/"
+    },
+    {
+      "name": "GY-HM180E",
+      "category": "Singapore professional camcorder category; accessories excluded",
+      "source": "jvc-sg",
+      "url": "https://www.jvc.com/sg/pro/professional-camcorders/"
+    },
+    {
+      "name": "GY-HM170E",
+      "category": "Singapore professional camcorder category; accessories excluded",
+      "source": "jvc-sg",
+      "url": "https://www.jvc.com/sg/pro/professional-camcorders/"
+    }
+  ]
+}

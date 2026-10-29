@@ -1,0 +1,138 @@
+{
+  "manufacturer": "sigma",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "BF",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/bf/"
+    },
+    {
+      "name": "fp L",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/fpl/"
+    },
+    {
+      "name": "fp",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/fp/"
+    },
+    {
+      "name": "sd Quattro",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/sd-quattro/"
+    },
+    {
+      "name": "sd Quattro H",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/sd_quattro_h/"
+    },
+    {
+      "name": "SD1 Merrill",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/sd1-merrill/"
+    },
+    {
+      "name": "SD1",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/sd1/"
+    },
+    {
+      "name": "SD15",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/sd15/"
+    },
+    {
+      "name": "SD14",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/sd14/"
+    },
+    {
+      "name": "SD9",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/sd9/"
+    },
+    {
+      "name": "dp0 Quattro",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/dp0-quattro/"
+    },
+    {
+      "name": "dp1 Quattro",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/dp1-quattro/"
+    },
+    {
+      "name": "dp2 Quattro",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/dp2-quattro/"
+    },
+    {
+      "name": "dp3 Quattro",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/dp3-quattro/"
+    },
+    {
+      "name": "DP3 Merrill",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/dp3-merrill/"
+    },
+    {
+      "name": "DP2 Merrill",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/dp2-merrill/"
+    },
+    {
+      "name": "DP1 Merrill",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/dp1-merrill/"
+    },
+    {
+      "name": "DP2x",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/dp2x/"
+    },
+    {
+      "name": "DP2s",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/dp2s/"
+    },
+    {
+      "name": "DP2",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/dp2/"
+    },
+    {
+      "name": "DP1x",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/dp1x/"
+    },
+    {
+      "name": "DP1",
+      "category": "camera firmware row",
+      "source": "sigma-firmware",
+      "url": "https://www.sigma-global.com/en/support/firmware/dp1/"
+    }
+  ]
+}

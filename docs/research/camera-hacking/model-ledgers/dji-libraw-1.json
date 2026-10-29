@@ -1,0 +1,78 @@
+{
+  "manufacturer": "dji",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "4384x3288",
+      "source_brand_label": "DJI"
+    },
+    {
+      "name": "Inspire 3",
+      "source_brand_label": "DJI"
+    },
+    {
+      "name": "Mavic Air",
+      "source_brand_label": "DJI"
+    },
+    {
+      "name": "Mavic Air 2",
+      "source_brand_label": "DJI"
+    },
+    {
+      "name": "Mavic Air 2S",
+      "source_brand_label": "DJI"
+    },
+    {
+      "name": "Mavic Air 3",
+      "source_brand_label": "DJI"
+    },
+    {
+      "name": "Mavic Mini 2",
+      "source_brand_label": "DJI"
+    },
+    {
+      "name": "Mavic Mini 3",
+      "source_brand_label": "DJI"
+    },
+    {
+      "name": "Mavic Mini 3 Pro",
+      "source_brand_label": "DJI"
+    },
+    {
+      "name": "Mavic 2 Pro",
+      "source_brand_label": "DJI"
+    },
+    {
+      "name": "Mavic 3",
+      "source_brand_label": "DJI"
+    },
+    {
+      "name": "Mavic 3 Classic",
+      "source_brand_label": "DJI"
+    },
+    {
+      "name": "Mavic 3 Pro",
+      "source_brand_label": "DJI"
+    },
+    {
+      "name": "Osmo Action",
+      "source_brand_label": "DJI"
+    },
+    {
+      "name": "Pocket",
+      "source_brand_label": "DJI"
+    },
+    {
+      "name": "Phantom4 Pro/Pro+",
+      "source_brand_label": "DJI"
+    },
+    {
+      "name": "Zenmuse X5",
+      "source_brand_label": "DJI"
+    },
+    {
+      "name": "Zenmuse X5R",
+      "source_brand_label": "DJI"
+    }
+  ]
+}

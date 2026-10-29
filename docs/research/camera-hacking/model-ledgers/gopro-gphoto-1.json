@@ -1,0 +1,91 @@
+{
+  "manufacturer": "gopro",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "GoPro HERO",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "GoPro HERO +",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "GoPro HERO 3+",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "GoPro HERO 4",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "GoPro HERO10 Black",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "GoPro HERO11 Black",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "GoPro HERO11 Black mini",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "GoPro HERO4 Silver",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "GoPro HERO5 Black",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "GoPro HERO5 Session",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "GoPro HERO6 Black",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "GoPro HERO7 Black",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "GoPro HERO7 Silver",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "GoPro HERO7 White",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "GoPro HERO8 Black",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "GoPro HERO9 Black",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "GoPro Max",
+      "additional_abilities": "",
+      "comments": ""
+    }
+  ]
+}

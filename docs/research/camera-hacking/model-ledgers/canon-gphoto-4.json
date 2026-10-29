@@ -1,0 +1,316 @@
+{
+  "manufacturer": "canon",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Canon PowerShot S95",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD10 Digital ELPH (normal mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD100 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD1000 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD110 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Powershot SD1100 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Powershot SD1200 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD1300 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD20 (normal mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD200 (normal mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD40 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD430 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD450 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD500 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD600 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD630 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD700 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD750 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD770 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD780 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Powershot SD790 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD850 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD880 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD900 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD940 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD970 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SD990",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX10 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Powershot SX100 IS (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX110 IS",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX120 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX130 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX150 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX160IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX170 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX20 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX200 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX210 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX220HS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX230HS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX240HS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX260HS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX280HS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX40HS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX500IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX510 HS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX520 HS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX530 HS",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX540 HS",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX600 HS",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX60HS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX70 HS",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot SX740 HS",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot unknown 1",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot unknown 2",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Rebel T2i",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Rebel T3",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Rebel T3i",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Rebel T4i",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon SX 620HS",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon SX 720HS",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon ZR70MC (normal mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    }
+  ]
+}

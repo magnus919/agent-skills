@@ -1,0 +1,141 @@
+{
+  "manufacturer": "pentax",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Pentax K01",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Pentax K1",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Pentax K1 (PTP Mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Pentax K100D",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Pentax K100DS",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Pentax K10D",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Pentax K1II",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Pentax K200D",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Pentax K20D",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Pentax K3",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Pentax K3 (PTP Mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Pentax K3 II (PTP Mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Pentax K30",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Pentax K3II",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Pentax K3III",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Pentax K50D",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Pentax K5D",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Pentax K5II",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Pentax K5IIs",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Pentax K70",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Pentax K70 (PTP Mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Pentax KP",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Pentax KP (PTP Mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Pentax Optio 33WR",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Pentax Optio 43WR",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Pentax Optio 450",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Pentax Optio W90",
+      "additional_abilities": "",
+      "comments": ""
+    }
+  ]
+}
