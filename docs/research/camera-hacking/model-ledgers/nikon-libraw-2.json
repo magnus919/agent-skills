@@ -1,0 +1,46 @@
+{
+  "manufacturer": "nikon",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "Coolpix P340",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix P950",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix P6000",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix P1000",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix P7000",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix P7100",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix P7700",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix P7800",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix S6 (\"DIAG RAW\" hack)",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolscan NEF",
+      "source_brand_label": "Nikon"
+    }
+  ]
+}

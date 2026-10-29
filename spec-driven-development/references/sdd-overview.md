@@ -47,7 +47,7 @@ The feedback loop routes failures to their correct root cause. A spec defect sho
 
 ## Key Principles
 
-1. **Precision over clarity.** The AI cannot ask for clarification. A precise-but-dense spec is better than a readable-but-ambiguous one.
+1. **Make consequential intent explicit.** Keep specs readable and testable. Route unresolved consequential choices to an owner before dependent implementation.
 
 2. **Completeness over brevity.** Every missing acceptance criterion is a missing feature. The cost of specifying an edge case up front is minutes; discovering it in production is hours or days.
 
@@ -57,12 +57,12 @@ The feedback loop routes failures to their correct root cause. A spec defect sho
 
 5. **Spec is the single source of truth.** Every downstream artifact — task plan, architecture, implementation, tests — derives from and traces back to the spec. Deviations are defects unless explicitly documented.
 
-6. **Spec IS the test (when possible).** Acceptance criteria expressed in Gherkin (Given/When/Then) serve double duty as test cases. No separate test writing required.
+6. **Specs guide test oracles.** Gherkin acceptance criteria can become executable cases; coverage and oracle review are still required. Withheld scenarios supplement visible developer tests.
 
 ## When to Use SDD
 
 SDD excels when:
-- AI agents are generating the code and cannot ask clarifying questions
+- AI agents need durable requirements and a defined route for clarifying unresolved decisions
 - The system has defined interfaces, contracts, or behavioral boundaries
 - Multiple AI agents work in parallel and need consistent guidance
 - Quality requirements justify spec investment (not throwaway prototypes)

@@ -1,0 +1,14 @@
+{
+  "checked": "2026-10-29",
+  "fujifilm_x_identities": 53,
+  "ricoh_gr_identities": 23,
+  "unique_identity_and_reference_checks": "pass",
+  "source_trees_complete": true,
+  "capture_hashes_checked": 30,
+  "all_local_links_resolve": true,
+  "reference_character_cap": 60000,
+  "largest_reference_characters": 7709,
+  "limitations": "Documentation/roster checks only. No upstream builds, camera operations, photographic tests or recovery experiments.",
+  "errors": [],
+  "scope": "Historical receipt for the expanded Fujifilm X / Ricoh GR family audit, before the broader manufacturer inventory was added. See manufacturer-audit-validation.json for current package checks."
+}

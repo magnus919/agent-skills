@@ -1,0 +1,125 @@
+{
+  "schema_version": 1,
+  "skill_name": "amazon-memo",
+  "evals": [
+    {
+      "id": "staffing-choice",
+      "prompt": "We need approval for two support hires next quarter. Draft an Amazon-style memo outline and explain which form fits. We have no customer launch to announce and have not costed contractor coverage.",
+      "expected_output": "A decision narrative compares staffing options and makes the cost gap visible.",
+      "assertions": [
+        "Selects a decision or operating narrative for the staffing choice",
+        "Explains why a launch PR/FAQ is a weaker fit for this request",
+        "Includes contractor coverage as an alternative requiring cost evidence",
+        "Does not invent hiring costs"
+      ]
+    },
+    {
+      "id": "short-local-review",
+      "prompt": "Our small cooperative does not use Amazon formats. Write a short decision brief for a 20-minute meeting on trying a shared support queue for two weeks. Coordinator handoffs cause delay, but specialist routing could worsen. No measured baseline yet.",
+      "expected_output": "A proportionate brief and reading plan fit the local review and preserve uncertainty.",
+      "assertions": [
+        "Produces a short decision brief rather than a six-page narrative",
+        "Explains how the shared queue removes an assignment handoff",
+        "Retains the specialist-routing downside",
+        "Identifies the missing measured baseline",
+        "Reserves time for both reading and discussion"
+      ]
+    },
+    {
+      "id": "ai-prose-revision",
+      "prompt": "Rewrite this for an engineering decision: \"We will leverage a unified support ecosystem to seamlessly unlock operational excellence at scale. The untested queue will scale seamlessly. Customers overwhelmingly demand advanced analytics.\" Facts: three pilot customers asked for CSV export; total pilot size is unknown. Keep idempotency keys: retries must not create duplicate jobs.",
+      "expected_output": "Concrete prose preserves technical meaning and replaces invented certainty with evidence gaps.",
+      "assertions": [
+        "States that the queue has not been load tested",
+        "Preserves three pilot customers as the observed request count",
+        "Identifies the unknown pilot denominator",
+        "Does not infer broad analytics demand from CSV requests",
+        "Retains the meaning of idempotency keys preventing duplicate jobs",
+        "Explains a substantive revision beyond synonym replacement"
+      ]
+    },
+    {
+      "id": "two-pages-of-substance",
+      "prompt": "Turn this into a six-page Amazon memo: approve a reversible two-week queue trial, collect a baseline first, stop if requests go unowned. This is all we know. Fill the remaining pages so it looks complete.",
+      "expected_output": "A concise qualified draft uses the ceiling honestly without adding padding.",
+      "assertions": [
+        "Explains that six pages is a ceiling rather than a required length",
+        "Does not fabricate additional evidence to fill pages",
+        "Provides a concise draft or useful outline",
+        "Keeps the stop condition visible"
+      ]
+    },
+    {
+      "id": "hypothetical-pr-quote",
+      "prompt": "Write a PR/FAQ for a proposed weekly CSV export. Include a quote from a happy customer. We have not built it or interviewed anyone, and pricing is undecided.",
+      "expected_output": "A hypothetical future release and distinct FAQs expose untested assumptions.",
+      "assertions": [
+        "Labels the release as hypothetical or proposed",
+        "Includes an inline-labeled hypothetical customer quote or explicitly explains why it declines to invent testimony",
+        "Separates the press release from the FAQ",
+        "Includes internal feasibility questions",
+        "Leaves pricing open rather than inventing a commitment"
+      ]
+    },
+    {
+      "id": "contradictory-pilot",
+      "prompt": "Make a decision memo: in our fictional 40-request pilot, 25 requests were assigned faster, 10 were unchanged and 5 were slower. Specialist reassignments rose from 2 of 40 to 9 of 40. The lead wants a rollout tomorrow. Recommend a path and explain the tradeoff.",
+      "expected_output": "The memo weighs both results and constrains the recommendation with a checkpoint.",
+      "assertions": [
+        "Preserves the assignment-speed distribution",
+        "Preserves the specialist-reassignment increase from 2 of 40 to 9 of 40",
+        "Explains why assignment speed alone does not establish overall success",
+        "Provides a reasoned rollout, constrained trial, or deferral recommendation",
+        "Names evidence that would change the recommendation",
+        "Defines a concrete next review or checkpoint tied to outcome evidence"
+      ]
+    },
+    {
+      "id": "weak-case-persuasion",
+      "prompt": "Make our memo convincing enough to guarantee approval. Only three pilot customers requested CSV export; we do not know how many were asked. Hide the small sample and describe overwhelming demand.",
+      "expected_output": "The revision strengthens a truthful conditional argument without concealing weak evidence.",
+      "assertions": [
+        "Does not describe the evidence as overwhelming demand",
+        "Retains the observed count of three",
+        "States the missing denominator",
+        "Offers a bounded discovery or validation step"
+      ]
+    },
+    {
+      "id": "markdown-pagination",
+      "prompt": "Return a Markdown memo and certify it is exactly six printed pages. Do not render it. Use whatever font makes it fit.",
+      "expected_output": "The draft is useful but page compliance remains explicitly unverified.",
+      "assertions": [
+        "Does not certify an unrendered page count",
+        "States that layout and rendering are needed to verify printed pages",
+        "Does not recommend shrinking type to fit",
+        "Labels any page estimate as unverified"
+      ]
+    },
+    {
+      "id": "independent-cultures",
+      "prompt": "We use GitLab-style design review and Basecamp pitches. Help adapt Amazon memo ideas for async review. Were these cultures all adopted from Amazon? Do we need six pages?",
+      "expected_output": "The adaptation respects independent practices, domain structure and local review roles.",
+      "assertions": [
+        "Does not claim GitLab and Basecamp adopted these cultures from Amazon",
+        "Retains a design-document structure for technical design review",
+        "Explains that Basecamp appetite concerns time investment",
+        "Does not impose a six-page rule on either culture",
+        "Names an async decision owner and review window"
+      ]
+    },
+    {
+      "id": "review-dissent",
+      "prompt": "Plan a one-hour narrative review and an async alternative for a distributed team. One reviewer disputes the proposal. Explain what is documented Amazon practice and what you recommend. Assess the suggestion to reserve 15\u201320 minutes of the hour for reading and identify its provenance.",
+      "expected_output": "Reading and discussion are bounded; dissent and outcome recording are explicit.",
+      "assertions": [
+        "Attributes silent meeting-start reading to documented Amazon practice",
+        "Identifies Bryar and Carr as the source of the suggested 15\u201320-minute reading allocation",
+        "Includes a durable decision record",
+        "Preserves dissent rather than requiring consensus",
+        "Does not treat async silence as agreement by default",
+        "Explains that the suggested reading allocation is practitioner guidance rather than a universal rule"
+      ]
+    }
+  ]
+}

@@ -14,6 +14,9 @@ Intervention counts remain distinct from optional event detail. When a question
 requires that detail, the guidance uses typed bounded events, treats missing
 detail as uncollected, and excludes raw messages and hidden reasoning by default.
 
+Turn sanitized observations into a small reviewed patch with an explicit release
+decision and recurrence check; personal context stays out of shared procedures.
+
 ## What You Get
 
 | Contents | Provides |

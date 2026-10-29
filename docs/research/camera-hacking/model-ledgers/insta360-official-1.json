@@ -1,0 +1,180 @@
+{
+  "manufacturer": "insta360",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "Luna Ultra",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "Luna Pro",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "X6",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "X5",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "X4 Air",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "X4",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "X3",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "ONE X2",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "Ace Pro 2",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "Ace Pro",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "Ace",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "GO Ultra",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "GO 3S",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "GO 3",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "Link 2 Pro",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "Link 2C Pro",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "Link 2",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "Link 2C",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "Link",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "Connect",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "Pro 2",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "Pro",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "Titan",
+      "category": "product navigation/footer; Link/Connect webcam tracks separate",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/download"
+    },
+    {
+      "name": "insta360-lunapro",
+      "category": "download catalog",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/support/supportdetail?name=luna_pro"
+    },
+    {
+      "name": "insta360-x6",
+      "category": "download catalog",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/support/supportdetail?name=x6"
+    },
+    {
+      "name": "insta360-lunaultra",
+      "category": "download catalog",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/support/supportdetail?name=luna_ultra&cid=2666"
+    },
+    {
+      "name": "insta360-link2pro",
+      "category": "download catalog",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/support/supportdetail?name=link2pro&project_id=68&cid=2426"
+    },
+    {
+      "name": "insta360-link2cpro",
+      "category": "download catalog",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/support/supportdetail?name=link2cpro&project_id=69&cid=2425"
+    },
+    {
+      "name": "insta360-x5",
+      "category": "download catalog",
+      "source": "insta360-downloads",
+      "url": "https://www.insta360.com/support/supportdetail?name=x5&project_id=56&cid=1812"
+    }
+  ]
+}

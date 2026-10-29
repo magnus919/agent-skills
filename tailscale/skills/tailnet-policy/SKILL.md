@@ -10,6 +10,16 @@ metadata:
 
 # tailnet-policy
 
+## Security preflight
+
+Before enabling SSH, Serve, connector access or changing access policy, read the
+bundle's [security triage](../../references/security-triage.md). Also load it for
+Tailworm or suspected compromise. Preserve tested recovery access before disabling
+embedded SSH; check mode is not a forwarding fix. Treat reported findings as
+version-specific until current advisories establish applicability.
+
+Confirm the target, scope, and rollback path before acting. Read-only discovery may proceed without confirmation.
+
 ## Overview
 
 Headscale uses Tailscale-compatible policy files written in **huJSON** (Human JSON — standard JSON with trailing commas and `//` comments). Policy files control:

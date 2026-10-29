@@ -1,0 +1,18 @@
+{
+  "manufacturer": "epson",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "R-D1",
+      "source_brand_label": "Epson"
+    },
+    {
+      "name": "R-D1s",
+      "source_brand_label": "Epson"
+    },
+    {
+      "name": "R-D1x",
+      "source_brand_label": "Epson"
+    }
+  ]
+}

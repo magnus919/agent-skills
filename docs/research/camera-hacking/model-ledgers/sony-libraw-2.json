@@ -1,0 +1,66 @@
+{
+  "manufacturer": "sony",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "IMX214",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "IMX219",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "IMX230",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "IMX298-mipi 16mp",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "IMX219-mipi 8mp",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "Xperia 5 II (XQ-AS52)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "Xperia L",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "Xperia 1 III",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "Xperia 1 IV (XQ-CT54)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ZV-1 (DCZV1/B)",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ZV-1M2",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ZV-E1",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ZV-E10",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ZV-E10 II",
+      "source_brand_label": "Sony"
+    },
+    {
+      "name": "ILME-FX2 (FX2)",
+      "source_brand_label": "Sony"
+    }
+  ]
+}

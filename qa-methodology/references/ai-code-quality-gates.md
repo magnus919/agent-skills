@@ -2,22 +2,22 @@
 
 ## Independent Verification Principle
 
-**NORMATIVE: The implementing agent MUST NOT self-verify its own output.**
+**Separate development testing from independent acceptance certification.** Implementers should test and debug their own changes; their self-report alone cannot certify acceptance.
 
 This is the structural foundation of quality in agentic workflows. Evidence: IBM Research (Ahmed et al., 2025, arXiv:2511.16858) measured LLM-based automated program repair on SWE-bench Verified and found test overfitting rates of **21.8% (Claude-3.7-Sonnet) to 35.9% (GPT-4o)** — patches that pass white-box tests but fail held-out black-box tests. Critically, test-based refinement *increases* overfitting (21.8% → 25.5% for Claude; 33.0% → 35.9% for GPT-4o), because exposing tests to the generating model creates a feedback loop that games the oracle rather than fixing the code.
 
 ### Independence in Agentic Workflows
 
-In an agentic workflow, independence requires a **separate agent session** — a different instance with no shared context, conversation history, or memory with the implementing agent.
+For acceptance review, use a separate evaluator context without the maker's persuasive narrative or private assumptions. Supply the accepted contract, candidate and direct evidence. Session separation is one control; it does not guarantee uncorrelated errors or a correct oracle.
 
 > **WARNING — Same-session self-review is NOT independent.** An agent that implements code in one turn and reviews it in the next turn of the SAME session shares priors, blind spots, and confirmation bias within that context window. The reviewing turn has already "seen" the implementation rationale and will anchor on it. This is the agentic equivalent of a developer approving their own PR.
 
 | Verification Model | Independence? | Why |
 |-------------------|--------------|-----|
 | Same agent, same session, next turn | NO | Shared context, shared priors, confirmation bias |
-| Same agent, fresh session, no memory | YES | No shared state; fresh evaluation against spec |
-| Different agent model, fresh session | YES (strongest) | Different training distribution catches different failure modes |
-| Human reviewer | YES | Different cognitive frame entirely |
+| Same model, fresh session, no memory | Context separation only | Can retain systematic model errors; verify against independent observations |
+| Different model, fresh session | Context/model separation | May reduce shared errors; diversity does not guarantee correctness |
+| Human reviewer | Separate reviewer | Can still share assumptions; inspect the oracle and evidence |
 
 ## QA-Owned Artifacts per Gate
 
@@ -62,7 +62,7 @@ For provenance, specification-first oracle review, AI-review comment triage, wor
 
 When an agent generates both code AND tests in the same session, both artifacts share the same misunderstanding of the spec. The test passes because it encodes the same bug, not because the code is correct. This is the test-overfitting problem (IBM, 21.8–35.9%) manifesting at the test-authoring level.
 
-**Mitigation:** Tests must be written from the SPEC, not from the implementation. The test author (agent or human) must not see the implementation source before writing assertions.
+**Mitigation:** Derive independent acceptance oracles from the specification before inspecting the implementation. Developers may still write implementation-aware unit tests and use TDD. For withheld case inputs, runtime access isolation and repair-feedback accounting, use [holdout scenarios](holdout-scenarios.md).
 
 ### Quality Techniques for Agent-Generated Tests
 
@@ -156,7 +156,7 @@ For full security testing methodology, see [secure-software-engineering](../../s
 | 4 | QA agent tests negative: reuse expired link (should 403) | Negative test output |
 | 5 | Verdict: AC-7 PASS (3/3 verifications green) | Evidence attached to gate record |
 
-**Anti-pattern avoided:** Had the implementing agent run its own tests, it would have tested only the happy path it coded — missing the expiry boundary entirely (mirrored-bug risk).
+**Anti-pattern avoided:** A self-authored suite could mirror an implementation mistake and omit expiry behavior. This is a risk to challenge, not a claim that implementers always omit boundaries.
 
 ## Decision Table: Which Verification Approach?
 

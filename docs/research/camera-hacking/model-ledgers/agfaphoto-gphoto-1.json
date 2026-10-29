@@ -1,0 +1,41 @@
+{
+  "manufacturer": "agfaphoto",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Agfa ePhoto 1280",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Agfa ePhoto 1680",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Agfa ePhoto 307",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Agfa ePhoto 780",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Agfa ePhoto 780C",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Agfa ePhoto CL18",
+      "additional_abilities": "Image Capture",
+      "comments": ""
+    },
+    {
+      "name": "Agfa ePhoto CL20",
+      "additional_abilities": "",
+      "comments": "Experimental"
+    }
+  ]
+}

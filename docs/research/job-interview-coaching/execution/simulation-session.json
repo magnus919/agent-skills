@@ -1,0 +1,34 @@
+[
+  {
+    "role": "user",
+    "content": "I'm applying for an independent analyst role. Run a three-question simulation about analytical judgment, checking work, and communication. Save all coaching feedback until after the three answers. I have time for only three questions, so please do not add a fourth. Start."
+  },
+  {
+    "role": "assistant",
+    "content": "We'll do exactly three questions, one at a time, with all feedback after your third answer. I'll assume a general business analyst role at independent contributor level.\n\nQuestion 1 of 3 \u2014 analytical judgment: A team's sales increased after a new promotion, and the manager says the promotion caused the increase. How would you assess that claim before recommending whether to repeat the promotion?"
+  },
+  {
+    "role": "user",
+    "content": "I would check the time period, whether seasonality, price changes or another promotion could explain the rise, and whether we have a comparison or better design. From a simple before-after change I could describe what happened but could not claim a causal effect. I would ask what decision we need to make before recommending a repeat."
+  },
+  {
+    "role": "assistant",
+    "content": "Question 2 of 3 \u2014 checking work: You are about to send a weekly performance report when you notice its total is 15% higher than the source system shows. The stakeholder needs the report in an hour. What would you do?"
+  },
+  {
+    "role": "user",
+    "content": "I would compare the filters, date window, duplicates and aggregation against the source, check whether the report or source has late updates, and reproduce the discrepancy. I would tell the stakeholder the total is not verified and agree a useful interim update if needed. I would not silently send the known discrepancy to meet the deadline. Before sending a corrected version I would reconcile it and note what changed."
+  },
+  {
+    "role": "assistant",
+    "content": "Question 3 of 3 \u2014 communication: Your analysis suggests customer cancellations are concentrated among newer customers, but you have not established why. A nontechnical director asks, \u201cWhat should we do about cancellations?\u201d How would you respond?"
+  },
+  {
+    "role": "user",
+    "content": "I would explain that the concentration among newer customers is observed but the cause is not established. I would quantify the pattern from verified data, ask what decision and time horizon the director needs, and propose checking onboarding, product usage and feedback as hypotheses. If they want immediate action I would suggest a bounded test of an appropriate intervention rather than promise that fixing onboarding will solve it. Please give the debrief now and stop."
+  },
+  {
+    "role": "assistant",
+    "content": "The three-question simulation is complete.\n\nAcross your answers, you demonstrated careful judgment, a concrete checking process, and restraint about unsupported conclusions. These were unassisted responses in this simulation; they show how you reason through hypothetical situations, not evidence of past delivery.\n\n- **Analytical judgment:** \u201cFrom a simple before-after change \u2026 could not claim a causal effect\u201d correctly separated observation from causation. You identified plausible competing explanations and connected the analysis to a decision. To strengthen the answer, prioritize which comparison you would pursue first and explain what finding would change your recommendation.\n- **Checking work:** \u201cCompare the filters, date window, duplicates and aggregation\u201d gave specific investigative steps. You also addressed the deadline without hiding uncertainty, then required reconciliation before sending a correction. A useful refinement is to state how you would sequence those checks within the hour and when you would send the interim update.\n- **Communication:** You separated the observed concentration from its unknown cause and proposed a bounded test instead of promising a fix. Your response described what you would communicate rather than delivering the director-facing message itself. Practise opening with a short statement such as: \u201cThe pattern points us toward newer customers, but we do not yet know the cause. I recommend a focused investigation followed by a small test before committing to a broad change.\u201d Add verified figures only when available. Also clarify whether \u201cconcentrated\u201d refers to cancellation counts or cancellation rates relative to the number of customers in each group.\n\nThe highest-value next practice is making the first sentence decision-ready, then prioritizing one next check instead of listing several equally. No retry or transfer task was completed here, so improvement has not yet been observed. Stopping now as requested."
+  }
+]

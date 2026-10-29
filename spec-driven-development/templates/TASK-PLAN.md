@@ -53,6 +53,9 @@ Copy this structure for each task.
 - **Type:** feature / refactor / test / docs / config
 - **Spec reference:** `SPEC.md` — US-001, AC-001.1, AC-001.2
 - **Dependencies:** <none or T-XXX>
+- **Assumptions:** <A-IDs from SPEC.md; provisional boundary or accepted decision evidence>
+- **Review findings:** <stable F-IDs this task receives; receiving owner and acceptance checks>
+- **Invalidation:** <which assumption/contract/candidate changes stale this task and its evidence>
 - **Estimated size:** Small (<1h) / Medium (1-2h) / Large (2-4h)
 - **Preconditions:** <what must exist before this task starts>
 

@@ -1,0 +1,60 @@
+{
+  "manufacturer": "arri",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "ALEXA 265",
+      "category": "vendor listing",
+      "source": "arri-cameras",
+      "url": "https://www.arri.com/en/cine-systems/cine-cameras"
+    },
+    {
+      "name": "ALEXA 35 Xtreme",
+      "category": "vendor listing",
+      "source": "arri-cameras",
+      "url": "https://www.arri.com/en/cine-systems/cine-cameras"
+    },
+    {
+      "name": "ALEXA Mini LF",
+      "category": "vendor listing",
+      "source": "arri-cameras",
+      "url": "https://www.arri.com/en/cine-systems/cine-cameras"
+    },
+    {
+      "name": "ALEXA LF",
+      "category": "vendor listing",
+      "source": "arri-cameras",
+      "url": "https://www.arri.com/en/cine-systems/cine-cameras"
+    },
+    {
+      "name": "AMIRA",
+      "category": "vendor listing",
+      "source": "arri-cameras",
+      "url": "https://www.arri.com/en/cine-systems/cine-cameras"
+    },
+    {
+      "name": "ALEXA 35 Live",
+      "category": "vendor listing",
+      "source": "arri-cameras",
+      "url": "https://www.arri.com/en/cine-systems/cine-cameras"
+    },
+    {
+      "name": "ALEXA 35",
+      "category": "legacy camera index",
+      "source": "arri-legacy-index",
+      "url": "https://www.arri.com/en/cine-systems/cine-cameras/legacy-cine-cameras"
+    },
+    {
+      "name": "ALEXA Mini",
+      "category": "legacy camera index",
+      "source": "arri-legacy-index",
+      "url": "https://www.arri.com/en/cine-systems/cine-cameras/legacy-cine-cameras"
+    },
+    {
+      "name": "ALEXA SXT W",
+      "category": "legacy camera index",
+      "source": "arri-legacy-index",
+      "url": "https://www.arri.com/en/cine-systems/cine-cameras/legacy-cine-cameras"
+    }
+  ]
+}

@@ -43,6 +43,7 @@ that stop safely and report `blocked` when a human decision is genuinely require
 | [`templates/SPEC.md`](templates/SPEC.md) | Versioned machine contract for bounded/initiative work |
 | [`templates/INTENT.md`](templates/INTENT.md) | Lightweight five-field contract for bounded work |
 | [`templates/STORY.md`](templates/STORY.md) | One bounded, dispatchable work unit |
+| [`templates/RELEASE-ACCEPTANCE.md`](templates/RELEASE-ACCEPTANCE.md) | Integrated release review, checkpoint ownership and staged feedback |
 | [`templates/REVIEW.md`](templates/REVIEW.md) | Final human checkpoint review |
 | [`scripts/check-spec.py`](scripts/check-spec.py) | Deterministic spec validation: five fields + status vocabulary (stdlib only) |
 | [`evals/evals.json`](evals/evals.json) | Output-quality evaluation cases |
@@ -75,6 +76,7 @@ Load this skill when:
 - Delegating a build to an agent: boundary, acceptance, and stop conditions
 - Work must be resumable across sessions or agents (durable artifacts, status)
 - A review is producing noise instead of triage
+- A staged release needs an intent check and clear routing for defects versus new scope
 - An autonomous run needs to know when to stop and escalate (`blocked`)
 - A multi-agent epic needs shared architecture and story decomposition
 - You are standing up a dark-factory-style delivery system and need the control plane
@@ -91,3 +93,8 @@ Method adapted from BMad / BMAD-METHOD™ (trademarks of BMad Code, LLC; officia
 repository: bmadcode/bmad-method), distilled from official documentation and an
 independent research synthesis into an original harness-agnostic operating protocol.
 This skill is not the official BMad tooling and does not include its installer.
+
+Review handoffs keep stable finding IDs, orchestrator dispositions, receiving
+owners, dependencies, and closure evidence. A deferred ticket is not a repaired
+finding; declined and duplicate suggestions need clear rationale rather than
+unnecessary tickets.

@@ -817,6 +817,17 @@
         "Avoids putting secrets or copied sensitive evidence in the manifest."
       ],
       "case_set": "release"
+    },
+    {
+      "id": "subject-learning-route",
+      "prompt": "Coach me through learning SQL joins with examples and practice. I want to predict join results, not discuss motivation.",
+      "expected_output": "Routes the individual subject-learning request to teach-me without imposing life coaching.",
+      "assertions": [
+        "Identifies teach-me as the appropriate subject-learning capability",
+        "Does not turn the request into a life-priorities or motivation exercise",
+        "Does not route individual tutoring to group-program design"
+      ],
+      "case_set": "regression"
     }
   ]
 }

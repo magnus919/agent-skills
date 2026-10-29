@@ -12,6 +12,7 @@ When your agent loads this skill, it becomes a **software factory designer** who
 - **Encode NFRs** — performance, security, observability requirements in machine-readable format
 - **Translate between formats** — PRD → SPEC.md → Gherkin → OpenAPI
 - **Handle gate recovery** — revision workflows when specs fail review
+- **Review integrated releases** — check real behavior and maintainability separately without duplicating your existing planning documents
 
 ## What You Get
 
@@ -22,9 +23,9 @@ Business-policy recipe, release template, and a read-only fictional loan evaluat
 | Directory | Purpose |
 |-----------|---------|
 | `SKILL.md` | Pipeline overview, loading guide, methodology quick-pick |
-| `references/` | 9 reference files: overview, pipeline, quality gates, phase gates, methodology matrix, NFR encoding, format translation, critiques, example spec |
-| `templates/` | 4 spec templates |
-| `scripts/` | 2 validation scripts |
+| `references/` | Pipeline, quality gates, review records, assumptions, methodology selection, NFRs, and worked examples |
+| `templates/` | Specifications, task plans, reviews, verification, business-policy records, and separate behavior/engineering verdicts |
+| `scripts/` | Spec/task validators and a synthetic business-policy evaluator |
 
 ## Triggers
 
@@ -38,3 +39,8 @@ Tool-agnostic — works with Claude Code, Cursor, Hermes Agent, Devin, OpenHands
 ## Quick Start
 
 Start with the setup and first workflow in SKILL.md, then use the linked resources for the specific task you need to complete.
+
+Review records bind approval to a candidate and acceptance contract. The SPEC
+assumptions ledger gives provisional choices owners and safe decision deadlines;
+finding handoffs retain ownership and verified closure. See
+`references/review-records.md` for worked regression challenges.

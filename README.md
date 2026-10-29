@@ -43,6 +43,10 @@ Design and operate an organization's AI governance system: governance principles
 
 Decide whether an AI-enabled workflow should be adopted, scaled, constrained, redesigned, or retired by connecting workflow outcomes, worker or user effects, quality guardrails, full operating cost, telemetry, uncertainty, and accountable governance. Routes detailed financial, statistical, analytics, evaluation, runtime, governance, and launch work to the owning specialist skills.
 
+### [amazon-memo](amazon-memo/SKILL.md)
+
+Choose, draft, and revise Amazon-style narrative decision memos, PR/FAQs, and shorter briefs. Includes evidence-led reasoning, practical human-readability revision, reading meetings, and adaptations that respect independent written cultures.
+
 ### [analog-occultism](analog-occultism/SKILL.md)
 
 Create subject-neutral images and videos in an analog occultism / industrial CRT noir aesthetic: near-monochrome archival technical atmosphere, severe low-key lighting, tactile signal degradation, industrial geometry, and quiet unresolved tension. Not for colorful cyberpunk, glossy advertising, conventional horror, or clean digital renders.
@@ -86,6 +90,10 @@ Create comprehensive brand identity documentation for any brand. Guides you thro
 ### [c4-diagramming](c4-diagramming/SKILL.md)
 
 Make system boundaries, responsibilities, and relationships legible at the architectural level appropriate to the reader.
+
+### [camera-hacking](camera-hacking/SKILL.md)
+
+Investigate, reverse-engineer, develop and validate digital-camera extensions and interoperability. Includes source-bound references across 43 manufacturer families, detailed Fujifilm X and Ricoh GR maps, experiment/recovery guidance and assessment templates. Distinguishes offline evidence from verified camera behavior.
 
 ### [capacity-and-cost-engineering](capacity-and-cost-engineering/SKILL.md)
 
@@ -291,6 +299,10 @@ Turn an approved requirement or specification into an executable, dependency-awa
 
 Convert operational incident and near-miss evidence into verified, owned improvements across product, code, tests, evals, operations, and governance. Separates observed facts from causal hypotheses and unresolved uncertainty; maps escaped-from gaps (requirements, monitoring, authority, migration, adoption); assigns domain-specific follow-up work with owners and verification methods; and requires evidence of the implemented change — not just tickets — for closure. Routes implementation to SRE, QA, verification, agent evals, product lifecycle learning, implementation planning, resilience-and-recovery, and production-readiness. Ships 4 references (discovery brief, evidence/inference taxonomy, escaped-from analysis, follow-up domains, verification and closure), 4 templates (incident-learning record, causal/evidence ledger, follow-up work map, verification and closure record), and 5 evals.
 
+### [infographic](infographic/SKILL.md)
+
+Create source-grounded visual explanations for any audience. Separates information structure from fourteen distinct visual treatments, with capability-aware rendering, exact data/text checks, accessibility, and final polish. Includes adaptable briefs, composition prompts, and behavioral evals.
+
 ### [jellyfin](jellyfin/SKILL.md)
 
 Jellyfin media server from the terminal. Log in as a user or use an API key, check server info, browse recently added and library contents, search and inspect media, walk series/seasons/episodes, see next-up episodes, and view statistics — with MediaBrowser auth, user-id scoping, and response-shape quirks documented.
@@ -298,6 +310,10 @@ Jellyfin media server from the terminal. Log in as a user or use an API key, che
 ### [jira](jira/SKILL.md)
 
 Atlassian Jira from the terminal. Search issues with JQL, view details, create issues, add comments, count matches, list projects, and transition status. Includes a full JQL reference (functions, history predicates, date expressions) plus REST auth/pagination guidance. API token from id.atlassian.com.
+
+### [job-interview-coaching](job-interview-coaching/SKILL.md)
+
+Prepare for job interviews, review transcripts, practise with interactive mock interviews, and design fair, evidence-based interviews as a hiring practitioner. Adapts to occupation, responsibility level, and assessment format.
 
 ### [kanban-guru](kanban-guru/SKILL.md)
 
@@ -342,6 +358,10 @@ Operate llama.cpp from hardware-aware installation and GGUF selection through ve
 ### [llamaindex](llamaindex/SKILL.md)
 
 An expert-level skill for building LLM applications over your data with LlamaIndex. RAG pipelines, multi-agent orchestration, event-driven workflows, knowledge graph construction, and production deployment.
+
+### [meetings](meetings/SKILL.md)
+
+Plan purposeful meetings, relationship-sensitive one-on-ones and invitees; establish decision processes, facilitate discussion, review recurring meetings and follow agreed work. Offers accessibility options to everyone, retains stated preferences through authorized private memory, and preserves decisions, dissent and proportionate organizer follow-up. Distinguishes proposals from commitments and preserves normal authorization for invitations, notes and task writes.
 
 ### [mermaid-diagrams](mermaid-diagrams/SKILL.md)
 
@@ -569,6 +589,10 @@ Design and review software architectures from business drivers through system bo
 
 Reverse-engineer a software codebase to understand its architecture, data flow, privacy posture, feature surface, coupling, quality characteristics, data ownership, and workflow recovery — then produce an evidence-grounded clean-room design document, PRD, or migration plan under new constraints. Includes interface extraction, decomposition-readiness, and architecture health assessment guidance.
 
+### [solarpunk](solarpunk/SKILL.md)
+
+Explore and practice solarpunk across visual art, fiction, everyday living, adaptive reuse, ecological design, community infrastructure, and hopeful collective futures. Includes globally adaptable guidance, annotated research, public examples, and creative and practical templates.
+
 ### [spec-driven-development](spec-driven-development/SKILL.md)
 
 Design and run a Spec-Driven Development (SDD) pipeline for AI software factories — where structured specifications are the input, AI agents generate the code, and quality gates enforce correctness at each pipeline phase. Covers the 5-phase pipeline (SPECIFY → DECOMPOSE → IMPLEMENT → VERIFY → DELIVER), 4 phase gates with APPROVED/CONDITIONS/REJECTED verdicts, 7 spec quality gates, a methodology selection matrix (BDD, OpenAPI, AsyncAPI, DbC, TLA+, ADRs, C4), NFR encoding patterns, format translation (PRD → SPEC.md → Gherkin → OpenAPI), gate recovery and revision workflows, and a worked example SPEC.md. Ships 4 templates, 9 reference files, and 2 validation scripts. Tool-agnostic — works with Claude Code, Cursor, Hermes Agent, Devin, OpenHands, and droid. Not for single small changes, the intent-to-delivery control-plane protocol (see bmad), or unvalidated problems (product-discovery).
@@ -604,6 +628,10 @@ Operate versioned tabular foundation-model checkpoints, labeled context, calibra
 ### [tailscale](tailscale/SKILL.md)
 
 Self-hosted Tailscale/Headscale VPN ecosystem. Seven sub-skills covering Headscale server deployment, ACL/tailnet policy authoring, Tailscale client configuration, node lifecycle (auth keys, registration, tagging, decommissioning), subnet routing and exit nodes, DERP relay infrastructure, and backup/migration. Ships 23 scripts with `--json` and `--dry-run` support, 8 reference documents, and 6 templates.
+
+### [teach-me](teach-me/SKILL.md)
+
+Learn through researched explanations, brief diagnostic tasks, adaptive practice, and corrective feedback. Separates assisted success from independent application, transfer, and delayed retention, and invites a break when the agreed goal is demonstrated.
 
 ### [technical-documentation](technical-documentation/SKILL.md)
 
@@ -698,7 +726,7 @@ Operate self-hosted Woodpecker CI from installation through production troublesh
 
 ### [workflow-architect](workflow-architect/SKILL.md)
 
-Discover your actual workflow through conversation or passive observation, then generate a tailored skills bundle that encodes it as loadable agent skills with trigger conditions. Dual mode: active interrogation (guided 8-15 question interview) or passive observation (analyzes session context from what you actually did). Output includes sub-skills per workflow phase, a manifest with trigger conditions, a Mermaid decision map, and optionally a kanban board if the workflow is linear. Ships 3 sub-skills, 3 reference documents, 4 templates, and a worked example output bundle.
+Discover your actual workflow through conversation or passive observation, then generate a tailored skills bundle that encodes it as loadable agent skills with trigger conditions. Dual mode: active interrogation (guided 8-15 question interview) or passive observation (analyzes session context from what you actually did). Output includes sub-skills per workflow phase, a manifest with trigger conditions, a Mermaid decision map, and optionally a kanban board if the workflow is linear. Keeps its guided interview inside the parent as a reference, with two sub-skills for observation and bundle generation, supporting references, templates, and worked examples.
 
 ### [writers-helper](writers-helper/SKILL.md)
 

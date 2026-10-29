@@ -1,0 +1,245 @@
+{
+  "captures": [
+    {
+      "filename": "fuji-firmware.html",
+      "source_url": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/",
+      "accessed": "2026-10-29",
+      "bytes": 247072,
+      "sha256": "79d8855df00b98d5ec6ad2acc5d10a02e3fbd4b381d7f7286fb0abe3f4540ff8",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "ricoh-downloads.html",
+      "source_url": "https://www.ricoh-imaging.co.jp/english/support/download_digital.html",
+      "accessed": "2026-10-29",
+      "bytes": 33118,
+      "sha256": "3d6c6ced29d03b1482dd697ad7ebaebd08d897aca880a760d10be3d2e0169927",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "ricoh-history.html",
+      "source_url": "https://www.ricoh-imaging.co.jp/english/brand/gr/index.html",
+      "accessed": "2026-10-29",
+      "bytes": 57724,
+      "sha256": "f3cec93755753458f487914c3d4ddcb4390127f44be9f1637dede83ce2a4edeb",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "ricoh-legacy.html",
+      "source_url": "https://www.ricoh-imaging.co.jp/english/r_dc/download/index.html",
+      "accessed": "2026-10-29",
+      "bytes": 34648,
+      "sha256": "7d5d4d6b80cb09adcbab8bc61dac59556c9ff1db9429a42c7b2ff24a47bc9cf1",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "gr-directory.html",
+      "source_url": "https://ricohrumors.com/ricoh-gr-custom-firmware",
+      "accessed": "2026-10-29",
+      "bytes": 69849,
+      "sha256": "d34b57337f9a531312595cfe5b1510df3c688f3dce734d67db5fce81f4867e50",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "fujimod-readme.md",
+      "source_url": "https://raw.githubusercontent.com/justjake/fujimod/main/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 5816,
+      "sha256": "84e7a7d72f6ae65c3a13db192777e8db4a9347ee509c628350fd729b219dfd29",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "fujimod-tree.json",
+      "source_url": "https://api.github.com/repos/justjake/fujimod/git/trees/main?recursive=1",
+      "accessed": "2026-10-29",
+      "bytes": 732934,
+      "sha256": "e2da602123881bb0ed7a209820c4f911f48e6bdf7569e541da8bd9e86210e791",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "fujimod-catalog.md",
+      "source_url": "https://raw.githubusercontent.com/justjake/fujimod/main/catalog/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 4992,
+      "sha256": "54ca4c829166383553a12be34ed2fec509370a44d7c1a7c2814728c0bef7a6c3",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "fujimod-cameras.json",
+      "source_url": "https://raw.githubusercontent.com/justjake/fujimod/main/apps/web/data/cameras.json",
+      "accessed": "2026-10-29",
+      "bytes": 19205,
+      "sha256": "75f1c8a8b1621dc9bc9267f554979341665e2a7607376f067156466024d7ea9d",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "fujimod-web.md",
+      "source_url": "https://raw.githubusercontent.com/justjake/fujimod/main/apps/web/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 22033,
+      "sha256": "4f003dafe037eef3b8c29d84e0ebe57298a63e00f3ef6d515ce57c0e6798c891",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "fujimod-x100vi.json",
+      "source_url": "https://raw.githubusercontent.com/justjake/fujimod/main/catalog/bodies/x100vi/body.json",
+      "accessed": "2026-10-29",
+      "bytes": 7200,
+      "sha256": "09eab8827e109c67ae68ad396ee35558b11c4cb708f2cc00828d0dbbd8d323f8",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "fujimod-xa2.json",
+      "source_url": "https://raw.githubusercontent.com/justjake/fujimod/main/catalog/bodies/xa2/body.json",
+      "accessed": "2026-10-29",
+      "bytes": 16920,
+      "sha256": "a4d0c708db9bf44079f47f63b00c0d39264bdc8885db9a6cfed59c4605a45ae4",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "fujicli-tree.json",
+      "source_url": "https://api.github.com/repos/karaolidis/fujicli/git/trees/main?recursive=1",
+      "accessed": "2026-10-29",
+      "bytes": 35988,
+      "sha256": "eeb095e54797c6de2d53981bcd99ac3c748fcbd006833fe3966b799f6223bdd0",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "fujicli-readme.md",
+      "source_url": "https://raw.githubusercontent.com/karaolidis/fujicli/6366cff82449d19dab9e6234c3dc6ec5922e6ccb/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 2805,
+      "sha256": "1c4dcb280a7323a9744a5d93d780ceee305401146037d4129bea79d6d2583ea0",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "fujicli-cameras.cue",
+      "source_url": "https://raw.githubusercontent.com/karaolidis/fujicli/6366cff82449d19dab9e6234c3dc6ec5922e6ccb/fml/camera.cue",
+      "accessed": "2026-10-29",
+      "bytes": 11171,
+      "sha256": "c97a922e642bce5c8d93000ba1f7440c93ba5d64896b10322089e7d6a6be66fc",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "furble.md",
+      "source_url": "https://raw.githubusercontent.com/gkoh/furble/master/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 12006,
+      "sha256": "bb13f7a8f1bcc9694c0d8a9b218779d95e52246eb86ba5b071a21c6a8430eb83",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "fuji-recipes.md",
+      "source_url": "https://raw.githubusercontent.com/ILFforever/fujifilm-ptp-recipes/main/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 4965,
+      "sha256": "98a8db3107b963471ffec05e9253f357ba38ec240ed3bb7706cba06d21dfd8ba",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "fuji-recipes-omarchy.md",
+      "source_url": "https://raw.githubusercontent.com/ctl0v0/omarchy-fujifilm-recipes/main/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 19666,
+      "sha256": "d8bd9436c10fb62e0b70e0950a7079239e0a037a2b1a48244d7b342bebf2f60c",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "filmcase.md",
+      "source_url": "https://raw.githubusercontent.com/gosku/Filmcase/main/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 9712,
+      "sha256": "0859f5d20681e479868acfaf4212c194ef95d2ad3d6bf6e14857ad9a338816a9",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "grkit.md",
+      "source_url": "https://raw.githubusercontent.com/ahonn/grkit/main/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 6032,
+      "sha256": "da537aefd00c776f6eb929b6ed94c4680f09648c7f25c8084b53fd5a5d2e8d51",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "gr2-boot.md",
+      "source_url": "https://raw.githubusercontent.com/lc2425150/ricoh-gr2-boot-screen-mod/main/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 5841,
+      "sha256": "eeab4e086a2d82ce0325858be7f10f948ad56ec0ab8dd44a37d06f415428d582",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "frame-gr2.md",
+      "source_url": "https://raw.githubusercontent.com/Lyle-xub/FRAME-GR2/main/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 7264,
+      "sha256": "3a61f7831f6d27edac184c406f1e78e0d4ff03a5710af4a5d5d7867529cf69f9",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "m10v.md",
+      "source_url": "https://raw.githubusercontent.com/zhaoo/m10v/main/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 11486,
+      "sha256": "32f49abf3cf04fb7c31acec767abef31f2676413b1d29505f07ffceeafbfb114",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "gr3x-play.md",
+      "source_url": "https://raw.githubusercontent.com/tinyblckc0000al/gr3x-fw-play/main/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 16835,
+      "sha256": "5f1e73c86aff3c704d52fc6b5e42e23ea19570dd54776c16514247dc3531ebc5",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "gr3-lutsmith.md",
+      "source_url": "https://raw.githubusercontent.com/lemonadesaltbagel/GR3-LUTSmith/main/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 25051,
+      "sha256": "fd379b31f4035e300bee2dff2ed52b1f18656d88549b22256318e04cdf6e223c",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "grmod.md",
+      "source_url": "https://raw.githubusercontent.com/Maxwooow/Ricoh-GRMod/main/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 43372,
+      "sha256": "cb12ec382e5bbdb70142490c765500148a445129d3b965e9e4246fb267230571",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "grdlc.md",
+      "source_url": "https://raw.githubusercontent.com/Mrjie7205/GR-DLC/main/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 7919,
+      "sha256": "8b7d391172999bb00b74fa8554750084238ef0f54140e81e375121cb55177737",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "gr3-look.md",
+      "source_url": "https://raw.githubusercontent.com/judgem00/gr3-look-editor/main/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 10617,
+      "sha256": "d0967bc3bad476be454f8da766630be8db27d303520ad2003b4d7e6c049f25b7",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "ricoh-ble.md",
+      "source_url": "https://raw.githubusercontent.com/dm-zharov/ricoh-gr-bluetooth-api/main/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 3898,
+      "sha256": "be69fec0b2dae765005f624bca6acab7a5b28467d72f6d818869f53dd170e407",
+      "distribution": "separate research artifact, not vendored public skill content"
+    },
+    {
+      "filename": "ricoh-wireless.md",
+      "source_url": "https://raw.githubusercontent.com/CursedHardware/ricoh-wireless-protocol/main/README.md",
+      "accessed": "2026-10-29",
+      "bytes": 1597,
+      "sha256": "1b8e05ea0596c80ebead1ab122b47f6f62ad7b64aa59826bf484ed7abdb4e0ad",
+      "distribution": "separate research artifact, not vendored public skill content"
+    }
+  ],
+  "note": "Source branches and indexed pages can drift. Digests identify the exact separately preserved bytes; project reports were not independently reproduced."
+}

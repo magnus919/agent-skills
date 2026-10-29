@@ -1,0 +1,358 @@
+{
+  "manufacturer": "fujifilm",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "DBP for GX680 / DX-2000",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "E550",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "E900",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "F500EXR / F505EXR",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "F550EXR",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "F600EXR / F605EXR",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "F700",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "F710",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "F770EXR / F775EXR",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "F800EXR",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "F810",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "F900EXR",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "S2Pro",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "S3Pro",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "S5Pro",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "S20Pro",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "S1",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "S100FS",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "S5000",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "S5100 / S5500",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "S5200 / S5600",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "S6000fd / S6500fd",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "S7000",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "S9000 / S9500",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "S9100 / S9600",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "S200EXR / S205EXR",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "SL1000",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "HS10/HS11",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "HS20EXR / HS22EXR",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "HS30EXR / HS33EXR / HS35EXR",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "HS50EXR",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "GFX 50S",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "GFX 50S II",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "GFX 50R",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "GFX 100",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "GFX 100 II",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "GFX 100S",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "GFX 100S II",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-Pro1",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-Pro2",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-Pro3",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-S1",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-S20",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "XQ1",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "XQ2",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X100",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X100F",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X100S",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X100T",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X100V",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X100VI",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X10",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X20",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X30",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X70",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-A1",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-A2",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-A3",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-A5",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-A7",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-A10",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-A20",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-E1",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-E2",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-E2S",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-E3",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-E4",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-M1",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "XF1",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "XF10",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-H1",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-H2",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-H2S",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-T1",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-S10",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-T1 Graphite Silver",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-T2",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-T3",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-T4",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-T5",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-T10",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-T20",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-T30",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-T30 II",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-T50",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-T100",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "X-T200",
+      "source_brand_label": "FujiFilm"
+    },
+    {
+      "name": "IS-1",
+      "source_brand_label": "FujiFilm"
+    }
+  ]
+}

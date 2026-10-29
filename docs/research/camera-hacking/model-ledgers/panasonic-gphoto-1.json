@@ -1,0 +1,116 @@
+{
+  "manufacturer": "panasonic",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Panasonic Coolshot KXL-600A",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic Coolshot KXL-601A",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic Coolshot NV-DCF5E",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic DC-GH5",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic DC1000",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic DC1580",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic DMC-FS62",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic DMC-FZ20",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic DMC-FZ38",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic DMC-FZ45",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic DMC-FZ50",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic DMC-GF1",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic DMC-GX8",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic DMC-LS2",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic DMC-LS3",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic DMC-LX7",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic DMC-TZ15",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic DMC-TZ18",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic DMC-TZ8",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic LumixGSeries",
+      "additional_abilities": "Configuration, Other Ops 2",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Panasonic PV-L691",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Panasonic PV-L859",
+      "additional_abilities": "",
+      "comments": ""
+    }
+  ]
+}

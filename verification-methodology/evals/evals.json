@@ -56,6 +56,20 @@
         "Does not replace a Trakt authentication failure with results from another catalog.",
         "Reports Trakt evidence or the exact Trakt failure as the basis for the verdict."
       ]
+    },
+    {
+      "id": "changed-candidate-contract-environment-hold",
+      "prompt": "A PASS packet names commit c111 but omits dirty-file content identity. Its checks used contract billing-v1 and runtime env-1. The deliverable still has commit c111, but dirty artifact bytes changed, the acceptance contract is now billing-v2, and runtime env-2 changes the relevant dependency. The old packet lists test commands without retained execution outputs. Produce the current verdict and an evidence plan.",
+      "expected_output": "Holds delivery because equal commit SHA does not bind dirty content and the contract/environment changed; records current content/contract/environment/check/results/evidence identities, distinguishes unrun checks from executed evidence, and requires a new current verdict after affected checks.",
+      "assertions": [
+        "Does not treat equal commit SHA with changed dirty content as the same verified candidate",
+        "Binds the current verdict to candidate content and acceptance contract identity",
+        "Assesses changed relevant environment/dependency scope before reusing old evidence",
+        "Marks missing current execution evidence HOLD rather than PASS",
+        "Distinguishes proposed command names from retained execution results",
+        "Requires affected checks and a current verdict before delivery while preserving superseded history",
+        "Permits reuse of unaffected evidence only with an explicit scope/impact justification"
+      ]
     }
   ]
 }

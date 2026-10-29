@@ -115,7 +115,7 @@ For each bounded change:
 8. Perform a review focused on correctness, scope, security, regressions, and
    maintainability.
 9. Repair findings that belong to this change.
-10. Defer unrelated findings to explicit follow-up work.
+10. Hand unrelated findings to the orchestrator with stable IDs and proposed disposition; link accepted follow-up work and verified closure rather than treating ticket creation as resolution.
 11. Report what changed, what was verified, what remains uncertain, and what decision
     is needed next.
 

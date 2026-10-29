@@ -1,0 +1,606 @@
+{
+  "manufacturer": "canon",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "EOS R50 V",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr915.html"
+    },
+    {
+      "name": "PowerShot V1",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc914.html"
+    },
+    {
+      "name": "EOS R1",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr913.html"
+    },
+    {
+      "name": "EOS C80",
+      "category": "cesc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/cesc912.html"
+    },
+    {
+      "name": "EOS C400",
+      "category": "cesc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/cesc911.html"
+    },
+    {
+      "name": "EOS R5 Mark II",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr910.html"
+    },
+    {
+      "name": "PowerShot V10",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc909.html"
+    },
+    {
+      "name": "EOS R100",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr908.html"
+    },
+    {
+      "name": "EOS R8",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr907.html"
+    },
+    {
+      "name": "EOS R50",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr906.html"
+    },
+    {
+      "name": "EOS R6 Mark II",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr905.html"
+    },
+    {
+      "name": "XA70/XA75",
+      "category": "dhc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dhc904.html"
+    },
+    {
+      "name": "XA60/XA65",
+      "category": "dhc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dhc903.html"
+    },
+    {
+      "name": "EOS R10",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr902.html"
+    },
+    {
+      "name": "EOS R7",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr901.html"
+    },
+    {
+      "name": "EOS R5 C",
+      "category": "cesc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/cesc900.html"
+    },
+    {
+      "name": "EOS R3",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr899.html"
+    },
+    {
+      "name": "XF605",
+      "category": "dhc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dhc898.html"
+    },
+    {
+      "name": "EOS M50 Mark II",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr897.html"
+    },
+    {
+      "name": "EOS C70",
+      "category": "cesc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/cesc896.html"
+    },
+    {
+      "name": "EOS R6",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr895.html"
+    },
+    {
+      "name": "EOS R5",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr894.html"
+    },
+    {
+      "name": "EOS C300 Mark III",
+      "category": "cesc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/cesc893.html"
+    },
+    {
+      "name": "EOS Rebel T8i",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr892.html"
+    },
+    {
+      "name": "EOS-1D X Mark III",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr891.html"
+    },
+    {
+      "name": "EOS Ra",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr890.html"
+    },
+    {
+      "name": "EOS C500 Mark II",
+      "category": "cesc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/cesc889.html"
+    },
+    {
+      "name": "EOS M200",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr888.html"
+    },
+    {
+      "name": "EOS 90D",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr887.html"
+    },
+    {
+      "name": "EOS M6 Mark II",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr886.html"
+    },
+    {
+      "name": "PowerShot G5 X Mark II",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc885.html"
+    },
+    {
+      "name": "PowerShot G7 X Mark III",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc884.html"
+    },
+    {
+      "name": "XA50 / XA55",
+      "category": "dhc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dhc881.html"
+    },
+    {
+      "name": "EOS REBEL SL3",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr883.html"
+    },
+    {
+      "name": "XA40 / XA45",
+      "category": "dhc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dhc882.html"
+    },
+    {
+      "name": "EOS RP",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr880.html"
+    },
+    {
+      "name": "PowerShot SX70 HS",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc879.html"
+    },
+    {
+      "name": "XF705",
+      "category": "dhc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dhc878.html"
+    },
+    {
+      "name": "EOS R",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr877.html"
+    },
+    {
+      "name": "PowerShot SX740 HS",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc876.html"
+    },
+    {
+      "name": "EOS C700 FF / EOS C700 FF PL",
+      "category": "cesc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/cesc875.html"
+    },
+    {
+      "name": "EOS M50",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr874.html"
+    },
+    {
+      "name": "EOS Rebel T7",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr873.html"
+    },
+    {
+      "name": "PowerShot G1 X Mark III",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc872.html"
+    },
+    {
+      "name": "VIXIA GX10",
+      "category": "dhc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dhc871.html"
+    },
+    {
+      "name": "XF405 / XF400",
+      "category": "dhc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dhc870.html"
+    },
+    {
+      "name": "EOS M100",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr867.html"
+    },
+    {
+      "name": "VIXIA HF G21",
+      "category": "dhc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dhc869.html"
+    },
+    {
+      "name": "XA15 / XA11",
+      "category": "dhc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dhc868.html"
+    },
+    {
+      "name": "EOS 6D Mark II",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr866.html"
+    },
+    {
+      "name": "EOS Rebel SL2",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr865.html"
+    },
+    {
+      "name": "EOS C200 / EOS C200B",
+      "category": "cesc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/cesc864.html"
+    },
+    {
+      "name": "PowerShot SX730 HS",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc863.html"
+    },
+    {
+      "name": "EOS Rebel T7i",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr853.html"
+    },
+    {
+      "name": "EOS 77D",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr852.html"
+    },
+    {
+      "name": "EOS M6",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr855.html"
+    },
+    {
+      "name": "VIXIA HF R82/R80/R800",
+      "category": "dhc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dhc861.html"
+    },
+    {
+      "name": "PowerShot ELPH 185",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc859.html"
+    },
+    {
+      "name": "PowerShot ELPH 200 IS",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc858.html"
+    },
+    {
+      "name": "PowerShot SX430 IS",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc857.html"
+    },
+    {
+      "name": "PowerShot G9 X Mark II",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc856.html"
+    },
+    {
+      "name": "EOS C700 / EOS C700 PL / EOS C700 GS PL",
+      "category": "cesc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/cesc862.html"
+    },
+    {
+      "name": "EOS M5",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr854.html"
+    },
+    {
+      "name": "EOS 5D Mark IV",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr849.html"
+    },
+    {
+      "name": "XC15",
+      "category": "dhc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dhc860.html"
+    },
+    {
+      "name": "PowerShot ELPH 360 HS",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc851.html"
+    },
+    {
+      "name": "PowerShot SX620 HS",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc850.html"
+    },
+    {
+      "name": "EOS Rebel T6",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr848.html"
+    },
+    {
+      "name": "PowerShot G7 X Mark II",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc847.html"
+    },
+    {
+      "name": "EOS-1D X Mark II",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr846.html"
+    },
+    {
+      "name": "PowerShot SX720 HS",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc845.html"
+    },
+    {
+      "name": "EOS 80D",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr844.html"
+    },
+    {
+      "name": "VIXIA HF R70/R72/R700",
+      "category": "dhc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dhc843.html"
+    },
+    {
+      "name": "VIXIA HF G40",
+      "category": "dhc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dhc842.html"
+    },
+    {
+      "name": "PowerShot SX420 IS",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc841.html"
+    },
+    {
+      "name": "PowerShot ELPH 180",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc840.html"
+    },
+    {
+      "name": "PowerShot ELPH 190 IS",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc839.html"
+    },
+    {
+      "name": "XA35 / XA30",
+      "category": "dhc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dhc838.html"
+    },
+    {
+      "name": "PowerShot G9 X",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc837.html"
+    },
+    {
+      "name": "PowerShot G5 X",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc836.html"
+    },
+    {
+      "name": "EOS M10",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr835.html"
+    },
+    {
+      "name": "EOS C300 Mark II",
+      "category": "cesc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/cesc834.html"
+    },
+    {
+      "name": "IXUS 165",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc832.html"
+    },
+    {
+      "name": "XC10",
+      "category": "dhc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dhc833.html"
+    },
+    {
+      "name": "PowerShot G3 X",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc831.html"
+    },
+    {
+      "name": "EOS 5DS / EOS 5DS R",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr828.html"
+    },
+    {
+      "name": "PowerShot ELPH 350 HS",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc830.html"
+    },
+    {
+      "name": "PowerShot ELPH 170 IS",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc829.html"
+    },
+    {
+      "name": "EOS Rebel T6s",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr827.html"
+    },
+    {
+      "name": "EOS Rebel T6i",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr826.html"
+    },
+    {
+      "name": "EOS M3",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr820.html"
+    },
+    {
+      "name": "PowerShot SX410 IS",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc664.html"
+    },
+    {
+      "name": "VIXIA HF R62/R60/R600",
+      "category": "dhc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dhc774.html"
+    },
+    {
+      "name": "PowerShot SX530 HS",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc663.html"
+    },
+    {
+      "name": "PowerShot SX610 HS",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc662.html"
+    },
+    {
+      "name": "PowerShot SX710 HS",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc661.html"
+    },
+    {
+      "name": "PowerShot N2",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc660.html"
+    },
+    {
+      "name": "PowerShot ELPH 160",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc659.html"
+    },
+    {
+      "name": "EOS C100 Mark II",
+      "category": "cesc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/cesc825.html"
+    },
+    {
+      "name": "EOS 7D Mark II",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr819.html"
+    }
+  ]
+}

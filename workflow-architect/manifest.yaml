@@ -19,7 +19,7 @@ audience: >-
 stages:
   - name: Active interview
     skills:
-      - skills/interviewer/SKILL.md
+      - SKILL.md
   - name: Passive observation
     skills:
       - skills/observer/SKILL.md
@@ -28,7 +28,7 @@ stages:
       - skills/bundle-builder/SKILL.md
 
 included_skills:
-  - skills/interviewer/SKILL.md
+  - SKILL.md
   - skills/observer/SKILL.md
   - skills/bundle-builder/SKILL.md
 
@@ -36,7 +36,7 @@ prerequisites:
   - artifact: Session context with enough turns for observation (or user answers for interview)
     skill: skills/observer/SKILL.md
   - artifact: Convergence on workflow phases, branching signals, and tool preferences
-    skill: skills/interviewer/SKILL.md
+    skill: SKILL.md
 
 outputs:
   - skills-bundle

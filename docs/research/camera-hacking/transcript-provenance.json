@@ -1,0 +1,41 @@
+{
+  "source_url": "https://www.youtube.com/watch?v=lbtUnjWh1_c",
+  "video_id": "lbtUnjWh1_c",
+  "title": "I hacked my camera with AI (and so can you)",
+  "channel": "Tony & Chelsea Northrup",
+  "published": "2026-10-26",
+  "retrieved": "2026-10-29",
+  "duration_seconds": 1218,
+  "language": "en",
+  "caption_track": "en-orig",
+  "caption_kind": "automatic",
+  "human_verified": false,
+  "visual_review_performed": false,
+  "extraction": "yt-dlp --skip-download --write-info-json --write-auto-subs --sub-langs en-orig --sub-format json3",
+  "transform": "Flatten all nonempty JSON3 event segments; retain caption start times; do not correct text.",
+  "text_events": 531,
+  "first_text_start_ms": 0,
+  "last_text_start_ms": 1216720,
+  "last_text_end_ms": 1219520,
+  "coverage_limit": "All delivered caption events retained. This does not establish transcription accuracy, coverage of every spoken word, or visual claims.",
+  "artifacts": [
+    {
+      "filename": "lbtUnjWh1_c.en-orig.json3",
+      "bytes": 304034,
+      "sha256": "5ad6d1f63acaa573bc6f676352eaa97bb72861e50129e44419587e6fb173f444",
+      "distribution": "separate user research artifact; excluded from public catalog sources"
+    },
+    {
+      "filename": "lbtUnjWh1_c-transcript.md",
+      "bytes": 26803,
+      "sha256": "b76b65055700fc0e98d679db14d3eab748d36702a2c89ace6c7d34bdfe6abc71",
+      "distribution": "separate user research artifact; excluded from public catalog sources"
+    },
+    {
+      "filename": "video-metadata.json",
+      "bytes": 4960,
+      "sha256": "72401a3f302a2fe7b5a9963206979da0a8dae458b2f1e5a88cdc1c103a99de3c",
+      "distribution": "separate user research artifact; excluded from public catalog sources"
+    }
+  ]
+}

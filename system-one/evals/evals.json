@@ -684,6 +684,21 @@
         "Preserves the original failed pilot as terminal and keeps the fresh amended study distinct",
         "Distinguishes schema-valid skill evals from measured behavioral benefit of the enrichment"
       ]
+    },
+    {
+      "id": "jev-release-feature-selection",
+      "prompt": "On 2026-10-15 we want to try the new Jev release on door-camera photos and locate a parcel. Can our jev-latest text probe already do this? Explain alias selection, an image and Box request, absent objects, longer context, and what must be tested before automation. Do not call a live API.",
+      "expected_output": "Refreshes official documentation, distinguishes stable latest from preview/new release, describes explicit image and long-context gates and 1.14-only Box, and designs presence/localization validation without claiming text helper support or production readiness.",
+      "assertions": [
+        "Distinguishes the documented stable alias resolution from the newest preview release and requires rechecking current mapping",
+        "Uses an image asset reference in request content and the explicit images opt-in header",
+        "Requires a model supporting Box rather than assuming the stable alias already supports it",
+        "Describes normalized Box coordinates and validates edge ordering before cropping",
+        "Uses separate presence evidence because Box has no not-found output",
+        "Treats longer context as a separate opt-in with workload quality and latency validation",
+        "Does not claim the bundled text probe implements image transport or Box validation",
+        "Keeps experimental capabilities and vendor quality claims distinct from held-out production qualification"
+      ]
     }
   ]
 }

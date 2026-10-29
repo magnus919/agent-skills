@@ -78,6 +78,15 @@
       "description": "Use when deciding whether an AI-enabled workflow should be adopted, scaled, constrained, redesigned, or retired, and the decision must connect business outcomes, worker or user effects, quality guardrails, full operating cost, telemetry, uncertainty, and accountable governance. Do not use for a standalone financial model, infrastructure cost calculation, agent evaluation design, runtime operations, or general AI governance; route those details to the neighboring specialist skills."
     },
     {
+      "name": "amazon-memo",
+      "source": "./",
+      "skills": [
+        "./amazon-memo"
+      ],
+      "strict": false,
+      "description": "Create, adapt, or revise Amazon-style narrative decision memos, six-pagers, PR/FAQs, and short decision briefs, including reading meetings and async review. Use for choosing the right memo form, evidence-led reasoning, and revising mechanical AI prose for human readers. Do not use for general copywriting, document rendering, or replacing incident reports and technical design records."
+    },
+    {
       "name": "analog-occultism",
       "source": "./",
       "skills": [
@@ -175,6 +184,15 @@
       ],
       "strict": false,
       "description": "Create and review C4 software-architecture diagrams using Mermaid or Structurizr. Use when teams need a communication-ready system context, container, component, or code-level view, including audience, narrative, hierarchy, labels, legends, accessibility, and uncertainty. Do not use for Mermaid syntax/rendering work without C4 modeling, architecture decisions, or full accessibility conformance reviews."
+    },
+    {
+      "name": "camera-hacking",
+      "source": "./",
+      "skills": [
+        "./camera-hacking"
+      ],
+      "strict": false,
+      "description": "Investigate, reverse-engineer, develop, and validate digital-camera modifications and interoperability, including custom firmware, hidden settings, camera control protocols, feature unlocks, and model-specific recovery. Use for feasibility research, offline analysis, controlled experiments, and explicitly authorized installation on photographic, cinema, and action cameras across manufacturers, especially Fujifilm X and Ricoh GR. Do not use for ordinary photography advice, routine vendor firmware updates, media editing, or unauthorized camera access."
     },
     {
       "name": "capacity-and-cost-engineering",
@@ -444,7 +462,7 @@
         "./esp32-development"
       ],
       "strict": false,
-      "description": "Build, configure, flash, test, debug, and recover firmware for ESP32-family boards, including ESP-IDF C/C++, Arduino/PlatformIO, MicroPython, CircuitPython, ESPHome, Zephyr, Rust, and NuttX. Use when identifying an ESP32 board, choosing a framework, wiring GPIO or peripheral buses, integrating sensors or actuators, diagnosing serial/boot/power/network failures, planning OTA and production security, or automating hardware tests and fault injection. Do not use as a substitute for the exact board schematic, SoC datasheet, or attached component datasheet."
+      "description": "Build, configure, flash, test, debug, and recover firmware for ESP32-family boards, including ESP-Mosaico kit bring-up, ESP-IDF C/C++, Arduino/PlatformIO, MicroPython, CircuitPython, ESPHome, Zephyr, Rust, and NuttX. Use when identifying an ESP32 board, choosing a framework, wiring GPIO or peripheral buses, integrating sensors or actuators, diagnosing serial/boot/power/network failures, planning OTA and production security, or automating hardware tests and fault injection. Do not use as a substitute for the exact board schematic, SoC datasheet, or attached component datasheet."
     },
     {
       "name": "ffmpeg",
@@ -636,6 +654,15 @@
       "description": "Convert operational incident and near-miss evidence into durable product, engineering, test, evaluation, and governance improvements with verified closure. Separate observed facts from causal hypotheses and unresolved uncertainty; map follow-up work across code, tests, skills, operations, product, and governance; track ownership, verification, and closure for every finding. Do not use to assign blame or produce a generic postmortem template; do not close learning because tickets were created — require evidence the intended change occurred."
     },
     {
+      "name": "infographic",
+      "source": "./",
+      "skills": [
+        "./infographic"
+      ],
+      "strict": false,
+      "description": "Design, create, or improve an infographic, visual explainer, illustrated guide, comparison poster, process graphic, or data story for any audience. Use for turning evidence and ideas into a clear, polished visual explanation, including choosing information structure, visual encoding, and a distinct aesthetic. Do not use for standalone decorative artwork, complete brand identity systems, statistical analysis alone, or ordinary document formatting."
+    },
+    {
       "name": "jellyfin",
       "source": "./",
       "skills": [
@@ -652,6 +679,15 @@
       ],
       "strict": false,
       "description": "Interact with Atlassian Jira from the terminal: search issues with JQL, view details, create issues, add comments, count matches with fast approximate-count, list projects, discover valid transitions, and change status. Includes a full JQL language reference (functions, operators, history predicates, date expressions, saved filters, performance tuning) plus REST auth/pagination guidance. Use when the user mentions Jira, a ticket key (e.g. PROJ-123), asks about issues, bugs, tasks, projects, or sprint work, or needs to write, debug, or optimize JQL queries. Do not use for GitHub or GitLab issue tracking, Jira site administration, or generic ticketing systems."
+    },
+    {
+      "name": "job-interview-coaching",
+      "source": "./",
+      "skills": [
+        "./job-interview-coaching"
+      ],
+      "strict": false,
+      "description": "Use this skill to coach candidates and interviewers for job interviews: prepare truthful examples, critique interview transcripts, run interactive mock interviews and targeted practice, design structured questions and evidence-based scorecards, and improve candidate experience. Adapt to profession, seniority, and interview format. Do not use for journalism, user research, workflow discovery, general resume writing, clinical interviewing, or autonomous hiring decisions."
     },
     {
       "name": "kanban-guru",
@@ -751,6 +787,15 @@
       ],
       "strict": false,
       "description": "Build LLM applications with the LlamaIndex framework. Use when working with LlamaIndex or comparing RAG and agent orchestration frameworks. Do not use this skill for unrelated requests; route to the nearest named specialist."
+    },
+    {
+      "name": "meetings",
+      "source": "./",
+      "skills": [
+        "./meetings"
+      ],
+      "strict": false,
+      "description": "Plan, organize, facilitate, and document meetings and relationship-sensitive one-on-ones, including invitees, decision processes, proactive accessibility, private preference memory, agreed actions, and follow-through. Use for the meeting lifecycle or deciding whether to meet; do not substitute for formal performance procedures, specialist incident response, therapy, or memo writing."
     },
     {
       "name": "mermaid-diagrams",
@@ -1248,6 +1293,15 @@
       "description": "Use this skill to reverse-engineer an existing software system, map its architecture, data flow, privacy posture, coupling, quality characteristics, and feature surface, then produce an evidence-grounded clean-room design document, PRD, or migration plan under new constraints. Use for codebase archaeology, implicit contract extraction, architecture health assessment, or decomposition-readiness analysis. Do not use for greenfield architecture design, direct code review, bug hunting, security auditing, or implementation of API, data, platform, or migration changes; route those to the relevant neighboring skill."
     },
     {
+      "name": "solarpunk",
+      "source": "./",
+      "skills": [
+        "./solarpunk"
+      ],
+      "strict": false,
+      "description": "Create, explore, critique, and practice solarpunk across visual art and image prompts, fiction and worldbuilding, fashion, games, education, everyday living, adaptive reuse, ecological design, parklets, guerrilla gardening, urban and rural planning, community infrastructure, and hopeful collective futures. Use for solarpunk aesthetics, stories, values, or practical paths toward equitable ecological flourishing. Do not use for generic sustainability tasks with no solarpunk intent, certified engineering, jurisdiction-specific legal advice, or operating an image or infrastructure tool; pair with the relevant specialist."
+    },
+    {
       "name": "spec-driven-development",
       "source": "./",
       "skills": [
@@ -1299,7 +1353,7 @@
         "./system-one"
       ],
       "strict": false,
-      "description": "Design, integrate, evaluate, self-host, and troubleshoot typed System One decision models including TypeSafe Jev, Convai Innovations Laya, CLM, and experimental Strands Decider. Use for Choice/Score/Noul judgments inside deterministic software, app-control loops, routing, ranking, guardrails, calibration, semantic code linting and post-edit feedback, DevOps decision support, confidence-based escalation, or private open-model inference. Do not use for syntactic/style linting, exact policy or authorization, open-ended generation, or generic LLM serving without a bounded decision contract."
+      "description": "Design, integrate, evaluate, self-host, and troubleshoot typed System One decision models including TypeSafe Jev, Convai Innovations Laya, CLM, and experimental Strands Decider. Use for Choice/Score/Noul judgments and experimental Jev image/Box queries inside deterministic software, app-control loops, routing, ranking, guardrails, calibration, semantic code linting and post-edit feedback, DevOps decision support, confidence-based escalation, or private open-model inference. Do not use for syntactic/style linting, exact policy or authorization, open-ended generation, or generic LLM serving without a bounded decision contract."
     },
     {
       "name": "systematic-debugging",
@@ -1326,7 +1380,16 @@
         "./tailscale"
       ],
       "strict": false,
-      "description": "Deploy and manage the self-hosted Tailscale/Headscale ecosystem: a Headscale control server, tailscale clients, ACL policies, node lifecycle, subnet routing, DERP relays, and backup/migration. Use when the user mentions Tailscale, Headscale, tailnet, mesh VPN, WireGuard mesh, or self-hosted VPN infrastructure. Do not use this skill for unrelated requests; route to the nearest named specialist."
+      "description": "Deploy and manage the self-hosted Tailscale/Headscale ecosystem: a Headscale control server, tailscale clients, ACL policies, node lifecycle, subnet routing, DERP relays, backup/migration, and Tailworm security exposure triage. Use when the user mentions Tailscale, Headscale, tailnet, mesh VPN, WireGuard mesh, or self-hosted VPN infrastructure. Do not use this skill for unrelated requests; route to the nearest named specialist."
+    },
+    {
+      "name": "teach-me",
+      "source": "./",
+      "skills": [
+        "./teach-me"
+      ],
+      "strict": false,
+      "description": "Teach a subject through source-grounded explanations, brief diagnostic tasks, practice, and adaptive feedback. Use when a learner asks to learn, understand, refresh, practice, or be tutored toward an observable goal. Do not use for a standalone factual lookup, doing the task on someone's behalf, life coaching, group-program design, or collecting research without teaching."
     },
     {
       "name": "technical-documentation",

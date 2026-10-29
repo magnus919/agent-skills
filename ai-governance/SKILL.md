@@ -71,6 +71,10 @@ change or an unmet approval condition.
 
 When setting agent promotion/demotion thresholds or reviewing earned autonomy, read `references/earned-autonomy.md` and use `templates/earned-autonomy-decision.md`. Support accountable humans making capability/environment/action-class decisions; the agent cannot grant itself authority. [site-reliability-engineering](../site-reliability-engineering/SKILL.md) supplies operational evidence and [agent-production-operations](../agent-production-operations/SKILL.md) implements the approved control plan. This five-level autonomy ladder is separate from the Six-Level Governance framework.
 
+### Agentic engineering decision rights
+
+When deciding which software-factory decisions remain with humans and which an agent may execute, read `references/agentic-engineering-governance.md` and use `templates/engineering-decision-rights.md`. Reuse scoped grants; distinguish technical readiness, intent acceptance, residual-risk acceptance and production authority. Check whether reserved human review has enough evidence, capacity and ability to stop the action.
+
 ## Reference Files (load on demand, one per task)
 
 Progressive disclosure: load only the reference relevant to the current question.
@@ -91,6 +95,7 @@ Progressive disclosure: load only the reference relevant to the current question
 | Vendor/model due diligence, supply chain, board reporting, metrics, audit | [references/procurement-third-party-and-board-oversight.md](references/procurement-third-party-and-board-oversight.md) |
 | Admitting, updating, disabling or retiring Skills, MCP servers or A2A capabilities | [references/capability-admission-and-update.md](references/capability-admission-and-update.md) |
 | Granting, promoting, reducing, suspending or revoking scoped agent authority | [references/earned-autonomy.md](references/earned-autonomy.md) |
+| Assigning software-factory decision rights, protected terms and meaningful human oversight | [references/agentic-engineering-governance.md](references/agentic-engineering-governance.md) |
 | Tracing any idea to its informing books and research notes; bibliography | [references/source-index.md](references/source-index.md) |
 
 ## Templates (fillable)
@@ -101,6 +106,7 @@ Use these to turn the methodology into working artifacts.
 |---|---|
 | Recording capability admission, configuration changes, overlap and exit | [templates/capability-admission-record.md](templates/capability-admission-record.md) |
 | Recording scoped authority, evidence, counterevidence and independent approval | [templates/earned-autonomy-decision.md](templates/earned-autonomy-decision.md) |
+| Recording engineering delegation, reserved human decisions and enforcement handoffs | [templates/engineering-decision-rights.md](templates/engineering-decision-rights.md) |
 | Standing up the governance council and its terms of reference | [templates/governance-charter.md](templates/governance-charter.md) |
 | Registering a use case and classifying it at intake | [templates/use-case-intake-form.md](templates/use-case-intake-form.md) |
 | Running a NIST-aligned risk assessment and tiering worksheet | [templates/model-risk-assessment.md](templates/model-risk-assessment.md) |

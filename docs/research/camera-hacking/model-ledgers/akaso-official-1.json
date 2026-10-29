@@ -1,0 +1,36 @@
+{
+  "manufacturer": "akaso",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "BRAVE 8",
+      "category": "names visible in marketing/action page; not full support roster",
+      "source": "akaso-cameras",
+      "url": "https://www.akasotech.com/action-camera"
+    },
+    {
+      "name": "BRAVE 7",
+      "category": "names visible in marketing/action page; not full support roster",
+      "source": "akaso-cameras",
+      "url": "https://www.akasotech.com/action-camera"
+    },
+    {
+      "name": "V50 Pro",
+      "category": "names visible in marketing/action page; not full support roster",
+      "source": "akaso-cameras",
+      "url": "https://www.akasotech.com/action-camera"
+    },
+    {
+      "name": "EK7000 Pro",
+      "category": "names visible in marketing/action page; not full support roster",
+      "source": "akaso-cameras",
+      "url": "https://www.akasotech.com/action-camera"
+    },
+    {
+      "name": "AKASO 360",
+      "category": "names visible in marketing/action page; not full support roster",
+      "source": "akaso-cameras",
+      "url": "https://www.akasotech.com/action-camera"
+    }
+  ]
+}

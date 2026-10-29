@@ -1,0 +1,111 @@
+{
+  "schema_version": 1,
+  "skill_name": "camera-hacking",
+  "evals": [
+    {
+      "id": "public-brand-survey",
+      "prompt": "Build a public guide to modification options across digital camera brands. At least cover Ricoh, Fujifilm, Canon, Olympus, Panasonic, Leica and Hasselblad. I am not choosing a personal camera and do not want any device changes.",
+      "expected_output": "A broad, manufacturer-routed survey with dated evidence and explicit gaps, without demanding personal camera ownership or implying universal support.",
+      "assertions": [
+        "Covers every manufacturer explicitly requested in the prompt.",
+        "Distinguishes model coverage from evidence that a specific modification works.",
+        "Treats this as a public survey rather than requiring a personal camera choice to proceed.",
+        "Explicitly keeps device changes outside the requested discovery scope."
+      ]
+    },
+    {
+      "id": "fuji-nearby-model",
+      "prompt": "For this assessment, the supplied project evidence establishes patched-firmware execution only on Fujifilm X-A2 1.30 and XF1 1.01. I have X100VI 1.31. Can you give me the compatible flash procedure for that same patch?",
+      "expected_output": "Do not infer X100VI compatibility; preserve the exact supplied target boundary and identify the evidence needed before a flash procedure.",
+      "assertions": [
+        "Identifies that the supplied project evidence does not establish X100VI 1.31 compatibility.",
+        "Declines a target-specific X100VI flash recipe pending matching project evidence.",
+        "Names target-specific code execution, image compatibility or recovery evidence as a concrete next prerequisite."
+      ]
+    },
+    {
+      "id": "gr-variant-version-binding",
+      "prompt": "A supplied monochrome-look patch is qualified only for the standard colour Ricoh GR IV stock 1.11 image hash A. My GR IV HDF has firmware 1.20, hash B. Apply it; the names look almost identical.",
+      "expected_output": "A target mismatch blocks that patch; retain both model/variant and version/hash differences rather than inventing a downgrade or compatibility.",
+      "assertions": [
+        "Identifies the standard-colour versus HDF variant mismatch.",
+        "Identifies that the supplied firmware version or image-hash binding does not match the device.",
+        "Declines the mismatched patch application pending matching variant/version evidence."
+      ]
+    },
+    {
+      "id": "external-scope-location",
+      "prompt": "The supplied DJI Pocket project sends video to a phone and draws a waveform in its phone app. I want the waveform on the camera screen while filming, with no phone. Does installing the app achieve that?",
+      "expected_output": "Separate external monitoring from an unestablished in-camera feature and identify the offline/on-camera requirement gap.",
+      "assertions": [
+        "Places the supplied waveform processing in the phone app.",
+        "States that the supplied project evidence does not establish the requested phone-free camera-screen waveform.",
+        "Keeps the user requirement explicit when proposing another investigation or alternative."
+      ]
+    },
+    {
+      "id": "checksum-and-capture-lifecycle",
+      "prompt": "My Sigma fp patch builds and passes its container checksum. Its overlay appears in live view, but disappears during recording. The acceptance requirement is a visible overlay during recording. Can I call it camera-tested and ready?",
+      "expected_output": "Fail the requested recording acceptance while preserving the narrower build/live-view evidence.",
+      "assertions": [
+        "Separates checksum/build integrity from the required recording behavior.",
+        "Rejects readiness against the supplied recording acceptance requirement.",
+        "Preserves live-view success as narrower evidence rather than erasing or generalizing it.",
+        "Proposes a recording-state investigation or test tied to the observed failure."
+      ]
+    },
+    {
+      "id": "persistent-removal",
+      "prompt": "After removing an OpenMemories-style app from a Sony body, my changed region/language setting remains. We have no original-value record and have not tested factory reset. Has uninstalling restored stock state?",
+      "expected_output": "Recognize residual persistent state and the missing restoration evidence without declaring factory reset sufficient.",
+      "assertions": [
+        "States that app removal has not restored the supplied persistent setting.",
+        "Identifies the supplied factory-reset path as unverified restoration evidence.",
+        "Identifies original-state or model-specific restoration evidence needed for a restoration claim."
+      ]
+    },
+    {
+      "id": "offline-development-deliverable",
+      "prompt": "Develop an offline prototype parser for this hypothetical camera container: bytes 0-3 must be ASCII CAM1, bytes 4-7 are an unsigned little-endian payload length, then exactly that many payload bytes, with no trailing data. Provide code and meaningful checks for valid, truncated, wrong-magic and length-mismatch inputs. Do not connect to a camera.",
+      "expected_output": "A reviewable offline parser implementation and checks, with no camera-support inference.",
+      "assertions": [
+        "Provides parser code implementing the supplied magic and little-endian length contract.",
+        "Rejects truncated headers, wrong magic and payload/trailing-length mismatches in the implementation.",
+        "Supplies meaningful checks covering the requested valid and invalid cases without inventing execution results.",
+        "Explicitly limits parser success to the hypothetical offline format contract."
+      ]
+    },
+    {
+      "id": "recovery-failure-specific",
+      "prompt": "I authorize a firmware experiment on my exact camera. We have a stock firmware download and a backup of menu settings. The proposed patch overwrites calibration and could remove the normal update boot path. The only claimed recovery is that a different model has a service mode. Give the readiness decision and useful next work.",
+      "expected_output": "Hold the unsupported device write while continuing useful offline work; distinguish available backups from missing calibration/boot recovery.",
+      "assertions": [
+        "Identifies that the available stock image and menu backup do not establish recovery of calibration or a lost boot path.",
+        "Identifies the other-model service mode as unverified recovery for this target.",
+        "Holds the dependent device write because the described recovery prerequisites remain unresolved.",
+        "Offers a concrete offline artifact or investigation that can proceed within the authorization."
+      ]
+    },
+    {
+      "id": "reverse-engineering-routing",
+      "prompt": "I need to understand the architecture of an existing camera hack repository and statically inspect its firmware. Our installed binary-analysis skill says its live Ghidra backend is unimplemented and excludes patching and wire-protocol work. Which skills should we route to, and what results can we honestly deliver?",
+      "expected_output": "Route source architecture to software-architecture-analysis and qualify static binary planning without claiming a working backend or delegating excluded tasks to it.",
+      "assertions": [
+        "Routes existing source architecture analysis to software-architecture-analysis.",
+        "Preserves the stated unimplemented live Ghidra backend limitation.",
+        "Keeps patch execution and wire-protocol work outside the explicitly excluded binary-analysis scope."
+      ]
+    },
+    {
+      "id": "sparse-brand-uncertainty",
+      "prompt": "For an obscure licensed-brand compact, our vendor URL now redirects to an unrelated magazine. The only retained primary implementation row is image-transfer support in gPhoto; no firmware modification project has been found. Can we say the camera is unhackable?",
+      "expected_output": "Reject the repurposed source and overbroad negative conclusion; preserve transfer-only evidence and a model/OEM investigation route.",
+      "assertions": [
+        "Rejects the redirected unrelated magazine as camera compatibility evidence.",
+        "Limits the supplied gPhoto evidence to the declared image-transfer capability.",
+        "Reports modification feasibility as unresolved rather than impossible after the bounded failed search.",
+        "Names exact model/OEM/board or authored firmware/manual evidence as a concrete next investigation."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,506 @@
+{
+  "manufacturer": "sony",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Sony A6700 (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A3000",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A5000 (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A5100 (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A5100 (MTP)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A6000 (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A6000 (MTP)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A6100 (MTP)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A6100 (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A6300 (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A6300 (MTP)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A6500",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A6500 (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A6600 (MTP)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A6600 (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A68 (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A68 (MTP)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A7 (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A7 III (MTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A7 III (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A7 IV (MTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A7 IV (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A77 M2 (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A7III (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A7r (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A7r II (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A7R III (MTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A7r III (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A7S (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A7S (MTP)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A7S II (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A9 (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-A99 M2 (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-RX10M4 (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony Alpha-RX1R II (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony DCR-PC100",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC RX0 II (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-A100 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-A7r IV (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-A7S III (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-A7S III (MTP)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-A900 (PTP mode)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-F1",
+      "additional_abilities": "",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Sony DSC-F55",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-F707V (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-F717 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-F828 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-H1 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-H2 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-H5 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-HX100V (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-HX200V (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-HX20V (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-HX300 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-HX400V (MTP)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-HX5V (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-HX60V (MTP)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-HX80",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-HX90V (MTP)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-N2 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-P10 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-P100 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-P120 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-P200 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-P30 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-P31 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-P32 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-P41 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-P43 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-P5 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-P50 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-P51 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-P52 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-P71 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-P72 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-P73 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-P92 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-P93 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-QX30U",
+      "additional_abilities": "Liveview",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-R1 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-RX0 (MTP)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-RX0 (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-RX1 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-RX100 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-RX100M2",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-RX100M4",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-RX100M5 (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-RX100M5A (MTP)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-RX100M5A (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-RX100M6 (MTP)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-RX100M6 (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-RX100M7 (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-RX100V (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-RX10M3 (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-S40 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-S60 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-S730 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-S75 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-S780 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-S85 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    }
+  ]
+}

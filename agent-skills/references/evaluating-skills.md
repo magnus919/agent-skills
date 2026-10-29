@@ -4,6 +4,8 @@
 
 # Evaluating skill output quality
 
+> This file preserves upstream evaluation guidance. Its JSON examples are illustrative and are **not valid repository v1 manifests**: they omit `schema_version`, use numeric IDs, and initially omit assertions. In this catalog, first read `references/repository-evaluations.md` from the skill root. The repository requires at least five cases for new skills and uses stricter evidence and release rules than the generic grading examples below.
+
 > How to test whether your skill produces good outputs using eval-driven iteration.
 
 You wrote a skill, tried it on a prompt, and it seemed to work. But does it work reliably — across varied prompts, in edge cases, better than no skill at all? Running structured evaluations (evals) answers these questions and gives you a feedback loop for improving the skill systematically.

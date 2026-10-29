@@ -14,7 +14,7 @@ Use it when the work needs a repeatable process and an inspectable result. It is
 |---|---|
 | `SKILL.md` | Trigger conditions, workflow, and guidance for loading deeper resources. |
 | `references/` | Reference material: `criteria-assessment.md`, `evidence-standards.md`, `verdict-template.md` |
-| `evals/evals.json` | Regression cases for direct-source selection, bundled executable discovery, failure reporting, and explicit fallback handling. |
+| `evals/evals.json` | Regression cases for direct-source selection, bundled executable discovery, failure reporting, fallback handling, and candidate-bound verdicts. |
 
 ## Quick Start
 
@@ -35,3 +35,7 @@ No runtime dependency.
 ## Source and maintenance
 
 This skill was extracted from [`magnus919/hermes-profiles`](https://github.com/magnus919/hermes-profiles) at commit [`867a555`](https://github.com/magnus919/hermes-profiles/commit/867a555). The portable methodology was retained; Hermes-specific profile, orchestration, and memory assumptions were removed.
+
+The verdict template records candidate/content and acceptance-contract identity,
+executed checks, environments, results, and evidence. Relevant changes supersede
+old approval so yesterday's PASS cannot authorize a different delivery candidate.

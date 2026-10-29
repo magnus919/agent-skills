@@ -1,0 +1,406 @@
+{
+  "manufacturer": "canon",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "PowerShot 600",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A5",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A5 Zoom",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A50",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A410 (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A460 (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A470 (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A480 (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A530 (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A540 (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A550 (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A560 (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A570 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A590 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A610 (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A620 (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A630 (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A640 (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A650 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A710 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A720 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot A3300 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot D10 (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot ELPH 130 IS / IXUS 140 / IXY 110F (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot ELPH 160 / IXUS 160 (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot Pro70",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot Pro90 IS",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot Pro1",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G1",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G1 X",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G1 X Mark II",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G1 X Mark III",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G2",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G3",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G3 X",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G5",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G5 X",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G5 X Mark II",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G6",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G7 (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G7 X",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G7 X Mark II",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G7 X Mark III",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G9",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G9 X",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G9 X Mark II",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G10",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G11",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G12",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G15",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot G16",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot S2 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot S3 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot S5 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SD300 / IXUS 40 / IXY Digital 50 (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SD750 / IXUS 75 / IXY Digital 90 (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SD900 / Digital IXUS 900 Ti / IXY Digital 1000 (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SD950 IS / Digital IXUS 960 IS / IXY Digital 2000 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SD1200 IS / Digital IXUS 95 IS / IXY Digital 110 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot S30",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot S40",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot S45",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot S50",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot S60",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot S70",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot S90",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot S95",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot S100",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot S110",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot S120",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SX1 IS",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SX40 HS (CHDK hack, CR2)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SX50 HS",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SX60 HS",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SX70 HS",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SX100 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SX110 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SX120 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SX130 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SX160 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SX220 HS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SX510 HS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SX710 HS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SX10 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SX20 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "PowerShot SX30 IS (CHDK hack)",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS R",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS Ra",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS RP",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS R1",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS R3",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS R5",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS R5 C",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS R5 Mark II",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS R6",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS R6 Mark II",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS R7",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS R8",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS R10",
+      "source_brand_label": "Canon"
+    },
+    {
+      "name": "EOS R50",
+      "source_brand_label": "Canon"
+    }
+  ]
+}

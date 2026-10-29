@@ -4,7 +4,7 @@
 
 ### Active Mode (Interview)
 1. Load `workflow-architect` umbrella SKILL.md for context
-2. Then load `skills/interviewer/SKILL.md` — the interview protocol
+2. Then load `references/active-workflow-discovery.md` — the interview protocol
 3. After convergence, load `skills/bundle-builder/SKILL.md` to generate the bundle
 4. Clean up `workflow-architect:state:*` memory entries after generation
 

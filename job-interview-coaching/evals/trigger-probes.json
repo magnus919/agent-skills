@@ -1,0 +1,34 @@
+[
+  {
+    "prompt": "Review my job interview transcript and help me improve.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Mock interview me for a bakery apprenticeship.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Help our panel interview prospective school leaders fairly.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "I want to practise a nursing job interview.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Interview me to discover my morning workflow and build a skill bundle.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Write questions for customer-discovery interviews about our prototype.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Prepare an interview with an author for my newspaper.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Rewrite my resume for this job.",
+    "should_trigger": false
+  }
+]

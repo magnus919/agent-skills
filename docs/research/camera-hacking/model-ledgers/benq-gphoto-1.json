@@ -1,0 +1,11 @@
+{
+  "manufacturer": "benq",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Benq DC1300",
+      "additional_abilities": "",
+      "comments": "Testing (Beta)"
+    }
+  ]
+}

@@ -17,8 +17,8 @@ When your agent loads this skill, it becomes a **process discovery specialist** 
 | Directory | Purpose |
 |-----------|---------|
 | `SKILL.md` | Bundle umbrella — two modes: active interrogation or passive observation |
-| `skills/` | 3 sub-skills: interviewer (active mode), observer (passive mode), bundle-builder (generation engine) |
-| `references/` | Workflow archetypes library, trigger condition patterns, kanban decision criteria |
+| `skills/` | 2 sub-skills: observer (passive mode), bundle-builder (generation engine) |
+| `references/` | Active workflow discovery interview, workflow archetypes, trigger condition patterns, kanban decision criteria |
 | `templates/` | 4 templates: skill skeleton, manifest, kanban setup, decision map |
 | `references/example-output/` | Two worked examples: developer pipeline, developer triage |
 

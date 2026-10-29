@@ -1,0 +1,54 @@
+{
+  "manufacturer": "red",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "V-RAPTOR XL [X]",
+      "category": "eight camera category entries; kit options excluded",
+      "source": "red-cameras",
+      "url": "https://www.reddigitalcinema.com/productcategory/Camera-BRAINs"
+    },
+    {
+      "name": "V-RAPTOR [X] Z Mount",
+      "category": "eight camera category entries; kit options excluded",
+      "source": "red-cameras",
+      "url": "https://www.reddigitalcinema.com/productcategory/Camera-BRAINs"
+    },
+    {
+      "name": "V-RAPTOR [X] RF Mount",
+      "category": "eight camera category entries; kit options excluded",
+      "source": "red-cameras",
+      "url": "https://www.reddigitalcinema.com/productcategory/Camera-BRAINs"
+    },
+    {
+      "name": "V-RAPTOR 8K S35",
+      "category": "eight camera category entries; kit options excluded",
+      "source": "red-cameras",
+      "url": "https://www.reddigitalcinema.com/productcategory/Camera-BRAINs"
+    },
+    {
+      "name": "V-RAPTOR XE Z Mount",
+      "category": "eight camera category entries; kit options excluded",
+      "source": "red-cameras",
+      "url": "https://www.reddigitalcinema.com/productcategory/Camera-BRAINs"
+    },
+    {
+      "name": "V-RAPTOR XE RF Mount",
+      "category": "eight camera category entries; kit options excluded",
+      "source": "red-cameras",
+      "url": "https://www.reddigitalcinema.com/productcategory/Camera-BRAINs"
+    },
+    {
+      "name": "KOMODO-X Z Mount",
+      "category": "eight camera category entries; kit options excluded",
+      "source": "red-cameras",
+      "url": "https://www.reddigitalcinema.com/productcategory/Camera-BRAINs"
+    },
+    {
+      "name": "KOMODO-X RF Mount",
+      "category": "eight camera category entries; kit options excluded",
+      "source": "red-cameras",
+      "url": "https://www.reddigitalcinema.com/productcategory/Camera-BRAINs"
+    }
+  ]
+}

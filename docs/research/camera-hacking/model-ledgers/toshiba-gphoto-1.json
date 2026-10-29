@@ -1,0 +1,31 @@
+{
+  "manufacturer": "toshiba",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Toshiba PDR-M1",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Toshiba PDR-M11",
+      "additional_abilities": "",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Toshiba PDR-M60",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Toshiba PDR-M61",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Toshiba PDR-M65",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    }
+  ]
+}

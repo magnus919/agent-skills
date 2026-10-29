@@ -3,7 +3,7 @@ name: tailscale
 description: >-
   Deploy and manage the self-hosted Tailscale/Headscale ecosystem: a Headscale control
   server, tailscale clients, ACL policies, node lifecycle, subnet routing, DERP relays,
-  and backup/migration. Use when the user mentions Tailscale, Headscale, tailnet, mesh
+  backup/migration, and Tailworm security exposure triage. Use when the user mentions Tailscale, Headscale, tailnet, mesh
   VPN, WireGuard mesh, or self-hosted VPN infrastructure. Do not use this skill for
   unrelated requests; route to the nearest named specialist.
 license: MIT
@@ -19,6 +19,22 @@ metadata:
 
 This umbrella skill covers the self-hosted Tailscale ecosystem using [Headscale](https://headscale.net)
 as the open-source control server. It provides 7 sub-skills that are auto-loaded by context.
+
+## Security preflight
+
+Read [security triage](references/security-triage.md) before enabling SSH, Serve,
+Funnel, app connectors, onboarding, or changing control-plane exposure; also load it
+for Tailworm, suspected compromise, or hardening requests. Its shared client defenses
+apply to hosted Tailscale too; Headscale operations remain self-hosted only.
+Do not reject hosted users seeking these protections merely because this bundle's
+administrative scripts target Headscale.
+
+Confirm the target, scope, and rollback path before acting. Read-only discovery may proceed without confirmation.
+Destructive containment (including device deletion) requires an explicit user directive.
+Never enable Tailscale SSH as a convenience default. Preserve and test another
+administrative access path before disabling it. Do not run public exploit kits on users' systems.
+Finish with an exposure inventory, supported mitigations, observed verification,
+and unresolved risks; stop when further verification needs unavailable evidence or authority.
 
 ## Auto-Loading by Context
 
@@ -113,4 +129,4 @@ See the individual sub-skill SKILL.md for detailed usage.
 
 ## When not to use
 
-Do not load this umbrella when a task maps to a single sub-skill — load the matching sub-skill directly (e.g. `headscale-deploy`, `tailnet-policy`, `tailscale-client`). It assumes a self-hosted Headscale control server; for Tailscale's hosted SaaS control plane, or for non-Tailscale VPN tooling, use the appropriate network skill instead.
+Do not load this umbrella when a task maps to a single sub-skill — load the matching sub-skill directly (e.g. `headscale-deploy`, `tailnet-policy`, `tailscale-client`). It assumes a self-hosted Headscale control server; for hosted control-plane administration or non-Tailscale VPN tooling, use the appropriate network skill instead. Shared security triage above remains applicable to hosted Tailscale.

@@ -1,0 +1,16 @@
+{
+  "manufacturer": "sigma",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Sigma fp",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sigma fp L",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    }
+  ]
+}

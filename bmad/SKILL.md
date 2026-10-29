@@ -81,8 +81,8 @@ vocabulary. Templates: [templates/SPEC.md](templates/SPEC.md) and
 4. Present a plan for non-trivial work; wait at the approval checkpoint.
 5. Implement the smallest coherent change; run focused tests first, then broader checks.
 6. Review for correctness, scope, security, regressions, maintainability.
-7. Repair findings that belong to this change; defer unrelated findings explicitly.
-8. Report intent, behavior, files, risk, verification, findings disposition, and an accept / rework / investigate choice.
+7. Repair findings that belong to this change; carry stable IDs, orchestrator dispositions, and receiving-task/closure evidence for deferred findings. A follow-up ticket alone does not resolve a finding.
+8. Bind review to the exact candidate/content and acceptance contract, executed checks/environment/results/evidence; invalidate affected approval after relevant changes. Report intent, behavior, risk, finding closure, and an accept / rework / investigate choice. See `references/review-and-failure-routing.md`.
 
 ## Spec status vocabulary
 
@@ -139,6 +139,7 @@ non-convergent repair.
 | [references/review-and-failure-routing.md](references/review-and-failure-routing.md) | Running a review or diagnosing a failure |
 | [references/autonomy.md](references/autonomy.md) | Configuring or running autonomous (Build Auto) work |
 | [references/party-mode.md](references/party-mode.md) | Deliberation, trade-offs, design debates, post-mortems |
+| [references/release-intent-acceptance.md](references/release-intent-acceptance.md) | Reviewing an integrated release against intent and routing staging feedback |
 | [references/adoption.md](references/adoption.md) | Adopting the protocol incrementally or mapping to a dark factory |
 
 ## Templates
@@ -148,6 +149,7 @@ non-convergent repair.
 | [templates/SPEC.md](templates/SPEC.md) | Versioned machine contract for bounded/initiative work |
 | [templates/INTENT.md](templates/INTENT.md) | Lightweight five-field contract for bounded work |
 | [templates/STORY.md](templates/STORY.md) | One bounded, dispatchable work unit |
+| [templates/RELEASE-ACCEPTANCE.md](templates/RELEASE-ACCEPTANCE.md) | Release checkpoints, integrated outcome and defect/intent/new-scope disposition |
 | [templates/REVIEW.md](templates/REVIEW.md) | Final human checkpoint: intent → behavior → risk → verification |
 
 ## Scripts

@@ -4,10 +4,10 @@
   "evals": [
     {
       "id": "active-interview-convergence",
-      "prompt": "/workflow-architect — I don't have a formal process for my mornings. Interview me to figure out my actual routine.",
-      "expected_output": "Scenario: active interrogation mode. The agent loads skills/interviewer/SKILL.md and guides the user through 8-15 adaptive questions covering entry points, phases, branching signals, tool preferences, loop conditions, exit criteria, and pain points. The interviewer branches its probes on the user's answers, records workflow state under workflow-architect:state:, and converges when phases, branching signals, and tool preferences are stable. On convergence it loads skills/bundle-builder/SKILL.md to synthesize the bundle. The interview stops asking questions once convergence is reached rather than continuing indefinitely.",
+      "prompt": "/workflow-architect \u2014 I don't have a formal process for my mornings. Interview me to figure out my actual routine.",
+      "expected_output": "Scenario: active interrogation mode. The agent loads references/active-workflow-discovery.md and guides the user through 8-15 adaptive questions covering entry points, phases, branching signals, tool preferences, loop conditions, exit criteria, and pain points. The interviewer branches its probes on the user's answers, records workflow state under workflow-architect:state:, and converges when phases, branching signals, and tool preferences are stable. On convergence it loads skills/bundle-builder/SKILL.md to synthesize the bundle. The interview stops asking questions once convergence is reached rather than continuing indefinitely.",
       "assertions": [
-        "skills/interviewer/SKILL.md is loaded in active mode",
+        "references/active-workflow-discovery.md is loaded in active mode",
         "The interview asks adaptive questions across entry points, phases, branching signals, tools, loops, exits, and pain points",
         "Probes branch based on the user's answers",
         "Workflow state is persisted under the workflow-architect:state: prefix",
@@ -16,7 +16,7 @@
     },
     {
       "id": "passive-observation-trigger",
-      "prompt": "I've been working in this session for a while. /workflow-architect passive — figure out what I do. (Then the user says 'analyze my process'.)",
+      "prompt": "I've been working in this session for a while. /workflow-architect passive \u2014 figure out what I do. (Then the user says 'analyze my process'.)",
       "expected_output": "Scenario: passive observation mode. The agent loads skills/observer/SKILL.md silently and does nothing until the trigger phrase ('analyze my process') appears, then scans the session context and reconstructs the workflow phases, branching signals, and tool preferences from what actually happened. If the session context is too thin (fewer than ~20 substantive turns), the observer recommends switching to active interrogation instead of fabricating a workflow from sparse evidence.",
       "assertions": [
         "skills/observer/SKILL.md is loaded and stays dormant until a trigger phrase",
@@ -41,7 +41,7 @@
     },
     {
       "id": "thin-context-degradation",
-      "prompt": "/workflow-architect passive — I just started this session and there are only two messages. Tell me my workflow.",
+      "prompt": "/workflow-architect passive \u2014 I just started this session and there are only two messages. Tell me my workflow.",
       "expected_output": "Scenario: degraded observation input. The session has far fewer than 20 substantive turns, so the observer does NOT reconstruct a workflow. It explicitly states that observation mode needs more context and recommends switching to active interrogation mode (the 8-15 question interview) to build the workflow model reliably. No workflow bundle is generated from the thin context.",
       "assertions": [
         "No workflow is reconstructed from the thin session context",
@@ -53,23 +53,89 @@
     {
       "id": "kanban-decision-criteria",
       "prompt": "My workflow is a single linear pipeline: triage inbox, draft, edit, publish. Should the generated bundle include a kanban board?",
-      "expected_output": "Scenario: kanban inclusion decision. The agent applies the kanban decision criteria from references/kanban-decision-criteria.md: a predictable linear path with clear lane transitions can benefit from a kanban board with WIP limits. For this triage → draft → edit → publish pipeline the board is included, with board slug, phases, and WIP limits in the generated bundle. The decision is explained; a non-linear, context-heavy workflow would omit the board.",
+      "expected_output": "Scenario: kanban inclusion decision. The agent applies the kanban decision criteria from references/kanban-decision-criteria.md: a predictable linear path with clear lane transitions can benefit from a kanban board with WIP limits. For this triage \u2192 draft \u2192 edit \u2192 publish pipeline the board is included, with board slug, phases, and WIP limits in the generated bundle. The decision is explained; a non-linear, context-heavy workflow would omit the board.",
       "assertions": [
         "The kanban decision criteria reference is consulted",
-        "The linear triage → draft → edit → publish pipeline is recognized as a kanban candidate",
+        "The linear triage \u2192 draft \u2192 edit \u2192 publish pipeline is recognized as a kanban candidate",
         "The generated bundle includes a kanban board with phases and WIP limits",
         "The decision rationale is explained to the user"
       ]
     },
     {
       "id": "trigger-condition-quality",
-      "prompt": "Generate my workflow bundle. One of my phases is 'deep work' — what should its description look like?",
+      "prompt": "Generate my workflow bundle. One of my phases is 'deep work' \u2014 what should its description look like?",
       "expected_output": "Scenario: trigger-condition authoring. The sub-skill descriptions follow the Agent Skills trigger format: an imperative-verb description that both positively and negatively bounds when the sub-skill loads (e.g., 'load when the user shifts into deep work mode' with a negative boundary for shallow task-switching). The description vocabulary matches how the user actually talks about entering that phase, and the umbrella description carries the broad entry triggers for the bundle. No sub-skill description is a bare phase name with no trigger guidance.",
       "assertions": [
         "Sub-skill descriptions start with an imperative verb and define a positive trigger",
         "Sub-skill descriptions include a negative boundary for when not to load",
         "Trigger vocabulary matches how the user describes entering the phase",
         "No sub-skill description is a bare phase name without trigger guidance"
+      ]
+    },
+    {
+      "id": "session-opener-progression",
+      "prompt": "I want you to figure out how I work so you can build me a workflow bundle. Let's start.",
+      "expected_output": "Scenario: opening the interview. The agent reads the active workflow discovery reference in workflow-architect and starts with a broad session-opener question ('Walk me through a typical session from the very start.') rather than a battery of discrete questions. It records the user's entry point (e.g. 'check task list, prioritize by urgency') into the state model and adapts the next probe based on the answer, not by asking every opener in sequence.",
+      "assertions": [
+        "The active workflow discovery reference is read within workflow-architect",
+        "The interview opens with a broad session-opener question",
+        "The user's stated entry point is recorded into the state model",
+        "The next probe adapts to the user's answer rather than being sequential"
+      ]
+    },
+    {
+      "id": "branching-signal-detection",
+      "prompt": "Usually I check open PRs assigned to me first. If there are none, I look at my kanban board and pick the top item.",
+      "expected_output": "Scenario: branching detection. The agent recognizes the conditional language ('if ... otherwise ...') as a branching signal and records it (e.g. 'pending PRs \u2192 review mode, otherwise \u2192 kanban triage'), then probes the branch with a follow-up question (e.g. 'after you finish the PR review, what tells you you're done?'). It does not treat the two branches as a single linear phase.",
+      "assertions": [
+        "The conditional ('if/otherwise') is recognized as a branching signal",
+        "The branching signal is recorded in the state model",
+        "A follow-up probe targets the just-identified branch",
+        "The branches are not flattened into a single linear phase"
+      ]
+    },
+    {
+      "id": "phase-discovery-and-transition",
+      "prompt": "Most sessions start with triage. Then I do deep work on whatever I picked, and I switch to research mode if I hit something unfamiliar.",
+      "expected_output": "Scenario: phase discovery with mode distinction and transition signals. The agent identifies distinct modes (triage, deep work, research) as phases, listens for the mode-switch language, and probes for transition signals that mark when the user leaves one phase for another. It records phases with typical tools/openers/exits rather than a single undifferentiated workflow.",
+      "assertions": [
+        "Distinct modes (triage, deep work, research) are identified as phases",
+        "Mode-switch language is captured as branching/mode distinction",
+        "Transition signals between phases are probed",
+        "Phases are recorded with typical tools, openers, and exits"
+      ]
+    },
+    {
+      "id": "convergence-check-presentation",
+      "prompt": "We've covered my entry points, three phases, two branching signals, my tools, and how I wind down sessions. Are we done?",
+      "expected_output": "Scenario: convergence evaluation. The agent checks the convergence criteria (3+ phases, entry points, branching, tools mapped to 2+ phases, exit criteria) and the convergence score (>= 0.6). If met, it presents a summary of phases, branching, tools, and pain points and asks the user to confirm before generating the bundle, then loads bundle-builder on confirmation. If not met, it continues probing rather than presenting prematurely.",
+      "assertions": [
+        "The convergence criteria and score are evaluated against the state model",
+        "A summary of phases, branching, tools, and pain points is presented",
+        "The user is asked to confirm the picture before generating",
+        "On confirmation, bundle-builder is loaded"
+      ]
+    },
+    {
+      "id": "refinement-loop-after-correction",
+      "prompt": "That summary is mostly right, but I don't always do research inside deep work \u2014 it's a separate session entirely. Update your model.",
+      "expected_output": "Scenario: refinement after user correction. The agent accepts the correction, updates the state model (splitting the research phase out of deep work), and re-checks convergence before presenting again or proceeding. It does not argue with the user or retain the incorrect model.",
+      "assertions": [
+        "The user's correction is accepted and reflected in the state model",
+        "The affected phase is updated (research separated from deep work)",
+        "Convergence is re-evaluated after the update",
+        "The agent does not proceed with the stale incorrect model"
+      ]
+    },
+    {
+      "id": "state-persistence-across-turns",
+      "prompt": "Let's pause the interview and pick it up tomorrow \u2014 I don't want to lose what we've mapped so far.",
+      "expected_output": "Scenario: state persistence. The agent persists all discovered dimensions to memory under the workflow-architect:state: prefix (entry_points, phases, branching, pain_points, exit_criteria, convergence_score) so the interview can resume across turns without restarting. The output confirms the state was saved and notes the known key-prefix convention.",
+      "assertions": [
+        "Interview state is persisted under the workflow-architect:state: prefix",
+        "All discovered dimensions (entry_points, phases, branching, pain_points, exit_criteria, convergence_score) are saved",
+        "The state is stored in a way that survives across turns",
+        "A note confirms the interview can resume without losing progress"
       ]
     }
   ]

@@ -1,6 +1,6 @@
 # TypeSafe Jev: hosted integration guide
 
-Checked 2026-09-22. Verify the endpoint, model IDs, pricing, limits, gateway
+Checked 2026-10-15 against the live documentation index and release notes. Verify the endpoint, model IDs, pricing, limits, gateway
 availability, and SDK version again before a production cutover.
 
 ## Refresh provider documentation before implementation
@@ -36,6 +36,64 @@ Content-Type: application/json
 
 The official Python package is `typesafe-sdk`; the raw HTTP contract is useful
 when a project does not want a provider SDK. Keep keys server-side.
+
+## Release selection and experimental capabilities
+
+The [model catalog](https://docs.typesafe.ai/models) currently distinguishes:
+
+| Request model | Resolved revision on 2026-10-15 | Use |
+|---|---|---|
+| `jev-latest` | `jev-1.13.0` | Preferred moving stable alias for general examples |
+| `jev-preview` | `jev-1.14.0` | Moving newest-release alias for explicit preview trials |
+| `jev-1.14.0` | Fixed 1.14.0 | Reproducible qualification of the new release |
+
+Responses name the versioned model, not the alias. Log that identity; do not
+compare it literally to an alias or claim `latest` already means 1.14.
+[Release notes](https://typesafe.ai/blog/jev-1-14) announce an eventual stable
+alias promotion, not evidence it has happened. They report incremental quality
+improvements, especially multilingual; test these on the target workload.
+Pin revisions for calibrated policy and benchmarks; requalify before switching.
+
+### Images (experimental)
+
+[Images](https://docs.typesafe.ai/images) work on both 1.13 and 1.14 with
+`TypeSafe-Danger-Zone-Images: true`. A top-level `assets` map binds unique
+reference strings to images; references in state, instructions, or criteria
+values insert those images. Keys are not substituted. Use collision-resistant
+references; unused assets fail, and repeated insertions consume capacity.
+For JSON use `{"type":"image","format":"png","data_base64":"..."}`
+with actual base64, no data-URL prefix. Prefer multipart for files: first part
+`request` contains JSON; each asset's `part` names its unique image file part.
+PNG/JPEG still images only; check current size/dimension/expanded-input limits.
+No native audio or video input is established; frame histories are still images.
+These features are prototypes, not provider-qualified production capabilities.
+
+### Box (experimental, 1.14 required)
+
+[Box](https://docs.typesafe.ai/primitives/box) requires `jev-preview` or a
+1.14 pin plus the images header. Ask `{"type":"box","instructions":"the mug in photo"}`
+with an image asset; there is no `criteria`. The answer contains `type: box`,
+`box: {top, bottom, left, right}`, and `confidence`. Validate finite normalized
+edges in `[0,1]`, `left < right`, `top < bottom`, and finite confidence in
+`[0,1]`. Scale horizontal edges by width and vertical edges by height.
+One question returns one box; an absent target still produces edges. Pair with
+a Noul presence question and ignore the box when presence is insufficient.
+Calibrate presence and localization separately; confidence does not prove a
+correct crop. Do not assume local Choice/Score/Noul adapters implement Box.
+
+### Long context (experimental)
+
+The [context limits](https://docs.typesafe.ai/models#context-length) are 64k
+per request and 32k per question by default. On either release,
+`TypeSafe-Danger-Zone-Long-Context: true` raises both to 262k tokens. The provider
+warns of slower and less accurate inference; enable per request only after
+workload qualification. Context extension does not enable images or Box.
+
+The bundled probe/demo and QA helpers cover the text Choice/Score/Noul subset;
+they do not validate image assets, transport multipart, add experimental
+headers, or validate Box. Use the current HTTP/SDK documentation for those
+paths and qualify a dedicated adapter before relying on its output. An offline
+text-probe pass does not establish multimodal or extended-context support.
 
 ## Minimal request
 
@@ -110,6 +168,28 @@ thresholds from a calibration split; and add a held-out test of wrong-route
 and false-refund-flag rates. Separate the decision ID from the downstream
 effect ID so an ambiguous API timeout cannot duplicate an external action.
 
+## Raw HTTP versus helper validation
+
+The [raw Choice API](https://docs.typesafe.ai/primitives/choice) requires an
+object map of option names to descriptions. The generic bundled probe also
+accepts lists for other adapters; offline acceptance does not qualify a raw
+Jev request. Use the current provider schema when preparing a live request.
+
+## SDK compatibility for the new surfaces
+
+The [Python 0.7.5 changelog](https://docs.typesafe.ai/sdk/python/changelog)
+adds `Image`, `Box`, and `attach_assets`, with zstd request compression enabled
+by default; verify compatibility before sending compressed bodies to a gateway.
+The [JavaScript 0.7.0 changelog](https://docs.typesafe.ai/sdk/javascript/changelog)
+adds image/Box support, requires Node.js 22+, and stops exporting request
+payload types. It compresses bodies of at least 1 KiB on Node.js 22.15+;
+`compression: false` disables that transport feature. Check installed SDK
+versions before copying these APIs; a model alias alone cannot upgrade a client.
+
+The new release-selection eval and its satisfying, contradictory, and
+missing-evidence challenges are in `evals/jev-release-feature-challenges.md`.
+They review the rubric, not measured model quality.
+
 ## SDK pattern
 
 ```python
@@ -117,6 +197,7 @@ from typesafe_sdk import Choice, Noul, Score, TypeSafeClient
 
 with TypeSafeClient() as client:
     response = client.system_one(
+        model="jev-latest",
         state={"message": "The integration fails for every customer."},
         questions={
             "route": Choice(

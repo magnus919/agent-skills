@@ -1,0 +1,271 @@
+{
+  "manufacturer": "hp",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "HP PhotoSmart",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 120 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 215",
+      "additional_abilities": "Image Capture, Liveview",
+      "comments": "Experimental"
+    },
+    {
+      "name": "HP PhotoSmart 217 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 317 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 318 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 320 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 407 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 417 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 43x (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 507 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 517 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 607 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 612 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 618",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 620 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 635 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 707 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 715 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 717 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 720 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 733 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 735 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 812 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 817 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 818 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 850 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 912",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 935 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart 945 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart C20",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart C200",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart C30",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart C500",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart C500 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart C500 2",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart E327 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart E331 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart E427 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart M22 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart M23 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart M307 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart M415 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart M425 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart M525 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart M527 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart M547 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart M725 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart M727 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart M737 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart R742 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart R927 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "HP PhotoSmart R967 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    }
+  ]
+}

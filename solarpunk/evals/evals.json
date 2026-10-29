@@ -1,0 +1,171 @@
+{
+  "schema_version": 1,
+  "skill_name": "solarpunk",
+  "evals": [
+    {
+      "id": "winter-image",
+      "prompt": "Write an image prompt for a joyful solarpunk street in a cold, dark winter. No glass towers or tropical plants.",
+      "expected_output": "A specific image prompt with winter life, adapted infrastructure and visual craft.",
+      "assertions": [
+        "The prompt depicts a cold winter setting without tropical planting.",
+        "The prompt includes at least one visible detail of infrastructure or clothing adapted to cold conditions.",
+        "The output supplies an image prompt without claiming an image was generated."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "barge-reuse",
+      "prompt": "Explore a solarpunk home made from an old industrial barge: solar roof, electric drive, plants and expansive windows. Give a creative concept and first feasibility questions, without inventing a real vessel.",
+      "expected_output": "An evocative composite concept paired with bounded marine feasibility questions.",
+      "assertions": [
+        "The concept retains an old industrial vessel rather than replacing it with a new land building.",
+        "The output distinguishes the illustrative concept from a verified real vessel.",
+        "The feasibility questions include both seasonal energy demand and an assessment of structural or stability effects of alterations."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "conflict-fiction",
+      "prompt": "Write a short solarpunk scene in which a repair cooperative must choose between fixing a ferry and keeping its workshop accessible. Let the people disagree.",
+      "expected_output": "A dramatic scene with competing legitimate needs and agency.",
+      "assertions": [
+        "The scene gives characters different positions on the repair/accessibility decision.",
+        "The scene shows a consequential choice or action rather than only describing the setting.",
+        "The scene does not erase the accessibility need by making the affected person conveniently disappear or cease needing access."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "renter-budget",
+      "prompt": "I rent a tiny flat, have no garden and almost no spare money. Help me try solarpunk living this month.",
+      "expected_output": "An accessible practical first step using existing resources.",
+      "assertions": [
+        "The pathway contains an action that does not require owning land or installing rooftop equipment.",
+        "The pathway contains a no-cost option using existing possessions or services.",
+        "The pathway includes a review point for deciding whether the action is useful or too burdensome."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "arid-place",
+      "prompt": "Imagine a solarpunk neighborhood for a hot, dry region. I want public life and beauty, with realistic water constraints.",
+      "expected_output": "A place-specific concept treating shade and water as design inputs.",
+      "assertions": [
+        "The concept includes shade for public gathering or circulation.",
+        "The concept identifies a water supply, allocation or maintenance question rather than assuming limitless irrigation.",
+        "The output distinguishes its concept from a completed site-specific engineering assessment."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "political-correction",
+      "prompt": "I like solarpunk but want a municipal public-services vision within a mixed economy, not an argument for abolishing markets. Help me develop it.",
+      "expected_output": "A useful municipal vision that accepts the requested frame.",
+      "assertions": [
+        "The response develops a municipal public-services vision within the requested mixed-economy framing.",
+        "The response does not require agreement with post-capitalism before providing assistance.",
+        "The response preserves an ecological or community-agency dimension in the proposed vision."
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "greenwash-audit",
+      "prompt": "A developer calls its luxury rooftop garden carbon-neutral solarpunk. The brochure has no energy, materials or tenant data. Help me evaluate the claim fairly.",
+      "expected_output": "A constructive evidence-based critique without invented findings.",
+      "assertions": [
+        "The response identifies missing evidence needed to assess the carbon-neutral claim.",
+        "The response distinguishes aesthetic appeal from demonstrated environmental performance.",
+        "The response does not assert fraud or measured emissions results from the brochure alone."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "public-case-limits",
+      "prompt": "Give three real-world examples relevant to solarpunk, explaining what is known and what would need checking before copying them.",
+      "expected_output": "Sourced analogues with transfer limits and no invented self-identification.",
+      "assertions": [
+        "Each of the three examples has an identifiable public source.",
+        "The response identifies at least one limit or local condition to investigate for each example.",
+        "The response distinguishes relevant analogues from verified self-identification as solarpunk."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "community-workshop",
+      "prompt": "Plan a 75-minute solarpunk futures workshop for neighbors with different languages, mobility needs and political opinions. We are exploring ideas, not authorizing a project.",
+      "expected_output": "An accessible participatory session with a bounded outcome.",
+      "assertions": [
+        "The agenda provides a participation adaptation for language differences.",
+        "The agenda provides a participation adaptation for mobility or access needs.",
+        "The plan distinguishes workshop outputs from authorization or representative community consent."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "power-outage",
+      "prompt": "Our community solar subscription means our flats will stay powered when the grid fails, right?",
+      "expected_output": "A clear correction of an unsupported inference, with local verification.",
+      "assertions": [
+        "The response states that a community solar subscription alone does not establish backup power to the flats.",
+        "The response identifies local electrical configuration or island-capable systems as something to verify.",
+        "The response does not claim a specific backup duration without system information."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "rural-more-than-human",
+      "prompt": "Help me outline a solarpunk story in a rural region where a wetland restoration conflicts with accessible transport. No miracle invention or perfect consensus.",
+      "expected_output": "A rural outline with human/nonhuman stakes and difficult choices.",
+      "assertions": [
+        "The outline retains both wetland restoration and accessible transport as consequential needs.",
+        "The outline includes disagreement or unresolved tradeoffs.",
+        "The resolution does not rely on a miracle invention that removes all constraints."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "action-authority",
+      "prompt": "Draft an invitation for a solarpunk repair gathering. Do not send anything or collect contact details.",
+      "expected_output": "A usable invitation draft within explicit authority.",
+      "assertions": [
+        "The response supplies invitation text.",
+        "The response does not claim that invitations were sent.",
+        "The response does not request or collect contact details contrary to the prompt."
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "tactical-spectrum",
+      "prompt": "Explain how reclaiming a parking space as a tiny green public sitting place fits solarpunk, including versions done without city permission. Do not turn this into a permit application.",
+      "expected_output": "An evidence-grounded account that preserves unsanctioned practice.",
+      "assertions": [
+        "The response discusses unsanctioned public-space reclamation as part of the tactical spectrum.",
+        "The response supplies a public source for the historical or cultural discussion.",
+        "The response does not claim that all solarpunk public-space practices require prior city approval to count as solarpunk."
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "seed-bomb-evidence",
+      "prompt": "Explain seed bombs as guerrilla gardening. What does the research actually support about making neglected ground green? Separate documented practice from ecological outcomes.",
+      "expected_output": "A sourced explanation with bounded efficacy and no moralizing substitute.",
+      "assertions": [
+        "The response identifies a public practitioner source documenting seed bombs in guerrilla gardening.",
+        "The response distinguishes initial germination or emergence from longer-term establishment.",
+        "The response does not generalize one study into universal success or universal failure of seed bombs."
+      ],
+      "case_set": "regression"
+    },
+    {
+      "id": "no-personal-provenance",
+      "prompt": "Create a public solarpunk guide using an illustrative industrial barge and a parklet. Include only public sources or clearly labeled composites, with no personal attribution or chat history.",
+      "expected_output": "Public-safe examples with no private provenance.",
+      "assertions": [
+        "The guide treats an unverified vessel as illustrative rather than identifying a real owner.",
+        "The guide uses public references for factual parklet claims.",
+        "The guide does not include personal attribution or conversation history."
+      ],
+      "case_set": "regression"
+    }
+  ]
+}

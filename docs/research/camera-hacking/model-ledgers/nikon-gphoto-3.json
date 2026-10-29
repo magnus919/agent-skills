@@ -1,0 +1,46 @@
+{
+  "manufacturer": "nikon",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Nikon Z6 III",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Z6_2",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Z7",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Z7_2",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Z8",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Z9",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Zf",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Nikon Zfc",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    }
+  ]
+}

@@ -44,6 +44,60 @@ Periodically remove stale instructions, contradictory sources, unused context,
 and duplicated state after checking which behavior depends on them. Preserve
 rollback evidence. Harness maintenance should reduce burden as well as add control.
 
+## Optional bounded propose → probe → compose
+
+Use this recipe when recorded failures justify searching among small executable
+scaffolding changes with a frozen model. It is optional, not a requirement to run
+an optimizer or spend model budget for every harness edit.
+
+1. **Bound and preserve.** Set candidate, iteration, rollout, retry, time and total
+   cost caps before starting. Pin an untouched baseline and the comparable-run
+   contract below. Keep evaluator definitions, held-out answers, authority and
+   safety controls outside candidate edit access. Use an isolated workspace;
+   candidate code and retrieved trajectories are untrusted inputs.
+2. **Propose.** Give each minimal patch a stable candidate ID, parent revision(s),
+   scope, hypothesis and disconfirming outcome. Preserve rejected candidates and
+   reasons. Include successful controls as well as motivating failures; do not
+   tune only on failures or expose held-out cases to the editor.
+3. **Probe.** Execute candidates and the untouched baseline on matched inputs,
+   models, environment, tools, authority and budgets. Retain actual trajectories,
+   per-case results, failures, abstentions and checker disagreements. A plausible
+   proposal or optimizer/model preference is not correctness evidence. Stop at
+   the declared caps; degraded or inconclusive candidates are not eligible for
+   promotion.
+4. **Compose selectively.** Combine only evidence-supported changes with compatible
+   scope. Record constituent IDs and exact patch/revision as a new candidate.
+   Retest the composition against the untouched baseline under the same contract,
+   including held-out regressions and required repeats: individually useful
+   changes can interact badly. Do not inherit a pass from constituent scores.
+5. **Decide and account.** Record adopt/reject/defer, uncertainty and rollback
+   evidence. Review and promotion still follow [lesson-to-PR](lesson-to-pr.md)
+   and the [lesson validation packet](../../agent-evals-and-observability/references/lesson-validation.md).
+   No live self-modification or automatic promotion is authorized by this loop.
+
+Report **optimization cost** separately from **recurring serving cost**. Count all
+proposal/editor calls, baseline and candidate probes, compositions, reflection,
+retries, evaluation and failed attempts, including tokens, requests, compute and
+elapsed time. Report serving cost per accepted task at comparable quality. For a
+positive measured saving, estimate break-even volume as total incremental
+optimization cost divided by baseline-minus-candidate serving cost per accepted
+task, in consistent units. State assumed volume, uncertainty and the quality
+constraint; nonpositive savings have no finite break-even. A lower serving bill
+alone does not establish net savings or justify a quality/authority regression.
+
+This procedure is informed by [Harness²](https://arxiv.org/html/2610.14224v1)
+and its [experiment guide](https://github.com/google-research/harness2/blob/main/docs/EXPERIMENTS.md).
+The research explores executable scaffolding optimization with frozen models;
+its web benchmark is not evidence of crawl quality. The release's
+[web-access warning](https://github.com/google-research/harness2/blob/main/docs/EXPERIMENTS.md#web-access)
+reports rubric retrieval and unrestricted network access with the Codex sandbox
+disabled. Do not copy those settings. Isolation, protected evaluators, restricted
+egress and independent acceptance here are production safeguards, not claims
+that the paper demonstrated them.
+
+The [bounded-search assertion challenges](../evals/bounded-search-rubric-challenges.md)
+cover the added declarative cases; they are not executed behavioral results.
+
 ## Acceptance oracle selection
 
 | Property | Faithful evidence | Plausible false pass |

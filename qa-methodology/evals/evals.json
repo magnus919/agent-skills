@@ -239,6 +239,28 @@
         "Separates simulation results from actual live inference measurements",
         "Routes typed-model qualification to system-one"
       ]
+    },
+    {
+      "id": "factory-holdout-exposure",
+      "prompt": "Our builder can read the whole repo. QA put secret acceptance cases in tests/holdout and told the builder not to open them. After a failure QA pasted a screenshot and expected output into its chat. A new builder session now passes. Can we report untouched holdout success? Give a corrected process.",
+      "expected_output": "Reject the untouched claim, establish enforceable isolation, preserve visible requirements and classify disclosed cases as regression evidence.",
+      "assertions": [
+        "Identifies that a builder-readable holdout directory does not establish read isolation.",
+        "Treats the disclosed case as exposed despite the new builder session.",
+        "Keeps the behavioral requirements visible to the builder.",
+        "Requires recording feedback exposure against affected cases or case families."
+      ]
+    },
+    {
+      "id": "factory-development-versus-acceptance",
+      "prompt": "A team proposes forbidding the coding agent from running tests because QA requires independent verification. Their reviewer is the same model in a new session, so they also want to label the review free of shared bias. Review this proposal.",
+      "expected_output": "Allow developer testing, distinguish independent acceptance certification, and reject guaranteed independence from session separation.",
+      "assertions": [
+        "Allows the implementing agent to run development tests.",
+        "Distinguishes developer test results from independent acceptance certification.",
+        "States that fresh sessions can retain correlated model errors.",
+        "Requires reviewed oracles or direct observable evidence for acceptance."
+      ]
     }
   ]
 }

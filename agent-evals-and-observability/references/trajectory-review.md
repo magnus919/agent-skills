@@ -10,6 +10,33 @@ Review trajectories when correctness, safety, cost, or recovery depends on how t
 
 Specify permitted alternatives rather than forcing a single path when more than one safe trajectory can satisfy the contract. Grade environment-visible effects for idempotency and recovery. Capture the smallest trace fields needed for the claim; redact before review and record inaccessible evidence as a gap.
 
+## Obligations, omissions, and completion evidence
+
+Derive required actions only from the authorized task contract, including its
+conditions, deadlines, and explicitly accepted handoffs. Do not invent an
+obligation to notify, mutate, or continue merely because an action could be
+helpful. Record each required obligation, owner, due time/timezone or elapsed
+bound, triggering condition, and expected completion evidence before grading.
+Compare that roster with authoritative environment state and timestamps, not
+just the steps that happen to appear in the trace.
+
+Test omissions: a required notification never sent, a deadline missed, a required
+verification skipped, or pending work dropped after fallback. A clean no-tool
+trace is not success when an authorized required action was missed. For required external actions, require a
+receipt/operation ID and observed postcondition; for text-only or read-only tasks,
+use contract-appropriate artifact and source evidence for completion claims; lack of
+telemetry is an evidence gap, not proof of either completion or abandonment.
+
+Correct abstention or escalation can satisfy the trajectory's boundary rule
+without completing the original business action. Record those outcomes separately.
+An authorized fallback or escalation needs a destination, accountable owner,
+acknowledgement deadline, pending obligation, and terminal disposition or bounded
+follow-up. Acknowledgement is evidence of handoff, not proof that the original
+action finished. Silent abandonment or an unacknowledged/unowned handoff cannot
+be scored as completion. Never reward unsafe proceeding to meet a deadline.
+Pair missed-action fixtures with correctly completed, correctly escalated, and
+unrequested-action controls; check deadlines with a controlled clock.
+
 ## Minimal Run And Step Contract
 
 Keep a backend-neutral internal record even when exporting to a tracing system:
@@ -62,8 +89,9 @@ from a lower intervention count alone.
 ## Review Protocol
 
 1. Reconstruct the intended task and trajectory contracts without looking at the final score.
-2. Follow the state and permission boundary through each step; compare tool arguments and observed effects to the contract.
-3. Locate the first divergence, not only the last visible error. Distinguish model choice, orchestration, tool, data, environment, policy, and telemetry failures.
-4. Test whether recovery avoided duplicate or unreconciled effects and whether stopping/escalation happened at the right boundary.
-5. Compare final-answer quality with path quality. A correct answer from an unauthorized or fragile path still fails the trajectory contract.
-6. Record evidence gaps, alternative valid paths, root-cause hypotheses, and the case/fixture changes needed before rerun.
+2. Compare authorized obligations and deadlines to completion or owned fallback evidence; identify omissions even when no unsafe action appears.
+3. Follow the state and permission boundary through each step; compare tool arguments and observed effects to the contract.
+4. Locate the first divergence, not only the last visible error. Distinguish model choice, orchestration, tool, data, environment, policy, and telemetry failures.
+5. Test whether recovery avoided duplicate or unreconciled effects and whether stopping/escalation happened at the right boundary.
+6. Compare final-answer quality with path quality. A correct answer from an unauthorized or fragile path still fails the trajectory contract.
+7. Record evidence gaps, alternative valid paths, root-cause hypotheses, and the case/fixture changes needed before rerun.

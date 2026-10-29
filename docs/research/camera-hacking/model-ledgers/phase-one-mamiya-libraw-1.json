@@ -1,0 +1,286 @@
+{
+  "manufacturer": "phase-one-mamiya",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "AFi 5",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "AFi 6",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "AFi 7",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "AFi-II 6",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "AFi-II 7",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "AFi-II 10",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "AFi-II 10R",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Aptus-II 5",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Aptus-II 6",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Aptus-II 7",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Aptus-II 8",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Aptus-II 10",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Aptus-II 12",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Aptus-II 12R",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Aptus 17",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Aptus 22",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Aptus 54S",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Aptus 65",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Aptus 65S",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Aptus 75",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Aptus 75S",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Cantare",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Cantare XY",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "CatchLight",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "CMost",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Credo 40",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Credo 50",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Credo 60",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Credo 80",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "DCB-II",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Valeo 6",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Valeo 11",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Valeo 17",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Valeo 17wi",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Valeo 22",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Valeo 22wi",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Volare",
+      "source_brand_label": "Leaf"
+    },
+    {
+      "name": "Mamiya ZD",
+      "source_brand_label": "Mamiya ZD"
+    },
+    {
+      "name": "IQ140",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "IQ150",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "IQ160",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "IQ180",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "IQ180 IR",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "IQ250",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "IQ260",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "IQ260 Achromatic",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "IQ280",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "IQ3 50MP",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "IQ3 60MP",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "IQ3 80MP",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "IQ3 100MP",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "IQ3 100MP Trichromatic",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "IQ4 150MP",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "LightPhase",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "Achromatic+",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "H 10",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "H 20",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "H 25",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "P 20",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "P 20+",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "P 21",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "P 25",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "P 25+",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "P 30",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "P 30+",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "P 40+",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "P 45",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "P 45+",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "P 65",
+      "source_brand_label": "PhaseOne"
+    },
+    {
+      "name": "P 65+",
+      "source_brand_label": "PhaseOne"
+    }
+  ]
+}

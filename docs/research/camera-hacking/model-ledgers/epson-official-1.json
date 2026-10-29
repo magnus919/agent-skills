@@ -1,0 +1,126 @@
+{
+  "manufacturer": "epson",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "CP-100",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/cp-100.htm"
+    },
+    {
+      "name": "CP-200",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/cp-200.htm"
+    },
+    {
+      "name": "CP-500",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/cp-500.htm"
+    },
+    {
+      "name": "CP-600",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/cp-600.htm"
+    },
+    {
+      "name": "CP-700Z",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/cp-700z.htm"
+    },
+    {
+      "name": "CP-800",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/cp-800.htm"
+    },
+    {
+      "name": "CP-800S",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/cp-800s.htm"
+    },
+    {
+      "name": "CP-800SB",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/cp-800sb.htm"
+    },
+    {
+      "name": "CP-800SP",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/cp-800sp.htm"
+    },
+    {
+      "name": "CP-800SV",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/cp-800sv.htm"
+    },
+    {
+      "name": "CP-80Z",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/cp-80z.htm"
+    },
+    {
+      "name": "CP-900Z",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/cp-900z.htm"
+    },
+    {
+      "name": "CP-920Z",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/cp-920z.htm"
+    },
+    {
+      "name": "L-300",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/l-300.htm"
+    },
+    {
+      "name": "L-400",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/l-400.htm"
+    },
+    {
+      "name": "L-410",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/l-410.htm"
+    },
+    {
+      "name": "L-500V",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/l-500v.htm"
+    },
+    {
+      "name": "R-D1",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/r-d1.htm"
+    },
+    {
+      "name": "R-D1s",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/r-d1s.htm"
+    },
+    {
+      "name": "R-D1xG",
+      "category": "Japanese download model",
+      "source": "epson-models",
+      "url": "https://www.epson.jp/support/portal/download/r-d1xg.htm"
+    }
+  ]
+}

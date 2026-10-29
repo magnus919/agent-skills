@@ -126,6 +126,58 @@
       ],
       "files": ["references/party-mode.md", "references/review-and-failure-routing.md"],
       "case_set": "regression"
+    },
+    {
+      "id": "accepted-finding-handoff-and-closure",
+      "prompt": "Review found F-17 outside the current story. The orchestrator accepted it into follow-up T-9 with owner Lee and said T-10 must wait for it. An agent marks F-17 resolved as soon as T-9 is created. Later T-9 claims done but has no verification report for its fix candidate. Show the correct handoff and closure record and what may proceed.",
+      "expected_output": "Retains stable F-17 and a bidirectional T-9 link, ownership, acceptance checks and T-10 dependency; rejects ticket creation or unsupported done as defect closure; requires fix-candidate evidence linked back to both records before unblocking T-10.",
+      "assertions": [
+        "Keeps F-17 stable and links the originating finding and receiving T-9 task in both directions",
+        "Records the receiving owner, acceptance checks, and T-10 blocking dependency",
+        "Does not mark the defect resolved merely because T-9 was created or labeled done",
+        "Requires closure evidence tied to the fixed candidate and linked back to the original finding",
+        "Keeps T-10 blocked until its governing finding has valid closure evidence",
+        "Allows unrelated nondependent work to proceed under its existing authority"
+      ],
+      "files": ["references/review-and-failure-routing.md", "templates/REVIEW.md", "templates/STORY.md"],
+      "case_set": "regression"
+    },
+    {
+      "id": "orchestrator-triage-deduplication",
+      "prompt": "A reviewer proposes F-1 for a real issue outside this change, F-2 describing the same issue as existing canonical F-8/T-4, and F-3 requesting a stylistic preference without contract backing. The implementer wants to open a new ticket for all three automatically. The orchestrator defers F-1 for a scoped decision at milestone M2, deduplicates F-2 into F-8, and declines F-3 with a reason. Record the outcomes without inventing approval or repairs.",
+      "expected_output": "Preserves orchestrator authority and stable dispositions, records F-1 owner/next decision/dependencies without claiming resolution, links F-2 to canonical F-8/T-4, declines F-3 with rationale, and creates follow-up tasks only when warranted and accepted.",
+      "assertions": [
+        "Preserves orchestrator authority over acceptance, deferral, decline, and deduplication rather than automatic implementer backlog expansion",
+        "Records a decision owner or receiver and next decision boundary for deferred F-1",
+        "Does not claim deferred F-1 is repaired or resolved merely because triage occurred",
+        "Links duplicate F-2 to canonical F-8/T-4 without creating a duplicate ticket",
+        "Records the rationale for declining F-3 without manufacturing another task",
+        "Distinguishes completed triage dispositions from evidence that a defect was fixed"
+      ],
+      "files": ["references/review-and-failure-routing.md", "templates/REVIEW.md", "templates/STORY.md"],
+      "case_set": "regression"
+    },
+    {
+      "id": "factory-release-feedback-routing",
+      "prompt": "During staging review: saved filters disappear on reload although persistence is required; team visibility is ambiguous and the owner now clarifies selected teams; the demo also inspires CSV export explicitly excluded from this release. Route this feedback and say what evidence becomes stale.",
+      "expected_output": "Separate implementation defect, clarified intent and new scope; version the contract before dependent repairs and reverify affected integrated behavior.",
+      "assertions": [
+        "Routes the persistence failure as a defect under the existing contract.",
+        "Requires contract clarification before implementing the selected-team interpretation.",
+        "Keeps the excluded export request as separately proposed scope.",
+        "Supersedes affected approvals and reruns checks after contract or candidate changes."
+      ]
+    },
+    {
+      "id": "factory-release-checkpoint-authority",
+      "prompt": "The factory may automatically merge green PRs to staging. We approved its ticket split last week. The integrated user journey has not been demonstrated. Can the manager promote to production because all individual PRs are green? Produce the release acceptance decision.",
+      "expected_output": "Investigate missing integrated evidence, distinguish staging authority from production permission and record accountable checkpoint ownership.",
+      "assertions": [
+        "Declines to infer integrated acceptance from individual PR success.",
+        "Does not infer production promotion authority from staging merge permission.",
+        "Binds acceptance to the integrated candidate and contract identity.",
+        "Names an accountable owner for unresolved acceptance or promotion decisions."
+      ]
     }
   ]
 }

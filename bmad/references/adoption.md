@@ -50,7 +50,12 @@ After an epic or substantial change:
 - update context only when a lesson is expensive to rediscover;
 - create follow-up work explicitly rather than letting it leak into the next task.
 
-## Mapping to a dark-factory system
+For a release batch, use [release intent acceptance](release-intent-acceptance.md)
+to define checkpoints and route defects, unclear intent and new scope. These
+controls do not imply that every team needs identical supervision or that dark
+factories cannot work.
+
+## Mapping to a factory system
 
 | BMad concept | Likely implementation |
 |---|---|

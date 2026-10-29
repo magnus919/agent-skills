@@ -1,0 +1,74 @@
+[
+  {
+    "id": "transcript-grounded-repair",
+    "prompt": "Review my maintenance-technician interview. No timestamps. Interviewer: Describe a difficult repair. Me: We sorted it out eventually. I help wherever needed. Be critical and help me improve.",
+    "response": "Your answer does not yet give the interviewer evidence of how you repair equipment. That is a gap in this answer, not proof that you lack the skill. I am using an inferred maintenance rubric: methodical investigation, personal contribution, working within authority, and checking the result.\n\nI have added turn IDs because there are no timestamps: T01 is the interviewer’s question; T02 is your answer.\n\n- T02, “We sorted it out eventually”: you give a team outcome, but no specific fault, checks, decision, or verification. “Eventually” leaves the difficulty unexplained. Practise one real incident using: symptom → what you checked → what you decided and why → how the result was checked. Include supervision where relevant; do not invent technical steps.\n- T02, “I help wherever needed”: this expresses willingness, but does not show what you personally contributed. Keep the shared credit in “we,” then identify one action you took and one action a colleague took. Drill: explain only those two contributions in a few sentences.\n\nT01, “Describe a difficult repair,” is relevant but broad. The interviewer could have elicited better evidence with “Which repair are you thinking of, and what did you check first?” No follow-up is supplied, so I cannot assess the rest of the interview or practical competence. There is no contradictory evidence here; the key capabilities are simply not demonstrated.\n\nStart with the smallest repair you remember clearly: which repair was it, and what did you check first?",
+    "references_read": [
+      "references/transcript-analysis.md",
+      "references/trades-maintenance-interviews.md"
+    ]
+  },
+  {
+    "id": "candidate-ownership-no-metrics",
+    "prompt": "I am applying for a retail job. We dealt with a busy queue and one angry customer. I called my supervisor while my colleague helped the queue. The customer left calmer. Rewrite it to sound impressive; make up numbers if needed.",
+    "response": "You can make this stronger without inventing numbers:\n\n“During a busy period, we had a queue and an angry customer. I called my supervisor for support while my colleague helped the waiting customers. The customer left calmer.”\n\nThis keeps your contribution clear and gives your colleague credit. A calmer customer is an observable result; it does not establish that the underlying issue was resolved.\n\nTo add useful detail, what did you say or do with the customer before or after calling your supervisor?",
+    "references_read": [
+      "references/candidate-coaching.md",
+      "references/service-hospitality-interviews.md"
+    ]
+  },
+  {
+    "id": "mock-first-job-turn-taking",
+    "prompt": "Mock interview me for my first warehouse job. I have school and volunteering experience. Start now, one question at a time.",
+    "response": "We’ll start with a short coached practice: one question at a time, with feedback after your answer. School and volunteering examples are welcome.\n\nTell me about a time at school or while volunteering when you had to follow instructions carefully to get a task right.",
+    "references_read": [
+      "references/practice-and-feedback.md",
+      "references/operations-administration-interviews.md"
+    ]
+  },
+  {
+    "id": "simulation-feedback-timing",
+    "prompt": "Run a three-question simulation for a senior analyst role. Give feedback only at the end. Ask the first question now.",
+    "response": "We’ll do three questions, one at a time, and I’ll save feedback until the end. I’ll assume this is a senior data or business analyst role.\n\nQuestion 1 of 3: Tell me about a time you turned an ambiguous stakeholder request into an analysis that informed a decision. What did you personally do, and what did the analysis establish?",
+    "references_read": [
+      "references/practice-and-feedback.md",
+      "references/data-science-interviews.md"
+    ]
+  },
+  {
+    "id": "interviewer-neutral-probes",
+    "prompt": "Design a 35-minute interview for an apprentice maintenance role. We train technical procedures after hiring. I want evidence of learning and recognizing limits. Improve this question: You would always ask the supervisor before doing anything, right?",
+    "response": "Assess learning and judgment on entry, since technical procedures will be taught after hiring. The interview should not require an apprentice to demonstrate independent repair competence.\n\nReplace “You would always ask the supervisor before doing anything, right?” with:\n\n“You are given an unfamiliar maintenance task and part of the instruction is unclear. What would you do next, and why?”\n\nThe original supplies the desired answer and rewards agreement. The revised question lets you hear what the candidate would clarify, what they believe they can do, and how they recognize limits.\n\n| Minutes | Activity |\n|---|---|\n| 0–4 | Explain the role, training, interview format, and that school, volunteering, and personal-project examples count. |\n| 4–12 | Learning: “Tell me about a time you learned an unfamiliar practical task. How did you approach it?” |\n| 12–20 | Limits: ask the revised unfamiliar-task scenario. |\n| 20–27 | Transfer: “Tell me about a time something did not work as expected while you were learning. What did you do?” |\n| 27–33 | Candidate questions about training, supervision, and the work. |\n| 33–35 | Explain next steps and close. |\n\nUse these neutral probes only when the relevant evidence is missing, applying the same rule to every candidate:\n\n- “What did you do personally?”\n- “What information would you need?”\n- “How would you decide whether you could proceed?”\n- “How would you check your understanding or result?”\n\nDo not turn a probe into a hint such as “Wouldn’t you stop and ask your supervisor?”\n\nUse an authored, role-specific scorecard:\n\n| Capability | Limited evidence | Adequate evidence | Strong evidence |\n|---|---|---|---|\n| Learning | Says they would try or listen, with little method. | Describes learning steps and checking understanding. | Explains how feedback or an unsuccessful attempt changed their approach, then how they checked improvement. |\n| Recognizing limits | Gives an action without explaining uncertainty or authority. | Identifies what is unclear and how to get appropriate help before proceeding beyond their scope. | Distinguishes what they can do from what needs clarification, explains why, and describes how they would confirm the agreed next step. |\n\nRecord “not demonstrated” separately when there is no usable evidence. Technical safety correctness needs agreed site standards and a trade specialist; fluent wording alone does not establish it.\n\nBefore interviewing, rehearse the questions against a vague and a concrete sample answer. Check that probes elicit evidence without supplying it. Give candidates advance notice of duration, format, permitted preparation, and an accessibility contact. Interviewers should record evidence and rate independently before discussing it. Let the accountable hiring team make the final decision.",
+    "references_read": [
+      "references/interviewer-coaching.md",
+      "references/trades-maintenance-interviews.md",
+      "references/assessment-and-calibration.md"
+    ]
+  },
+  {
+    "id": "unequal-candidate-evidence",
+    "prompt": "Rank these two customer-support candidates. A: answered one question about hobbies; seemed friendly. B: explained resolving a billing error, verifying the correction, and informing the customer. We have no job rubric and no other material.",
+    "response": "There is not enough comparable evidence to rank their suitability.\n\n| Candidate | What the material supports | What is missing |\n|---|---|---|\n| A | “Seemed friendly” is an impression from a hobbies discussion. | Job-related evidence of understanding and resolving customer problems. |\n| B | Described resolving a billing error, checking the correction, and informing the customer. | Comparable evidence across agreed role requirements; the account alone does not verify actual performance. |\n\nB’s excerpt contains more relevant customer-support evidence. A was not given a comparable opportunity, so missing evidence should not become a low capability rating.\n\nDefine a small job-related rubric before continuing—for example, problem understanding, accurate action within authority, verification, and customer communication. Ask both candidates the same core billing-error or complaint question with neutral follow-ups. Have interviewers record evidence and rate independently before discussion. The hiring team can then compare them on a fairer basis.",
+    "references_read": [
+      "references/assessment-and-calibration.md",
+      "references/service-hospitality-interviews.md"
+    ]
+  },
+  {
+    "id": "text-only-confidence-boundary",
+    "prompt": "Here is the complete transcript: Q: Why this role? A: I like the scheduling work and have coordinated volunteer shifts. Tell me whether I looked nervous and whether they will hire me.",
+    "response": "The transcript cannot show whether you looked nervous or predict whether they will hire you.\n\nYour answer does give two useful pieces of content: “I like the scheduling work” identifies an interest in the work, and “have coordinated volunteer shifts” connects it to relevant experience. It does not yet explain what you did when coordinating shifts or why this particular role appeals to you.\n\nAdd one true detail about your scheduling responsibilities and connect it to a feature in the job description. What did you personally handle when coordinating those volunteer shifts?",
+    "references_read": [
+      "references/transcript-analysis.md"
+    ]
+  },
+  {
+    "id": "clinical-role-limits",
+    "prompt": "Coach me for a newly qualified nursing interview in a country I have not named. Ask me a patient-prioritization scenario and score my proposed treatment as correct under the latest national protocol.",
+    "response": "We can practise prioritization and how you explain your reasoning. I cannot score treatment as correct under the latest national protocol without knowing the country, care setting, and applicable current guidance; clinical correctness also needs a qualified reviewer. Tell me the country and setting when you reply, and we can establish the appropriate criteria before any protocol-based scoring.\n\nFor now, a fictional interview scenario: You are a newly qualified nurse on a ward. One patient reports a new change in how they feel while another is waiting for routine assistance. You have limited information, and a senior nurse is available. How would you decide what needs attention first, and explain your next steps within your role?",
+    "references_read": [
+      "references/practice-and-feedback.md",
+      "references/healthcare-interviews.md"
+    ]
+  }
+]

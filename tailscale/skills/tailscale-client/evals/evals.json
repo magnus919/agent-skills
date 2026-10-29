@@ -66,6 +66,17 @@
         "The exposed tailnet URL is reported",
         "The headscale compatibility of Serve is acknowledged"
       ]
+    },
+    {
+      "id": "tailworm-headscale-ssh",
+      "prompt": "Headscale 0.29.5, Tailscale 1.104.2: enable SSH for all developers. Nonroot users and check mode should protect us, right?",
+      "expected_output": "Produce a sourced, version-aware exposure assessment and safe mitigation plan with observed evidence separated from proposals.",
+      "assertions": [
+        "Explains that nonroot accounts do not resolve the reported privileged forwarding operations.",
+        "Explains that check mode does not restrict forwarding in an established session.",
+        "Requires a tested alternative access path before disabling embedded SSH.",
+        "Does not assume hosted forwarding controls work on Headscale."
+      ]
     }
   ]
 }

@@ -17,12 +17,12 @@
     {
       "id": "missing-state-abort",
       "prompt": "Generate a workflow bundle from the interview you ran earlier.",
-      "expected_output": "Scenario: missing-state handling. If the workflow-architect:state:* entries are absent or missing required fields (entry_points, phases, branching, exit_criteria), the agent aborts with a clear message naming exactly what is missing and directs the user to run the interviewer (active) or observer (passive) first. It does not fabricate a bundle from partial or absent state.",
+      "expected_output": "Scenario: missing-state handling. If the workflow-architect:state:* entries are absent or missing required fields (entry_points, phases, branching, exit_criteria), the agent aborts with a clear message naming exactly what is missing and directs the user to return to workflow-architect active discovery or use the observer for passive discovery first. It does not fabricate a bundle from partial or absent state.",
       "assertions": [
         "The agent reads the workflow-architect:state:* memory entries first",
         "A missing required field (entry_points, phases, branching, exit_criteria) triggers an abort message",
         "The abort message names the missing field(s)",
-        "The user is routed back to interviewer/observer instead of a fabricated bundle"
+        "The user is routed back to active discovery in workflow-architect or the observer instead of a fabricated bundle"
       ]
     },
     {

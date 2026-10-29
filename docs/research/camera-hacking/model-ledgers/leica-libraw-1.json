@@ -1,0 +1,250 @@
+{
+  "manufacturer": "leica",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "C (Typ 112)",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "CL",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "C-Lux / CAM-DC25",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "Digilux 2",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "Digilux 3",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "Digital-Modul-R",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "D-LUX2",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "D-LUX3",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "D-LUX4",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "D-LUX5",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "D-LUX6",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "D-LUX7",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "D-Lux8",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "D-Lux (Typ 109)",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "M8",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "M8.2",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "M9",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "M10",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "M10-D",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "M10-P",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "M10-R",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "M10 Monochrom",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "M11",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "M11 Monochrom",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "M (Typ 240)",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "M (Typ 262)",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "Monochrom (Typ 240)",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "Monochrom (Typ 246)",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "M-D (Typ 262)",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "M-E",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "M-P",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "R8",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "Q (Typ 116)",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "Q-P",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "Q2",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "Q2 Monochrom",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "Q3",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "Q3 43",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "S",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "S2",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "S3",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "S (Typ 007)",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "SL (Typ 601)",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "SL2",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "SL2-S",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "SL3",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "T (Typ 701)",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "TL",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "TL2",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "X1",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "X (Typ 113)",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "X2",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "X-E (Typ 102)",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "X-U (Typ 113)",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "V-LUX1",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "V-LUX2",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "V-LUX3",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "V-LUX4",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "V-LUX5",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "V-Lux (Typ 114)",
+      "source_brand_label": "Leica"
+    },
+    {
+      "name": "X VARIO (Typ 107)",
+      "source_brand_label": "Leica"
+    }
+  ]
+}

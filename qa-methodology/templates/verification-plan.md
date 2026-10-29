@@ -33,12 +33,12 @@ Every acceptance criterion must map to at least one verification method. No AC m
 
 ## Verifier Assignment
 
-> The implementing agent (or developer) MUST NOT self-verify. Assign verification to a separate agent session, a different human, or an independent automated process.
+> Implementers run development tests. Assign acceptance certification to a separate evaluator with reviewed oracles and observable evidence; a fresh context alone does not eliminate correlated errors.
 
 | AC ID(s) | Verifier | Independence Mechanism |
 |-----------|----------|----------------------|
-| <AC-1, AC-2> | <separate agent session / human reviewer / CI pipeline> | <fresh context, no shared priors / different team member> |
-| <AC-3> | <separate agent session / human reviewer / CI pipeline> | <fresh context, no shared priors / different team member> |
+| <AC-1, AC-2> | <separate agent session / human reviewer / CI pipeline> | <context separation and its limits / different reviewer; oracle evidence> |
+| <AC-3> | <separate agent session / human reviewer / CI pipeline> | <context separation and its limits / different reviewer; oracle evidence> |
 
 ## Evidence Format
 

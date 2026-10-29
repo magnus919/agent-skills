@@ -82,6 +82,7 @@ def read_key(path: Path) -> str:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--live", action="store_true")
+    parser.add_argument("--model", default="jev-latest", help="model ID or moving alias; pin for reproducible comparisons")
     parser.add_argument("--key-file", type=Path)
     parser.add_argument("--max-calls", type=int, default=len(CASES))
     args = parser.parse_args()
@@ -98,11 +99,14 @@ def main() -> int:
         predicted = baseline(kind, state)
         row = {"id": case_id, "kind": kind, "label": label, "rule_baseline": predicted, "baseline_correct": predicted == label}
         if args.live:
-            request = validate_request({"model": "jev-1.13.0", "state": state, "questions": {"judgment": question(kind, state)}})
+            request = validate_request({"model": args.model, "state": state, "questions": {"judgment": question(kind, state)}})
             try:
                 status, response, latency = live_call("https://api.typesafe.ai/v1/systemone", request, key, 12.0)
                 validate_response(request, response)
-                if response.get("model") != request["model"]:
+                returned_model = response.get("model")
+                if not isinstance(returned_model, str) or not re.fullmatch(r"jev-\d+\.\d+\.\d+", returned_model):
+                    raise ValueError("response must identify a versioned Jev model")
+                if args.model not in {"jev-latest", "jev-preview"} and returned_model != args.model:
                     raise ValueError("response model does not match pinned request model")
                 answer = response["answers"]["judgment"]
                 model_prediction = answer["noul"] >= 0.5 if kind == "semantic_grade" else answer["choice"]
@@ -124,7 +128,7 @@ def main() -> int:
         group["baseline_correct"] += int(row["baseline_correct"])
         group["jev_correct"] += int(row.get("jev_correct", False))
         group["jev_errors"] += int("jev_error" in row)
-    print(json.dumps({"data": "synthetic, analyst-labeled, exploratory", "model_requested": "jev-1.13.0" if args.live else None, "calls_attempted": len(rows) if args.live else 0, "by_kind": totals, "cases": rows}, indent=2))
+    print(json.dumps({"data": "synthetic, analyst-labeled, exploratory", "model_requested": args.model if args.live else None, "calls_attempted": len(rows) if args.live else 0, "by_kind": totals, "cases": rows}, indent=2))
     return 1 if any("jev_error" in row for row in rows) else 0
 
 

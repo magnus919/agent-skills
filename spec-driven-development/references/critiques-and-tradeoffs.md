@@ -21,7 +21,7 @@ SDD is not a silver bullet. This reference covers when it fails, the hard tradeo
 
 **The hardest problem in AI code generation:** Spec quality is the most difficult engineering problem. It's easy to verify code against a spec. It's hard to verify a spec against stakeholder intent.
 
-**Root cause:** AI agents cannot ask clarifying questions. A vague spec produces working-but-wrong code. An ambiguous term produces code implementing the wrong interpretation. A missing edge case produces code that crashes in production.
+**Root cause:** An execution loop may guess at unresolved intent instead of routing it to an owner. Agents can ask questions; the workflow must preserve that route. Vague specifications and missing edge cases can produce working-but-wrong behavior.
 
 **Mitigation:**
 - The 7 quality gates in this skill exist specifically to catch GIGO before code generation
@@ -46,7 +46,7 @@ This is the defining tension of SDD:
 
 **For human developers:** clarity > precision. Some ambiguity is acceptable because humans clarify through conversation.
 
-**For AI agents:** precision > clarity. The spec must be exact even if it's dense. The agent cannot ask for clarification.
+**For AI agents:** explicit, readable behavior and decision boundaries reduce guessing. Preserve a clarification path for consequential ambiguity instead of assuming a dense specification is complete.
 
 The result: **specs optimized for AI consumption are harder for humans to write and review.** Business stakeholders may struggle to validate dense, technical specs. Spec reviewers need a different skill set than traditional requirements review.
 

@@ -59,12 +59,37 @@ class PilotTests(unittest.TestCase):
         with patch.object(sys, "argv", [str(SCRIPT), "--live", "--max-calls", "1"]), patch.dict(os.environ, {"TYPESAFE_API_KEY": "test-secret"}), patch.object(systemone_probe, "live_call", fake_call), redirect_stdout(output):
             self.assertEqual(pilot.main(), 0)
         self.assertEqual(len(sent), 1)
+        self.assertEqual(sent[0]["model"], "jev-latest")
+        self.assertEqual(json.loads(output.getvalue())["model_requested"], "jev-latest")
+        self.assertEqual(json.loads(output.getvalue())["cases"][0]["model"], "jev-1.13.0")
         self.assertNotIn("label", json.dumps(sent[0]))
         self.assertNotIn("test-secret", output.getvalue())
         row = json.loads(output.getvalue())["cases"][0]
         self.assertEqual(row["selected_option_probability"], 1.0)
         self.assertEqual(row["provider_confidence"], 1.0)
         self.assertNotIn("noul_yes_probability", row)
+
+    def test_alias_resolution_and_pinned_mismatch(self):
+        import systemone_probe
+
+        for requested, returned, expected in [
+            ("jev-preview", "jev-1.14.0", 0),
+            ("jev-latest", "jev-1.14.0", 0),  # Future stable promotion.
+            ("jev-1.14.0", "jev-1.14.0", 0),
+            ("jev-1.14.0", "jev-1.13.0", 1),
+            ("jev-preview", "jev-preview", 1),  # Missing resolved identity.
+            ("jev-latest", "clm-latest", 1),
+        ]:
+            with self.subTest(requested=requested, returned=returned):
+                answer = {"type": "choice", "choice": "code", "confidence": 1.0,
+                          "probabilities": {name: float(name == "code") for name in pilot.TRIAGE}}
+                output = io.StringIO()
+                with patch.object(sys, "argv", [str(SCRIPT), "--live", "--max-calls", "1", "--model", requested]), patch.dict(os.environ, {"TYPESAFE_API_KEY": "test-secret"}), patch.object(systemone_probe, "live_call", return_value=(200, {"model": returned, "answers": {"judgment": answer}}, 1.0)), redirect_stdout(output):
+                    self.assertEqual(pilot.main(), expected)
+                report = json.loads(output.getvalue())
+                self.assertEqual(report["calls_attempted"], 1)
+                self.assertEqual(report["model_requested"], requested)
+                self.assertEqual("jev_error" in report["cases"][0], bool(expected))
 
 
 if __name__ == "__main__":

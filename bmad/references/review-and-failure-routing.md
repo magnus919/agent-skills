@@ -73,3 +73,26 @@ independent tests, a separate evaluator, security or privacy review, production-
 integration tests, human review of the highest-blast-radius decisions, and explicit
 evaluation harnesses. Never describe persona separation as independent review unless
 the reasoning paths are actually independent.
+
+## Durable finding handoffs
+
+Carry stable finding IDs across rounds, with source location, severity, disposition,
+and the orchestrator's decision/rationale. The orchestrator may accept, defer,
+decline, or deduplicate; the implementing agent does not acquire backlog authority
+from a review suggestion. Link a duplicate to its canonical finding/task. Decline
+unsupported preferences with rationale rather than manufacturing tickets.
+
+When follow-up work is warranted, link the originating finding to its receiving
+task and owner, acceptance checks, and dependencies/gate boundary; the task links
+back to the finding. Creating or deferring a task is a handoff, not verified
+closure. Link the fixed candidate and closure evidence back into both records.
+Missing or failed closure evidence leaves the accepted finding open. Record
+explicit declined/duplicate triage outcomes without claiming the defect was fixed.
+Nonblocking deferred work may coexist with current-task completion, but unresolved
+blocking findings cannot be bypassed by moving them into another task.
+
+Use `templates/REVIEW.md` and `templates/STORY.md`; use SDD's
+[review-record guidance](../../spec-driven-development/references/review-records.md)
+for formal gates, assumption invalidation, and transition challenges. Bind review
+evidence to candidate/content and acceptance identity; new relevant changes need
+a current verdict, not inherited approval from the same PR.

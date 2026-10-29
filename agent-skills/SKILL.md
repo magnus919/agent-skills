@@ -39,7 +39,7 @@ skill-name/
 2. Ground instructions in real domain knowledge, project artifacts, and observed failure modes. Read [best practices](references/best-practices.md) when designing or materially revising instructions.
 3. Keep the skill a coherent, triggerable unit. Put only essential instructions in `SKILL.md`; put conditional detail in focused reference files and state exactly when to read each one.
 4. Use a precise `description` that says what the skill does, when it applies, and when it does **not** apply. For skills with meaningful overlap, name the nearest alternative or prerequisite in a `## When not to use` section. Test the boundary with at least three should-trigger prompts and two should-not-trigger near-misses; keep these harness-specific trigger checks separate from portable output-quality evals. Read [optimizing descriptions](references/optimizing-descriptions.md) for trigger design.
-5. For every new skill, create `evals/evals.json` with at least five representative output-quality cases. Each case needs a realistic prompt, an expected outcome, and observable assertions. Include edge cases that exercise risky or ambiguous behavior. Read [evaluating skills](references/evaluating-skills.md) for the eval format and iteration workflow.
+5. Read [repository evaluation requirements](references/repository-evaluations.md) before creating or revising evals in this catalog; the upstream examples are not the repository contract. For every new skill, create `evals/evals.json` with at least five representative output-quality cases. Each case needs a realistic prompt, an expected outcome, and observable assertions. Include edge cases that exercise risky or ambiguous behavior. Read [evaluating skills](references/evaluating-skills.md) for the eval format and iteration workflow.
 6. When bundling executable code, read [using scripts](references/using-scripts.md). Document prerequisites and non-interactive invocation in the skill.
 7. Before handoff, run the validation checks in this skill and correct every finding.
 
@@ -49,7 +49,7 @@ skill-name/
 2. Check that the description has both positive and negative trigger boundaries, the workflow is actionable, and resource references are conditional and reachable.
 3. Check that any script has documented dependencies, safe non-interactive inputs, clear errors, and structured output where useful.
 4. For this repository, also verify its required human-facing `README.md`: title, **Why Install This Skill**, **What You Get**, **Quick Start** (unless genuinely reference-only), **Triggers**, and **Requirements**. Keep it human-facing, concise, and free of agent-only instructions.
-5. Verify every new skill has `evals/evals.json` with at least five output-quality cases, and check that their expected outcomes and assertions test meaningful behavior. For an existing skill without evals, flag the gap but do not block the review solely for that legacy absence. Read [evaluating skills](references/evaluating-skills.md) before declaring the work complete.
+5. Verify every new skill has `evals/evals.json` with at least five output-quality cases, and check that their expected outcomes and assertions test meaningful behavior. For an untouched legacy skill without evals, report the gap. When any tracked file in an existing skill changes, add or update its eval manifest in the same change and enforce the coverage ratchet; grandfathering is not a blanket exemption for modified skills. Read [repository evaluation requirements](references/repository-evaluations.md) for the schema, evidence boundaries, and review procedure. Read [evaluating skills](references/evaluating-skills.md) before declaring the work complete.
 
 ### Client implementation work
 
@@ -190,12 +190,27 @@ skills-ref validate ./my-skill
 
 This checks that `SKILL.md` frontmatter is valid and follows all naming conventions.
 
-For this repository, also run the bundled whole-repository checker:
+For this repository, run these checks from the repository root, using the PR base revision for comparison:
 
 ```bash
+EVAL_BASE_SHA=$(git merge-base origin/main HEAD)
 ruby scripts/validate-skills.rb
+ruby scripts/validate-skill-quality.rb --base "$EVAL_BASE_SHA"
+python3 scripts/test-eval-validation.py
+python3 scripts/validate-evals.py
+python3 scripts/eval-coverage.py --modified-from "$EVAL_BASE_SHA"
+python3 scripts/check-skill-tests.py --check
+ruby scripts/gen-claude-marketplace.rb
+ruby scripts/gen-codex-plugin.rb
+ruby scripts/gen-llms-txt.rb
 ```
 
-It checks canonical top-level and bundle skills for frontmatter, supported fields, line limits, local links, and required README sections. Vendored profile skills under `agent-council/profiles/skills/` are intentionally excluded because they follow the source repository's conventions.
+The structural checker checks canonical top-level and bundle skills for frontmatter, supported fields, line limits, local links, and required README sections. Vendored profile skills under `agent-council/profiles/skills/` are intentionally excluded because they follow the source repository's conventions.
 
 If `skills-ref` is unavailable, do not claim a successful validator run. Perform and report the equivalent structural checks manually, or install and run the reference validator when the task permits it.
+
+The quality checker validates changed descriptions; eval validation checks the repository v1 contract; coverage enforces the modified-skill ratchet and prevents coverage regression. The script-test checker checks discovery/registration, not script behavior: run applicable documented script tests separately. Generator check modes verify tracked catalog freshness; regenerate with `--write` only when stale. If changing the eval validator or coverage machinery, also run its focused tests as documented in the repository contributing guide.
+
+A valid manifest is not evidence of correct behavior. Report structural validation, actual execution, assertion evidence completeness, semantic verdict, and release evidence separately. Prose assertions remain unresolved `manual_review` in the deterministic grader; Jev suggestions are advisory and do not approve release. Read [repository evaluation requirements](references/repository-evaluations.md) before interpreting eval results.
+
+Complete when the requested artifact is delivered, applicable checks pass on the final revision, and unresolved behavioral or release evidence is explicitly reported. If a required tool or external dependency is unavailable, stop the affected check and report the limitation; do not substitute a structural pass for the missing evidence.

@@ -1,0 +1,46 @@
+{
+  "manufacturer": "leica",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Leica D-LUX 2",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Leica Digilux Zoom",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Leica M11 Monochrom",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Leica M9",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Leica Q3",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Leica SL",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Leica SL (Typ 601)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Leica SL3",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    }
+  ]
+}
