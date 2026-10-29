@@ -139,3 +139,7 @@ Only this topic was refreshed; the earlier catalog-wide check date remains uncha
 | [Heap debugging](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/system/heap_debug.html), [application tracing](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/app_trace.html) | Instrumentation overhead, overflow and buffering limits. |
 
 For provenance, source-level extraction, exclusions, and unresolved evidence, see the tracked repository report `docs/research/esp32-hardware-testing/` (repository-relative; not a required installed-skill dependency).
+
+## ESP-Mosaico kit (checked 2026-10-29)
+
+Read [ESP-Mosaico kit guidance](esp-mosaico.md) for revision-specific specifications, camera and interaction-module bring-up, power, Vibe/ROM recovery and ESP-Claw boundaries. That reference links official hardware/product documentation and pins the BSP and Vibe source snapshots used for the guidance. Recheck upstream before executing version-sensitive workflows; documentation review does not establish physical kit acceptance.
