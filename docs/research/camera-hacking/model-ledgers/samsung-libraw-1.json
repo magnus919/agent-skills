@@ -1,0 +1,182 @@
+{
+  "manufacturer": "samsung",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "EX1 / TL500",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "EX2F",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "GX-1L",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "GX-1S",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "GX10",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "GX20",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "Galaxy Nexus",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "Galaxy Note 9",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "Galaxy NX (EK-GN120)",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "Galaxy S3",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "Galaxy S6 (SM-G920F)",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "Galaxy S7",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "Galaxy S7 Edge",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "Galaxy S8 (SM-G950U)",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "Galaxy S9 (SM-G960F)",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "Galaxy S9+ (SM-G965U / 965F)",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "Galaxy S10 (SM-G973F)",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "Galaxy S10+ (SM-G975U)",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "Galaxy S22 Ultra (SM-S908B)",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "Galaxy S23+",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "Galaxy S23 Ultra",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "NX1",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "NX5",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "NX10",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "NX11",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "NX100",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "NX1000",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "NX1100",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "NX20",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "NX200",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "NX210",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "NX2000",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "NX30",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "NX300",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "NX300M",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "NX3000",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "NX500",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "NX mini / NXF1",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "Pro815",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "WB550 / WB560 / HZ15W",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "WB2000 / TL350",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "WB5000 / HZ25W",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "S85 (hacked)",
+      "source_brand_label": "Samsung"
+    },
+    {
+      "name": "S850 (hacked)",
+      "source_brand_label": "Samsung"
+    }
+  ]
+}

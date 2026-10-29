@@ -1,0 +1,558 @@
+{
+  "manufacturer": "nikon",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "COOLPIX P530",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/57/COOLPIX_P530.html"
+    },
+    {
+      "name": "COOLPIX P600",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/58/COOLPIX_P600.html"
+    },
+    {
+      "name": "COOLPIX P6000",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/59/COOLPIX_P6000.html"
+    },
+    {
+      "name": "COOLPIX P610",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/193/COOLPIX_P610.html"
+    },
+    {
+      "name": "COOLPIX P7000",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/60/COOLPIX_P7000.html"
+    },
+    {
+      "name": "COOLPIX P7100",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/61/COOLPIX_P7100.html"
+    },
+    {
+      "name": "COOLPIX P7700",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/62/COOLPIX_P7700.html"
+    },
+    {
+      "name": "COOLPIX P7800",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/63/COOLPIX_P7800.html"
+    },
+    {
+      "name": "COOLPIX P80",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/64/COOLPIX_P80.html"
+    },
+    {
+      "name": "COOLPIX P90",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/65/COOLPIX_P90.html"
+    },
+    {
+      "name": "COOLPIX P900",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/221/COOLPIX_P900.html"
+    },
+    {
+      "name": "COOLPIX P950",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/540/COOLPIX_P950.html"
+    },
+    {
+      "name": "COOLPIX S01",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/224/COOLPIX_S01.html"
+    },
+    {
+      "name": "COOLPIX S02",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/66/COOLPIX_S02.html"
+    },
+    {
+      "name": "COOLPIX S1100pj",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/68/COOLPIX_S1100pj.html"
+    },
+    {
+      "name": "COOLPIX S230",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/72/COOLPIX_S230.html"
+    },
+    {
+      "name": "COOLPIX S2500",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/73/COOLPIX_S2500.html"
+    },
+    {
+      "name": "COOLPIX S2550",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/74/COOLPIX_S2550.html"
+    },
+    {
+      "name": "COOLPIX S2600",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/75/COOLPIX_S2600.html"
+    },
+    {
+      "name": "COOLPIX S2700",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/76/COOLPIX_S2700.html"
+    },
+    {
+      "name": "COOLPIX S2750",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/77/COOLPIX_S2750.html"
+    },
+    {
+      "name": "COOLPIX S2800",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/78/COOLPIX_S2800.html"
+    },
+    {
+      "name": "COOLPIX S2900",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/190/COOLPIX_S2900.html"
+    },
+    {
+      "name": "COOLPIX S3000",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/79/COOLPIX_S3000.html"
+    },
+    {
+      "name": "COOLPIX S31",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/80/COOLPIX_S31.html"
+    },
+    {
+      "name": "COOLPIX S3100",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/81/COOLPIX_S3100.html"
+    },
+    {
+      "name": "COOLPIX S32",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/82/COOLPIX_S32.html"
+    },
+    {
+      "name": "COOLPIX S33",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/208/COOLPIX_S33.html"
+    },
+    {
+      "name": "COOLPIX S3300",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/84/COOLPIX_S3300.html"
+    },
+    {
+      "name": "COOLPIX S3400",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/85/COOLPIX_S3400.html"
+    },
+    {
+      "name": "COOLPIX S3500",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/86/COOLPIX_S3500.html"
+    },
+    {
+      "name": "COOLPIX S3600",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/87/COOLPIX_S3600.html"
+    },
+    {
+      "name": "COOLPIX S3700",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/191/COOLPIX_S3700.html"
+    },
+    {
+      "name": "COOLPIX S4000",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/88/COOLPIX_S4000.html"
+    },
+    {
+      "name": "COOLPIX S4100",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/89/COOLPIX_S4100.html"
+    },
+    {
+      "name": "COOLPIX S4150",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/90/COOLPIX_S4150.html"
+    },
+    {
+      "name": "COOLPIX S4200",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/91/COOLPIX_S4200.html"
+    },
+    {
+      "name": "COOLPIX S4300",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/92/COOLPIX_S4300.html"
+    },
+    {
+      "name": "COOLPIX S4400",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/93/COOLPIX_S4400.html"
+    },
+    {
+      "name": "COOLPIX S520",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/94/COOLPIX_S520.html"
+    },
+    {
+      "name": "COOLPIX S5200",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/95/COOLPIX_S5200.html"
+    },
+    {
+      "name": "COOLPIX S5300",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/96/COOLPIX_S5300.html"
+    },
+    {
+      "name": "COOLPIX S60",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/97/COOLPIX_S60.html"
+    },
+    {
+      "name": "COOLPIX S6000",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/98/COOLPIX_S6000.html"
+    },
+    {
+      "name": "COOLPIX S6100",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/99/COOLPIX_S6100.html"
+    },
+    {
+      "name": "COOLPIX S6150",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/100/COOLPIX_S6150.html"
+    },
+    {
+      "name": "COOLPIX S6200",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/102/COOLPIX_S6200.html"
+    },
+    {
+      "name": "COOLPIX S6300",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/103/COOLPIX_S6300.html"
+    },
+    {
+      "name": "COOLPIX S640",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/104/COOLPIX_S640.html"
+    },
+    {
+      "name": "COOLPIX S6400",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/105/COOLPIX_S6400.html"
+    },
+    {
+      "name": "COOLPIX S6500",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/106/COOLPIX_S6500.html"
+    },
+    {
+      "name": "COOLPIX S6600",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/107/COOLPIX_S6600.html"
+    },
+    {
+      "name": "COOLPIX S6700",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/108/COOLPIX_S6700.html"
+    },
+    {
+      "name": "COOLPIX S6800",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/109/COOLPIX_S6800.html"
+    },
+    {
+      "name": "COOLPIX S6900",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/177/COOLPIX_S6900.html"
+    },
+    {
+      "name": "COOLPIX S7000",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/205/COOLPIX_S7000.html"
+    },
+    {
+      "name": "COOLPIX S8000",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/110/COOLPIX_S8000.html"
+    },
+    {
+      "name": "COOLPIX S800c",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/111/COOLPIX_S800c.html"
+    },
+    {
+      "name": "COOLPIX S8100",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/113/COOLPIX_S8100.html"
+    },
+    {
+      "name": "COOLPIX S810c",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/112/COOLPIX_S810c.html"
+    },
+    {
+      "name": "COOLPIX S8200",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/251/COOLPIX_S8200.html"
+    },
+    {
+      "name": "COOLPIX S9200",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/114/COOLPIX_S9200.html"
+    },
+    {
+      "name": "COOLPIX S9300",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/115/COOLPIX_S9300.html"
+    },
+    {
+      "name": "COOLPIX S9400",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/116/COOLPIX_S9400.html"
+    },
+    {
+      "name": "COOLPIX S9500",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/117/COOLPIX_S9500.html"
+    },
+    {
+      "name": "COOLPIX S9600",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/118/COOLPIX_S9600.html"
+    },
+    {
+      "name": "COOLPIX S9700",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/119/COOLPIX_S9700.html"
+    },
+    {
+      "name": "COOLPIX S9900",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/203/COOLPIX_S9900.html"
+    },
+    {
+      "name": "COOLPIX AW110",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/33/COOLPIX_AW110.html"
+    },
+    {
+      "name": "COOLPIX AW120",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/30/COOLPIX_AW120.html"
+    },
+    {
+      "name": "COOLPIX AW130",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/206/COOLPIX_AW130.html"
+    },
+    {
+      "name": "COOLPIX L100",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/35/COOLPIX_L100.html"
+    },
+    {
+      "name": "COOLPIX L110",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/36/COOLPIX_L110.html"
+    },
+    {
+      "name": "COOLPIX L120",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/37/COOLPIX_L120.html"
+    },
+    {
+      "name": "COOLPIX L23",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/38/COOLPIX_L23.html"
+    },
+    {
+      "name": "COOLPIX L27",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/39/COOLPIX_L27.html"
+    },
+    {
+      "name": "COOLPIX L28",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/40/COOLPIX_L28.html"
+    },
+    {
+      "name": "COOLPIX L29",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/41/COOLPIX_L29.html"
+    },
+    {
+      "name": "COOLPIX L30",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/42/COOLPIX_L30.html"
+    },
+    {
+      "name": "COOLPIX L31",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/189/COOLPIX_L31.html"
+    },
+    {
+      "name": "COOLPIX L32",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/192/COOLPIX_L32.html"
+    },
+    {
+      "name": "COOLPIX L320",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/43/COOLPIX_L320.html"
+    },
+    {
+      "name": "COOLPIX L330",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/44/COOLPIX_L330.html"
+    },
+    {
+      "name": "COOLPIX L340",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/202/COOLPIX_L340.html"
+    },
+    {
+      "name": "COOLPIX L620",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/46/COOLPIX_L620.html"
+    },
+    {
+      "name": "COOLPIX L810",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/47/COOLPIX_L810.html"
+    },
+    {
+      "name": "COOLPIX L820",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/48/COOLPIX_L820.html"
+    },
+    {
+      "name": "COOLPIX L830",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/49/COOLPIX_L830.html"
+    },
+    {
+      "name": "COOLPIX L840",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/201/COOLPIX_L840.html"
+    },
+    {
+      "name": "KeyMission 170",
+      "category": "Action Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/336/KeyMission_170.html"
+    },
+    {
+      "name": "KeyMission 360",
+      "category": "Action Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/337/KeyMission_360.html"
+    },
+    {
+      "name": "KeyMission 80",
+      "category": "Action Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/338/KeyMission_80.html"
+    }
+  ]
+}

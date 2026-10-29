@@ -1,0 +1,10 @@
+{
+  "manufacturer": "polaroid",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "Polaroid x530",
+      "source_brand_label": "Polaroid x530"
+    }
+  ]
+}

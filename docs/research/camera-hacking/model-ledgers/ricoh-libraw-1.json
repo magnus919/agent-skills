@@ -1,0 +1,70 @@
+{
+  "manufacturer": "ricoh",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "GR",
+      "source_brand_label": "Ricoh"
+    },
+    {
+      "name": "GR II",
+      "source_brand_label": "Ricoh"
+    },
+    {
+      "name": "GR III",
+      "source_brand_label": "Ricoh"
+    },
+    {
+      "name": "GR IIIx",
+      "source_brand_label": "Ricoh"
+    },
+    {
+      "name": "GR Digital",
+      "source_brand_label": "Ricoh"
+    },
+    {
+      "name": "GR Digital II",
+      "source_brand_label": "Ricoh"
+    },
+    {
+      "name": "GR Digital III",
+      "source_brand_label": "Ricoh"
+    },
+    {
+      "name": "GR Digital IV",
+      "source_brand_label": "Ricoh"
+    },
+    {
+      "name": "Caplio GX100",
+      "source_brand_label": "Ricoh"
+    },
+    {
+      "name": "Caplio GX200",
+      "source_brand_label": "Ricoh"
+    },
+    {
+      "name": "GXR Mount A12",
+      "source_brand_label": "Ricoh"
+    },
+    {
+      "name": "GXR GR Lens A12 50mm F2.5 Macro",
+      "source_brand_label": "Ricoh"
+    },
+    {
+      "name": "GXR GR Lens A12 28mm F2.5",
+      "source_brand_label": "Ricoh"
+    },
+    {
+      "name": "GXR Ricoh Lens A16 24-85mm F3.5-5.5",
+      "source_brand_label": "Ricoh"
+    },
+    {
+      "name": "GXR Ricoh Lens S10 24-72mm F2.5-4.4 VC",
+      "source_brand_label": "Ricoh"
+    },
+    {
+      "name": "GXR Ricoh Lens P10 28-300 mm F3.5-5.6 VC",
+      "source_brand_label": "Ricoh"
+    }
+  ]
+}

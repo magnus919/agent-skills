@@ -1,0 +1,42 @@
+{
+  "manufacturer": "gopro",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "Fusion",
+      "source_brand_label": "GoPro"
+    },
+    {
+      "name": "HERO5",
+      "source_brand_label": "GoPro"
+    },
+    {
+      "name": "HERO6",
+      "source_brand_label": "GoPro"
+    },
+    {
+      "name": "HERO7",
+      "source_brand_label": "GoPro"
+    },
+    {
+      "name": "HERO8",
+      "source_brand_label": "GoPro"
+    },
+    {
+      "name": "HERO9",
+      "source_brand_label": "GoPro"
+    },
+    {
+      "name": "HERO10",
+      "source_brand_label": "GoPro"
+    },
+    {
+      "name": "HERO11",
+      "source_brand_label": "GoPro"
+    },
+    {
+      "name": "HERO12",
+      "source_brand_label": "GoPro"
+    }
+  ]
+}

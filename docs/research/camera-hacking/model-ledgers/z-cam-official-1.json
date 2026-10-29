@@ -1,0 +1,54 @@
+{
+  "manufacturer": "z-cam",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "E2-M4 Mark II",
+      "category": "professional catalog/navigation; PTZ and accessory routes excluded",
+      "source": "zcam-cameras",
+      "url": "https://www.z-cam.com/products/professional-cameras/"
+    },
+    {
+      "name": "E2-S6 Mark II",
+      "category": "professional catalog/navigation; PTZ and accessory routes excluded",
+      "source": "zcam-cameras",
+      "url": "https://www.z-cam.com/products/professional-cameras/"
+    },
+    {
+      "name": "E2-F6 Mark II",
+      "category": "professional catalog/navigation; PTZ and accessory routes excluded",
+      "source": "zcam-cameras",
+      "url": "https://www.z-cam.com/products/professional-cameras/"
+    },
+    {
+      "name": "E2-F8 Mark II",
+      "category": "professional catalog/navigation; PTZ and accessory routes excluded",
+      "source": "zcam-cameras",
+      "url": "https://www.z-cam.com/products/professional-cameras/"
+    },
+    {
+      "name": "E2-M4G Mark II",
+      "category": "professional catalog/navigation; PTZ and accessory routes excluded",
+      "source": "zcam-cameras",
+      "url": "https://www.z-cam.com/products/professional-cameras/"
+    },
+    {
+      "name": "E2N Mark II",
+      "category": "professional catalog/navigation; PTZ and accessory routes excluded",
+      "source": "zcam-cameras",
+      "url": "https://www.z-cam.com/products/professional-cameras/"
+    },
+    {
+      "name": "E2-F6 Pro",
+      "category": "professional catalog/navigation; PTZ and accessory routes excluded",
+      "source": "zcam-cameras",
+      "url": "https://www.z-cam.com/products/professional-cameras/"
+    },
+    {
+      "name": "E2C",
+      "category": "professional catalog/navigation; PTZ and accessory routes excluded",
+      "source": "zcam-cameras",
+      "url": "https://www.z-cam.com/products/professional-cameras/"
+    }
+  ]
+}

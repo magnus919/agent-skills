@@ -1,0 +1,162 @@
+{
+  "manufacturer": "hasselblad",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "H2D-22",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "H2D-39",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "H3DII-22",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "H3DII-31",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "H3DII-39",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "H3DII-50",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "H3D-22",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "H3D-31",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "H3D-39",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "H4D-60",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "H4D-50",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "H4D-40",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "H4D-31",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "H5D-60",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "H5D-50",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "H5D-50c",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "H5D-40",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "H6D-100c",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "A6D-100c",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "CFV",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "CFV-50",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "CFV-50c",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "CFV II 50C",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "CFV-100c",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "CFH",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "CF-22",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "CF-31",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "CF-39",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "V96C",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "L1D-20c (DJI Mavic 2 Pro)",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "Lusso",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "Lunar",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "True Zoom",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "Stellar",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "Stellar II",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "HV",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "X1D",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "X1D II 50C",
+      "source_brand_label": "Hasselblad"
+    },
+    {
+      "name": "X2D 100C",
+      "source_brand_label": "Hasselblad"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "manufacturer": "sigma",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "fp",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "fp L",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "SD9 (raw decode only)",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "SD10 (raw decode only)",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "SD14 (raw decode only)",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "SD15 (raw decode only)",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "SD1",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "SD1 Merrill",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "DP1",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "DP1 Merrill",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "DP1S",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "DP1X",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "DP2",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "DP2 Merrill",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "DP2S",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "DP2X",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "DP3 Merrill",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "dp0 Quattro",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "dp1 Quattro",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "dp2 Quattro",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "dp3 Quattro",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "sd Quattro",
+      "source_brand_label": "Sigma"
+    },
+    {
+      "name": "sd Quattro H",
+      "source_brand_label": "Sigma"
+    }
+  ]
+}

@@ -1,0 +1,270 @@
+{
+  "manufacturer": "kodak",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "ORBIT360 4K",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "SP360 4K",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "SP360",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ653",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ528",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ425",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ405",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ255",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ901",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ652",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ651",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ527",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ526",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ525",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ522",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ521",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ501",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ422",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ421",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ401",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ365",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ362",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ361",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ252",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "AZ251",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "C1",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "FZ55",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "FZ45",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "FZ201",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "FZ152",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "FZ151",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "FZ53",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "FZ51",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "FZ43",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "FZ41",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "P1",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "WPZ2",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "SP1",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "SPZ1",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "WP1",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "S 1",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "SL25",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "SL10",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    },
+    {
+      "name": "SL5",
+      "category": "PIXPRO download model; previous/current not normalized",
+      "source": "kodak-legacy",
+      "url": "https://kodakpixpro.com/support/downloads/"
+    }
+  ]
+}

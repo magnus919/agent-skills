@@ -1,0 +1,168 @@
+{
+  "manufacturer": "sjcam",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "SJ30 Dual Lens",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/sj30/"
+    },
+    {
+      "name": "SJ6 Ultra",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/sj6-ultra/"
+    },
+    {
+      "name": "SJ20 Dual Lens",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/sj20-dual-lens/"
+    },
+    {
+      "name": "SJ11 Active",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/sj11-active/"
+    },
+    {
+      "name": "SJ10 Pro Dual Screen",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/sj10-pro-dual-screen/"
+    },
+    {
+      "name": "SJ8 Pro",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/sj8-pro/"
+    },
+    {
+      "name": "C400 Pro",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/c400-pro/"
+    },
+    {
+      "name": "S10",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/s10/"
+    },
+    {
+      "name": "C100 Pro",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/c100-pro/"
+    },
+    {
+      "name": "C400",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/c400/"
+    },
+    {
+      "name": "C300",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/c300/"
+    },
+    {
+      "name": "C200 Pro",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/c200-pro/"
+    },
+    {
+      "name": "C110 Plus",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/c110-plus/"
+    },
+    {
+      "name": "C100+",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/c100/"
+    },
+    {
+      "name": "SJ4000 Dual Screen",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/sj4000-dual-screen/"
+    },
+    {
+      "name": "FunCam+",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/funcam/"
+    },
+    {
+      "name": "SJ4000 WiFi",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/sj4000-wifi/"
+    },
+    {
+      "name": "SJ4000 Air",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/sj4000-air/"
+    },
+    {
+      "name": "SJ6 Pro",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/sj6-pro/"
+    },
+    {
+      "name": "SJ8 Dual Screen",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/sj8-dual-screen/"
+    },
+    {
+      "name": "SJ5000X Elite",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/action-cameras/sj5000x-elite/"
+    },
+    {
+      "name": "M60",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/other-cameras/m60/"
+    },
+    {
+      "name": "M60S",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/other-cameras/m60s/"
+    },
+    {
+      "name": "ZV200",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/other-cameras/zv200-digital-camera/"
+    },
+    {
+      "name": "ZV100",
+      "category": "action/compact catalog body",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/other-cameras/zv100-digital-camera/"
+    },
+    {
+      "name": "A50",
+      "category": "body-camera navigation; separate wearable-camera track",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/"
+    },
+    {
+      "name": "A10",
+      "category": "body-camera navigation; separate wearable-camera track",
+      "source": "sjcam-cameras",
+      "url": "https://www.sjcam.com/cameras/"
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "manufacturer": "konica-minolta",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Konica e-mini",
+      "additional_abilities": "Image Capture, Liveview",
+      "comments": ""
+    },
+    {
+      "name": "Konica Q-EZ",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Konica Q-M100",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Konica Q-M100V",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Konica Q-M150",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Konica Q-M200",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Konica-Minolta DiMAGE A2 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Konica-Minolta DiMAGE A200 (PictBridge mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Konica-Minolta DiMAGE X21 (PictBridge mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Konica-Minolta DiMAGE Z2 (PictBridge mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Konica-Minolta DiMAGE Z3 (PictBridge mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Konica-Minolta DiMAGE Z5 (PictBridge mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Konica-Minolta DiMAGE Z6 (PictBridge mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Minolta Dimage V",
+      "additional_abilities": "Image Capture, Liveview",
+      "comments": ""
+    }
+  ]
+}

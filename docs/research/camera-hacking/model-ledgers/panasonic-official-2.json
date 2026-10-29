@@ -1,0 +1,114 @@
+{
+  "manufacturer": "panasonic",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "DMC-TZ4/TZ5",
+      "category": "firmware row Ver.1.2",
+      "source": "panasonic-compact",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html"
+    },
+    {
+      "name": "DMC-TZ55/56/ZS35",
+      "category": "firmware row Ver.1.2",
+      "source": "panasonic-compact",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html"
+    },
+    {
+      "name": "DMC-TZ57/58/ZS45",
+      "category": "firmware row Ver.1.3",
+      "source": "panasonic-compact",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html"
+    },
+    {
+      "name": "DMC-TZ6/ZS1",
+      "category": "firmware row Ver.1.3",
+      "source": "panasonic-compact",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html"
+    },
+    {
+      "name": "DMC-TZ65",
+      "category": "firmware row Ver.1.1",
+      "source": "panasonic-compact",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html"
+    },
+    {
+      "name": "DMC-TZ7/ZS3",
+      "category": "firmware row Ver.1.3",
+      "source": "panasonic-compact",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html"
+    },
+    {
+      "name": "DMC-TZ8/ZS5",
+      "category": "firmware row Ver.1.1",
+      "source": "panasonic-compact",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html"
+    },
+    {
+      "name": "DMC-TZ80/TZ81/TZ82/ZS60",
+      "category": "firmware row Ver.1.2",
+      "source": "panasonic-compact",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html"
+    },
+    {
+      "name": "DMC-TZ9/ZS6",
+      "category": "firmware row Ver.1.1",
+      "source": "panasonic-compact",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html"
+    },
+    {
+      "name": "DC-TZ90/TZ91/TZ92/TZ93/ZS70",
+      "category": "firmware row Ver.1.3",
+      "source": "panasonic-compact",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html"
+    },
+    {
+      "name": "DC-TZ95/ZS80",
+      "category": "firmware row Ver.1.1",
+      "source": "panasonic-compact",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html"
+    },
+    {
+      "name": "DC-TZ95D",
+      "category": "firmware row Ver.1.1",
+      "source": "panasonic-compact",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html"
+    },
+    {
+      "name": "DC-TZ99/ZS99",
+      "category": "firmware row Ver.1.5",
+      "source": "panasonic-compact",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html"
+    },
+    {
+      "name": "DMC-XS1",
+      "category": "firmware row Ver.1.1",
+      "source": "panasonic-compact",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html"
+    },
+    {
+      "name": "DMC-ZS10GK",
+      "category": "firmware row Ver.1.1",
+      "source": "panasonic-compact",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html"
+    },
+    {
+      "name": "DMC-ZS20GK",
+      "category": "firmware row Ver.1.1",
+      "source": "panasonic-compact",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html"
+    },
+    {
+      "name": "DMC-ZS30GK",
+      "category": "firmware row Ver.1.3",
+      "source": "panasonic-compact",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html"
+    },
+    {
+      "name": "DMC-ZX3/ZR3",
+      "category": "firmware row Ver.1.1",
+      "source": "panasonic-compact",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html"
+    }
+  ]
+}

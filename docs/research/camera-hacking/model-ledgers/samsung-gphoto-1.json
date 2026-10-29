@@ -1,0 +1,36 @@
+{
+  "manufacturer": "samsung",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Samsung digimax 800k",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Samsung EK-GC100",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Samsung Kenox SSC-350N",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Samsung NX1",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Samsung NX1000",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Samsung S5620",
+      "additional_abilities": "",
+      "comments": ""
+    }
+  ]
+}

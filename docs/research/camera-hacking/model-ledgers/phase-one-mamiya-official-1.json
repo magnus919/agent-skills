@@ -1,0 +1,420 @@
+{
+  "manufacturer": "phase-one-mamiya",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "P5 with RGB",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "P5 with Achromatic",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "Phase One 645AF Body",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "Phase One 645DF Body",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "Phase One 645DF+ Body",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "Phase One XF Body",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "Phase One XT Body",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "Phase One XC 23 Body",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "Phase One XC 40 Body",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "A-4 150",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "A-3 100 Trichromatic",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "A-3 100 Achromatic",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "A-3 100",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "A-3 80",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "A-3 60",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "A-3 50",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "A-280",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "A-260",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "A-250",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ4 150",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ4 150 No IR filter",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ4 150 Achromatic",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ4 100 Trichomatic",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ3 100 Trichomatic -",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ3 100",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ3 100 Achromatic -",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ3 80",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ3 60",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ3 50",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ280",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ260",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ260Achomatic",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ250",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ1 100",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ180",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ160",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ160Achomatic",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ150",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "IQ140",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "P65+",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "P45+",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "P40+",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "P30+",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "P25+",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "P21+",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "P20+",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "P45",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "P30",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "P25",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "P21",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "P20",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "H25",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "H20",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "H101",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "H10 11mp",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "H10 6mp",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "H5",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "Lightphase",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "Studiokit 1st gen.",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "Studiokit 2nd gen.",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "Studiokit",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "Photophase+ 1st gen.",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "Photophase+ 2nd gen.",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "Photophase+ 3rd gen.",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "PowerPhase.",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "PowerPhase",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "PowerPhase FX / FX+.",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "Phase One 645 Li-Ion battery 2000mAh",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    },
+    {
+      "name": "Phase One 645 Li-Ion charger base",
+      "category": "photographic body/back serial catalog",
+      "source": "phaseone-serials",
+      "url": "https://support.phaseone.com/knowledgebase/article/KA-01151/en-us"
+    }
+  ]
+}

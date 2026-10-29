@@ -1,0 +1,72 @@
+{
+  "manufacturer": "kinefinity",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "VISTA",
+      "category": "current camera families; mark2 sensor variants need detail page",
+      "source": "kinefinity-products",
+      "url": "https://www.kinefinity.com/en/products"
+    },
+    {
+      "name": "MAVO Edge 8K",
+      "category": "current camera families; mark2 sensor variants need detail page",
+      "source": "kinefinity-products",
+      "url": "https://www.kinefinity.com/en/products"
+    },
+    {
+      "name": "MAVO Edge 6K",
+      "category": "current camera families; mark2 sensor variants need detail page",
+      "source": "kinefinity-products",
+      "url": "https://www.kinefinity.com/en/products"
+    },
+    {
+      "name": "MAVO mark2",
+      "category": "current camera families; mark2 sensor variants need detail page",
+      "source": "kinefinity-products",
+      "url": "https://www.kinefinity.com/en/products"
+    },
+    {
+      "name": "MAVO LF/MAVO",
+      "category": "vendor firmware catalog; historical migration tags are not validated compatibility",
+      "source": "kinefinity-firmware",
+      "url": "https://kinefinity.com/firmware"
+    },
+    {
+      "name": "TERRA 4K",
+      "category": "vendor firmware catalog; historical migration tags are not validated compatibility",
+      "source": "kinefinity-firmware",
+      "url": "https://kinefinity.com/firmware"
+    },
+    {
+      "name": "TERRA 6K",
+      "category": "vendor firmware catalog; historical migration tags are not validated compatibility",
+      "source": "kinefinity-firmware",
+      "url": "https://kinefinity.com/firmware"
+    },
+    {
+      "name": "KineMAX 6K",
+      "category": "vendor firmware catalog; historical migration tags are not validated compatibility",
+      "source": "kinefinity-firmware",
+      "url": "https://kinefinity.com/firmware"
+    },
+    {
+      "name": "KineMINI 4K",
+      "category": "vendor firmware catalog; historical migration tags are not validated compatibility",
+      "source": "kinefinity-firmware",
+      "url": "https://kinefinity.com/firmware"
+    },
+    {
+      "name": "KineRAW MINI",
+      "category": "vendor firmware catalog; historical migration tags are not validated compatibility",
+      "source": "kinefinity-firmware",
+      "url": "https://kinefinity.com/firmware"
+    },
+    {
+      "name": "KineRAW S35",
+      "category": "vendor firmware catalog; historical migration tags are not validated compatibility",
+      "source": "kinefinity-firmware",
+      "url": "https://kinefinity.com/firmware"
+    }
+  ]
+}

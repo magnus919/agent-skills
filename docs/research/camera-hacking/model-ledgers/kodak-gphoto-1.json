@@ -1,0 +1,506 @@
+{
+  "manufacturer": "kodak",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Kodak C1530",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak C183",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak C300",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak C310",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak C330",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak C340",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak C360",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak C433",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak C530",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak C533",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak C613",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak C633",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak C643",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak C653",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak C743",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak C813",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak C875",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak C913",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak CD33",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak CX4200",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak CX4210",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak CX4230",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak CX4300",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak CX4310",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak CX6200",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak CX6230",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak CX6330",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak CX6445",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak CX7220",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak CX7300",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak CX7310",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak CX7330",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak CX7430",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak CX7525",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak CX7530",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DC120",
+      "additional_abilities": "Image Capture",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DC210",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DC215",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DC220",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DC240",
+      "additional_abilities": "Image Capture",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DC240 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DC260",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DC265",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DC280",
+      "additional_abilities": "Image Capture",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DC290",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DC3200",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DC3400",
+      "additional_abilities": "Image Capture",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DC4800",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DC5000",
+      "additional_abilities": "Image Capture",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DX3215",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DX3500",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DX3600",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DX3700",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DX3900",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DX4330",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DX4530",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DX4900",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DX6340",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DX6440",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DX6490",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DX7440",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DX7590",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak DX7630",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak EZ200",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak LS420",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak LS443",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak LS663",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak LS743",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak LS753",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak M1063",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak M531",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak M531 2nd id",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak M753",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak M863",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak M883",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak M893 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak MC3",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak P850",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak P880",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak V530",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak V550",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak V570",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak V603",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak V610",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak V705",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak V803",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak Z612",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak Z650",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak Z700",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak Z710",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak Z712 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak Z730",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak Z740",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak Z7590",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak Z812 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak Z8612 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak Z915",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak Z950",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak Z990",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Kodak ZD710",
+      "additional_abilities": "",
+      "comments": ""
+    }
+  ]
+}
