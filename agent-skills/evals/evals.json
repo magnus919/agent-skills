@@ -80,6 +80,41 @@
         "The response states that format compliance or registry publication is not a safety guarantee",
         "Skills running with the agent's permissions (shell, filesystem, credentials) is called out"
       ]
+    },
+    {
+      "id": "upstream-eval-adaptation",
+      "prompt": "I copied the upstream eval example with numeric IDs, two cases, and no schema_version or assertions into a new skill in this repository. Is it ready to submit?",
+      "expected_output": "Explains the distinction between upstream teaching examples and the repository v1 contract, and requests schema_version 1, stable string IDs, assertions, and at least five cases.",
+      "assertions": [
+        "Requires schema_version 1 for the repository manifest",
+        "Requires stable string case IDs instead of numeric IDs",
+        "Requires nonempty assertions in every case",
+        "Requires at least five output-quality cases for this new skill"
+      ]
+    },
+    {
+      "id": "modified-legacy-evals",
+      "prompt": "I only changed a reference in a grandfathered skill without evals. May I skip the manifest because SKILL.md did not change? What validation applies?",
+      "expected_output": "Requires adding evals for the modified skill and running schema and base-relative coverage checks; explains that any tracked skill file counts and grandfathering does not waive authoring policy.",
+      "assertions": [
+        "Treats the reference-only change as a modified skill",
+        "Requires adding an eval manifest in the same change",
+        "Prescribes eval validation",
+        "Prescribes base-relative coverage enforcement"
+      ]
+    },
+    {
+      "id": "eval-evidence-boundaries",
+      "prompt": "The manifest validates, a fake adapter completed, and Jev suggested met with high confidence for prose assertions. Can I report behavioral success and approve release?",
+      "expected_output": "Declines unsupported behavioral and release claims, separates manifest validity, execution, completeness, and semantic evidence, and requires frozen-manifest-bound full-roster release evidence.",
+      "assertions": [
+        "States that manifest validity does not establish behavioral correctness",
+        "States that fake-adapter completion does not establish behavioral correctness",
+        "Treats Jev suggestions as advisory rather than release approval",
+        "Identifies unresolved deterministic prose assertions as manual_review",
+        "Requires a freeze snapshot bound to exact manifest bytes for release aggregation",
+        "Requires full required-case coverage for release aggregation"
+      ]
     }
   ]
 }
