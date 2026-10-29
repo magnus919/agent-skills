@@ -91,6 +91,10 @@ Create comprehensive brand identity documentation for any brand. Guides you thro
 
 Make system boundaries, responsibilities, and relationships legible at the architectural level appropriate to the reader.
 
+### [camera-hacking](camera-hacking/SKILL.md)
+
+Investigate, reverse-engineer, develop and validate digital-camera extensions and interoperability. Includes source-bound references across 43 manufacturer families, detailed Fujifilm X and Ricoh GR maps, experiment/recovery guidance and assessment templates. Distinguishes offline evidence from verified camera behavior.
+
 ### [capacity-and-cost-engineering](capacity-and-cost-engineering/SKILL.md)
 
 Model technical capacity, unit cost, and budget constraints connected to demand, performance, and reliability decisions. Covers growth forecasting, peak sizing, degraded-mode capacity, multi-tenant demand distributions and skew, pooled/siloed headroom, tier-linked admission and fairness evidence, tenant-variable unit cost, budget/quota controls, representative load/soak evidence, and SLO-cost tradeoff records. Routes SaaS architecture, security, financial outcomes, infrastructure implementation, SRE, analytics, and general architecture to their specialist owners. Ships focused references, six fillable templates, and ten evals.

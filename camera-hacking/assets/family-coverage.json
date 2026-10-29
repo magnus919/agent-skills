@@ -1,0 +1,929 @@
+{
+  "checked": "2026-10-29",
+  "coverage_meaning": "source roster and per-model discovery routing; not universal modification support",
+  "fujifilm": {
+    "official_roster_count": 52,
+    "additional_variant_count": 1,
+    "fujimod_tree_sha": "925640f1ff2327eeba118437af35790c0a1656eb",
+    "fujicli_tree_sha": "6366cff82449d19dab9e6234c3dc6ec5922e6ccb",
+    "models": [
+      {
+        "model": "X-H2S",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-h2s/",
+        "official_version_observed": "7.30",
+        "reference": "references/fujifilm-x-h.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": true,
+        "furble_reported_body": true,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-H2",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-h2/",
+        "official_version_observed": "5.30",
+        "reference": "references/fujifilm-x-h.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": true,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-H1",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-h1/",
+        "official_version_observed": "2.15",
+        "reference": "references/fujifilm-x-h.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": true,
+        "furble_reported_body": true,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-Pro3",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-pro3/",
+        "official_version_observed": "2.00",
+        "reference": "references/fujifilm-x-pro.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "2.00"
+        ],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": true,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-Pro2",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-pro2/",
+        "official_version_observed": "5.11",
+        "reference": "references/fujifilm-x-pro.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": true,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-Pro1",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-pro1/",
+        "official_version_observed": "3.82",
+        "reference": "references/fujifilm-x-pro.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-T5",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-t5/",
+        "official_version_observed": "4.31",
+        "reference": "references/fujifilm-x-t-main.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": true,
+        "furble_reported_body": true,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-T4",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-t4/",
+        "official_version_observed": "2.12",
+        "reference": "references/fujifilm-x-t-main.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "2.12"
+        ],
+        "fujimod_body_definition_present": true,
+        "fujicli_model_declared": true,
+        "furble_reported_body": true,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-T3",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-t3/",
+        "official_version_observed": "5.11",
+        "reference": "references/fujifilm-x-t-main.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "5.11"
+        ],
+        "fujimod_body_definition_present": true,
+        "fujicli_model_declared": true,
+        "furble_reported_body": true,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-T2",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-t2/",
+        "official_version_observed": "4.41",
+        "reference": "references/fujifilm-x-t-main.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": true,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-T1",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-t1/",
+        "official_version_observed": "5.52",
+        "reference": "references/fujifilm-x-t-main.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "5.52"
+        ],
+        "fujimod_body_definition_present": true,
+        "fujicli_model_declared": true,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-S20",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-s20/",
+        "official_version_observed": "3.30",
+        "reference": "references/fujifilm-x-s.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": true,
+        "furble_reported_body": true,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-S10",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-s10/",
+        "official_version_observed": "3.11",
+        "reference": "references/fujifilm-x-s.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "3.11"
+        ],
+        "fujimod_body_definition_present": true,
+        "fujicli_model_declared": true,
+        "furble_reported_body": true,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-T50",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-t50/",
+        "official_version_observed": "1.32",
+        "reference": "references/fujifilm-x-t-compact.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-T30 III",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-t30-iii/",
+        "official_version_observed": "1.10",
+        "reference": "references/fujifilm-x-t-compact.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-T30 II",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-t30-ii/",
+        "official_version_observed": "2.04",
+        "reference": "references/fujifilm-x-t-compact.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "2.04"
+        ],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-T30",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-t30/",
+        "official_version_observed": "2.01",
+        "reference": "references/fujifilm-x-t-compact.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "2.01"
+        ],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": true,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-T20",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-t20/",
+        "official_version_observed": "2.11",
+        "reference": "references/fujifilm-x-t-compact.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": true,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-T10",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-t10/",
+        "official_version_observed": "1.31",
+        "reference": "references/fujifilm-x-t-compact.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "1.31"
+        ],
+        "fujimod_body_definition_present": true,
+        "fujicli_model_declared": true,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-T200",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-t200/",
+        "official_version_observed": "1.16",
+        "reference": "references/fujifilm-x-t-bayer.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": true,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-T100",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-t100/",
+        "official_version_observed": "2.03",
+        "reference": "references/fujifilm-x-t-bayer.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-E5",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-e5/",
+        "official_version_observed": "1.12",
+        "reference": "references/fujifilm-x-e.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": true,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-E4",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-e4/",
+        "official_version_observed": "2.01",
+        "reference": "references/fujifilm-x-e.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "2.01"
+        ],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": true,
+        "furble_reported_body": true,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-E3",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-e3/",
+        "official_version_observed": "1.32",
+        "reference": "references/fujifilm-x-e.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": true,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-M5",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-m5/",
+        "official_version_observed": "1.30",
+        "reference": "references/fujifilm-x-m.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "1.30"
+        ],
+        "fujimod_body_definition_present": true,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-E2S",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-e2s/",
+        "official_version_observed": "1.11",
+        "reference": "references/fujifilm-x-e.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "1.11"
+        ],
+        "fujimod_body_definition_present": true,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-E2",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-e2/",
+        "official_version_observed": "4.11",
+        "reference": "references/fujifilm-x-e.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "4.11"
+        ],
+        "fujimod_body_definition_present": true,
+        "fujicli_model_declared": true,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-E1",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-e1/",
+        "official_version_observed": "2.71",
+        "reference": "references/fujifilm-x-e.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": true,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-M1",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-m1/",
+        "official_version_observed": "1.50",
+        "reference": "references/fujifilm-x-m.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "1.50"
+        ],
+        "fujimod_body_definition_present": true,
+        "fujicli_model_declared": true,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-A7",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-a7/",
+        "official_version_observed": "1.33",
+        "reference": "references/fujifilm-x-a.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-A5",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-a5/",
+        "official_version_observed": "2.03",
+        "reference": "references/fujifilm-x-a.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-A3",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-a3/",
+        "official_version_observed": "2.22",
+        "reference": "references/fujifilm-x-a.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-A2",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-a2/",
+        "official_version_observed": "1.30",
+        "reference": "references/fujifilm-x-a.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "1.30"
+        ],
+        "fujimod_body_definition_present": true,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "FujiHack debugger documented for exact legacy firmware"
+      },
+      {
+        "model": "X-A1",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-a1/",
+        "official_version_observed": "1.50",
+        "reference": "references/fujifilm-x-a.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "1.50"
+        ],
+        "fujimod_body_definition_present": true,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-A20",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-a20/",
+        "official_version_observed": "1.12",
+        "reference": "references/fujifilm-x-a.md",
+        "fujimod_controls_catalogued": false,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-A10",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-a10/",
+        "official_version_observed": "2.21",
+        "reference": "references/fujifilm-x-a.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X100VI",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x100vi/",
+        "official_version_observed": "1.31",
+        "reference": "references/fujifilm-x100.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "1.31"
+        ],
+        "fujimod_body_definition_present": true,
+        "fujicli_model_declared": true,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X100V",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x100v/",
+        "official_version_observed": "3.01",
+        "reference": "references/fujifilm-x100.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "3.01"
+        ],
+        "fujimod_body_definition_present": true,
+        "fujicli_model_declared": true,
+        "furble_reported_body": true,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X100F",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x100f/",
+        "official_version_observed": "2.12",
+        "reference": "references/fujifilm-x100.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": true,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X100T",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x100t/",
+        "official_version_observed": "1.11",
+        "reference": "references/fujifilm-x100.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "1.11"
+        ],
+        "fujimod_body_definition_present": true,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X100S",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x100s/",
+        "official_version_observed": "1.21",
+        "reference": "references/fujifilm-x100.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "1.21"
+        ],
+        "fujimod_body_definition_present": true,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X100",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x100/",
+        "official_version_observed": "2.11",
+        "reference": "references/fujifilm-x100.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X70",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x70/",
+        "official_version_observed": "1.10",
+        "reference": "references/fujifilm-fixed-legacy.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "1.10"
+        ],
+        "fujimod_body_definition_present": true,
+        "fujicli_model_declared": true,
+        "furble_reported_body": false,
+        "modification_status": "FujiMod release advertised; partial maintainer camera testing"
+      },
+      {
+        "model": "X30",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x30/",
+        "official_version_observed": "1.03",
+        "reference": "references/fujifilm-fixed-legacy.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "1.03"
+        ],
+        "fujimod_body_definition_present": true,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X20",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x20/",
+        "official_version_observed": "1.03",
+        "reference": "references/fujifilm-fixed-legacy.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [
+          "1.03"
+        ],
+        "fujimod_body_definition_present": true,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X10",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x10/",
+        "official_version_observed": "2.01",
+        "reference": "references/fujifilm-fixed-legacy.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X half",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-hf1/",
+        "official_version_observed": "2.00",
+        "reference": "references/fujifilm-x-half.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "XF10",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/xf10/",
+        "official_version_observed": "1.12",
+        "reference": "references/fujifilm-fixed-legacy.md",
+        "fujimod_controls_catalogued": false,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "XF1",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/xf1/",
+        "official_version_observed": "1.01",
+        "reference": "references/fujifilm-fixed-legacy.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "FujiHack debugger documented for exact legacy firmware"
+      },
+      {
+        "model": "XQ2",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/xq2/",
+        "official_version_observed": "1.01",
+        "reference": "references/fujifilm-fixed-legacy.md",
+        "fujimod_controls_catalogued": false,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "XQ1",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/xq1/",
+        "official_version_observed": "1.21",
+        "reference": "references/fujifilm-fixed-legacy.md",
+        "fujimod_controls_catalogued": false,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-S1",
+        "official_source": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/x-s1/",
+        "official_version_observed": "1.02",
+        "reference": "references/fujifilm-fixed-legacy.md",
+        "fujimod_controls_catalogued": true,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      },
+      {
+        "model": "X-T1 IR",
+        "official_source": "https://www.fujifilm.com/us/en/consumer/digitalcameras/ir-camera",
+        "official_version_observed": null,
+        "reference": "references/fujifilm-x-t-main.md",
+        "fujimod_controls_catalogued": false,
+        "fujimod_firmware_versions": [],
+        "fujimod_body_definition_present": false,
+        "fujicli_model_declared": false,
+        "furble_reported_body": false,
+        "modification_status": "unresolved; catalog presence is not install/test evidence"
+      }
+    ]
+  },
+  "ricoh": {
+    "body_variant_count": 13,
+    "named_edition_count": 9,
+    "announced_model_count": 1,
+    "models": [
+      {
+        "model": "GR DIGITAL",
+        "base_model": "GR DIGITAL",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/r_dc/download/index.html",
+        "official_version_observed": "2.40",
+        "reference": "references/model-ricoh-gr-digital.md",
+        "project_evidence": "No primary firmware modification qualified in bounded searches; official firmware baseline retained.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR DIGITAL II",
+        "base_model": "GR DIGITAL II",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/r_dc/download/index.html",
+        "official_version_observed": "2.40",
+        "reference": "references/model-ricoh-gr-digital-ii.md",
+        "project_evidence": "No primary firmware modification qualified in bounded searches; official firmware baseline retained.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR DIGITAL III",
+        "base_model": "GR DIGITAL III",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/r_dc/download/index.html",
+        "official_version_observed": "2.50",
+        "reference": "references/model-ricoh-gr-digital-iii.md",
+        "project_evidence": "No primary firmware modification qualified in bounded searches; official firmware baseline retained.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR DIGITAL IV",
+        "base_model": "GR DIGITAL IV",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/r_dc/download/index.html",
+        "official_version_observed": "2.30",
+        "reference": "references/model-ricoh-gr-digital-iv.md",
+        "project_evidence": "No primary firmware modification qualified in bounded searches; official firmware baseline retained.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR (2013 APS-C)",
+        "base_model": "GR (2013 APS-C)",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/support/digital/gr_s.html",
+        "official_version_observed": "5.01",
+        "reference": "references/model-ricoh-gr-2013.md",
+        "project_evidence": "No primary firmware-mod project qualified; do not confuse GR DIGITAL or GR II.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR II",
+        "base_model": "GR II",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/support/digital/gr2_s.html",
+        "official_version_observed": "3.00",
+        "reference": "references/model-ricoh-gr-ii.md",
+        "project_evidence": "FRAME firmware/companion system; separate static boot-screen research; m10v inspection-only target.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR III",
+        "base_model": "GR III",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/support/digital/gr3_s.html",
+        "official_version_observed": "2.20",
+        "reference": "references/model-ricoh-gr-iii.md",
+        "project_evidence": "GRKit; model-specific firmware look/feature tools with narrow inputs and uneven device evidence.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR III HDF",
+        "base_model": "GR III",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/products/gr-3/special/",
+        "official_version_observed": "2.20",
+        "reference": "references/ricoh-gr-editions-and-variants.md",
+        "project_evidence": "GRKit grouped device reports; GR3-LUTSmith names it; some other patchers exclude it.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR IIIx",
+        "base_model": "GR IIIx",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/support/digital/gr3x_s.html",
+        "official_version_observed": "1.70",
+        "reference": "references/model-ricoh-gr-iiix.md",
+        "project_evidence": "GRKit; plain IIIx 1.60 gr3x-fw-play; look editor and LUT research.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR IIIx HDF",
+        "base_model": "GR IIIx",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/products/gr-3/special/",
+        "official_version_observed": "1.70",
+        "reference": "references/ricoh-gr-editions-and-variants.md",
+        "project_evidence": "GR-DLC 1.60 records feature-specific camera feedback; GRKit grouped reports; cannot inherit plain IIIx tests.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR IV",
+        "base_model": "GR IV",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/support/digital/gr4_s.html",
+        "official_version_observed": "1.20",
+        "reference": "references/model-ricoh-gr-iv.md",
+        "project_evidence": "Existing exact 1.11 patch notes plus GRKit and newer GR Mod references.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR IV HDF",
+        "base_model": "GR IV",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/products/gr-4/special/hdf/",
+        "official_version_observed": "1.20",
+        "reference": "references/ricoh-gr-editions-and-variants.md",
+        "project_evidence": "GRKit grouped device reports; GR Mod/DLC contain feature-specific reports, not every build/combination.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR IV Monochrome",
+        "base_model": "GR IV Monochrome",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/support/download_digital.html",
+        "official_version_observed": "1.10",
+        "reference": "references/ricoh-gr-editions-and-variants.md",
+        "project_evidence": "GRKit lists 1.00 device-tested, 1.10 supported; no Film Look. Colour-GR IV monochrome-look unlock is not for this body.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR DIGITAL 1st Anniversary",
+        "base_model": "GR DIGITAL",
+        "official_source": "https://www.ricoh-imaging.co.jp/japan/dc/gr/digital/",
+        "official_version_observed": null,
+        "reference": "references/ricoh-gr-editions-and-variants.md",
+        "project_evidence": "Edition identity tracked; use only project-explicit edition coverage and protect original resources.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR DIGITAL III x STUSSY",
+        "base_model": "GR DIGITAL III",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/r_dc/press/release/nr_grd3_stussy.html",
+        "official_version_observed": null,
+        "reference": "references/ricoh-gr-editions-and-variants.md",
+        "project_evidence": "Edition identity tracked; use only project-explicit edition coverage and protect original resources.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR DIGITAL IV White Edition",
+        "base_model": "GR DIGITAL IV",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/products/gr-digital4/whiteEdition.html",
+        "official_version_observed": null,
+        "reference": "references/ricoh-gr-editions-and-variants.md",
+        "project_evidence": "Edition identity tracked; use only project-explicit edition coverage and protect original resources.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR Limited Edition (2013)",
+        "base_model": "GR (2013 APS-C)",
+        "official_source": "https://news.ricoh-imaging.co.jp/rim_info/2013/20131022_018807.html",
+        "official_version_observed": null,
+        "reference": "references/ricoh-gr-editions-and-variants.md",
+        "project_evidence": "Edition identity tracked; use only project-explicit edition coverage and protect original resources.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR II Silver Edition",
+        "base_model": "GR II",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/products/gr-2/silver/",
+        "official_version_observed": null,
+        "reference": "references/ricoh-gr-editions-and-variants.md",
+        "project_evidence": "Edition identity tracked; use only project-explicit edition coverage and protect original resources.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR III Street Edition",
+        "base_model": "GR III",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/products/gr-3/special/",
+        "official_version_observed": null,
+        "reference": "references/ricoh-gr-editions-and-variants.md",
+        "project_evidence": "Edition identity tracked; use only project-explicit edition coverage and protect original resources.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR III Diary Edition",
+        "base_model": "GR III",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/products/gr-3/special/",
+        "official_version_observed": null,
+        "reference": "references/ricoh-gr-editions-and-variants.md",
+        "project_evidence": "Edition identity tracked; use only project-explicit edition coverage and protect original resources.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR IIIx Urban Edition",
+        "base_model": "GR IIIx",
+        "official_source": "https://www.ricoh-imaging.co.jp/english/products/gr-3/special/",
+        "official_version_observed": null,
+        "reference": "references/ricoh-gr-editions-and-variants.md",
+        "project_evidence": "Edition identity tracked; use only project-explicit edition coverage and protect original resources.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR IV 30th Anniversary Edition",
+        "base_model": "GR IV",
+        "official_source": "https://news.ricoh-imaging.co.jp/rim_info2/2026/20260916_042580.html",
+        "official_version_observed": null,
+        "reference": "references/ricoh-gr-editions-and-variants.md",
+        "project_evidence": "Edition identity tracked; use only project-explicit edition coverage and protect original resources.",
+        "lifecycle_status": "released",
+        "independently_tested_here": false
+      },
+      {
+        "model": "GR IVx (announced)",
+        "base_model": "GR IVx",
+        "official_source": "https://news.ricoh-imaging.co.jp/rim_info2/2026/20260827_042443.html",
+        "official_version_observed": null,
+        "reference": "references/ricoh-gr-editions-and-variants.md",
+        "project_evidence": "Development announcement; no released firmware or modification compatibility qualified.",
+        "lifecycle_status": "announced; planned winter 2026 or later",
+        "independently_tested_here": false
+      }
+    ]
+  }
+}

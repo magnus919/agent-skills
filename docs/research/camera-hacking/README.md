@@ -1,6 +1,6 @@
 # Camera-hacking discovery
 
-Research for a public, manufacturer-independent `camera-hacking` skill. Discovery only; no installable skill or camera modifications have been made. Researched **2026-10-29** using `research-methodology` and the catalog's `agent-skills` guidance.
+Research for a public, manufacturer-independent `camera-hacking` skill. This directory is the discovery archive. The installable [camera-hacking skill](../../../camera-hacking/SKILL.md) packages the workflow and source-bound references. No camera modifications were performed during this research. Researched **2026-10-29** using `research-methodology` and the catalog's `agent-skills` guidance.
 
 ## What the evidence supports
 
