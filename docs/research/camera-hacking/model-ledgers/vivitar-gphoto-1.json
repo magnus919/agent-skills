@@ -1,0 +1,41 @@
+{
+  "manufacturer": "vivitar",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "ViviCam3350",
+      "additional_abilities": "",
+      "comments": "Experimental"
+    },
+    {
+      "name": "ViviCam5B",
+      "additional_abilities": "",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Vivitar Freelance",
+      "additional_abilities": "",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Vivitar Mini Digital Camera",
+      "additional_abilities": "Image Capture",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Vivitar Vivicam 55",
+      "additional_abilities": "",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Vivitar Vivicam3350B",
+      "additional_abilities": "",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Vivitar Vivicam35",
+      "additional_abilities": "",
+      "comments": "Experimental"
+    }
+  ]
+}

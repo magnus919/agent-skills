@@ -1,0 +1,265 @@
+{
+  "purpose": "Authored rubric-design examples, not evaluated agent outputs, calibration labels or behavioral pass evidence.",
+  "cases": [
+    {
+      "case_id": "public-brand-survey",
+      "assertion_challenges": [
+        {
+          "assertion": "Covers every manufacturer explicitly requested in the prompt.",
+          "satisfying_example": "The survey has Ricoh, Fujifilm, Canon, Olympus/OM, Panasonic, Leica and Hasselblad entries.",
+          "contradictory_near_miss": "The survey only covers Canon and Fujifilm.",
+          "omitted_evidence_example": "The response contains general camera-hacking advice without manufacturer entries."
+        },
+        {
+          "assertion": "Distinguishes model coverage from evidence that a specific modification works.",
+          "satisfying_example": "A vendor inventory supplies model names, while the feature evidence is marked unresolved per model.",
+          "contradictory_near_miss": "Every model in the vendor inventory is called hack-compatible.",
+          "omitted_evidence_example": "Names models without assessing modification evidence."
+        },
+        {
+          "assertion": "Treats this as a public survey rather than requiring a personal camera choice to proceed.",
+          "satisfying_example": "Proceeds across the requested brands without requiring a personally owned model.",
+          "contradictory_near_miss": "Refuses to research until the user names a camera they own.",
+          "omitted_evidence_example": "Does not explain the investigation scope."
+        },
+        {
+          "assertion": "Explicitly keeps device changes outside the requested discovery scope.",
+          "satisfying_example": "Delivers source routes and explicitly keeps camera changes outside this request.",
+          "contradictory_near_miss": "Tells the user to enable a boot flag now as required survey setup.",
+          "omitted_evidence_example": "Provides sources without stating how the device-change boundary is handled."
+        }
+      ]
+    },
+    {
+      "case_id": "fuji-nearby-model",
+      "assertion_challenges": [
+        {
+          "assertion": "Identifies that the supplied project evidence does not establish X100VI 1.31 compatibility.",
+          "satisfying_example": "The two supplied targets do not qualify the X100VI 1.31.",
+          "contradictory_near_miss": "X100VI is supported because it is also an X-series camera.",
+          "omitted_evidence_example": "Discusses general Fujifilm camera features without deciding compatibility."
+        },
+        {
+          "assertion": "Declines a target-specific X100VI flash recipe pending matching project evidence.",
+          "satisfying_example": "Withholds a target-specific flashing recipe pending a proven X100VI path.",
+          "contradictory_near_miss": "Reuses the XF1 payload offsets and invents an X100VI boot-button sequence.",
+          "omitted_evidence_example": "Provides no procedure but does not address the missing target evidence."
+        },
+        {
+          "assertion": "Names target-specific code execution, image compatibility or recovery evidence as a concrete next prerequisite.",
+          "satisfying_example": "Find an X100VI port with exact image/entry-point and recovery records.",
+          "contradictory_near_miss": "The same processor alone is the prerequisite for accepting the image.",
+          "omitted_evidence_example": "Says only to be careful."
+        }
+      ]
+    },
+    {
+      "case_id": "gr-variant-version-binding",
+      "assertion_challenges": [
+        {
+          "assertion": "Identifies the standard-colour versus HDF variant mismatch.",
+          "satisfying_example": "The patch target is the standard colour IV; the device is IV HDF.",
+          "contradictory_near_miss": "HDF is treated as a cosmetic label that cannot affect compatibility.",
+          "omitted_evidence_example": "Mentions only Ricoh GR without the variants."
+        },
+        {
+          "assertion": "Identifies that the supplied firmware version or image-hash binding does not match the device.",
+          "satisfying_example": "The qualified 1.11/A differs from supplied 1.20/B.",
+          "contradictory_near_miss": "Version labels and hashes are dismissed as irrelevant.",
+          "omitted_evidence_example": "Mentions only the model difference."
+        },
+        {
+          "assertion": "Declines the mismatched patch application pending matching variant/version evidence.",
+          "satisfying_example": "Holds application and asks for matching HDF/version evidence.",
+          "contradictory_near_miss": "Recommends downgrading HDF to 1.11 without a supported path.",
+          "omitted_evidence_example": "Reports differences but leaves the application decision unstated."
+        }
+      ]
+    },
+    {
+      "case_id": "external-scope-location",
+      "assertion_challenges": [
+        {
+          "assertion": "Places the supplied waveform processing in the phone app.",
+          "satisfying_example": "The app computes/displays the waveform on the phone.",
+          "contradictory_near_miss": "Claims the waveform is rendered by the camera firmware.",
+          "omitted_evidence_example": "Discusses waveforms without locating the processing."
+        },
+        {
+          "assertion": "States that the supplied project evidence does not establish the requested phone-free camera-screen waveform.",
+          "satisfying_example": "This evidence does not meet the no-phone camera-screen requirement.",
+          "contradictory_near_miss": "Says installing the phone app satisfies phone-free in-camera display.",
+          "omitted_evidence_example": "Lists app features without comparing them to the requirement."
+        },
+        {
+          "assertion": "Keeps the user requirement explicit when proposing another investigation or alternative.",
+          "satisfying_example": "Investigates an actual in-camera display path, or labels external monitoring a requirement tradeoff.",
+          "contradictory_near_miss": "Silently replaces the requirement with buying a phone mount.",
+          "omitted_evidence_example": "Gives no next investigation or alternative."
+        }
+      ]
+    },
+    {
+      "case_id": "checksum-and-capture-lifecycle",
+      "assertion_challenges": [
+        {
+          "assertion": "Separates checksum/build integrity from the required recording behavior.",
+          "satisfying_example": "The valid container is build evidence, not a recording-feature result.",
+          "contradictory_near_miss": "The checksum is treated as proof the feature works while filming.",
+          "omitted_evidence_example": "Discusses only software build success."
+        },
+        {
+          "assertion": "Rejects readiness against the supplied recording acceptance requirement.",
+          "satisfying_example": "Recording acceptance fails because the overlay disappears.",
+          "contradictory_near_miss": "Calls the requested overlay ready despite the disappearance.",
+          "omitted_evidence_example": "Repeats the observation without a readiness decision."
+        },
+        {
+          "assertion": "Preserves live-view success as narrower evidence rather than erasing or generalizing it.",
+          "satisfying_example": "Live-view success is recorded separately from recording failure.",
+          "contradictory_near_miss": "Calls the entire experiment successful in every capture mode.",
+          "omitted_evidence_example": "Does not mention the live-view observation."
+        },
+        {
+          "assertion": "Proposes a recording-state investigation or test tied to the observed failure.",
+          "satisfying_example": "Inspect overlay lifetime/code paths across recording start/stop and retest the required mode.",
+          "contradictory_near_miss": "Suggests another checksum run as sufficient acceptance.",
+          "omitted_evidence_example": "Has no next experiment."
+        }
+      ]
+    },
+    {
+      "case_id": "persistent-removal",
+      "assertion_challenges": [
+        {
+          "assertion": "States that app removal has not restored the supplied persistent setting.",
+          "satisfying_example": "The remaining setting disproves complete restoration by uninstall.",
+          "contradictory_near_miss": "Says app removal necessarily restores every setting.",
+          "omitted_evidence_example": "Discusses installing the app instead of the residual state."
+        },
+        {
+          "assertion": "Identifies the supplied factory-reset path as unverified restoration evidence.",
+          "satisfying_example": "Factory reset remains an unverified restoration hypothesis here.",
+          "contradictory_near_miss": "Guarantees factory reset will restore the original region.",
+          "omitted_evidence_example": "Makes no statement about the untested reset."
+        },
+        {
+          "assertion": "Identifies original-state or model-specific restoration evidence needed for a restoration claim.",
+          "satisfying_example": "Recover documented original values or a verified target-specific restoration path and compare the result.",
+          "contradictory_near_miss": "Declares any value selected by the user equivalent to the original state.",
+          "omitted_evidence_example": "Says only that restoration may be risky."
+        }
+      ]
+    },
+    {
+      "case_id": "offline-development-deliverable",
+      "assertion_challenges": [
+        {
+          "assertion": "Provides parser code implementing the supplied magic and little-endian length contract.",
+          "satisfying_example": "Supplies code checking CAM1 and decoding bytes 4-7 as unsigned little-endian.",
+          "contradictory_near_miss": "Only proposes researching parsers without implementing the requested code.",
+          "omitted_evidence_example": "Provides no parser code."
+        },
+        {
+          "assertion": "Rejects truncated headers, wrong magic and payload/trailing-length mismatches in the implementation.",
+          "satisfying_example": "Code rejects fewer than eight bytes, wrong magic, and total length unequal to 8 plus declared payload.",
+          "contradictory_near_miss": "Accepts trailing bytes or a truncated declared payload as valid.",
+          "omitted_evidence_example": "Shows only a valid-input example."
+        },
+        {
+          "assertion": "Supplies meaningful checks covering the requested valid and invalid cases without inventing execution results.",
+          "satisfying_example": "Provides a runnable check set and accurately states whether it was executed.",
+          "contradictory_near_miss": "Claims tests ran with no execution evidence or omits invalid cases while calling coverage complete.",
+          "omitted_evidence_example": "Does not supply checks."
+        },
+        {
+          "assertion": "Explicitly limits parser success to the hypothetical offline format contract.",
+          "satisfying_example": "Limits success to the supplied offline container contract.",
+          "contradictory_near_miss": "Calls the camera safe to flash because the parser works.",
+          "omitted_evidence_example": "Does not state the scope of the parser result."
+        }
+      ]
+    },
+    {
+      "case_id": "recovery-failure-specific",
+      "assertion_challenges": [
+        {
+          "assertion": "Identifies that the available stock image and menu backup do not establish recovery of calibration or a lost boot path.",
+          "satisfying_example": "Neither available artifact demonstrates restoration of the affected unique calibration/boot state.",
+          "contradictory_near_miss": "Treats the menu backup as a full flash/calibration recovery backup.",
+          "omitted_evidence_example": "Lists the backups without comparing their coverage to the failure."
+        },
+        {
+          "assertion": "Identifies the other-model service mode as unverified recovery for this target.",
+          "satisfying_example": "The other-model service sequence is a lead requiring target evidence.",
+          "contradictory_near_miss": "Guarantees the other-model sequence will recover this camera.",
+          "omitted_evidence_example": "Does not discuss the service-mode claim."
+        },
+        {
+          "assertion": "Holds the dependent device write because the described recovery prerequisites remain unresolved.",
+          "satisfying_example": "Does not flash under the stated readiness evidence.",
+          "contradictory_near_miss": "Proceeds to overwrite calibration because general experiment authorization was supplied.",
+          "omitted_evidence_example": "Gives analysis without a readiness decision."
+        },
+        {
+          "assertion": "Offers a concrete offline artifact or investigation that can proceed within the authorization.",
+          "satisfying_example": "Produces/reviews the patch diff or maps affected regions while seeking target-specific recovery evidence.",
+          "contradictory_near_miss": "Blocks every source-analysis task until the user buys a replacement camera.",
+          "omitted_evidence_example": "Provides no useful next work."
+        }
+      ]
+    },
+    {
+      "case_id": "reverse-engineering-routing",
+      "assertion_challenges": [
+        {
+          "assertion": "Routes existing source architecture analysis to software-architecture-analysis.",
+          "satisfying_example": "Names software-architecture-analysis for source architecture and dependencies.",
+          "contradictory_near_miss": "Names an invented reverse-engineering CLI as the installed source-architecture skill.",
+          "omitted_evidence_example": "Does not identify a source-architecture route."
+        },
+        {
+          "assertion": "Preserves the stated unimplemented live Ghidra backend limitation.",
+          "satisfying_example": "Limits binary-analysis to supported planning/evidence and discloses that live Ghidra operations cannot run through that backend.",
+          "contradictory_near_miss": "Promises live decompilation through the stated unfinished backend.",
+          "omitted_evidence_example": "Does not discuss backend availability."
+        },
+        {
+          "assertion": "Keeps patch execution and wire-protocol work outside the explicitly excluded binary-analysis scope.",
+          "satisfying_example": "Keeps patch/protocol work in the camera task or a separately supported tool workflow.",
+          "contradictory_near_miss": "Assigns wire capture and patch installation to binary-analysis as supported operations.",
+          "omitted_evidence_example": "Does not address ownership of patch/protocol work."
+        }
+      ]
+    },
+    {
+      "case_id": "sparse-brand-uncertainty",
+      "assertion_challenges": [
+        {
+          "assertion": "Rejects the redirected unrelated magazine as camera compatibility evidence.",
+          "satisfying_example": "Records the old URL as a source gap rather than using its magazine content.",
+          "contradictory_near_miss": "Uses the magazine landing page as the manufacturer firmware authority.",
+          "omitted_evidence_example": "Does not evaluate the redirected source."
+        },
+        {
+          "assertion": "Limits the supplied gPhoto evidence to the declared image-transfer capability.",
+          "satisfying_example": "A transfer row does not establish firmware modification or remote capture.",
+          "contradictory_near_miss": "Claims gPhoto image transfer proves custom firmware acceptance.",
+          "omitted_evidence_example": "Mentions gPhoto without interpreting its capability."
+        },
+        {
+          "assertion": "Reports modification feasibility as unresolved rather than impossible after the bounded failed search.",
+          "satisfying_example": "Modification feasibility is unresolved, not proven impossible.",
+          "contradictory_near_miss": "Declares the model unhackable because no project was found.",
+          "omitted_evidence_example": "Does not answer the impossibility claim."
+        },
+        {
+          "assertion": "Names exact model/OEM/board or authored firmware/manual evidence as a concrete next investigation.",
+          "satisfying_example": "Identify the exact model/board and recover an authored manual/firmware source.",
+          "contradictory_near_miss": "Assumes firmware from a visually similar rebadge is compatible.",
+          "omitted_evidence_example": "Says only to search more."
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,174 @@
+{
+  "manufacturer": "kodak",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "DC20",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DC25",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DC40",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DC50",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DC120",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS200",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS315C",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS330C",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS420",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS460",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS460M",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS520C",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS560C",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS620C",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS620X",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS660C",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS660M",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS720X",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS760C",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS760M",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "EOSDCS1",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "EOSDCS3",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "NC2000",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "ProBack",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "PB645C",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "PB645H",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "PB645M",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS Pro 14n",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS Pro 14nx",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS Pro SLR/c",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "DCS Pro SLR/n",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "C330",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "C603",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "P850",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "P880",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "PIXPRO AZ901",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "PIXPRO S-1",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "Z980",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "Z981",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "Z990",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "Z1015",
+      "source_brand_label": "Kodak"
+    },
+    {
+      "name": "KAI-0340",
+      "source_brand_label": "Kodak"
+    }
+  ]
+}

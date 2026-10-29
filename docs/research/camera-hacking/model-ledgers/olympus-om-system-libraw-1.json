@@ -1,0 +1,322 @@
+{
+  "manufacturer": "olympus-om-system",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "Digital Solutions OM-1",
+      "source_brand_label": "OM"
+    },
+    {
+      "name": "Digital Solutions OM-1 Mark II",
+      "source_brand_label": "OM"
+    },
+    {
+      "name": "Digital Solutions OM-5",
+      "source_brand_label": "OM"
+    },
+    {
+      "name": "AIR A01",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "C-3030Z",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "C-5050Z",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "C-5060WZ",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "C-7070WZ",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "C-70Z / C-7000Z",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "C-740UZ",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "C-770UZ",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "C-8080WZ",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "X200 / D-560Z / C-350Z",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-1",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-3",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-5",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-10",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-20 / E-20N / E-20P",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-30",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-300",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-330",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-400",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-410",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-420",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-450",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-500",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-510",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-520",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-600",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-620",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-P1",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-P2",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-P3",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-P5",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-P7",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-PL1",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-PL1s",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-PL2",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-PL3",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-PL5",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-PL6",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-PL7",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-PL8",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-PL9",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-PL10",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-PM1",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-PM2",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-M1",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-M1 Mark II",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-M1 Mark III",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-M1X",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-M10",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-M10 Mark II",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-M10 Mark III",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-M10 Mark IV",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-M5",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-M5 Mark II",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "E-M5 Mark III",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "Pen-F",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "SP-310",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "SP-320",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "SP-350",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "SP-500UZ",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "SP-510UZ",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "SP-550UZ",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "SP-560UZ",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "SP-565UZ",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "SP-570UZ",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "Stylus 1",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "Stylus 1s",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "SH-2",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "SH-3",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "TG-4",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "TG-5",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "TG-6",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "TG-7",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "XZ-1",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "XZ-2",
+      "source_brand_label": "Olympus"
+    },
+    {
+      "name": "XZ-10",
+      "source_brand_label": "Olympus"
+    }
+  ]
+}

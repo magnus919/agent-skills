@@ -1,0 +1,402 @@
+{
+  "manufacturer": "canon",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "PowerShot S50",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc482.html"
+    },
+    {
+      "name": "ZR60",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc689.html"
+    },
+    {
+      "name": "ZR70 MC",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc688.html"
+    },
+    {
+      "name": "EOS-1Ds",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr782.html"
+    },
+    {
+      "name": "PowerShot G3",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc481.html"
+    },
+    {
+      "name": "PowerShot S45",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc480.html"
+    },
+    {
+      "name": "PowerShot S230 DIGITAL ELPH",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc479.html"
+    },
+    {
+      "name": "OPTURA200 MC",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc687.html"
+    },
+    {
+      "name": "GL2",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc686.html"
+    },
+    {
+      "name": "PowerShot A200",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc478.html"
+    },
+    {
+      "name": "ELURA40 MC",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc685.html"
+    },
+    {
+      "name": "PowerShot S200 DIGITAL ELPH",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc477.html"
+    },
+    {
+      "name": "PowerShot S330 DIGITAL ELPH",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc476.html"
+    },
+    {
+      "name": "PowerShot A100",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc475.html"
+    },
+    {
+      "name": "EOS D60",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr781.html"
+    },
+    {
+      "name": "ZR40",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc684.html"
+    },
+    {
+      "name": "PowerShot G2 Black",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc474.html"
+    },
+    {
+      "name": "PowerShot A30",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc473.html"
+    },
+    {
+      "name": "PowerShot A40",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc472.html"
+    },
+    {
+      "name": "ZR45 MC",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc683.html"
+    },
+    {
+      "name": "ZR50 MC",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc682.html"
+    },
+    {
+      "name": "EOS-1D",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr780.html"
+    },
+    {
+      "name": "PowerShot S30",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc471.html"
+    },
+    {
+      "name": "Elura 10",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc681.html"
+    },
+    {
+      "name": "PowerShot S40",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc470.html"
+    },
+    {
+      "name": "ELURA20 MC",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc680.html"
+    },
+    {
+      "name": "PowerShot G2",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc469.html"
+    },
+    {
+      "name": "Optura100 MC",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc679.html"
+    },
+    {
+      "name": "XL1S",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc678.html"
+    },
+    {
+      "name": "ZR20",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc677.html"
+    },
+    {
+      "name": "PowerShot A10",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc468.html"
+    },
+    {
+      "name": "PowerShot S110 DIGITAL ELPH",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc467.html"
+    },
+    {
+      "name": "PowerShot A20",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc466.html"
+    },
+    {
+      "name": "ZR25MC",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc676.html"
+    },
+    {
+      "name": "PowerShot S300 DIGITAL ELPH",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc465.html"
+    },
+    {
+      "name": "ZR30MC",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc675.html"
+    },
+    {
+      "name": "PowerShot Pro90 IS",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc464.html"
+    },
+    {
+      "name": "EOS D30",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr779.html"
+    },
+    {
+      "name": "PowerShot G1",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc463.html"
+    },
+    {
+      "name": "ELURA 2 MC",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc674.html"
+    },
+    {
+      "name": "ZR10",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc673.html"
+    },
+    {
+      "name": "PowerShot S100 DIGITAL ELPH",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc462.html"
+    },
+    {
+      "name": "OPTURA Pi",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc672.html"
+    },
+    {
+      "name": "PowerShot S20",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc461.html"
+    },
+    {
+      "name": "PowerShot S10",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc460.html"
+    },
+    {
+      "name": "GL1",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc671.html"
+    },
+    {
+      "name": "ULTURA",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc670.html"
+    },
+    {
+      "name": "PowerShot A50",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc459.html"
+    },
+    {
+      "name": "ELURA",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc669.html"
+    },
+    {
+      "name": "EOS D6000",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr778.html"
+    },
+    {
+      "name": "PowerShot Pro70",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc458.html"
+    },
+    {
+      "name": "PowerShot A5 Zoom",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc457.html"
+    },
+    {
+      "name": "VISTURA",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc668.html"
+    },
+    {
+      "name": "ZR",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc667.html"
+    },
+    {
+      "name": "PowerShot A5",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc456.html"
+    },
+    {
+      "name": "EOS D2000",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr777.html"
+    },
+    {
+      "name": "XL1",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc666.html"
+    },
+    {
+      "name": "OPTURA",
+      "category": "dvc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dvc665.html"
+    },
+    {
+      "name": "PowerShot 600N",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc455.html"
+    },
+    {
+      "name": "PowerShot 350",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc454.html"
+    },
+    {
+      "name": "PowerShot 30T",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc453.html"
+    },
+    {
+      "name": "PowerShot 30",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc452.html"
+    },
+    {
+      "name": "PowerShot 600",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc451.html"
+    },
+    {
+      "name": "EOS・DCS 1",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr776.html"
+    },
+    {
+      "name": "CE300",
+      "category": "dcc",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dcc450.html"
+    },
+    {
+      "name": "EOS・DCS 3",
+      "category": "dslr",
+      "source": "canon-museum",
+      "url": "https://global.canon/en/c-museum/product/dslr775.html"
+    }
+  ]
+}

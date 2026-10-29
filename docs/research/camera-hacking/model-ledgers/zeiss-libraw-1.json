@@ -1,0 +1,10 @@
+{
+  "manufacturer": "zeiss",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "Zeiss ZX1",
+      "source_brand_label": "Zeiss ZX1"
+    }
+  ]
+}

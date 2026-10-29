@@ -1,0 +1,406 @@
+{
+  "manufacturer": "nikon",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "D1",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D1H",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D1X",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D2H",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D2Hs",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D2X",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D2Xs",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D3",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D3s",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D3X",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D4",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D4s",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D40",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D40X",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D5",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D50",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D6",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D60",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D70",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D70s",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D80",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D90",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D100",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D200",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D300",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D300s",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D500",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D600",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D610",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D700",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D750",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D780",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D800",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D800E",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D810",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D810A",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D850",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D3000",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D3100",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D3200",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D3300",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D3400",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D3500",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D5000",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D5100",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D5200",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D5300",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D5500",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D5600",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D7000",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D7100",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D7200",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "D7500",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Df",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Z 5",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Z 6",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Z 6 II",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Z 6 III (HE/HE* formats are not supported yet)",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Z 7",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Z 7 II",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Z 8 (HE/HE* formats are not supported yet)",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Z 9 (HE/HE* formats are not supported yet)",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Z 30",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Z 50",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Z f (HE/HE* formats are not supported yet)",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Z fc",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "1 AW1",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "1 J1",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "1 J2",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "1 J3",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "1 J4",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "1 J5",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "1 S1",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "1 S2",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "1 V1",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "1 V2",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "1 V3",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 700 (\"DIAG RAW\" hack)",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 800 (\"DIAG RAW\" hack)",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 880 (\"DIAG RAW\" hack)",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 900 (\"DIAG RAW\" hack)",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 950 (\"DIAG RAW\" hack)",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 990 (\"DIAG RAW\" hack)",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 995 (\"DIAG RAW\" hack)",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 2100 (\"DIAG RAW\" hack)",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 2500 (\"DIAG RAW\" hack)",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 3200 (\"DIAG RAW\" hack)",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 3700 (\"DIAG RAW\" hack)",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 4300 (\"DIAG RAW\" hack)",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 4500 (\"DIAG RAW\" hack)",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 5000",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 5400",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 5700",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 8400",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 8700",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix 8800",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix A",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix A1000",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix B700",
+      "source_brand_label": "Nikon"
+    },
+    {
+      "name": "Coolpix P330",
+      "source_brand_label": "Nikon"
+    }
+  ]
+}

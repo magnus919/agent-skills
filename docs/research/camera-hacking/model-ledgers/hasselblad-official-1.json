@@ -1,0 +1,72 @@
+{
+  "manufacturer": "hasselblad",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "X2D II 100C",
+      "category": "vendor listing",
+      "source": "hasselblad-x",
+      "url": "https://www.hasselblad.com/x-system/"
+    },
+    {
+      "name": "X2D 100C Earth Explorer Limited Edition",
+      "category": "vendor listing",
+      "source": "hasselblad-x",
+      "url": "https://www.hasselblad.com/x-system/"
+    },
+    {
+      "name": "X2D 100C",
+      "category": "vendor listing",
+      "source": "hasselblad-x",
+      "url": "https://www.hasselblad.com/x-system/"
+    },
+    {
+      "name": "X1D II 50C",
+      "category": "vendor listing",
+      "source": "hasselblad-x",
+      "url": "https://www.hasselblad.com/x-system/"
+    },
+    {
+      "name": "907X & CFV 100C",
+      "category": "vendor listing",
+      "source": "hasselblad-v",
+      "url": "https://www.hasselblad.com/v-system/"
+    },
+    {
+      "name": "907X Anniversary Edition Kit",
+      "category": "vendor listing",
+      "source": "hasselblad-v",
+      "url": "https://www.hasselblad.com/v-system/"
+    },
+    {
+      "name": "907x & CFV II 50C",
+      "category": "vendor listing",
+      "source": "hasselblad-v",
+      "url": "https://www.hasselblad.com/v-system/"
+    },
+    {
+      "name": "907X Special edition",
+      "category": "vendor listing",
+      "source": "hasselblad-v",
+      "url": "https://www.hasselblad.com/v-system/"
+    },
+    {
+      "name": "H6D-100C",
+      "category": "H system vendor page, not proof currently sold",
+      "source": "hasselblad-h",
+      "url": "https://www.hasselblad.com/h-system/"
+    },
+    {
+      "name": "H6D-400C Multi-shot",
+      "category": "H system vendor page, not proof currently sold",
+      "source": "hasselblad-h",
+      "url": "https://www.hasselblad.com/h-system/"
+    },
+    {
+      "name": "H6D-100C Digital Back",
+      "category": "H system vendor page, not proof currently sold",
+      "source": "hasselblad-h",
+      "url": "https://www.hasselblad.com/h-system/"
+    }
+  ]
+}

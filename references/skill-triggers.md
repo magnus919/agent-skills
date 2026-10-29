@@ -4,6 +4,7 @@ Each skill's `description` field is the canonical routing contract. This conveni
 
 | User says... | Load skill |
 |---|---|
+| "camera hacking", "custom camera firmware", "camera feature unlock", "Fujifilm X hack", "Ricoh GR patch", "camera protocol reverse engineering", "Magic Lantern compatibility", "camera recovery experiment" | [camera-hacking](../camera-hacking/SKILL.md) |
 | "Amazon memo", "six-pager", "narrative decision memo", "PR/FAQ", "working-backwards proposal", "short decision brief", "revise AI-heavy memo prose", "silent-reading review" | [amazon-memo](../amazon-memo/SKILL.md) |
 | "community guide", "neighborhood handbook", "mutual support workshop", "adapt this guide for our community", "revise our community program" | [community-guides](../community-guides/SKILL.md) |
 | "CryptPad", "CryptDrive", "CryptPadAPI", "CryptPad embedding", "onNewKey", "CryptPad export" | [cryptpad](../cryptpad/SKILL.md) |

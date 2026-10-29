@@ -1,0 +1,18 @@
+{
+  "manufacturer": "kinefinity",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "KineMINI",
+      "source_brand_label": "Kinefinity"
+    },
+    {
+      "name": "KineRAW Mini",
+      "source_brand_label": "Kinefinity"
+    },
+    {
+      "name": "KineRAW S35",
+      "source_brand_label": "Kinefinity"
+    }
+  ]
+}

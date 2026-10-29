@@ -1,0 +1,182 @@
+{
+  "manufacturer": "pentax",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "*ist D",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "*ist DL",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "*ist DL2",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "*ist DS",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "*ist DS2",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K10D",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K20D",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K100D",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K100D Super",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K110D",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K200D",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K2000/K-m",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "KF",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "KP",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-x",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-r",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-01",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-1",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-1 Mark II",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-3",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-3 Mark II",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-3 Mark III",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-3 Mark III Monochrome",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-30",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-5",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-5 II",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-5 IIs",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-50",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-500",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-7",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-70",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-S1",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "K-S2",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "MX-1",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "Q",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "Q7",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "Q10",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "QS-1",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "Optio S (secret menu or hack)",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "Optio S4 (secret menu or hack)",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "Optio 33WR (secret menu or hack)",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "Optio 750Z (secret menu or hack)",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "645D",
+      "source_brand_label": "Pentax"
+    },
+    {
+      "name": "645Z",
+      "source_brand_label": "Pentax"
+    }
+  ]
+}

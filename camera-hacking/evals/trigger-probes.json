@@ -1,0 +1,35 @@
+{
+  "purpose": "Routing prompts for host-specific activation testing; separate from output-quality evals. Live activation is not assessed by this file.",
+  "probes": [
+    {
+      "prompt": "Investigate Fujifilm X firmware extensions and exact-model compatibility.",
+      "should_trigger": true,
+      "reason": "camera modification feasibility"
+    },
+    {
+      "prompt": "Develop a custom Ricoh GR setting patch and a recovery experiment.",
+      "should_trigger": true,
+      "reason": "development and device-readiness workflow"
+    },
+    {
+      "prompt": "Reverse-engineer the control protocol for my digital cinema camera.",
+      "should_trigger": true,
+      "reason": "camera interoperability"
+    },
+    {
+      "prompt": "What aperture should I use for a family portrait?",
+      "should_trigger": false,
+      "reason": "general photography"
+    },
+    {
+      "prompt": "Convert these camera video files to ProRes.",
+      "should_trigger": false,
+      "reason": "ffmpeg media conversion"
+    },
+    {
+      "prompt": "Install the routine official firmware update described by the vendor.",
+      "should_trigger": false,
+      "reason": "ordinary vendor maintenance"
+    }
+  ]
+}

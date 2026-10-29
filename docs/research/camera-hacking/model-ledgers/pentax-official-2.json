@@ -1,0 +1,102 @@
+{
+  "manufacturer": "pentax",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "WG 20",
+      "category": "discontinued product route",
+      "source": "pentax-wg-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/wg-20/"
+    },
+    {
+      "name": "WG M2",
+      "category": "discontinued product route",
+      "source": "pentax-wg-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/wg-m2/"
+    },
+    {
+      "name": "WG M1",
+      "category": "discontinued product route",
+      "source": "pentax-wg-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/wg-m1/"
+    },
+    {
+      "name": "WG 4",
+      "category": "discontinued product route",
+      "source": "pentax-wg-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/wg-4/"
+    },
+    {
+      "name": "WG 10",
+      "category": "discontinued product route",
+      "source": "pentax-wg-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/wg-10/"
+    },
+    {
+      "name": "WG 3",
+      "category": "discontinued product route",
+      "source": "pentax-wg-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/wg-3/"
+    },
+    {
+      "name": "OPTIO WG 2",
+      "category": "discontinued product route",
+      "source": "pentax-wg-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/optio-wg-2/"
+    },
+    {
+      "name": "WG 1",
+      "category": "discontinued product route",
+      "source": "pentax-wg-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/wg-1/"
+    },
+    {
+      "name": "K-1 Mark II",
+      "category": "current product index; regional availability not established",
+      "source": "pentax-products",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/"
+    },
+    {
+      "name": "K-3 Mark III Monochrome",
+      "category": "current product index; regional availability not established",
+      "source": "pentax-products",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/"
+    },
+    {
+      "name": "KF",
+      "category": "current product index; regional availability not established",
+      "source": "pentax-products",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/"
+    },
+    {
+      "name": "WG-8",
+      "category": "current product index; regional availability not established",
+      "source": "pentax-products",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/"
+    },
+    {
+      "name": "WG-90",
+      "category": "current product index; regional availability not established",
+      "source": "pentax-products",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/"
+    },
+    {
+      "name": "WG-80",
+      "category": "current product index; regional availability not established",
+      "source": "pentax-products",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/"
+    },
+    {
+      "name": "WG-1000",
+      "category": "current product index; regional availability not established",
+      "source": "pentax-products",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/"
+    },
+    {
+      "name": "645Z-IR",
+      "category": "current product index; regional availability not established",
+      "source": "pentax-products",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/"
+    }
+  ]
+}

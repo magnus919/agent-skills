@@ -1,0 +1,606 @@
+{
+  "manufacturer": "nikon",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "Z 30",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/603/Z_30.html"
+    },
+    {
+      "name": "Z 5",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/552/Z_5.html"
+    },
+    {
+      "name": "Z 50",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/526/Z_50.html"
+    },
+    {
+      "name": "Z 6",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/493/Z_6.html"
+    },
+    {
+      "name": "Z 6II",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/556/Z_6II.html"
+    },
+    {
+      "name": "Z 7",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/492/Z_7.html"
+    },
+    {
+      "name": "Z 7II",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/558/Z_7II.html"
+    },
+    {
+      "name": "Z 8",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/616/Z_8.html"
+    },
+    {
+      "name": "Z 9",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/589/Z_9.html"
+    },
+    {
+      "name": "Z f",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/624/Z_f.html"
+    },
+    {
+      "name": "Z fc",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/574/Z_fc.html"
+    },
+    {
+      "name": "Z50II",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/637/Z50II.html"
+    },
+    {
+      "name": "Z5II",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/648/Z5II.html"
+    },
+    {
+      "name": "Z5IIC",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/677/Z5IIC.html"
+    },
+    {
+      "name": "Z6III",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/629/Z6III.html"
+    },
+    {
+      "name": "Nikon 1 AW1",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/130/Nikon_1_AW1.html"
+    },
+    {
+      "name": "Nikon 1 J1",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/121/Nikon_1_J1.html"
+    },
+    {
+      "name": "Nikon 1 J2",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/122/Nikon_1_J2.html"
+    },
+    {
+      "name": "Nikon 1 J3",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/123/Nikon_1_J3.html"
+    },
+    {
+      "name": "Nikon 1 J4",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/124/Nikon_1_J4.html"
+    },
+    {
+      "name": "Nikon 1 J5",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/250/Nikon_1_J5.html"
+    },
+    {
+      "name": "Nikon 1 S1",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/125/Nikon_1_S1.html"
+    },
+    {
+      "name": "Nikon 1 S2",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/126/Nikon_1_S2.html"
+    },
+    {
+      "name": "Nikon 1 V1",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/127/Nikon_1_V1.html"
+    },
+    {
+      "name": "Nikon 1 V2",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/128/Nikon_1_V2.html"
+    },
+    {
+      "name": "Nikon 1 V3",
+      "category": "Mirrorless Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/129/Nikon_1_V3.html"
+    },
+    {
+      "name": "ZR",
+      "category": "Cinema Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/659/ZR.html"
+    },
+    {
+      "name": "D1",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/210/D1.html"
+    },
+    {
+      "name": "D1H",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/211/D1H.html"
+    },
+    {
+      "name": "D1X",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/212/D1X.html"
+    },
+    {
+      "name": "D200",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/10/D200.html"
+    },
+    {
+      "name": "D2H",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/213/D2H.html"
+    },
+    {
+      "name": "D2Hs",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/215/D2Hs.html"
+    },
+    {
+      "name": "D2X",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/218/D2X.html"
+    },
+    {
+      "name": "D2Xs",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/209/D2Xs.html"
+    },
+    {
+      "name": "D3",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/1/D3.html"
+    },
+    {
+      "name": "D300",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/11/D300.html"
+    },
+    {
+      "name": "D3000",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/18/D3000.html"
+    },
+    {
+      "name": "D300S",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/12/D300S.html"
+    },
+    {
+      "name": "D3100",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/19/D3100.html"
+    },
+    {
+      "name": "D3200",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/20/D3200.html"
+    },
+    {
+      "name": "D3300",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/21/D3300.html"
+    },
+    {
+      "name": "D3400",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/330/D3400.html"
+    },
+    {
+      "name": "D3500",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/471/D3500.html"
+    },
+    {
+      "name": "D3S",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/2/D3S.html"
+    },
+    {
+      "name": "D3X",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/3/D3X.html"
+    },
+    {
+      "name": "D4",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/4/D4.html"
+    },
+    {
+      "name": "D40",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/6/D40.html"
+    },
+    {
+      "name": "D40X",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/7/D40X.html"
+    },
+    {
+      "name": "D4S",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/5/D4S.html"
+    },
+    {
+      "name": "D5",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/320/D5.html"
+    },
+    {
+      "name": "D50",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/217/D50.html"
+    },
+    {
+      "name": "D500",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/323/D500.html"
+    },
+    {
+      "name": "D5000",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/22/D5000.html"
+    },
+    {
+      "name": "D5100",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/23/D5100.html"
+    },
+    {
+      "name": "D5200",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/24/D5200.html"
+    },
+    {
+      "name": "D5300",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/25/D5300.html"
+    },
+    {
+      "name": "D5500",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/196/D5500.html"
+    },
+    {
+      "name": "D5600",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/351/D5600.html"
+    },
+    {
+      "name": "D6",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/545/D6.html"
+    },
+    {
+      "name": "D60",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/219/D60.html"
+    },
+    {
+      "name": "D600",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/13/D600.html"
+    },
+    {
+      "name": "D610",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/14/D610.html"
+    },
+    {
+      "name": "D70",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/214/D70.html"
+    },
+    {
+      "name": "D700",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/15/D700.html"
+    },
+    {
+      "name": "D7000",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/26/D7000.html"
+    },
+    {
+      "name": "D70s",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/216/D70s.html"
+    },
+    {
+      "name": "D7100",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/27/D7100.html"
+    },
+    {
+      "name": "D7200",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/197/D7200.html"
+    },
+    {
+      "name": "D750",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/175/D750.html"
+    },
+    {
+      "name": "D7500",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/352/D7500.html"
+    },
+    {
+      "name": "D780",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/539/D780.html"
+    },
+    {
+      "name": "D80",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/8/D80.html"
+    },
+    {
+      "name": "D800",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/16/D800.html"
+    },
+    {
+      "name": "D800E",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/17/D800E.html"
+    },
+    {
+      "name": "D810",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/176/D810.html"
+    },
+    {
+      "name": "D810A",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/198/D810A.html"
+    },
+    {
+      "name": "D850",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/359/D850.html"
+    },
+    {
+      "name": "D90",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/9/D90.html"
+    },
+    {
+      "name": "Df",
+      "category": "Digital SLR Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/28/Df.html"
+    },
+    {
+      "name": "COOLPIX A",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/29/COOLPIX_A.html"
+    },
+    {
+      "name": "COOLPIX A10",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/317/COOLPIX_A10.html"
+    },
+    {
+      "name": "COOLPIX A100",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/316/COOLPIX_A100.html"
+    },
+    {
+      "name": "COOLPIX A1000",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/509/COOLPIX_A1000.html"
+    },
+    {
+      "name": "COOLPIX A300",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/326/COOLPIX_A300.html"
+    },
+    {
+      "name": "COOLPIX A900",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/334/COOLPIX_A900.html"
+    },
+    {
+      "name": "COOLPIX B500",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/327/COOLPIX_B500.html"
+    },
+    {
+      "name": "COOLPIX B600",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/510/COOLPIX_B600.html"
+    },
+    {
+      "name": "COOLPIX B700",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/333/COOLPIX_B700.html"
+    },
+    {
+      "name": "COOLPIX W100",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/329/COOLPIX_W100.html"
+    },
+    {
+      "name": "COOLPIX W150",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/518/COOLPIX_W150.html"
+    },
+    {
+      "name": "COOLPIX W300",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/354/COOLPIX_W300.html"
+    },
+    {
+      "name": "COOLPIX P100",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/51/COOLPIX_P100.html"
+    },
+    {
+      "name": "COOLPIX P1000",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/495/COOLPIX_P1000.html"
+    },
+    {
+      "name": "COOLPIX P1100",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/644/COOLPIX_P1100.html"
+    },
+    {
+      "name": "COOLPIX P330",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/52/COOLPIX_P330.html"
+    },
+    {
+      "name": "COOLPIX P340",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/53/COOLPIX_P340.html"
+    },
+    {
+      "name": "COOLPIX P500",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/54/COOLPIX_P500.html"
+    },
+    {
+      "name": "COOLPIX P510",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/55/COOLPIX_P510.html"
+    },
+    {
+      "name": "COOLPIX P520",
+      "category": "Compact Digital Cameras",
+      "source": "nikon-categories",
+      "url": "https://downloadcenter.nikonimglib.com/en/products/56/COOLPIX_P520.html"
+    }
+  ]
+}

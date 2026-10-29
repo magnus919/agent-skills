@@ -1,0 +1,74 @@
+{
+  "manufacturer": "konica-minolta",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "KD-400Z",
+      "source_brand_label": "Konica"
+    },
+    {
+      "name": "KD-510Z",
+      "source_brand_label": "Konica"
+    },
+    {
+      "name": "RD175 / Agfa ActionCam",
+      "source_brand_label": "Minolta"
+    },
+    {
+      "name": "DiMAGE 5",
+      "source_brand_label": "Minolta"
+    },
+    {
+      "name": "DiMAGE 7",
+      "source_brand_label": "Minolta"
+    },
+    {
+      "name": "DiMAGE 7i",
+      "source_brand_label": "Minolta"
+    },
+    {
+      "name": "DiMAGE 7Hi",
+      "source_brand_label": "Minolta"
+    },
+    {
+      "name": "DiMAGE A1",
+      "source_brand_label": "Minolta"
+    },
+    {
+      "name": "DiMAGE A2",
+      "source_brand_label": "Minolta"
+    },
+    {
+      "name": "DiMAGE A200",
+      "source_brand_label": "Minolta"
+    },
+    {
+      "name": "DiMAGE G400",
+      "source_brand_label": "Minolta"
+    },
+    {
+      "name": "DiMAGE G500",
+      "source_brand_label": "Minolta"
+    },
+    {
+      "name": "DiMAGE G530",
+      "source_brand_label": "Minolta"
+    },
+    {
+      "name": "DiMAGE G600",
+      "source_brand_label": "Minolta"
+    },
+    {
+      "name": "DiMAGE Z2",
+      "source_brand_label": "Minolta"
+    },
+    {
+      "name": "Alpha/Dynax/Maxxum 5D",
+      "source_brand_label": "Minolta"
+    },
+    {
+      "name": "Alpha/Dynax/Maxxum 7D",
+      "source_brand_label": "Minolta"
+    }
+  ]
+}

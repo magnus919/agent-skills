@@ -1,0 +1,196 @@
+{
+  "manufacturer": "ricoh",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Ricoh Capilo RX",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio 300G",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio G3",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio G4",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio GX",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio GX (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio GX 8",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio GX 8 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio R1",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio R1v",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio R1v (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio R2",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio R3",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio R3 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio R4",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio R5",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio R5 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio RR30",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio RR750 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Caplio RZ1",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh GR III (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh GR IIIx (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh RDC-1",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Ricoh RDC-100G",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Ricoh RDC-2",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Ricoh RDC-2E",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Ricoh RDC-300",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Ricoh RDC-300Z",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Ricoh RDC-4200",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Ricoh RDC-4300",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Ricoh RDC-5000",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Ricoh Theta (WLAN)",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": "Testing (Beta)"
+    },
+    {
+      "name": "Ricoh Theta m15 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Theta S (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Theta SC (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Theta V (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh Theta Z1 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Ricoh WG-M2 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    }
+  ]
+}

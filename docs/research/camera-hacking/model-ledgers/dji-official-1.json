@@ -1,0 +1,96 @@
+{
+  "manufacturer": "dji",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "Osmo Action 6",
+      "category": "handheld camera; excludes phone-only gimbals",
+      "source": "dji-cameras",
+      "url": "https://www.dji.com/products/handheld-imaging-devices"
+    },
+    {
+      "name": "Osmo Action 5 Pro",
+      "category": "handheld camera; excludes phone-only gimbals",
+      "source": "dji-cameras",
+      "url": "https://www.dji.com/products/handheld-imaging-devices"
+    },
+    {
+      "name": "Osmo Action 4",
+      "category": "handheld camera; excludes phone-only gimbals",
+      "source": "dji-cameras",
+      "url": "https://www.dji.com/products/handheld-imaging-devices"
+    },
+    {
+      "name": "Osmo Action",
+      "category": "handheld camera; excludes phone-only gimbals",
+      "source": "dji-cameras",
+      "url": "https://www.dji.com/products/handheld-imaging-devices"
+    },
+    {
+      "name": "DJI Action 2",
+      "category": "handheld camera; excludes phone-only gimbals",
+      "source": "dji-cameras",
+      "url": "https://www.dji.com/products/handheld-imaging-devices"
+    },
+    {
+      "name": "Osmo Action 3",
+      "category": "handheld camera; excludes phone-only gimbals",
+      "source": "dji-cameras",
+      "url": "https://www.dji.com/products/handheld-imaging-devices"
+    },
+    {
+      "name": "Osmo 360",
+      "category": "handheld camera; excludes phone-only gimbals",
+      "source": "dji-cameras",
+      "url": "https://www.dji.com/products/handheld-imaging-devices"
+    },
+    {
+      "name": "Osmo Nano",
+      "category": "handheld camera; excludes phone-only gimbals",
+      "source": "dji-cameras",
+      "url": "https://www.dji.com/products/handheld-imaging-devices"
+    },
+    {
+      "name": "Osmo Pocket 3",
+      "category": "handheld camera; excludes phone-only gimbals",
+      "source": "dji-cameras",
+      "url": "https://www.dji.com/products/handheld-imaging-devices"
+    },
+    {
+      "name": "DJI Pocket 2",
+      "category": "handheld camera; excludes phone-only gimbals",
+      "source": "dji-cameras",
+      "url": "https://www.dji.com/products/handheld-imaging-devices"
+    },
+    {
+      "name": "Osmo Pocket",
+      "category": "handheld camera; excludes phone-only gimbals",
+      "source": "dji-cameras",
+      "url": "https://www.dji.com/products/handheld-imaging-devices"
+    },
+    {
+      "name": "Osmo Pro and Raw",
+      "category": "handheld camera; excludes phone-only gimbals",
+      "source": "dji-cameras",
+      "url": "https://www.dji.com/products/handheld-imaging-devices"
+    },
+    {
+      "name": "Osmo+",
+      "category": "handheld camera; excludes phone-only gimbals",
+      "source": "dji-cameras",
+      "url": "https://www.dji.com/products/handheld-imaging-devices"
+    },
+    {
+      "name": "Osmo",
+      "category": "handheld camera; excludes phone-only gimbals",
+      "source": "dji-cameras",
+      "url": "https://www.dji.com/products/handheld-imaging-devices"
+    },
+    {
+      "name": "DJI Ronin 4D",
+      "category": "handheld camera; excludes phone-only gimbals",
+      "source": "dji-cameras",
+      "url": "https://www.dji.com/products/handheld-imaging-devices"
+    }
+  ]
+}

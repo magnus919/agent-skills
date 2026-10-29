@@ -1,0 +1,102 @@
+{
+  "manufacturer": "blackmagic-design",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "Blackmagic URSA Cine",
+      "category": "camera body/family; URSA Cine sensor variants require product page",
+      "source": "blackmagic-products",
+      "url": "https://www.blackmagicdesign.com/products"
+    },
+    {
+      "name": "Blackmagic URSA Cine Immersive",
+      "category": "camera body/family; URSA Cine sensor variants require product page",
+      "source": "blackmagic-products",
+      "url": "https://www.blackmagicdesign.com/products"
+    },
+    {
+      "name": "Blackmagic PYXIS 6K",
+      "category": "camera body/family; URSA Cine sensor variants require product page",
+      "source": "blackmagic-products",
+      "url": "https://www.blackmagicdesign.com/products"
+    },
+    {
+      "name": "Blackmagic PYXIS 12K",
+      "category": "camera body/family; URSA Cine sensor variants require product page",
+      "source": "blackmagic-products",
+      "url": "https://www.blackmagicdesign.com/products"
+    },
+    {
+      "name": "Blackmagic URSA Mini Pro 4.6K G2",
+      "category": "camera body/family; URSA Cine sensor variants require product page",
+      "source": "blackmagic-products",
+      "url": "https://www.blackmagicdesign.com/products"
+    },
+    {
+      "name": "Blackmagic URSA Mini Pro 12K",
+      "category": "camera body/family; URSA Cine sensor variants require product page",
+      "source": "blackmagic-products",
+      "url": "https://www.blackmagicdesign.com/products"
+    },
+    {
+      "name": "Blackmagic URSA Mini Pro 12K OLPF",
+      "category": "camera body/family; URSA Cine sensor variants require product page",
+      "source": "blackmagic-products",
+      "url": "https://www.blackmagicdesign.com/products"
+    },
+    {
+      "name": "Blackmagic Cinema Camera 6K",
+      "category": "camera body/family; URSA Cine sensor variants require product page",
+      "source": "blackmagic-products",
+      "url": "https://www.blackmagicdesign.com/products"
+    },
+    {
+      "name": "Blackmagic Pocket Cinema Camera 4K",
+      "category": "camera body/family; URSA Cine sensor variants require product page",
+      "source": "blackmagic-products",
+      "url": "https://www.blackmagicdesign.com/products"
+    },
+    {
+      "name": "Blackmagic Pocket Cinema Camera 6K G2",
+      "category": "camera body/family; URSA Cine sensor variants require product page",
+      "source": "blackmagic-products",
+      "url": "https://www.blackmagicdesign.com/products"
+    },
+    {
+      "name": "Blackmagic Pocket Cinema Camera 6K Pro",
+      "category": "camera body/family; URSA Cine sensor variants require product page",
+      "source": "blackmagic-products",
+      "url": "https://www.blackmagicdesign.com/products"
+    },
+    {
+      "name": "Blackmagic Studio Camera 4K Plus G2",
+      "category": "camera body/family; URSA Cine sensor variants require product page",
+      "source": "blackmagic-products",
+      "url": "https://www.blackmagicdesign.com/products"
+    },
+    {
+      "name": "Blackmagic Studio Camera 4K Pro G2",
+      "category": "camera body/family; URSA Cine sensor variants require product page",
+      "source": "blackmagic-products",
+      "url": "https://www.blackmagicdesign.com/products"
+    },
+    {
+      "name": "Blackmagic Studio Camera 6K Pro",
+      "category": "camera body/family; URSA Cine sensor variants require product page",
+      "source": "blackmagic-products",
+      "url": "https://www.blackmagicdesign.com/products"
+    },
+    {
+      "name": "Blackmagic Micro Studio Camera 4K G2",
+      "category": "camera body/family; URSA Cine sensor variants require product page",
+      "source": "blackmagic-products",
+      "url": "https://www.blackmagicdesign.com/products"
+    },
+    {
+      "name": "Blackmagic URSA Broadcast G2",
+      "category": "camera body/family; URSA Cine sensor variants require product page",
+      "source": "blackmagic-products",
+      "url": "https://www.blackmagicdesign.com/products"
+    }
+  ]
+}

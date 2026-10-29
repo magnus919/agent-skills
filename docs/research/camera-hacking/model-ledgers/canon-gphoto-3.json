@@ -1,0 +1,506 @@
+{
+  "manufacturer": "canon",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Canon PowerShot A2600",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A30",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A300 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A3000 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A310 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A3100 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A3500IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A40",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A400 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A4000IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A410 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A420 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A430 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A450 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A460 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A470",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A480",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon Powershot A495",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A5",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A5 Zoom",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A50",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A510 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A520 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A530 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A540 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A550 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A560 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A570 IS (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A580",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A590 IS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A60 (PTP)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A610 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A620 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A630 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A640 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A650IS (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A70 (PTP)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A700 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A710 IS (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A720 IS (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A75 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A80 (PTP)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A800",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A810",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A85 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot A95 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot D10",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot ELPH 350 HS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot Elph135",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot Elph340HS",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G1",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G1 X",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G10",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G11",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G12",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G15",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G16",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G2",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G3 (normal mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G3 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G3 X",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G5 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G5X",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Powershot G6 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G7 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G7 X",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G7 X Mark II",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G7 X Mark III",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G9 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot G9 X Mark II",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot IXY Digital L (normal mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot Pro70",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot Pro90 IS",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S1 IS (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S10",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S100",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S100 (2000)",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S110 (2001)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S110 (PTP Mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S120",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S2 IS (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S20",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S200",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S230 (normal mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S230 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S3 IS (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S30",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S300",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S330",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S40",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S400 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S410 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S45 (normal mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S45 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S5 IS (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S50 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S500 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Powershot S60 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon Powershot S70 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Canon PowerShot S80 (PTP mode)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "manufacturer": "blackmagic-design",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "Cinema Camera",
+      "source_brand_label": "BlackMagic"
+    },
+    {
+      "name": "Micro Cinema Camera",
+      "source_brand_label": "BlackMagic"
+    },
+    {
+      "name": "Pocket Cinema Camera",
+      "source_brand_label": "BlackMagic"
+    },
+    {
+      "name": "Production Camera 4k",
+      "source_brand_label": "BlackMagic"
+    },
+    {
+      "name": "URSA",
+      "source_brand_label": "BlackMagic"
+    },
+    {
+      "name": "URSA Mini 4k",
+      "source_brand_label": "BlackMagic"
+    },
+    {
+      "name": "URSA Mini 4.6k",
+      "source_brand_label": "BlackMagic"
+    },
+    {
+      "name": "URSA Mini Pro 4.6k",
+      "source_brand_label": "BlackMagic"
+    }
+  ]
+}

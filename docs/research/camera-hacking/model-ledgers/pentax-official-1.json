@@ -1,0 +1,606 @@
+{
+  "manufacturer": "pentax",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "K-1 Mark II",
+      "category": "firmware 2.51",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k-1-2.html"
+    },
+    {
+      "name": "K-1",
+      "category": "firmware 2.51",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k1.html"
+    },
+    {
+      "name": "K-3 Mark III",
+      "category": "firmware 2.20",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k-3-3.html"
+    },
+    {
+      "name": "K-3 Mark III Monochrome",
+      "category": "firmware 2.20",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k-3-3-mono.html"
+    },
+    {
+      "name": "KP",
+      "category": "firmware 1.31",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/kp.html"
+    },
+    {
+      "name": "KF",
+      "category": "firmware 1.33",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/kf.html"
+    },
+    {
+      "name": "K-70",
+      "category": "firmware 1.16",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k-70.html"
+    },
+    {
+      "name": "K-S2",
+      "category": "firmware 1.20",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/ks2_s.html"
+    },
+    {
+      "name": "K-S1",
+      "category": "firmware 1.20",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/ks1_s.html"
+    },
+    {
+      "name": "645Z",
+      "category": "firmware 1.30",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/645z_s.html"
+    },
+    {
+      "name": "K-3Ⅱ",
+      "category": "firmware 1.12",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k3_2.html"
+    },
+    {
+      "name": "K-3",
+      "category": "firmware 1.43",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k3_s.html"
+    },
+    {
+      "name": "K-50",
+      "category": "firmware 1.10",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k-50_s.html"
+    },
+    {
+      "name": "K-500",
+      "category": "firmware 1.02",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k-500_s.html"
+    },
+    {
+      "name": "K-30",
+      "category": "firmware 1.06",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k-30_s.html"
+    },
+    {
+      "name": "K-01",
+      "category": "firmware 1.05",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k-01_s.html"
+    },
+    {
+      "name": "PENTAX Q7",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/q7_s.html"
+    },
+    {
+      "name": "PENTAX Q10",
+      "category": "firmware 1.03",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/q10_s.html"
+    },
+    {
+      "name": "PENTAX Q",
+      "category": "firmware 1.14",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/q_s.html"
+    },
+    {
+      "name": "645D",
+      "category": "firmware 1.33",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/645d_s.html"
+    },
+    {
+      "name": "K-5II / K-5IIs",
+      "category": "firmware 1.07",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k-5_2_s.html"
+    },
+    {
+      "name": "K-5",
+      "category": "firmware 1.16",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k-5_s.html"
+    },
+    {
+      "name": "K-r",
+      "category": "firmware 1.15",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k-r_s.html"
+    },
+    {
+      "name": "K-x",
+      "category": "firmware 1.03",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k-x_s.html"
+    },
+    {
+      "name": "K-7",
+      "category": "firmware 1.13",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k-7_s.html"
+    },
+    {
+      "name": "K-m",
+      "category": "firmware 1.11",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k-m_s.html"
+    },
+    {
+      "name": "K2000",
+      "category": "firmware 1.11",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k2000_s.html"
+    },
+    {
+      "name": "K20D",
+      "category": "firmware 1.04",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k20d_s.html"
+    },
+    {
+      "name": "K200D",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k200d_s.html"
+    },
+    {
+      "name": "K10D",
+      "category": "firmware 1.31",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/k10d_s.html"
+    },
+    {
+      "name": "K110D",
+      "category": "firmware 1.02",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/20060914e.html"
+    },
+    {
+      "name": "K100D",
+      "category": "firmware 1.02",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/20060808e.html"
+    },
+    {
+      "name": "*ist DL2",
+      "category": "firmware 1.02",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/20060907e3.html"
+    },
+    {
+      "name": "*ist DS2",
+      "category": "firmware 1.02",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/20060907e2.html"
+    },
+    {
+      "name": "*ist DL",
+      "category": "firmware 1.03",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/20060907e1.html"
+    },
+    {
+      "name": "*ist DS",
+      "category": "firmware 2.02",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/20050415e.html"
+    },
+    {
+      "name": "*ist D",
+      "category": "firmware 1.12",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/20050225e.html"
+    },
+    {
+      "name": "WG-1000",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/wg1000_s.html"
+    },
+    {
+      "name": "WG-8",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/wg8_s.html"
+    },
+    {
+      "name": "WG-7",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/wg7_s.html"
+    },
+    {
+      "name": "WG-6",
+      "category": "firmware 1.07",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/wg6_s.html"
+    },
+    {
+      "name": "WG-30W",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/wg30w_s.html"
+    },
+    {
+      "name": "Optio I-10",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/optioi-10_s.html"
+    },
+    {
+      "name": "Optio W90",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/optiow90_s.html"
+    },
+    {
+      "name": "Optio H90",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/optioh90_s.html"
+    },
+    {
+      "name": "X90",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/x90_s.html"
+    },
+    {
+      "name": "Optio E30",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/optioe30_s.html"
+    },
+    {
+      "name": "Optio S7",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/optios7_s.html"
+    },
+    {
+      "name": "Optio A20",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/optioa20_s.html"
+    },
+    {
+      "name": "Optio A10",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/20060629e.html"
+    },
+    {
+      "name": "Optio SV / SVi",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/20060130e.html"
+    },
+    {
+      "name": "OptioWP",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/20050727e.html"
+    },
+    {
+      "name": "OptioX",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/20050420e.html"
+    },
+    {
+      "name": "Optio S5i",
+      "category": "firmware 1.00",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/20041029e.html"
+    },
+    {
+      "name": "Optio 750Z",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/20041022e.html"
+    },
+    {
+      "name": "OPTIO A30",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-a30/feature.html"
+    },
+    {
+      "name": "OPTIO A40",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-a40/feature.html"
+    },
+    {
+      "name": "OPTIO E30",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-e30/feature.html"
+    },
+    {
+      "name": "OPTIO E40",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-e40/feature.html"
+    },
+    {
+      "name": "OPTIO E50",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-e50/feature.html"
+    },
+    {
+      "name": "OPTIO E60",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-e60/feature.html"
+    },
+    {
+      "name": "OPTIO E70",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-e70/feature.html"
+    },
+    {
+      "name": "OPTIO E80",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-e80/feature.html"
+    },
+    {
+      "name": "OPTIO E90",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-e90/feature.html"
+    },
+    {
+      "name": "OPTIO H90",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-h90/feature.html"
+    },
+    {
+      "name": "OPTIO I 10",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/optio-i-10/feature.html"
+    },
+    {
+      "name": "OPTIO LS465",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/optio-ls465/"
+    },
+    {
+      "name": "OPTIO M30",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-m30/feature.html"
+    },
+    {
+      "name": "OPTIO M40",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-m40/feature.html"
+    },
+    {
+      "name": "OPTIO M50",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-m50/feature.html"
+    },
+    {
+      "name": "OPTIO M60",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-m60/feature.html"
+    },
+    {
+      "name": "OPTIO P70",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-p70/feature.html"
+    },
+    {
+      "name": "OPTIO P80",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-p80/feature.html"
+    },
+    {
+      "name": "OPTIO RS1000",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/optio-rs1000/feature.html"
+    },
+    {
+      "name": "OPTIO RS1500",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/optio-rs1500/"
+    },
+    {
+      "name": "OPTIO RZ10",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/optio-rz10/feature.html"
+    },
+    {
+      "name": "OPTIO RZ18",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/optio-rz18/"
+    },
+    {
+      "name": "OPTIO S1",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/optio-s1/"
+    },
+    {
+      "name": "OPTIO S10",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-s10/feature.html"
+    },
+    {
+      "name": "OPTIO T30",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-t30/feature.html"
+    },
+    {
+      "name": "OPTIO V10",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-v10/feature.html"
+    },
+    {
+      "name": "OPTIO V20",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-v20/feature.html"
+    },
+    {
+      "name": "OPTIO VS20",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/optio-vs20/"
+    },
+    {
+      "name": "OPTIO W30",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-w30/feature.html"
+    },
+    {
+      "name": "OPTIO W60",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-w60/feature.html"
+    },
+    {
+      "name": "OPTIO W80",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-w80/feature.html"
+    },
+    {
+      "name": "OPTIO W90",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/optio-w90/feature.html"
+    },
+    {
+      "name": "OPTIO WS80",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-ws80/feature.html"
+    },
+    {
+      "name": "OPTIO Z10",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/optio-z10/feature.html"
+    },
+    {
+      "name": "MX 1",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/mx-1/"
+    },
+    {
+      "name": "XG 1",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/xg-1/"
+    },
+    {
+      "name": "X 5",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/x-5/"
+    },
+    {
+      "name": "X70",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/x70/feature.html"
+    },
+    {
+      "name": "X90",
+      "category": "discontinued product route",
+      "source": "pentax-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/digital/x90/feature.html"
+    },
+    {
+      "name": "WG 70",
+      "category": "discontinued product route",
+      "source": "pentax-wg-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/wg-70/"
+    },
+    {
+      "name": "WG 6",
+      "category": "discontinued product route",
+      "source": "pentax-wg-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/wg-6/"
+    },
+    {
+      "name": "WG 5_GPS",
+      "category": "discontinued product route",
+      "source": "pentax-wg-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/wg-5_gps/"
+    },
+    {
+      "name": "WG 60",
+      "category": "discontinued product route",
+      "source": "pentax-wg-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/wg-60/"
+    },
+    {
+      "name": "WG 50",
+      "category": "discontinued product route",
+      "source": "pentax-wg-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/wg-50/"
+    },
+    {
+      "name": "WG 30",
+      "category": "discontinued product route",
+      "source": "pentax-wg-archive",
+      "url": "https://www.ricoh-imaging.co.jp/english/products/wg-30/"
+    }
+  ]
+}

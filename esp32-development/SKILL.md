@@ -1,7 +1,7 @@
 ---
 name: esp32-development
 description: >-
-  Build, configure, flash, test, debug, and recover firmware for ESP32-family boards, including ESP-IDF C/C++, Arduino/PlatformIO, MicroPython, CircuitPython, ESPHome, Zephyr, Rust, and NuttX. Use when identifying an ESP32 board, choosing a framework, wiring GPIO or peripheral buses, integrating sensors or actuators, diagnosing serial/boot/power/network failures, planning OTA and production security, or automating hardware tests and fault injection. Do not use as a substitute for the exact board schematic, SoC datasheet, or attached component datasheet.
+  Build, configure, flash, test, debug, and recover firmware for ESP32-family boards, including ESP-Mosaico kit bring-up, ESP-IDF C/C++, Arduino/PlatformIO, MicroPython, CircuitPython, ESPHome, Zephyr, Rust, and NuttX. Use when identifying an ESP32 board, choosing a framework, wiring GPIO or peripheral buses, integrating sensors or actuators, diagnosing serial/boot/power/network failures, planning OTA and production security, or automating hardware tests and fault injection. Do not use as a substitute for the exact board schematic, SoC datasheet, or attached component datasheet.
 license: MIT
 compatibility: Portable across agent harnesses. Live work requires the selected framework toolchain, a supported ESP32-family board, data-capable USB connection, and platform serial permissions.
 metadata:
@@ -48,6 +48,7 @@ The preflight script does not open serial ports. A USB descriptor can identify a
 
 | Need | Read first |
 |---|---|
+| Bring up ESP-Mosaico, its camera/interaction modules, Vibe Mode, or ESP-Claw | [ESP-Mosaico kit guide](references/esp-mosaico.md) |
 | Identify board, host, port, transport, or framework | [decisions and preflight](references/decisions-and-preflight.md) |
 | Select safe pins, power, protection, pull-ups, or level shifting | [hardware and electrical safety](references/hardware-and-electrical-safety.md) |
 | Choose ESP-IDF, Arduino, MicroPython, CircuitPython, ESPHome, Zephyr, Rust, or NuttX | [firmware frameworks](references/firmware-frameworks.md) |

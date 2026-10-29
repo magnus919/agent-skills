@@ -1,0 +1,66 @@
+{
+  "manufacturer": "ricoh",
+  "evidence_kind": "official",
+  "rows": [
+    {
+      "name": "G900SE II",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/g900se-2_s.html"
+    },
+    {
+      "name": "G900SE",
+      "category": "firmware 1.06",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/g900se_s.html"
+    },
+    {
+      "name": "G900 II",
+      "category": "firmware 1.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/g900-2_s.html"
+    },
+    {
+      "name": "G900",
+      "category": "firmware 1.05",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/g900_s.html"
+    },
+    {
+      "name": "GR IV Monochrome",
+      "category": "firmware 1.10",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/gr-4-mono_s.html"
+    },
+    {
+      "name": "GR IV / GR IV HDF",
+      "category": "firmware 1.20",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/gr4_s.html"
+    },
+    {
+      "name": "GR IIIx",
+      "category": "firmware 1.70",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/gr3x_s.html"
+    },
+    {
+      "name": "GR III",
+      "category": "firmware 2.20",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/gr3_s.html"
+    },
+    {
+      "name": "GR II",
+      "category": "firmware 3.00",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/gr2_s.html"
+    },
+    {
+      "name": "GR",
+      "category": "firmware 5.01",
+      "source": "pentax-download",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/digital/gr_s.html"
+    }
+  ]
+}

@@ -1,0 +1,296 @@
+{
+  "manufacturer": "sony",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Sony DSC-T1 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-T10 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-T3 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-U10 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-U20 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-V1 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-W1 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-W12 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-W130 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-W200 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-W35 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-W510 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-W55 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-WX220 (MTP)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony DSC-WX350 (MTP)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony HDR-PJ260VE (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony HDR-PJ710V (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony ILCE-1 (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony ILCE-1M2 (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony ILCE-6400 (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony ILCE-7C (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony ILCE-7M2 (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony ILCE-7R M2 (MTP)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony ILCE-7RM3A (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony ILCE-7RM4A (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony ILCE-7RM5 (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony ILCE-9M3 (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony ILME-FX3 (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony ILX-LR1 (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony MSAC-SR1",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony MVC-CD300 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony MVC-CD500 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony NEX-3N (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony NEX-5N (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony NEX-5R",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony NEX-6",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony NEX-7 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony NEX5 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony PTP",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony RX100M3 (MTP)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony SLT-A35 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony SLT-A350 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony SLT-A37",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony SLT-A55 (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony SLT-A57",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony SLT-A58",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony SLT-A58 (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony SLT-A65V (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony SLT-A77V (PTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony SLT-A99V",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony SLT-A99v",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony TRV-20E",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony UMC-R10C",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony ZV-1",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony ZV-1 (PC Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony ZV-E10 (Control)",
+      "additional_abilities": "Image Capture, Trigger Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Sony ZV-E10 (MTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Sony ZV-E10M2 (MTP mode)",
+      "additional_abilities": "",
+      "comments": ""
+    }
+  ]
+}

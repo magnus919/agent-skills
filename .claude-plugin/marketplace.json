@@ -186,6 +186,15 @@
       "description": "Create and review C4 software-architecture diagrams using Mermaid or Structurizr. Use when teams need a communication-ready system context, container, component, or code-level view, including audience, narrative, hierarchy, labels, legends, accessibility, and uncertainty. Do not use for Mermaid syntax/rendering work without C4 modeling, architecture decisions, or full accessibility conformance reviews."
     },
     {
+      "name": "camera-hacking",
+      "source": "./",
+      "skills": [
+        "./camera-hacking"
+      ],
+      "strict": false,
+      "description": "Investigate, reverse-engineer, develop, and validate digital-camera modifications and interoperability, including custom firmware, hidden settings, camera control protocols, feature unlocks, and model-specific recovery. Use for feasibility research, offline analysis, controlled experiments, and explicitly authorized installation on photographic, cinema, and action cameras across manufacturers, especially Fujifilm X and Ricoh GR. Do not use for ordinary photography advice, routine vendor firmware updates, media editing, or unauthorized camera access."
+    },
+    {
       "name": "capacity-and-cost-engineering",
       "source": "./",
       "skills": [
@@ -453,7 +462,7 @@
         "./esp32-development"
       ],
       "strict": false,
-      "description": "Build, configure, flash, test, debug, and recover firmware for ESP32-family boards, including ESP-IDF C/C++, Arduino/PlatformIO, MicroPython, CircuitPython, ESPHome, Zephyr, Rust, and NuttX. Use when identifying an ESP32 board, choosing a framework, wiring GPIO or peripheral buses, integrating sensors or actuators, diagnosing serial/boot/power/network failures, planning OTA and production security, or automating hardware tests and fault injection. Do not use as a substitute for the exact board schematic, SoC datasheet, or attached component datasheet."
+      "description": "Build, configure, flash, test, debug, and recover firmware for ESP32-family boards, including ESP-Mosaico kit bring-up, ESP-IDF C/C++, Arduino/PlatformIO, MicroPython, CircuitPython, ESPHome, Zephyr, Rust, and NuttX. Use when identifying an ESP32 board, choosing a framework, wiring GPIO or peripheral buses, integrating sensors or actuators, diagnosing serial/boot/power/network failures, planning OTA and production security, or automating hardware tests and fault injection. Do not use as a substitute for the exact board schematic, SoC datasheet, or attached component datasheet."
     },
     {
       "name": "ffmpeg",

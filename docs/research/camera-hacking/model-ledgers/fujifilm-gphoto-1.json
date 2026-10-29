@@ -1,0 +1,496 @@
+{
+  "manufacturer": "fujifilm",
+  "evidence_kind": "gphoto",
+  "rows": [
+    {
+      "name": "Fuji Axia Eyeplate",
+      "additional_abilities": "",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Fuji Axia Slimshot",
+      "additional_abilities": "",
+      "comments": "Experimental"
+    },
+    {
+      "name": "Fuji DS-7",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji DX-10",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji DX-5",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji DX-7",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix A330",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix A610",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix A800",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix A820",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix A920",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix AV-150",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix E900",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix F100fd",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix F20",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix F200 EXR",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix F30",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix F31fd",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix F40fd",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix F50fd",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix F60fd",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix F70 EXR",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix F80EXR",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix H20EXR",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix HS30EXR",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix JX370",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix S1000fd",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix S100fs",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix S1500",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix S1800",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix S2000HD",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix S2500HD",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix S2950",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix S2980",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix S4200",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix S4300",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix S4850",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix S5700",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix S5800",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix S6500fd",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix S7000",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix S8600",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix S9500",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix SL1000",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix T200",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix X-E1",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix X-S1",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix X10",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix X20",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix XF1",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix Z100fd",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix Z35",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji FinePix Z700EXR",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm A220",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm GFX 100S",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm GFX 100S (2nd)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm GFX100",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm GFX100 II",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-A2",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-A5",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-E2",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-E3",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-E4",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-E5",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-H1",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-H2",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-H2S",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-M1",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-M5",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-Pro2",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-Pro3",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-S10",
+      "additional_abilities": "Liveview",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-T1",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-T10",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-T2",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-T20",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-T3",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-T30",
+      "additional_abilities": "Liveview",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-T4",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X-T5",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X100F",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X100V",
+      "additional_abilities": "Liveview",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X100VI",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X30",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji Fujifilm X70",
+      "additional_abilities": "",
+      "comments": ""
+    },
+    {
+      "name": "Fuji GFX 50 R",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji GFX 50 S",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji IX-1",
+      "additional_abilities": "Image Capture, Liveview",
+      "comments": ""
+    },
+    {
+      "name": "Fuji MX-1200",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji MX-1700",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji MX-2700",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji MX-2900",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji MX-500",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji MX-600",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji MX-700",
+      "additional_abilities": "Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji S5 Pro",
+      "additional_abilities": "Image Capture, Configuration",
+      "comments": ""
+    },
+    {
+      "name": "Fuji X (WLAN)",
+      "additional_abilities": "Image Capture, Liveview, Configuration",
+      "comments": "Experimental"
+    },
+    {
+      "name": "FujiFilm @xia ix-100",
+      "additional_abilities": "Image Capture",
+      "comments": ""
+    }
+  ]
+}

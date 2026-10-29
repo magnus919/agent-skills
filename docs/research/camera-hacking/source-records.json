@@ -1,0 +1,709 @@
+{
+  "research_date": "2026-10-29",
+  "scope": "public camera-hacking discovery",
+  "records": [
+    {
+      "manufacturer": "Ricoh",
+      "title": "GR IV research",
+      "url": "https://github.com/radium-wang/ricoh-gr4-firmware-analysis-and-feature-expansion",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Firmware formats, factory interfaces, model identification and shutdown-image experiments. The project distinguishes offline results from camera qualification and supplies no general installable firmware.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Ricoh",
+      "title": "GR4-MonoUnlock",
+      "url": "https://github.com/lemonadesaltbagel/GR4-MonoUnlock",
+      "accessed": "2026-10-29",
+      "extracted_claim": "A local patcher for monochrome looks on the standard colour GR IV, specifically stock 1.11. Different GR variants and versions need independent evidence.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Fujifilm",
+      "title": "Fujihack",
+      "url": "https://fujihack.org/",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Documents patched-firmware code execution on X-A2 1.30 and XF1 1.01, but says there are no hacks ready for public use.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Fujifilm",
+      "title": "Fujihack source",
+      "url": "https://github.com/fujihack/fujihack",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Provides USB code/memory tools, RTOS interfaces and experimental extensions. Its recovery path via SoC boot ROM is not yet reverse-engineered.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Fujifilm",
+      "title": "libfuji",
+      "url": "https://github.com/petabyt/libfuji",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Reverse-engineered USB, Wi-Fi and BLE interoperability, including tethering and RAW-conversion modes. This is a separate path from firmware modification.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Canon",
+      "title": "Magic Lantern source",
+      "url": "https://github.com/reticulatedpines/magiclantern_simplified",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Card-loaded software runs alongside Canon firmware; the project documents boot enablement and a related QEMU camera emulator.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Canon",
+      "title": "CHDK autobuild",
+      "url": "https://build.chdk.photos/",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Offers an unofficial add-on for selected Canon cameras. Release-branch stability describes features/interfaces, not a guarantee against camera crashes.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Canon",
+      "title": "The Ritual",
+      "url": "https://latentstudios.art/firmware/",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Advertises in-camera film rendering for EOS 5D and 5D Mark II, with Canon 1.1.1 and 2.1.2 respectively. The page says install/removal steps will accompany release; release readiness needs checking.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Olympus / OM System",
+      "title": "Olympus firmware research",
+      "url": "https://github.com/fishcu/oly_fw_analysis",
+      "accessed": "2026-10-29",
+      "extracted_claim": "PEN-F-focused firmware research with cross-model comparisons, MN103 tools and explicit evidence levels. Image-processing hardware is not emulated.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Olympus / OM System",
+      "title": "OM modification release dbv0.3.0",
+      "url": "https://github.com/azqeurio/om-c-firmware/releases/tag/dbv0.3.0",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Release notes report Panasonic lens aperture-ring compatibility across several bodies and additional OM-1 features. Per-body firmware identities and recovery need further inspection.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Panasonic / LUMIX",
+      "title": "PTool project wiki",
+      "url": "https://www.personal-view.com/faqs/gh2-hack/ptool-software",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Historical firmware manipulation for GH-series cameras; the example explicitly identifies GH1 1.32. The page alone is not a current compatibility roster.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Panasonic / LUMIX",
+      "title": "GH4Hack",
+      "url": "https://github.com/terrancewong/GH4Hack",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Work-in-progress GH4 research, including regional ROM investigation. This is not evidence of a universally usable GH4 language unlock.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Panasonic / LUMIX",
+      "title": "LUMIX Remote",
+      "url": "https://github.com/sapoepsilon/lumix-remote",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Reverse-engineered wireless control with a specific tested S5 record; other bodies are listed as untested generic profiles.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Panasonic / LUMIX",
+      "title": "Official LUMIX SDK",
+      "url": "https://av.jpn.support.panasonic.com/support/global/cs/soft/tool/sdk.html",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Vendor integration route with an explicit supported-model list. SDK support is not permission or capability to install modified firmware.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Leica",
+      "title": "LeicaHacks",
+      "url": "https://github.com/alexhude/LeicaHacks",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Provides M240 firmware/UI tools, IDA scripts, Softune signatures and a debug-PTP proof of concept; separate tools inspect M8/M9 containers and M9 XOR encoding.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Hasselblad",
+      "title": "X-System research",
+      "url": "https://github.com/radium-wang/Hasselblad-X-System-CIM-Firmware-Research-Feature-Extensions",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Separates X2D/X2D II work, static findings, device reports and unresolved behavior. Much second-generation analysis is offline only.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Hasselblad",
+      "title": "X2D/907 toolkit",
+      "url": "https://github.com/Gothenburg-R-D-Team/x2d-907-one-click-extension-toolkit",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Experimental first-generation body extensions. Restoration has version- and backup-specific constraints.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Hasselblad",
+      "title": "X2D II 400 MP source",
+      "url": "https://github.com/Jimmy6Smiles/Hasselblad-X2DII-400MP-Source",
+      "accessed": "2026-10-29",
+      "extracted_claim": "A distinct second-generation reconstruction project with explicitly incomplete source-to-binary reproduction coverage.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Nikon",
+      "title": "Nikon firmware tools",
+      "url": "https://github.com/simeonpilgrim/nikon-firmware-tools",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Research repository originally focused on D5100/D7000 with firmware, emulator and PTP tooling.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Nikon",
+      "title": "Wonder Lantern Z30",
+      "url": "https://github.com/WonderLantern/wonder-lantern-z30",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Experimental extensions with a model-specific builder, original-byte checks and explicitly separated offline/device evidence.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Sony",
+      "title": "Sony-PMCA-RE",
+      "url": "https://github.com/ma1co/Sony-PMCA-RE",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Documents app installation, updater execution and service-mode paths, each with different compatibility and driver requirements. Some architectures reject the updater method through signatures.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Sony",
+      "title": "OpenMemories Tweak",
+      "url": "https://github.com/ma1co/OpenMemories-Tweak",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Changes existing hidden settings on compatible cameras. Modified settings can persist after app removal; factory-reset behavior is not uniform.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Sigma",
+      "title": "fpSup",
+      "url": "https://github.com/ijigen/fpSup",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Research targets fp 5.02; fp L addresses differ. The author describes AI-assisted development, a recording-state test miss, persistent settings, and fallible AI notes.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Pentax",
+      "title": "pkTriggerCord",
+      "url": "https://github.com/asalamon74/pktriggercord",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Documents Pentax USB tethering, a model support/bugs matrix and SCSI protocol notes. Captures are downloaded from camera buffers rather than written to the SD card.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Pentax",
+      "title": "Pentax Hack",
+      "url": "https://www.pentax-hack.info/",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Historical firmware-research lead surfaced in search, but direct retrieval returned no readable body in this pass. Do not use it as verified operational instructions.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Samsung",
+      "title": "Samsung NX hacks",
+      "url": "https://github.com/ge0rg/samsung-nx-hacks",
+      "accessed": "2026-10-29",
+      "extracted_claim": "The project distinguishes Linux-based NX generations from other processors/OS families; a family-wide Linux assumption is incorrect.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Samsung",
+      "title": "NX1/NX500 modding",
+      "url": "https://github.com/ottokiksmaler/nx500_nx1_modding",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Historical modifications include video settings, scripting and focus stacking. NX-KS2 is persistent in flash; its original developer page has disappeared and binaries rely on mirrors.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Kodak",
+      "title": "Kodak DCS Tools",
+      "url": "https://github.com/Alexey-Danilchenko/Kodak-DCS-Tools",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Research spans ProBack 645M/C/H, DCS 14n and SLR/n/SLR/c: firmware tools, calibration/remapping, profiles, protocol work and a hardware backlight upgrade.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Kodak",
+      "title": "Keychain Camera Plus",
+      "url": "https://github.com/benbadio/keychain-camera-plus",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Charmera toolkit claims a card-installed UVC webcam mode with retained standalone capture and a stock restoration route. It identifies a Generalplus GPCV1235F target.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "GoPro",
+      "title": "GoPro Labs",
+      "url": "https://github.com/gopro/labs",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Vendor-hosted experimental firmware uses QR controls and publishes a model/feature matrix. Extended features are off by default; individual functions remain experimental.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "GoPro",
+      "title": "GoPro developer tools",
+      "url": "https://gopro.com/en/ps/info/developer-tools",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Official SDK and individual HTTP/BLE controls provide interoperability alternatives.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "DJI",
+      "title": "OpenPocketCine",
+      "url": "https://github.com/erik-sutton95/OpenPocketCine",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Phone/tablet field monitor and reverse-engineered camera control. Its model/platform matrix distinguishes reported operation from built-but-unverified targets.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Insta360",
+      "title": "Official SDK guide",
+      "url": "https://onlinemanual.insta360.com/developer/en-us/resource/sdk",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Separates camera control from media processing SDKs and links professional-camera APIs.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Insta360",
+      "title": "ONE R live-stream research",
+      "url": "https://github.com/NiklasVoigt/Insta360-Livestream",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Reports partial success on ONE R 1.3.8 and failure on X3 1.0.04. The negative result is a useful compatibility boundary.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Insta360",
+      "title": "Luna Ultra research",
+      "url": "https://github.com/derrickyau9/insta360-luna-ultra-reverse-engineering",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Reports a developer environment on firmware 1.0.47 with persistent services; wireless ADB is unauthenticated according to its own warning.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Insta360",
+      "title": "Link firmware research",
+      "url": "https://github.com/schlarpc/insta360-link-firmware-re",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Separate webcam firmware/protocol study. Its host controls and firmware-update behavior are not transferable to action/360 models.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Xiaomi / YI",
+      "title": "Xiaomi Yi autoexec",
+      "url": "https://github.com/PJanisio/Xiaomi_Yi_autoexec",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Script collection targets first-generation Yi Sport; memory-write scripts need firmware/revision matching.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Xiaomi / YI",
+      "title": "Yi 4K hacks",
+      "url": "https://github.com/ddimensia/yi_4k_hacks",
+      "accessed": "2026-10-29",
+      "extracted_claim": "A separate project explicitly based on Yi 4K firmware 1.10.9.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "SJCAM",
+      "title": "SJCAM research",
+      "url": "https://github.com/keowu/sjcam",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Lelouch targets a researched Allwinner V3 SJ4000 Air board with specific display/sensor components. Older Novatek SJ4000 hardware has a different format.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "SJCAM",
+      "title": "SJCAM remote CLI",
+      "url": "https://github.com/AdamLaurie/sjcam",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Independent app-protocol implementation developed with an SJ4000; the author does not establish other cameras behave identically.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "AKASO",
+      "title": "BRAVE8 firmware tool",
+      "url": "https://github.com/Fexiven/ambarella-firmware-tools",
+      "accessed": "2026-10-29",
+      "extracted_claim": "A Python unpacker/repacker for BRAVE8 containers, including CRC and section handling; explicitly excludes other formats.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "AKASO",
+      "title": "iCatch V50 playground",
+      "url": "https://github.com/Linouth/iCatch-V50-Playground",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Research lead whose documented recovery instructions explicitly do not work on AKASO V50 Pro.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Phase One / Mamiya",
+      "title": "Phase One SDK",
+      "url": "https://developer.phaseone.com/sdk/index.html",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Official camera integration and image processing, with iXM, P5 and IQ4 families listed. Model/feature bindings still need checking.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Phase One / Mamiya",
+      "title": "Kodak DCS protocol research",
+      "url": "https://github.com/Alexey-Danilchenko/Kodak-DCS-Tools",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Includes Mamiya/Phase One body-to-back protocol work as part of legacy Kodak research.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Blackmagic Design",
+      "title": "Blackmagic developer camera resources",
+      "url": "https://www.blackmagicdesign.com/developer/products/camera/sdk-and-software",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Provides camera-control and REST documentation, plus SDI, Bluetooth and other interfaces. These are integration paths rather than evidence of replacement firmware.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Z CAM",
+      "title": "Z CAM E2 protocol documentation",
+      "url": "https://github.com/imaginevision/Z-Camera-Doc/blob/master/E2/intro.md",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Describes network control and E2 interface behavior.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Z CAM",
+      "title": "E2 reverse engineering",
+      "url": "https://github.com/storyboardcreativity/Z-Camera-E2-Reverse-Engineering",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Independent firmware research lead; release-file provenance and compatibility require deeper inspection before use.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "ARRI",
+      "title": "ARRI metadata and CAP",
+      "url": "https://www.arri.com/en/learn/camera-systems/pre-postproduction/metadata",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Camera Access Protocol provides network control and metadata operations on named camera lines.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "ARRI",
+      "title": "ARRI Partner Program",
+      "url": "https://www.arri.com/en/company/the-arri-philosophy/arri-partner-program",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Provides access to protocol programs; the MCP route includes authenticated participants. Access requirements are not a firmware modification procedure.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "RED Digital Cinema",
+      "title": "RED V-RAPTOR XL CTRL documentation",
+      "url": "https://docs.reddigitalcinema.com/955-0203/955-0203_V2.1%20Rev-A%20RED%20PS%2C%20V-RAPTOR%20XL%208K%20VV%20Operation%20Guide%20HTML/Content/A_MechDrawings/XL_Ports/XL_CTRL.htm",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Documents RCP2 communication through the CTRL interface and refers developers to the SDK.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Lytro",
+      "title": "Lytro Unlock",
+      "url": "https://github.com/ea/lytro_unlock",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Documents original-camera Wi-Fi control, live view, debug console and code execution. It warns live view can be unstable and notes ELF presence does not establish Linux.",
+      "evidence": "documented or maintainer-reported; not independently reproduced"
+    },
+    {
+      "manufacturer": "Epson",
+      "title": "Epson official baseline",
+      "url": "https://files.support.epson.com/pdf/rd1___/rd1___ps.pdf",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Official R-D1 firmware-update bulletin; an update procedure is not a third-party feature-modification project.",
+      "evidence": "vendor documentation; no modification established"
+    },
+    {
+      "manufacturer": "JVC",
+      "title": "JVC official baseline",
+      "url": "https://www.jvc.com/global/support/",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Vendor support lists camera-control software and selected firmware downloads. No primary modification workflow was qualified.",
+      "evidence": "vendor documentation; no modification established"
+    },
+    {
+      "manufacturer": "Kinefinity",
+      "title": "Kinefinity official baseline",
+      "url": "https://kinefinity.com/firmware",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Official KineOS firmware route. No third-party camera modification or SDK compatibility was established.",
+      "evidence": "vendor documentation; no modification established"
+    },
+    {
+      "manufacturer": "Digital Bolex",
+      "title": "Digital Bolex official baseline",
+      "url": "https://digitalbolex.com/wp-content/uploads/2014/02/d16-user-manual-1.0.pdf",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Official D16 manual describes firmware updates. A recent rebuild project surfaced only as a secondary report and needs primary inspection.",
+      "evidence": "vendor documentation; no modification established"
+    },
+    {
+      "manufacturer": "Yashica",
+      "title": "Yashica official baseline",
+      "url": "https://www.yashica.com/faq",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Official FAQ includes digital product and firmware-maintenance information. No primary third-party modification workflow qualified.",
+      "evidence": "vendor documentation; no modification established"
+    },
+    {
+      "manufacturer": "Fujifilm",
+      "title": "Official firmware roster",
+      "url": "https://www.fujifilm-x.com/global/support/download/firmware/cameras/",
+      "accessed": "2026-10-29",
+      "extracted_claim": "52 distinct X-series identities extracted; vendor roster, not modification support.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Fujifilm",
+      "title": "X-T1 IR official identity",
+      "url": "https://www.fujifilm.com/us/en/consumer/digitalcameras/ir-camera",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Additional specialist X-series variant; do not inherit ordinary T1 patch compatibility.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Fujifilm",
+      "title": "FujiMod release",
+      "url": "https://fujimod.com/",
+      "accessed": "2026-10-29",
+      "extracted_claim": "X70 SD-dual-boot release lead with incomplete feature-level camera testing; broader catalog not a release roster.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Fujifilm",
+      "title": "FujiMod identity catalog",
+      "url": "https://github.com/justjake/fujimod",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Separate controls, bodies, firmware, emulation and patch capabilities; pinned tree inspected.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Fujifilm",
+      "title": "fujicli current source",
+      "url": "https://github.com/karaolidis/fujicli",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Current README and CUE declarations recovered after old support document returned 404; X-T5 extensively tested claim only.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Fujifilm",
+      "title": "Furble",
+      "url": "https://github.com/gkoh/furble",
+      "accessed": "2026-10-29",
+      "extracted_claim": "External Bluetooth body reports, not general firmware support; Ricoh path explicitly excludes GR II/III.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Fujifilm",
+      "title": "PTP recipes",
+      "url": "https://github.com/ILFforever/fujifilm-ptp-recipes",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Exact X-H2/T5 successes and X-Pro3 failure are protocol/firmware-specific.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Fujifilm",
+      "title": "X100VI slot manager",
+      "url": "https://github.com/ctl0v0/omarchy-fujifilm-recipes",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Only X100VI 1.32 allowlisted; settings mutation distinct from flashing; preserve firmware-index discrepancy.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Fujifilm",
+      "title": "Filmcase",
+      "url": "https://github.com/gosku/Filmcase",
+      "accessed": "2026-10-29",
+      "extracted_claim": "X-S10 author-tested; broader compatibility predictions and generation shorthand not adopted as verified facts.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Ricoh",
+      "title": "Current firmware baseline",
+      "url": "https://www.ricoh-imaging.co.jp/english/support/download_digital.html",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Current vendor versions and separate Monochrome identity; not automatic patch eligibility.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Ricoh",
+      "title": "Legacy firmware baseline",
+      "url": "https://www.ricoh-imaging.co.jp/english/r_dc/download/index.html",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Four GR DIGITAL generations remain distinct from APS-C GR generations.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Ricoh",
+      "title": "GRKit",
+      "url": "https://github.com/ahonn/grkit",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Current primary matrix spans III/IIIx/IV variants; card runtime plus persistent script enablement; Monochrome lacks Film Look.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Ricoh",
+      "title": "FRAME-GR2",
+      "url": "https://github.com/Lyle-xub/FRAME-GR2",
+      "accessed": "2026-10-29",
+      "extracted_claim": "GR II real firmware/companion lead; current primary README differs from indexed historical summaries.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Ricoh",
+      "title": "GR II boot-screen research",
+      "url": "https://github.com/lc2425150/ricoh-gr2-boot-screen-mod",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Static proposals, unresolved update checksum and unsupported rollback inference remain unqualified.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Ricoh",
+      "title": "m10v",
+      "url": "https://github.com/zhaoo/m10v",
+      "accessed": "2026-10-29",
+      "extracted_claim": "III/IIIx/IV workbench awaiting modified-image camera validation; II inspection only.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Ricoh",
+      "title": "GR-DLC",
+      "url": "https://github.com/Mrjie7205/GR-DLC",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Separate IIIx HDF 1.60 feature feedback and IV adaptation pending camera validation.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Ricoh",
+      "title": "GR Mod",
+      "url": "https://github.com/Maxwooow/Ricoh-GRMod",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Current 0.8.x primary source includes III/IIIx targets and feature-level reports; supersedes older IV-only summary.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Ricoh",
+      "title": "GR3-LUTSmith",
+      "url": "https://github.com/lemonadesaltbagel/GR3-LUTSmith",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Named family/version eligibility; version 1.0.0 output remains not camera-tested according to primary README.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Ricoh",
+      "title": "GR Look Editor",
+      "url": "https://github.com/judgem00/gr3-look-editor",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Specific III and IIIx inputs; limited body tests and distinct feature validation.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Ricoh",
+      "title": "Plain IIIx firmware project",
+      "url": "https://github.com/tinyblckc0000al/gr3x-fw-play",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Plain IIIx 1.60 evidence; do not transfer to HDF/Urban automatically.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Ricoh",
+      "title": "Wireless protocol",
+      "url": "https://github.com/CursedHardware/ricoh-wireless-protocol",
+      "accessed": "2026-10-29",
+      "extracted_claim": "HTTP schema derived from Image Sync; Bluetooth work in progress.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Ricoh",
+      "title": "Bluetooth research",
+      "url": "https://github.com/dm-zharov/ricoh-gr-bluetooth-api",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Broad model list is not per-body proof of all characteristics or native BLE.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Ricoh",
+      "title": "GR IVx development",
+      "url": "https://news.ricoh-imaging.co.jp/rim_info2/2026/20260827_042443.html",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Announced future body; no qualified released image or modification support inferred.",
+      "evidence": "primary documentation or attributed report; not independently reproduced"
+    },
+    {
+      "manufacturer": "Casio",
+      "title": "WQV protocol",
+      "url": "https://www.mgroeber.de/wqvprot.html",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Original WQV-1 infrared transfer protocol documentation; host interoperability, not a camera feature patch.",
+      "evidence": "primary documentation or source inspection; no camera reproduction"
+    },
+    {
+      "manufacturer": "Casio",
+      "title": "WQV Blink",
+      "url": "https://github.com/partlyhuman/wqv-blink/",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Maintainer declares WQV-1/2 in wqv12 and WQV-3/10 in wqv310; dongle firmware is not watch firmware.",
+      "evidence": "primary documentation or source inspection; no camera reproduction"
+    },
+    {
+      "manufacturer": "Phase One",
+      "title": "PhaseOne-IIQ-Tools",
+      "url": "https://github.com/Alexey-Danilchenko/PhaseOne-IIQ-Tools",
+      "accessed": "2026-10-29",
+      "extracted_claim": "IIQ calibration/profile extraction and defective-pixel remapping; author explicitly limits depth of firmware exploration.",
+      "evidence": "primary documentation or source inspection; no camera reproduction"
+    },
+    {
+      "manufacturer": "Konica / Minolta",
+      "title": "LibRaw DiMAGE Z2 identification",
+      "url": "https://github.com/LibRaw/LibRaw/blob/master/src/metadata/identify.cpp",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Decoder source handles DiMAGE Z2 dumps; camera-side RAW enablement and recovery not qualified.",
+      "evidence": "primary documentation or source inspection; no camera reproduction"
+    },
+    {
+      "manufacturer": "JVC",
+      "title": "Camcorder Web API v1.20",
+      "url": "https://www.jvc.com/ca/pro/professional-video/documents/manuals/jvccamcorderapireference-v120-public/",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Official model-family, firmware and API version table retrieved through search; direct capture unavailable.",
+      "evidence": "primary documentation or source inspection; no camera reproduction"
+    },
+    {
+      "manufacturer": "Canon",
+      "title": "Magic Lantern development platform inventory",
+      "url": "https://github.com/reticulatedpines/magiclantern_simplified/tree/dev/platform",
+      "accessed": "2026-10-29",
+      "extracted_claim": "Complete captured tree contains modern model research directories. Directory existence is not released support.",
+      "evidence": "primary documentation or source inspection; no camera reproduction"
+    }
+  ],
+  "cross_brand_sources": [
+    {
+      "url": "https://gphoto.sourceforge.io/proj/libgphoto2/support.php",
+      "accessed": "2026-10-29",
+      "finding": "General support is defined around transfer; remote-control abilities require separate inspection."
+    },
+    {
+      "url": "https://gphoto.sourceforge.io/doc/remote/",
+      "accessed": "2026-10-29",
+      "finding": "Model-specific remote-control capabilities; not a firmware-modification roster."
+    },
+    {
+      "url": "https://github.com/AL-255/Awesome-Camera-Hacking",
+      "accessed": "2026-10-29",
+      "finding": "Discovery directory used to locate primary projects, particularly Kodak; no compatibility verdict inferred."
+    }
+  ],
+  "family_audit": {
+    "ledger": "family-coverage.json",
+    "capture_manifest": "family-source-captures.json",
+    "secondary_directory": "https://ricohrumors.com/ricoh-gr-custom-firmware",
+    "secondary_role": "link discovery only; no technical compatibility verdict adopted"
+  }
+}

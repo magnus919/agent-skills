@@ -1,0 +1,106 @@
+# panasonic: official source rows, part 1
+
+Accessed 2026-10-29. [Audit and project routes](manufacturer-panasonic.md). Vendor model/family labels; presence does not establish current sale, worldwide availability, firmware acceptance or modification support. Slash bundles and regional labels are preserved.
+
+| Source label | Source context | Record |
+|---|---|---|
+| DC-GH7 | firmware row Ver.1.8 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DC-GH6 | firmware row Ver.3.0 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DC-GH5S | firmware row Ver.2.5 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DC-GH5M2 | firmware row Ver.1.5 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DC-GH5 | firmware row Ver.2.8 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-GH4 | firmware row Ver.2.7 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-GH3 | firmware row Ver.1.2 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-GH2 | firmware row Ver.1.2 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-GH1 | firmware row Ver.1.3 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DC-BGH1 | firmware row Ver.2.5 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DC-G100D | firmware row Ver.1.5 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DC-G100/G110 | firmware row Ver.1.3 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DC-G97 | firmware row Ver.1.3 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DC-G9M2 | firmware row Ver.2.7 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DC-G9 | firmware row Ver.2.7 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DC-G90/G91/G95 | firmware row Ver.1.2 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-G80/G81/G85 | firmware row Ver.1.6 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-G7/G70 | firmware row Ver.2.2 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-G6 | firmware row Ver.1.2 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-G5 | firmware row Ver.1.1 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-G3 | firmware row Ver.1.2 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-G2 | firmware row Ver.1.1 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-G1 | firmware row Ver.1.5 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DC-GX9 | firmware row Ver.1.5 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-GX80/GX85 | firmware row Ver.1.3 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-GX8 | firmware row Ver.2.2 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-GX7 | firmware row Ver.1.3 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-GX1 | firmware row Ver.1.1 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DC-GF10/GX880 | firmware row Ver.1.2 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DC-GF9/GX800/GX850 | firmware row Ver.1.2 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-GF6 | firmware row Ver.1.2 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-GF3 | firmware row Ver.1.2 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-GF2 | firmware row Ver.1.1 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-GF1 | firmware row Ver.1.2 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-GM5 | firmware row Ver.1.1 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DMC-GM1 | firmware row Ver.1.1 | [panasonic-mft](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index.html) |
+| DC-S1H | firmware row Ver.2.8 | [panasonic-fullframe](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index4.html) |
+| DC-S1RM2 | firmware row Ver.1.6 | [panasonic-fullframe](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index4.html) |
+| DC-S1R | firmware row Ver.2.1 | [panasonic-fullframe](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index4.html) |
+| DC-S1M2ES | firmware row Ver.1.5 | [panasonic-fullframe](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index4.html) |
+| DC-S1M2 | firmware row Ver.1.5 | [panasonic-fullframe](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index4.html) |
+| DC-S1 | firmware row Ver.2.4 | [panasonic-fullframe](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index4.html) |
+| DC-S5M2X | firmware row Ver.2.7 | [panasonic-fullframe](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index4.html) |
+| DC-S5M2 | firmware row Ver.3.7 | [panasonic-fullframe](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index4.html) |
+| DC-S5/S5D | firmware row Ver.2.9 | [panasonic-fullframe](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index4.html) |
+| DC-S9 | firmware row Ver.2.1 | [panasonic-fullframe](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index4.html) |
+| DC-BS1H | firmware row Ver.1.4 | [panasonic-fullframe](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index4.html) |
+| DC-L10 | firmware row Ver.1.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-CM1 | firmware row Ver.12.0300 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FH10/FS50 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FH22/FS33 | firmware row Ver.1.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FP1/FP2 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FP3 | firmware row Ver.1.3 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FS15 | firmware row Ver.1.3 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FS25 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FS4 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FS42 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FS6 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FS62 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FS7 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FS8 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FT1/TS1 | firmware row Ver.1.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FT2/TS2 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FT3/TS3 | firmware row Ver.1.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FT5/TS5 | firmware row Ver.1.4 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DC-FT7/TS7 | firmware row Ver.1.3 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FX40/FX48 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FX550/FX580 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FX70/FX75 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FX700 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FX90 | firmware row Ver.2.0 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FZ40/FZ45 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DC-FZ80/FZ81/FZ82/FZ83 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FZ100 | firmware row Ver.1.3 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FZ300/FZ330 | firmware row Ver.2.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-FZ1000 | firmware row Ver.2.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-LF1 | firmware row Ver.1.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-LS5 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-LS85/LS86 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DC-LX100M2 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-LX3 | firmware row Ver.2.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-LX5 | firmware row Ver.2.0 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-LX10/LX15 | firmware row Ver.1.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-LZ40 | firmware row Ver.1.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-S1/S3 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-SZ5 | firmware row Ver.1.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-SZ7 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-SZ8 | firmware row Ver.1.3 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-SZ9 | firmware row Ver.1.3 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-SZ10 | firmware row Ver.1.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-TZ10/ZS7 (Without DMC-ZS7GK) | firmware row Ver.1.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-TZ100/TZ101/TZ110/ZS100/ZS110 | firmware row Ver.1.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-TZ11/TZ15 | firmware row Ver.1.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-TZ20/ZS10 (Without DMC-ZS10GK) | firmware row Ver.1.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DC-TZ200/TZ202/TZ220/ZS200/ZS220 | firmware row Ver.1.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-TZ22 | firmware row Ver.1.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-TZ27/ZS19 | firmware row Ver.1.1 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-TZ30/31/ZS20 (Without DMC-ZS20GK) | firmware row Ver.1.2 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-TZ37/ZS27 | firmware row Ver.1.3 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |
+| DMC-TZ40/41/ZS30 (Without DMC-ZS30GK) | firmware row Ver.1.3 | [panasonic-compact](https://av.jpn.support.panasonic.com/support/global/cs/dsc/download/index2.html) |

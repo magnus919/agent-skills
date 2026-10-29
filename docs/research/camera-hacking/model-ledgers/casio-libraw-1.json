@@ -1,0 +1,218 @@
+{
+  "manufacturer": "casio",
+  "evidence_kind": "libraw",
+  "rows": [
+    {
+      "name": "QV-2000UX (secret menu hack)",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "QV-3000EX (secret menu hack)",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "QV-3500EX (secret menu hack)",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "QV-4000 (secret menu hack)",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "QV-5700 (secret menu hack)",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "QV-R41",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "QV-R51",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "QV-R61",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-F1",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-FC300S",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-FC400S",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-FH20",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-FH25",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-FH100",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-S20 / M20",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-S100",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-Z4",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-Z50",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-Z500",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-Z55",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-Z60",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-Z75",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-Z750",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-Z8",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-Z850",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-Z1050",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR100",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-Z1080",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR700",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR710",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR750",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR800",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR850",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR1000",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR1100",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR1200",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR1300",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR1500",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR3000",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR3100",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR3200",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR3500",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR3600",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR3700",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR4000 / 5000",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-ZR4100 / 5100",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-100",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-100F",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-100PRO",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-10",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-P505 (secret menu hack)",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-P600 (secret menu hack)",
+      "source_brand_label": "Casio"
+    },
+    {
+      "name": "EX-P700 (secret menu hack)",
+      "source_brand_label": "Casio"
+    }
+  ]
+}
