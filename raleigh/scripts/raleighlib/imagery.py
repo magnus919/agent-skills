@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import json
-import urllib.parse
+from pathlib import Path
 from typing import Any
+import urllib.parse
 
 from raleighlib import core
 
@@ -113,11 +114,54 @@ def _bbox_str(bbox: tuple[float, float, float, float]) -> str:
     return ",".join(str(round(c, 6)) for c in bbox)
 
 
+IMAGE_FORMAT_BY_SUFFIX = {
+    ".png": "png",
+    ".jpg": "jpg",
+    ".jpeg": "jpg",
+    ".tif": "tiff",
+    ".tiff": "tiff",
+    ".gif": "gif",
+    ".bmp": "bmp",
+}
+
+_IMAGE_SIGNATURES = {
+    "png": (b"\x89PNG\r\n\x1a\n",),
+    "jpg": (b"\xff\xd8\xff",),
+    "tiff": (b"II*\x00", b"MM\x00*"),
+    "gif": (b"GIF87a", b"GIF89a"),
+    "bmp": (b"BM",),
+}
+# "jpgpng" asks the server to pick whichever encoding is cheaper; both are valid.
+_FORMAT_SIGNATURES = {
+    "jpgpng": _IMAGE_SIGNATURES["png"] + _IMAGE_SIGNATURES["jpg"],
+    **_IMAGE_SIGNATURES,
+}
+
+
+def format_for_path(path: str | Path) -> str | None:
+    """Infer an ImageServer export format from a file extension."""
+    return IMAGE_FORMAT_BY_SUFFIX.get(Path(path).suffix.casefold())
+
+
+def validate_image_format(body: bytes, format_: str) -> None:
+    """Reject a response whose bytes do not match the requested format."""
+    expected = _FORMAT_SIGNATURES.get(format_.casefold())
+    if not expected:
+        return
+    if not any(body.startswith(signature) for signature in expected):
+        raise CapabilityError(
+            f"Image export requested format {format_!r} but the server returned "
+            "a non-image body or different bytes; pass an explicit matching "
+            "--format or choose a filename extension that matches the encoding "
+            "you want"
+        )
+
+
 def export_image(
     url: str,
     bbox: tuple[float, float, float, float],
     size: tuple[int, int] | None = None,
-    format_: str = "jpgpng",
+    format_: str | None = None,
     in_sr: int = 4326,
     out_sr: int = 4326,
     **kwargs: Any,
@@ -126,6 +170,8 @@ def export_image(
     info = service_info(url)
     if not supports_capability(info, "Image"):
         raise CapabilityError(f"{url} does not advertise Image capability")
+    if format_ is None:
+        format_ = "jpgpng"
     max_width = info.get("maxImageWidth", 4000)
     max_height = info.get("maxImageHeight", 4000)
     if size:
@@ -155,9 +201,7 @@ def export_image(
         if isinstance(payload, dict):
             core.raise_for_arcgis_error(payload, "Image export")
         raise CapabilityError("Image export returned JSON instead of an image")
-    image_signatures = (b"\x89PNG\r\n\x1a\n", b"\xff\xd8\xff", b"GIF87a", b"GIF89a", b"II*\x00", b"MM\x00*", b"BM")
-    if not any(body.startswith(signature) for signature in image_signatures):
-        raise CapabilityError("Image export returned an unrecognized non-image response")
+    validate_image_format(body, format_)
     return body
 
 
@@ -174,7 +218,9 @@ def identify(
         raise CapabilityError(f"{url} does not advertise Image capability")
     base = url.rstrip("/") + "/identify"
     params: dict[str, Any] = {
-        "geometry": json.dumps({"x": point[0], "y": point[1]}),
+        "geometry": json.dumps(
+            {"x": point[0], "y": point[1], "spatialReference": {"wkid": in_sr}}
+        ),
         "geometryType": "esriGeometryPoint",
         "inSR": in_sr,
         "outSR": out_sr,
@@ -205,6 +251,7 @@ def compute_statistics(
                 "ymin": bbox[1],
                 "xmax": bbox[2],
                 "ymax": bbox[3],
+                "spatialReference": {"wkid": in_sr},
             }
         ),
         "geometryType": "esriGeometryEnvelope",

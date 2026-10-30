@@ -501,6 +501,6 @@ def query_reports(
             "retrieved_at": retrieved_at,
         }],
         "warnings": [
-            "The rolling ArcGIS feed may lag the RFD Report System and is not proof of completeness."
+            "The rolling ArcGIS feed may lag RFD records and is not proof of completeness."
         ],
     }

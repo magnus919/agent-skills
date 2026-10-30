@@ -11,6 +11,8 @@ The aggregate commands make one HTTPS request to each official RaleighNC.gov Dru
 
 The adapter verifies the node UUID, type, publication status, title, and canonical path. It then parses only named content sections. Missing sections, changed table headers, malformed values, unknown publication labels, unsupported link origins, unavailable years, and absent requested quarters fail visibly.
 
+`raleighnc.gov` is protected by a Cloudflare challenge that only admits user agents beginning with `curl` or `Wget`; the client sends a curl-prefixed user agent to this host. If both agency pages suddenly return 403 with `cf-mitigated: challenge`, the allowlist changed rather than the statistics going away.
+
 ## Commands
 
 ```bash

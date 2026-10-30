@@ -44,7 +44,6 @@ import raleighlib.meetings as meetings
 import raleighlib.police as police
 import raleighlib.fire as fire
 import raleighlib.fire_protection as fire_protection
-import raleighlib.rfd_reports as rfd_reports
 import raleighlib.public_safety_stats as public_safety_stats
 import canary as canary_lib
 from raleighlib import cli as cli_lib
@@ -54,23 +53,16 @@ cli = importlib.machinery.SourceFileLoader("raleigh_cli", str(CLI_SCRIPT)).load_
 
 
 def setUpModule():
-    global _network_guard, _rfd_network_guard
+    global _network_guard
     _network_guard = patch.object(
         core._OPENER,
         "open",
         side_effect=AssertionError("Raleigh unit tests must not make live network calls"),
     )
     _network_guard.start()
-    _rfd_network_guard = patch.object(
-        rfd_reports._OPENER,
-        "open",
-        side_effect=AssertionError("Raleigh unit tests must not make live RFD calls"),
-    )
-    _rfd_network_guard.start()
 
 
 def tearDownModule():
-    _rfd_network_guard.stop()
     _network_guard.stop()
 
 
@@ -79,6 +71,18 @@ class CoreTests(unittest.TestCase):
         self.assertTrue(core.is_allowed_host("https://data.raleighnc.gov/foo"))
         self.assertTrue(core.is_allowed_host("https://DATA.RALEIGHNC.GOV/foo"))
         self.assertFalse(core.is_allowed_host("https://evil.example.com/foo"))
+
+    def test_user_agent_uses_curl_token_only_for_cloudflare_host(self):
+        self.assertEqual(core.user_agent_for("https://raleighnc.gov/rss.xml"), core.TOOL_USER_AGENT)
+        self.assertTrue(core.TOOL_USER_AGENT.startswith("curl"))
+        self.assertEqual(
+            core.user_agent_for("https://data.raleighnc.gov/api/search/v1"),
+            core.USER_AGENT,
+        )
+        self.assertEqual(
+            core.user_agent_for("https://raleighnc-energovpub.tylerhost.net/apps"),
+            core.USER_AGENT,
+        )
 
     def test_json_request_rejects_unlisted_hosts(self):
         with self.assertRaises(core.SecurityError):
@@ -513,6 +517,73 @@ class ImageryTests(unittest.TestCase):
             self.assertIn("size=400%2C400", called_url)
             self.assertIn("format=jpgpng", called_url)
             self.assertEqual(result, b"\xff\xd8\xff")
+
+    def test_format_for_path_maps_extensions(self):
+        self.assertEqual(imagery.format_for_path("out.png"), "png")
+        self.assertEqual(imagery.format_for_path("OUT.JPG"), "jpg")
+        self.assertEqual(imagery.format_for_path("scan.jpeg"), "jpg")
+        self.assertEqual(imagery.format_for_path("dem.tif"), "tiff")
+        self.assertEqual(imagery.format_for_path("dem.tiff"), "tiff")
+        self.assertEqual(imagery.format_for_path("anim.gif"), "gif")
+        self.assertEqual(imagery.format_for_path("bitmap.bmp"), "bmp")
+        self.assertIsNone(imagery.format_for_path("out.webp"))
+
+    def test_validate_image_format_accepts_matching_and_jpgpng_either(self):
+        imagery.validate_image_format(b"\x89PNG\r\n\x1a\n0000", "png")
+        imagery.validate_image_format(b"\xff\xd8\xff\xe0", "jpg")
+        imagery.validate_image_format(b"\x89PNG\r\n\x1a\n0000", "jpgpng")
+        imagery.validate_image_format(b"\xff\xd8\xff\xe0", "jpgpng")
+        with self.assertRaisesRegex(imagery.CapabilityError, "different bytes"):
+            imagery.validate_image_format(b"\x89PNG\r\n\x1a\n0000", "jpg")
+        with self.assertRaisesRegex(imagery.CapabilityError, "different bytes"):
+            imagery.validate_image_format(b"<html>", "png")
+
+    def test_identify_embeds_spatial_reference_in_geometry(self):
+        captured = {}
+
+        def mock_json_request(url):
+            captured["url"] = url
+            return {"value": "27, 49, 69, 32"}
+
+        with patch(
+            "raleighlib.imagery.service_info",
+            return_value={"capabilities": "Image"},
+        ), patch("raleighlib.imagery.core.json_request", side_effect=mock_json_request):
+            result = imagery.identify(
+                "https://maps.raleighnc.gov/images/rest/services/Orthos2025/ImageServer",
+                point=(-78.65, 35.75),
+                in_sr=4326,
+            )
+        query = urllib.parse.parse_qs(urllib.parse.urlparse(captured["url"]).query)
+        geometry = json.loads(query["geometry"][0])
+        self.assertEqual(geometry["x"], -78.65)
+        self.assertEqual(geometry["y"], 35.75)
+        self.assertEqual(geometry["spatialReference"], {"wkid": 4326})
+        self.assertEqual(result["value"], "27, 49, 69, 32")
+
+    def test_statistics_embeds_spatial_reference_in_envelope(self):
+        captured = {}
+
+        def mock_json_request(url):
+            captured["url"] = url
+            return {"count": 1}
+
+        with patch(
+            "raleighlib.imagery.service_info",
+            return_value={"capabilities": "Image"},
+        ), patch("raleighlib.imagery.core.json_request", side_effect=mock_json_request):
+            imagery.compute_statistics(
+                "https://maps.raleighnc.gov/images/rest/services/Orthos2025/ImageServer",
+                bbox=(-78.7, 35.7, -78.6, 35.8),
+                in_sr=102719,
+            )
+        query = urllib.parse.parse_qs(urllib.parse.urlparse(captured["url"]).query)
+        geometry = json.loads(query["geometry"][0])
+        self.assertEqual(
+            geometry["spatialReference"], {"wkid": 102719}
+        )
+        self.assertEqual(geometry["xmin"], -78.7)
+        self.assertEqual(geometry["ymax"], 35.8)
 
     def test_identify_requires_image_capability(self):
         with patch("raleighlib.imagery.service_info") as mock_info:
@@ -1119,6 +1190,56 @@ class MeetingsTests(unittest.TestCase):
         self.assertEqual(meetings_list[0]["title"], "City Council Meeting - Third Tuesday")
         self.assertEqual(meetings_list[0]["date"], "Tuesday, July 23, 2026 @ 11:30 AM")
 
+    def test_list_upcoming_handles_multiple_anchors_and_quote_styles(self):
+        html = (
+            pathlib.Path(__file__).parent / "fixtures" / "escribe-listing-multianchor.html"
+        ).read_bytes()
+        with patch("raleighlib.meetings.core.raw_request", return_value=html):
+            meetings_list = meetings.list_upcoming(today=date(2026, 7, 23))
+        self.assertEqual(
+            [row["id"] for row in meetings_list],
+            [
+                "ada8b421-adef-491c-ac4e-cfc9e24f6bae",
+                "e1b2c3d4-0000-4000-8000-000000000002",
+            ],
+        )
+        self.assertEqual(
+            meetings_list[0]["title"],
+            "City Council Meeting - First Tuesday - Afternoon & Evening Sessions",
+        )
+        self.assertEqual(
+            meetings_list[0]["date"], "Wednesday, November 04, 2026 @ 1:00 PM"
+        )
+        self.assertEqual(
+            meetings_list[1]["title"],
+            "City Council Meeting - Second Tuesday Work Session",
+        )
+        self.assertEqual(
+            meetings_list[1]["date"], "Tuesday, December 08, 2026 @ 10:00 AM"
+        )
+
+    def test_meeting_detail_absolutizes_relative_record_video(self):
+        record = {
+            "Id": "550e8400-e29b-41d4-a716-446655440000",
+            "MeetingType": "City Council",
+            "FormattedStart": "Tuesday, October 14, 2025 @ 6:00 PM",
+            "LocationName": "Council Chamber",
+            "Cancelled": False,
+            "VideoUrl": "/VideoStream.aspx?MeetingId=550e8400-e29b-41d4-a716-446655440000",
+            "MeetingLinks": [],
+        }
+        with patch(
+            "raleighlib.meetings.core.raw_request",
+            return_value=b"<h1>Fallback</h1><time datetime='2025-10-14'>October 14</time>",
+        ), patch(
+            "raleighlib.meetings._find_past_meeting_record", return_value=record
+        ):
+            detail = meetings.meeting_detail(record["Id"])
+        self.assertEqual(
+            detail["video"],
+            "https://pub-raleighnc.escribemeetings.com/VideoStream.aspx"
+            "?MeetingId=550e8400-e29b-41d4-a716-446655440000",
+        )
 
     def test_meeting_detail_parses_documents(self):
         html = (pathlib.Path(__file__).parent / "fixtures" / "escribe-agenda.html").read_bytes()
@@ -1171,6 +1292,38 @@ class MeetingsTests(unittest.TestCase):
         self.assertIsNone(detail["minutes"])
         self.assertIsNone(detail["agenda_package"])
         self.assertIsNone(detail["video"])
+
+    def test_meeting_detail_falls_back_to_upcoming_listing_shell_page(self):
+        meeting_id = "1b7c415c-1d85-4c82-a763-438904d74bde"
+        shell = b"<html><head><title></title></head><body><script></script></body></html>"
+        upcoming = [{
+            "id": meeting_id,
+            "title": "City Council First Tuesday",
+            "date": "Wednesday, November 04, 2026 @ 1:00 PM",
+            "body": "City Council",
+            "location": "Council Chamber",
+            "cancelled": False,
+            "url": f"https://pub-raleighnc.escribemeetings.com/Meeting.aspx?Id={meeting_id}&lang=English",
+        }]
+        with patch("raleighlib.meetings.core.raw_request", return_value=shell), patch(
+            "raleighlib.meetings.list_upcoming", return_value=upcoming
+        ):
+            detail = meetings.meeting_detail(meeting_id)
+        self.assertEqual(detail["title"], "City Council First Tuesday")
+        self.assertEqual(detail["date"], "Wednesday, November 04, 2026 @ 1:00 PM")
+        self.assertEqual(detail["location"], "Council Chamber")
+        self.assertFalse(detail["cancelled"])
+        self.assertIsNone(detail["agenda"])
+        self.assertEqual(detail["attachments"], [])
+        self.assertIn(meeting_id, detail["url"])
+
+    def test_meeting_detail_rejects_unidentifiable_shell_page(self):
+        shell = b"<html><head><title></title></head><body></body></html>"
+        with patch("raleighlib.meetings.core.raw_request", return_value=shell), patch(
+            "raleighlib.meetings.list_upcoming", return_value=[]
+        ):
+            with self.assertRaisesRegex(meetings.CompatibilityError, "no title, date"):
+                meetings.meeting_detail("550e8400-e29b-41d4-a716-446655440000")
 
     def test_download_document_rejects_non_allowlisted_host(self):
         with self.assertRaises(core.SecurityError):
@@ -1275,6 +1428,60 @@ class CliTests(unittest.TestCase):
             code, out, err = self.run_cli(["imagery", "catalog", "--json"])
         self.assertEqual(code, 0, err)
         self.assertIn("Orthos2025", out)
+
+    def test_imagery_export_derives_format_from_output_extension(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out_png = os.path.join(tmp, "ortho.png")
+            with patch(
+                "raleighlib.cli.imagery.service_info",
+                return_value={"capabilities": "Image"},
+            ), patch(
+                "raleighlib.cli.imagery.core.raw_request",
+                return_value=b"\x89PNG\r\n\x1a\n" + b"0" * 8,
+            ) as mock_req:
+                code, out, err = self.run_cli([
+                    "imagery", "export", "Orthos2025",
+                    "--bbox=-78.7,35.7,-78.6,35.8", "-o", out_png,
+                ])
+            self.assertEqual(code, 0, err)
+            self.assertIn("format=png", mock_req.call_args[0][0])
+            with open(out_png, "rb") as handle:
+                self.assertTrue(handle.read().startswith(b"\x89PNG"))
+
+            out_unknown = os.path.join(tmp, "ortho.dat")
+            with patch(
+                "raleighlib.cli.imagery.service_info",
+                return_value={"capabilities": "Image"},
+            ), patch(
+                "raleighlib.cli.imagery.core.raw_request",
+                return_value=b"\xff\xd8\xff\xe0",
+            ) as mock_req:
+                code, out, err = self.run_cli([
+                    "imagery", "export", "Orthos2025",
+                    "--bbox=-78.7,35.7,-78.6,35.8", "-o", out_unknown,
+                ])
+            self.assertEqual(code, 0, err)
+            self.assertIn("format=jpgpng", mock_req.call_args[0][0])
+            self.assertIn("unknown output extension", err)
+
+    def test_imagery_export_rejects_mismatched_explicit_format(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out_png = os.path.join(tmp, "ortho.png")
+            with patch(
+                "raleighlib.cli.imagery.service_info",
+                return_value={"capabilities": "Image"},
+            ), patch(
+                "raleighlib.cli.imagery.core.raw_request",
+                return_value=b"\xff\xd8\xff\xe0",
+            ):
+                code, out, err = self.run_cli([
+                    "imagery", "export", "Orthos2025",
+                    "--bbox=-78.7,35.7,-78.6,35.8", "--format", "png", "-o", out_png,
+                ])
+            self.assertNotEqual(code, 0)
+            self.assertIn("different bytes", err)
+            self.assertNotIn("Traceback", err)
+            self.assertFalse(os.path.exists(out_png))
 
     def test_imagery_export_rejects_invalid_size_concisely(self):
         code, out, err = self.run_cli([
@@ -1645,6 +1852,18 @@ class ConciseErrorTests(unittest.TestCase):
         self.assertNotEqual(code, 0)
         self.assertNotIn("Traceback", err)
         self.assertIn("unavailable", err)
+
+    def test_meetings_compatibility_error_exits_without_traceback(self):
+        with patch(
+            "raleighlib.cli.meetings.meeting_detail",
+            side_effect=meetings.CompatibilityError("eSCRIBE shell page unreadable"),
+        ):
+            code, out, err = self.run_cli(
+                ["meetings", "show", "550e8400-e29b-41d4-a716-446655440000", "--json"]
+            )
+        self.assertEqual(code, 1)
+        self.assertNotIn("Traceback", err)
+        self.assertIn("eSCRIBE shell page unreadable", err)
 
     def run_cli(self, arguments):
         stdout, stderr = io.StringIO(), io.StringIO()
@@ -3554,7 +3773,7 @@ class PublishedPublicSafetyStatisticsTests(unittest.TestCase):
 
 
 class FireReportTests(unittest.TestCase):
-    """Exact ArcGIS report queries and guarded RFD fallback behavior."""
+    """Exact ArcGIS report queries."""
 
     FIXTURES = pathlib.Path(__file__).parent / "fixtures"
     FIELDS = set(fire.REPORT_FIELDS) | {"OBJECTID"}
@@ -3612,32 +3831,6 @@ class FireReportTests(unittest.TestCase):
         with p1, p2, p3, self.assertRaisesRegex(fire.FireError, "without incident_number"):
             fire.query_reports(report_date="2026-07-24")
 
-    def test_recent_lag_fallback_requires_both_flags(self):
-        empty = {"query": {"date": "2026-07-24", "incident_number": None}, "reports": [], "sources": [], "warnings": []}
-        with patch("raleighlib.cli.fire.query_reports", return_value=empty), patch("raleighlib.cli.rfd_reports.search_date") as fallback:
-            with self.assertRaisesRegex(SystemExit, "acknowledge"):
-                cli.main(["fire", "reports", "--date", "2026-07-24", "--allow-rfd-fallback"])
-        fallback.assert_not_called()
-
-    def test_recent_lag_invokes_one_bounded_fallback(self):
-        lag = self._fixture("fire-reports-recent-lag.json")
-        empty = {"query": {"date": "2026-07-24", "incident_number": None}, "reports": lag["features"], "sources": [], "warnings": []}
-        fallback_result = [{"source": "rfd-html", "incident_number": "26-032170"}]
-        with patch("raleighlib.cli.fire.query_reports", return_value=empty), patch("raleighlib.cli.rfd_reports.search_date", return_value=fallback_result) as fallback:
-            out, err = io.StringIO(), io.StringIO()
-            with redirect_stdout(out), redirect_stderr(err):
-                code = cli.main(["--json", "fire", "reports", "--date", "2026-07-24", "--allow-rfd-fallback", "--acknowledge-insecure-rfd"])
-        self.assertEqual(code, 0)
-        fallback.assert_called_once_with("2026-07-24", acknowledged=True)
-        self.assertEqual(json.loads(out.getvalue())["reports"][0]["source"], "rfd-html")
-        self.assertIn("unencrypted HTTP", err.getvalue())
-
-    def test_narrative_requires_exact_incident(self):
-        with patch("raleighlib.cli.fire.query_reports") as query:
-            with self.assertRaisesRegex(SystemExit, "requires --incident-number"):
-                cli.main(["fire", "reports", "--date", "2026-07-24", "--include-narrative", "--acknowledge-insecure-rfd"])
-        query.assert_not_called()
-
     def test_whitespace_incident_number_rejected_before_network(self):
         with patch("raleighlib.cli.fire.query_reports") as query:
             with self.assertRaises(SystemExit):
@@ -3650,116 +3843,6 @@ class FireReportTests(unittest.TestCase):
                 with self.assertRaises(SystemExit):
                     cli.main(["fire", "reports", "--date", value])
                 query.assert_not_called()
-
-
-class RFDReportAdapterTests(unittest.TestCase):
-    FIXTURES = pathlib.Path(__file__).parent / "fixtures"
-
-    def _html(self, name: str) -> str:
-        return (self.FIXTURES / name).read_text()
-
-    def test_insecure_access_is_blocked_before_network(self):
-        with patch.object(rfd_reports._OPENER, "open") as network:
-            with self.assertRaisesRegex(rfd_reports.RFDReportError, "acknowledge"):
-                rfd_reports._request(rfd_reports.DATE_PATH, {"date": "2026-07-24"}, "POST", acknowledged=False)
-        network.assert_not_called()
-
-    def test_only_four_fixed_contracts_are_allowed(self):
-        with self.assertRaisesRegex(rfd_reports.RFDReportError, "unsupported"):
-            rfd_reports._validate_contract("/fd_invoice.php", {"id": "1"}, "GET")
-        with self.assertRaisesRegex(rfd_reports.RFDReportError, "unsupported"):
-            rfd_reports._validate_contract(rfd_reports.DATE_PATH, {"wrong": "x"}, "POST")
-
-    def test_date_results_preserve_identifiers_and_source(self):
-        with patch("raleighlib.rfd_reports._request", return_value=self._html("rfd-date-results.html")):
-            result = rfd_reports.search_date("2026-07-24", acknowledged=True)
-        self.assertEqual(result[0]["incident_number"], "26-032170")
-        self.assertEqual(result[0]["source"], "rfd-html")
-        self.assertIn("fd_incidentreport.php", result[0]["source_url"])
-
-    def test_date_result_mismatch_fails_closed(self):
-        mismatched = self._html("rfd-date-results.html").replace(
-            "incidentdate=2026-07-24", "incidentdate=2026-07-23"
-        )
-        with patch("raleighlib.rfd_reports._request", return_value=mismatched):
-            with self.assertRaisesRegex(rfd_reports.RFDReportError, "do not match"):
-                rfd_reports.search_date("2026-07-24", acknowledged=True)
-
-    def test_date_no_results_is_recognized(self):
-        with patch("raleighlib.rfd_reports._request", return_value=self._html("rfd-date-empty.html")):
-            self.assertEqual(rfd_reports.search_date("2026-07-24", acknowledged=True), [])
-
-    def test_date_markup_drift_fails_visibly(self):
-        with patch("raleighlib.rfd_reports._request", return_value=self._html("rfd-date-markup-drift.html")):
-            with self.assertRaisesRegex(rfd_reports.RFDReportError, "contract drift"):
-                rfd_reports.search_date("2026-07-24", acknowledged=True)
-
-    def test_date_malformed_row_fails_visibly(self):
-        with patch("raleighlib.rfd_reports._request", return_value=self._html("rfd-date-malformed.html")):
-            with self.assertRaisesRegex(rfd_reports.RFDReportError, "malformed result row"):
-                rfd_reports.search_date("2026-07-24", acknowledged=True)
-
-    def test_error_page_fails_visibly(self):
-        with patch("raleighlib.rfd_reports._request", return_value=self._html("rfd-error-page.html")):
-            with self.assertRaisesRegex(rfd_reports.RFDReportError, "contract drift"):
-                rfd_reports.search_date("2026-07-24", acknowledged=True)
-
-    def test_inspection_results_never_expose_invoice_links(self):
-        with patch("raleighlib.rfd_reports._request", return_value=self._html("rfd-inspection-results.html")):
-            result = rfd_reports.search_inspections(business="Example", acknowledged=True)
-        encoded = json.dumps(result)
-        self.assertEqual(result["inspections"][0]["inspection_number"], "RFD-2026-0004935")
-        source_params = urllib.parse.parse_qs(urllib.parse.urlparse(result["inspections"][0]["source_url"]).query)
-        self.assertEqual(source_params["name"], ["EXAMPLE MARKET #1"])
-        self.assertNotIn("invoice", encoded.casefold())
-        self.assertNotIn("0004429", encoded)
-
-    def test_inspection_empty_input_is_rejected(self):
-        with patch("raleighlib.rfd_reports._request") as request:
-            with self.assertRaisesRegex(rfd_reports.RFDReportError, "must not be empty"):
-                rfd_reports.search_inspections(address="   ", acknowledged=True)
-        request.assert_not_called()
-
-    def test_inspection_empty_state_is_recognized(self):
-        with patch("raleighlib.rfd_reports._request", return_value=self._html("rfd-inspection-empty.html")):
-            result = rfd_reports.search_inspections(address="Example", acknowledged=True)
-        self.assertEqual(result["inspections"], [])
-
-    def test_narrative_is_exact_and_incident_specific(self):
-        with patch("raleighlib.rfd_reports._request", return_value=self._html("rfd-narrative-result.html")):
-            result = rfd_reports.fetch_narrative("26-032170", "2026-07-24", acknowledged=True)
-        self.assertEqual(result["incident_number"], "26-032170")
-        self.assertIn("ventilated", result["narrative"])
-
-    def test_narrative_mismatch_fails(self):
-        with patch("raleighlib.rfd_reports._request", return_value=self._html("rfd-narrative-result.html")):
-            with self.assertRaisesRegex(rfd_reports.RFDReportError, "did not match"):
-                rfd_reports.fetch_narrative("26-999999", "2026-07-24", acknowledged=True)
-
-    def test_plain_http_text_removes_terminal_controls(self):
-        hostile = self._html("rfd-date-results.html").replace(
-            "505 FLORENCE ST", "505 \x1b]52;c;Y2xpcGJvYXJk\x07 FLORENCE ST"
-        )
-        with patch("raleighlib.rfd_reports._request", return_value=hostile):
-            result = rfd_reports.search_date("2026-07-24", acknowledged=True)
-        self.assertNotIn("\x1b", result[0]["address"])
-        self.assertNotIn("\x07", result[0]["address"])
-
-    def test_cli_inspection_requires_acknowledgement(self):
-        with patch("raleighlib.cli.rfd_reports.search_inspections") as search:
-            with self.assertRaisesRegex(SystemExit, "acknowledge"):
-                cli.main(["fire", "inspections", "--business", "Example"])
-        search.assert_not_called()
-
-    def test_cli_inspection_json_keeps_warning_on_stderr(self):
-        payload = {"query": {"business": "Example"}, "inspections": [], "source": {}, "warnings": [rfd_reports.INSECURE_WARNING]}
-        with patch("raleighlib.cli.rfd_reports.search_inspections", return_value=payload):
-            out, err = io.StringIO(), io.StringIO()
-            with redirect_stdout(out), redirect_stderr(err):
-                code = cli.main(["--json", "fire", "inspections", "--business", "Example", "--acknowledge-insecure-rfd"])
-        self.assertEqual(code, 0)
-        self.assertEqual(json.loads(out.getvalue())["warnings"], [rfd_reports.INSECURE_WARNING])
-        self.assertIn("unencrypted HTTP", err.getvalue())
 
 
 _FIXTURES_DIR = pathlib.Path(__file__).parent / "fixtures"

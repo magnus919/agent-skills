@@ -262,3 +262,30 @@ The following public service boundaries were exercised successfully on 2026-07-2
 - The full scheduled GitHub Actions canary was not run locally; its new police probe function was exercised directly against both live services.
 - Future ArcGIS schema or SQL-dialect changes remain outside this verification window and should surface through the scheduled canary.
 - No commit, push, pull request, CI run, deployment, release, or merge is claimed.
+
+## Issue 125 Supplementary: RFD Report System Retirement
+
+### Probe evidence (2026-10-29 to 2026-10-30)
+
+- `GET http://rfdreports.net/` and `GET https://rfdreports.net/` both return `301` to `http://raleighnc.gov/fire/services/fire-reports` with an 82-byte stub body.
+- `GET /fd_date.php`, `/fd_incidentreport.php`, `/fd_inspection_business_name.php`, `/fd_inspection_business_address.php`, `/fd_report.php`, `/fd_invoice.php` return `404`; `POST` to the same paths returns `405` with empty bodies.
+- The responding host differs between probes (`awselb/2.0` with `WAFRule: 5` on 2026-10-29, an `ip-10-12x-…ec2.internal` host on 2026-10-30): a load balancer with no application behind it, not a transient outage or an IP block.
+- `https://raleighnc.gov/fire/services/fire-reports` still returns `200`, still links the published aggregate index, and now routes record-level requests to the Public Records Request Portal (`https://raleighnc.nextrequest.com/`), whose root answers `204` with no body behind its own sign-in and no read-only query API.
+
+### Decision
+
+- Removed the RFD HTML adapter (`scripts/raleighlib/rfd_reports.py`), the `fire reports --rfd` / `--include-narrative` / `--allow-rfd-fallback` / `--acknowledge-insecure-rfd` surface, the `fire inspections` command group, and the nine RFD fixtures. The contracts did not move to a new host; they stopped existing.
+- `references/fire-records-reference.md` now carries the current guidance: the live ArcGIS past-month report layer, the published index, the retirement probes, and the public-records successor path. `SKILL.md` routes fire-report queries there and labels `references/fire-reports-reference.md` as a frozen pre-retirement snapshot.
+- `references/fire-reports-reference.md` keeps its original bytes. It is the authoritative source pinned by `eval_runner/fair-pilot-evidence-contracts-v2.json` (`c17f075d19b86a8c76c9e3bb844d637ef3a45737857777d7e1edc9f37d4bb1b6`), whose hash is in turn pinned by `docs/fair-skill-evaluation-qualification-v1.json` and the published adjudication run `38021806973`. Repinning it would falsify a one-time frozen screen with no supported regeneration path, so the stale file stays byte-identical and the correction lives beside it.
+
+### Verification
+
+- `python3 -m pytest raleigh scripts/test_validate_case_checklist.py -q`: **388 passed** (57 subtests).
+- `python3 -m pytest -q`: **324 passed** (2 subtests).
+- `python3 scripts/validate-case-checklist.py`: **191 manifests** (182 top-level, 9 nested), **1710 cases**; adjudication source pins verified.
+- `python3 scripts/validate-evals.py`: **191 eval manifests validated**.
+- `python3 scripts/check-skill-tests.py --check`: passed.
+- `ruby scripts/validate-skill-quality.rb`: **2 changed skills, 0 errors, 0 warnings**.
+- Evaluator generators in check mode: fresh.
+- Live `scripts/raleigh fire reports --date 2026-07-24` returns ArcGIS records; `--year 2025 --quarter 1` returns the published index.
+- No commit, push, pull request, CI run, or release is claimed.
