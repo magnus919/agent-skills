@@ -68,6 +68,19 @@ Complete each phase before proceeding to the next.
 
 - Don't skip past errors or warnings — they often contain the exact solution
 - Read stack traces completely. Note line numbers, file paths, error codes
+- **Cluster a long log before reading it.** Normalize the volatile parts (paths, IDs, timestamps)
+  and count signatures; a daemon log with 300 errors is usually ONE bug repeated. Reading lines in
+  order makes it look like many:
+
+```bash
+grep ERROR some.log \
+  | sed -E 's/^\[[^]]*\] //' \
+  | sed -E 's#/(var|Volumes|tmp)/[^ :]*#<path>#g' \
+  | sort | uniq -c | sort -rn | head
+```
+
+  One dominant signature → fix one code path with one regression test. Never patch symptoms
+  inferred from a handful of scattered lines.
 - **Action:** Read the relevant source files at the error locations and search the codebase for the error string to find all related code paths.
 
 ### 2. Reproduce Consistently
@@ -361,6 +374,15 @@ pytest tests/test_module.py::test_name -v
 # Run full suite — no regressions
 pytest tests/ -q
 ```
+
+- **Exercise the deployed entrypoint, not just the module.** Unit tests import a module under your
+  interpreter; the real failure path may run through a wrapper, a different interpreter, or a
+  permission context (launchd agent, systemd unit, container). Run the exact command the scheduler
+  or supervisor runs, then check its exit code and log.
+- **When the producer is a scheduled job, count artifacts, not exit codes.** A job can report
+  success while having finished a subset of its inputs. Compare outputs produced to inputs
+  consumed (rows written vs rows read, notes filed vs sources queued) before declaring it fixed;
+  partial completion is a finding even when the status line is green.
 
 ### 4. If Fix Doesn't Work — The Rule of Three
 
