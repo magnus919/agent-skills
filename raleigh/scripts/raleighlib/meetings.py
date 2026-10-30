@@ -39,44 +39,73 @@ def _fetch_html(url: str) -> str:
     return data.decode("utf-8", errors="replace")
 
 
+_MEETING_LINK_RE = re.compile(
+    r"Meeting\.aspx\?Id=([0-9a-fA-F-]+)&lang=English"
+)
+_ARIA_LABEL_RE = re.compile(r"""aria-label=(?:"([^"]*)"|'([^']*)')""")
+_FULL_DATE_RE = re.compile(
+    r"(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),"
+    r"\s+[^@]+@\s+\d{1,2}:\d{2}\s+(?:AM|PM)"
+)
+_TITLE_PREFIXES = ("Share ", "Public Comment for ", "Request to speak for ")
+
+
+def _anchor_label(html_text: str, link_start: int) -> str:
+    """Return the aria-label of the anchor that contains link_start."""
+    start = html_text.rfind("<a", max(0, link_start - 2000), link_start)
+    if start < 0 or ">" in html_text[start:link_start]:
+        return ""
+    end = html_text.find(">", link_start)
+    if end < 0:
+        return ""
+    label_match = _ARIA_LABEL_RE.search(html_text[start : end + 1])
+    if not label_match:
+        return ""
+    raw = label_match.group(1) if label_match.group(1) is not None else label_match.group(2)
+    return html.unescape(raw or "").strip()
+
+
+def _title_and_date(label: str) -> tuple[str, str]:
+    """Split an eSCRIBE listing label into meeting title and date text."""
+    date_match = _FULL_DATE_RE.search(label)
+    if not date_match:
+        return "", ""
+    title = label[: date_match.start()].strip()
+    for prefix in _TITLE_PREFIXES:
+        if title.startswith(prefix):
+            title = title[len(prefix) :].strip()
+    return title, date_match.group(0)
+
+
 def _extract_meeting_rows(html_text: str) -> list[dict[str, Any]]:
     """Extract meeting rows from listing HTML.
 
     eSCRIBE lists meetings with links like:
       Meeting.aspx?Id=<UUID>&lang=English
-    The surrounding aria-label contains the meeting title and date.
+    Each meeting commonly has several anchors: a title link with
+    single-quoted attributes, plus "Public Comment", "Request to Speak",
+    and document links. Only one of them carries the title and start time,
+    and quote style varies, so every anchor is inspected and the most
+    informative label for each meeting wins.
     """
-    rows: dict[str, dict[str, Any]] = {}
-    for match in re.finditer(
-        r"Meeting\.aspx\?Id=([0-9a-fA-F-]+)&lang=English",
-        html_text,
-    ):
+    candidates: dict[str, list[tuple[str, str]]] = {}
+    for match in _MEETING_LINK_RE.finditer(html_text):
         meeting_id = match.group(1).lower()
-        if meeting_id in rows:
+        label = _anchor_label(html_text, match.start())
+        if not label:
             continue
-        # Read the label from this link's opening tag, not an earlier nearby
-        # link. Historical pages contain many adjacent meeting anchors.
-        start = html_text.rfind("<a", max(0, match.start() - 1000), match.start())
-        end = html_text.find(">", match.end())
-        opening_tag = html_text[start : end + 1] if start >= 0 and end >= 0 else ""
-        label_match = re.search(r'aria-label="([^"]+)"', opening_tag)
-        label = html.unescape(label_match.group(1)) if label_match else ""
+        title, date_text = _title_and_date(label)
+        candidates.setdefault(meeting_id, []).append((title, date_text))
 
-        # Labels are like "Share <Title> <Weekday>, <Month> <Day>, <Year> @ <Time>"
-        # or "Public Comment for <Title> <Weekday>, ...".
-        title = label
-        date_text = ""
-        date_match = re.search(
-            r"(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),\s+[^@]+@\s+\d{1,2}:\d{2}\s+(?:AM|PM)",
-            label,
-        )
-        if date_match:
-            date_text = date_match.group(0)
-            title = label[: date_match.start()].strip()
-            # Strip common prefixes.
-            for prefix in ("Share ", "Public Comment for "):
-                if title.startswith(prefix):
-                    title = title[len(prefix) :].strip()
+    rows: list[dict[str, Any]] = []
+    for meeting_id, labels in candidates.items():
+        dated = [(t, d) for t, d in labels if t and d]
+        if dated:
+            title, date_text = max(dated, key=lambda pair: len(pair[0]))
+        else:
+            non_empty = [t for t, _ in labels if t]
+            title = max(non_empty, key=len) if non_empty else ""
+            date_text = ""
 
         body = ""
         body_match = re.search(
@@ -87,20 +116,23 @@ def _extract_meeting_rows(html_text: str) -> list[dict[str, Any]]:
         if body_match:
             body = body_match.group(1)
 
-        rows[meeting_id] = {
-            "id": meeting_id,
-            "title": title,
-            "date": date_text,
-            "body": body,
-            "url": f"{BASE_URL}/Meeting.aspx?Id={meeting_id}&lang=English",
-        }
+        rows.append(
+            {
+                "id": meeting_id,
+                "title": title,
+                "date": date_text,
+                "body": body,
+                "url": f"{BASE_URL}/Meeting.aspx?Id={meeting_id}&lang=English",
+            }
+        )
+
     if "Meeting.aspx" in html_text and not any(
-        r.get("title") or r.get("date") for r in rows.values()
+        r.get("title") or r.get("date") for r in rows
     ):
         raise CompatibilityError(
             "eSCRIBE meeting page contains Meeting.aspx links but no semantic meetings could be parsed"
         )
-    return list(rows.values())
+    return rows
 
 
 def _date_from_row(row: dict[str, Any]) -> date | None:
@@ -229,6 +261,22 @@ def _find_past_meeting_record(meeting_id: str, year: int) -> dict[str, Any] | No
     return None
 
 
+def _upcoming_record(meeting_id: str) -> dict[str, Any] | None:
+    """Return upcoming-listing metadata for a meeting page without a date."""
+    wanted = meeting_id.casefold()
+    for row in list_upcoming():
+        if str(row.get("id") or "").casefold() != wanted:
+            continue
+        return {
+            "Id": row.get("id"),
+            "MeetingType": row.get("title"),
+            "FormattedStart": row.get("date"),
+            "LocationName": row.get("location"),
+            "Cancelled": row.get("cancelled"),
+        }
+    return None
+
+
 def list_upcoming(
     limit: int | None = None,
     today: date | None = None,
@@ -347,13 +395,20 @@ def meeting_detail(meeting_id: str) -> dict[str, Any]:
         attachments.append({"url": href, "title": text})
 
     # Historical meeting metadata and document links are exposed by the same
-    # read-only page method used by the site's past-meetings accordion.
+    # read-only page method used by the site's past-meetings accordion. An
+    # upcoming meeting with nothing published yet serves a script-only shell,
+    # so fall back to the upcoming listing rather than failing the lookup.
     year_match = re.search(
         r'datetime=["\'][^"\']*?(20\d{2})-\d{2}-\d{2}', html_text, re.IGNORECASE
     ) or re.search(r"\b(20\d{2})\b", meeting_date)
-    if not year_match:
-        raise CompatibilityError("eSCRIBE meeting detail exposed no semantic meeting year")
-    record = _find_past_meeting_record(meeting_id, int(year_match.group(1)))
+    if year_match:
+        record = _find_past_meeting_record(meeting_id, int(year_match.group(1)))
+    else:
+        record = _upcoming_record(meeting_id)
+        if not record and not (title or agenda or minutes or attachments):
+            raise CompatibilityError(
+                "eSCRIBE meeting page exposed no title, date, or published documents"
+            )
     if record:
         title = str(record.get("MeetingType") or title)
         meeting_date = str(record.get("FormattedStart") or meeting_date)
@@ -379,7 +434,8 @@ def meeting_detail(meeting_id: str) -> dict[str, Any]:
                     video = href
                 if not any(item["url"] == href for item in attachments):
                     attachments.append({"url": href, "title": label})
-        video = str(record.get("VideoUrl") or video or "") or None
+        video_url = str(record.get("VideoUrl") or video or "").strip()
+        video = _absolute_url(video_url) if video_url else None
 
     return {
         "id": meeting_id,

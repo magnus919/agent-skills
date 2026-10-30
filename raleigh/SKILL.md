@@ -20,7 +20,7 @@ metadata:
 
 A read-only CLI for the City of Raleigh's public civic data and services. It discovers datasets from the live ArcGIS Hub catalog, queries ArcGIS layers, exports imagery, geocodes and reverse-geocodes addresses, reads GoRaleigh GTFS and GTFS-Realtime feeds, searches the guest-public Permit and Development Portal, lists public RaleighNC.gov content, and extracts public eSCRIBE meetings.
 
-All operations are read-only and use fixed endpoint contracts. HTTPS is required except for explicitly acknowledged RFD report lookups, whose upstream site supports only plain HTTP. No API key, sign-in, payment, or submission flow is implemented.
+All operations are read-only and use fixed endpoint contracts over HTTPS. No API key, sign-in, payment, or submission flow is implemented.
 
 ## Quick Start
 
@@ -140,8 +140,7 @@ one of those names, the added result column receives a `geocode_` prefix.
 | `fire protection` | Wake County MAR fire-protection proximity lookup | `scripts/raleigh fire protection --address "222 W Hargett St"` |
 | `fire stats` | Official published incident totals and sprinkler-save statistics | `scripts/raleigh fire stats --year 2026` |
 | `fire reports` | Published aggregate-report links or exact incident-report lookup | `scripts/raleigh fire reports --year 2025 --quarter 1` |
-| `fire reports --date` | Exact ArcGIS incident-report summary, with optional guarded RFD fallback | `scripts/raleigh fire reports --date 2026-07-24` |
-| `fire inspections` | Business/address inspection lookup through fragile RFD HTML | `scripts/raleigh fire inspections --business "Example" --acknowledge-insecure-rfd` |
+| `fire reports --date` | Exact incident-report summary from the ArcGIS rolling feed | `scripts/raleigh fire reports --date 2026-07-24` |
 
 ### Active incidents (RWECC)
 
@@ -182,14 +181,19 @@ one of those names, the added result column receives a `geocode_` prefix.
 | Public meetings | eSCRIBE extraction | `references/meetings-reference.md` |
 | Police incidents | RPD data sources, field schemas, and privacy caveats | `references/police-reference.md` |
 | Fire incidents | RFD data sources, 2026 schema transition, durations, and privacy caveats | `references/fire-reference.md` |
-| Fire reports and inspections | ArcGIS-first contract, RFD forms, insecure transport, and exclusions | `references/fire-reports-reference.md` |
+| Fire reports | ArcGIS report contract, the retired RFD system, and public-records routing | `references/fire-records-reference.md` |
+| Fire reports (frozen snapshot) | Only when auditing the pinned evaluation evidence; documents retired RFD forms and removed flags | `references/fire-reports-reference.md` |
 | Published police and fire statistics | Official page contract, report indexes, structured totals, and privacy boundary | `references/public-safety-statistics-reference.md` |
 | Active incidents (RWECC) | Undocumented feed contract, schema guard, and disable switch | `references/incidents-reference.md` |
 
 ## Pitfalls
 
 - **Live catalog**: The catalog is discovered from the Hub at runtime. Cache it with `--cache-dir` for repeated use.
+- **Hub search API**: `startindex` is 1-based and the search endpoint rejects an `f` parameter, so never append `f=json` to Hub search URLs.
 - **ImageServer**: Never append `/0` to an ImageServer root. Use the dedicated `imagery` commands.
+- **Imagery spatial reference**: `identify` and `computeStatisticsHistograms` ignore the `inSR`/`sr` parameter; the SR must be embedded in the geometry JSON. The CLI does this for you, and returns coordinates in the service's native NC State Plane frame unless `outSR=4326` is requested.
+- **Imagery export formats**: `format=jpgpng` may return either JPEG or PNG bytes. The CLI derives the concrete format from the output file extension, falls back to `jpgpng` with a warning for unknown extensions, and rejects a response whose magic bytes do not match the request.
+- **Cloudflare user agent**: `raleighnc.gov` (including `/jsonapi` and `/rss.xml`) returns 403 with `cf-mitigated: challenge` unless the `User-Agent` begins with `curl` or `Wget`. The client sends a dedicated curl-prefixed UA to that host only; a 403 there means the UA was rejected, not that the page is gone.
 - **MapServer tables**: Some layers are tabular (`type: Table`). The CLI automatically omits geometry for non-spatial layers.
 - **WHERE clauses**: Strings must be single-quoted: `NAME='Millbrook-Exchange'`.
 - **ArcGIS dates**: Returned as Unix milliseconds; divide by 1000 for standard timestamps.
@@ -198,7 +202,7 @@ one of those names, the added result column receives a `geocode_` prefix.
 - **eSCRIBE**: HTML-based extraction with a weaker compatibility contract than structured APIs.
 - **Police incidents**: Locations are block-level and may be randomized or redacted. Empty coordinates are suppressed, not presented as points. This data does not include arrests, convictions, or dispositions. The CrimeMapper 90-day feed is not in the curated Hub catalog and is resolved by item ID.
 - **Fire incidents**: RFD deprecated `incident_type`/`incident_type_description` for records after 2026-01-01, replaced by `incident_group_name`, `incident_subgroup_code`, and `incident_type_name`. The `fire` commands normalize both eras into stable `_` keys without fabricating cross-era mappings, and preserve raw fields in JSON. Incident types 300–399 and 661 are excluded by RFD for EMS/privacy. The full-history `station` field is unpopulated for most records after early 2021; the past-month feed provides `station_name`.
-- **Fire reports and inspections**: Report summaries use the structured ArcGIS past-month layer first. RFD fallback, narratives, and inspection searches cross unencrypted HTTP and require `--acknowledge-insecure-rfd` on every invocation. Date fallback also requires `--allow-rfd-fallback` and only runs after ArcGIS returns no records. Empty searches, redirects, unexpected markup, and schema drift fail closed. Invoice links are neither followed nor exposed.
+- **Fire reports**: Read `references/fire-records-reference.md`, not `references/fire-reports-reference.md`: the latter is a pre-retirement snapshot whose RFD form contracts and `--rfd`/`--acknowledge-insecure-rfd`/`--allow-rfd-fallback`/`fire inspections` flags were removed from the CLI. `fire reports --date/--incident-number` queries the ArcGIS rolling incident-report layer by exact date or incident number and never scrapes HTML. The former RFD HTML report and inspection system at `rfdreports.net` is retired: its paths return 404/405 and its root now redirects to the City's fire-reports page, which routes narrative and inspection requests to a public-records portal. Those records require a records request and are out of scope, so the CLI submits nothing. Published `--year/--quarter` aggregates still come from the official RaleighNC.gov index.
 - **Published public-safety statistics**: `police stats/reports` and year-based `fire stats/reports` read the official RaleighNC.gov publication indexes at runtime. Inline values are labeled `official_published_statistics`; PDF links are returned without extracting their contents. These outputs are not recomputed from incident rows. RFD medical totals remain aggregate-only and must never be joined to or used to infer incident records excluded for privacy.
 - **Fire protection**: The Wake County MAR Fire Protection table is a non-spatial table keyed by CSAID. Address input is composed through the Raleigh locator and the Wake County MAR Addresses layer; if the address cannot be resolved to a unique CSAID, supply `--csaid` directly. Distances are source-provided road-network values; the source does not advertise units. This data does not expose hydrant locations, only nearest-hydrant distance. It must not be used for emergency response.
 - **Active incidents (RWECC)**: Uses an undocumented public application endpoint (`incidents.rwecc.com/getdata`). The adapter is isolated and may break if the upstream contract changes; set `RALEIGH_DISABLE_INCIDENTS=1` to disable it independently. This is a filtered active feed, NOT all 911 calls and NOT authoritative emergency status. An empty response does not prove zero incidents. Cache lifetime is 90 seconds.
@@ -208,7 +212,7 @@ one of those names, the added result column receives a `geocode_` prefix.
 ## Safety Boundaries
 
 - Read-only operations only. No auth, write, payment, submission, or private-data endpoints.
-- All remote hosts and paths are fixed. The general client remains HTTPS-only; the isolated RFD adapter permits only four documented plain-HTTP read contracts after explicit acknowledgement.
+- All remote hosts and paths are fixed, and every request is HTTPS-only.
 - Cached data is refreshed with `--refresh` or when the cache expires.
 - Report stale or unavailable endpoints via `catalog-check`.
 
