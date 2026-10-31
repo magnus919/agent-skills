@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "job_id": "invoice-export-example",
+  "as_of": 100,
+  "budget": {
+    "limit": 10,
+    "spent": 4,
+    "reserved": 3
+  },
+  "changed_tasks": [
+    "contract"
+  ],
+  "tasks": [
+    {
+      "id": "contract",
+      "required_revision": "v2",
+      "worker_revision": "v1",
+      "status": "complete",
+      "ack_revision": "v1",
+      "artifact_revision": "v1",
+      "lease_expires_at": 200,
+      "dependency_versions": {}
+    },
+    {
+      "id": "export",
+      "required_revision": "v1",
+      "worker_revision": "v1",
+      "status": "complete",
+      "ack_revision": "v1",
+      "artifact_revision": "v1",
+      "lease_expires_at": 200,
+      "dependency_versions": {
+        "contract": "v1"
+      }
+    },
+    {
+      "id": "verify",
+      "required_revision": "v1",
+      "worker_revision": "v1",
+      "status": "complete",
+      "ack_revision": "v1",
+      "artifact_revision": "v1",
+      "lease_expires_at": 200,
+      "dependency_versions": {
+        "export": "v1"
+      }
+    },
+    {
+      "id": "docs",
+      "required_revision": "v1",
+      "worker_revision": "v1",
+      "status": "complete",
+      "ack_revision": "v1",
+      "artifact_revision": "v1",
+      "lease_expires_at": 200,
+      "dependency_versions": {}
+    }
+  ]
+}

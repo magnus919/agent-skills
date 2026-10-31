@@ -136,3 +136,16 @@ Template declarations can pass validation while containing placeholders. Passing
 means structural consistency, not usable deployment configuration or verified
 behavior. Run the documented tests with Python or pytest; preserve source-faithful
 limits when interpreting their results.
+
+
+## Factory snapshot screening
+
+Run `python3 scripts/factory.py --snapshot templates/factory-snapshot.json` from the installed skill root. Python 3.10+ standard library only; no network, tools, subprocess execution, workers or files are written by the helper. JSON stdout is the report; invalid JSON, unsupported versions, malformed fields, missing dependencies and cycles produce JSON stderr and exit 2. Exit 0 means a report was produced, including reports with unresolved work; it never means acceptance.
+
+Version 1 requires `job_id`, finite nonnegative `as_of`, `budget` with `limit/spent/reserved`, a nonempty `tasks` array and `changed_tasks` IDs. Each task declares a unique `id`, `required_revision`, `worker_revision`, `status` (`queued/running/complete/cancelled`), nullable `ack_revision` and `artifact_revision`, finite nonnegative `lease_expires_at`, and `dependency_versions` mapping upstream IDs to pinned revisions. Timestamps use one caller-selected consistent unit. Empty changed_tasks is valid; cycles are rejected because this snapshot describes one production dependency DAG, not the entire iterative factory lifecycle.
+
+The report conservatively propagates declared change impact through all downstream consumers even if they claim a current revision. It reports mismatches, incomplete dependencies, missing current acknowledgement, expired running leases and cancellation reconciliation. Completed consistent declarations are only candidates for review. To close a change, first reconcile/reverify through the authorized owner, preserve the change record, then supply a newly accepted snapshot without the resolved change seeds; do not erase seeds merely to get a clean report.
+
+`new_dispatch_budget_available` is only the arithmetic condition `limit - spent - reserved > 0`; it neither fits a requested reservation nor grants permission to dispatch. The helper does not validate runtime accounting, permissions, real dependencies, artifact hashes, model choices, protected controls, host responsiveness or external effects. Rejecting declared stale work is not evidence that a live executor fences it. Do not feed the report directly into an action executor as authorization.
+
+Test with `python3 -m unittest discover -s scripts -p test_factory.py`. Tests cover transitive changes, unaffected candidates, stale artifacts after new acknowledgement, missing acknowledgement, exact lease expiry, cancellation, reservation exhaustion, invalid input/cycles, CLI errors and no input mutation. These are synthetic helper tests, not a live factory evaluation.
