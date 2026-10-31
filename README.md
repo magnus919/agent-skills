@@ -748,9 +748,19 @@ Design truthful, compelling YouTube thumbnails with video-grounded concepts, tit
 
 ## Installation
 
+Choose an installation method by how your harness discovers skills. Shared `SKILL.md` syntax does not imply shared search paths, tools, or update behavior.
+
+| Installation method | Use it for | Maintenance |
+|---------------------|------------|-------------|
+| [`skills` CLI](#skills-cli-cross-harness) | Supported harnesses, including OpenClaw | Update installed skills, or rerun `add` to include new catalog entries |
+| [Local checkout or skill directory](docs/harness-installation.md#local-checkout-or-skill-directory) | Harnesses that scan configured directories | Refresh the checkout, synchronize copies if used, then verify discovery |
+| [Harness-managed installation](docs/harness-installation.md#harness-managed-installation) | Native plugins, Moltis imports, ZeroClaw bundles | Use that harness's refresh and activation procedure |
+
+See the [harness installation and maintenance guide](docs/harness-installation.md) for OpenClaw, Moltis, PicoClaw, NullClaw, ZeroClaw, NanoClaw, Grok Bot, and Meta Muse, including known compatibility limits.
+
 ### `skills` CLI (cross-harness)
 
-Install the **full catalog** for your harness with the open [`skills` CLI](https://github.com/vercel-labs/skills) (requires Node.js/npm and Git). Choose your harness's command below; these install globally for use across projects.
+Install the **full catalog** for your harness with the open [`skills` CLI](https://github.com/vercel-labs/skills) (requires Node.js 22.20+ with npm, and Git). Choose your harness's command below; these install globally for use across projects.
 
 | Harness | Install the full catalog |
 |---------|-------------------------|
@@ -760,6 +770,7 @@ Install the **full catalog** for your harness with the open [`skills` CLI](https
 | GitHub Copilot | `npx skills add magnus919/agent-skills --skill '*' --agent github-copilot --global --yes` |
 | Cursor | `npx skills add magnus919/agent-skills --skill '*' --agent cursor --global --yes` |
 | Gemini CLI | `npx skills add magnus919/agent-skills --skill '*' --agent gemini-cli --global --yes` |
+| OpenClaw | `npx skills add magnus919/agent-skills --skill '*' --agent openclaw --global --yes` |
 | Hermes Agent | `npx skills add magnus919/agent-skills --skill '*' --agent hermes-agent --global --yes` |
 
 Keep the quotes around `'*'` so your shell passes the wildcard to the CLI. For a project-only install, omit `--global` and run from the project directory. For Hermes, keep `--global`: its project-scoped `.hermes/skills/` target is not auto-discovered by Hermes.
@@ -775,7 +786,7 @@ npx skills add magnus919/agent-skills --skill systematic-debugging --agent codex
 
 ### Updating and refreshing
 
-**Once a week, or whenever you want the latest catalog, rerun your harness's full-catalog install command above.** This refreshes the selection from this repository and includes newly added skills. Keep the same harness and global/project scope as your original install. Start a new agent session afterward to load the refreshed skills.
+**Once a week, or whenever you want the latest catalog, rerun your harness's full-catalog install command above.** This refreshes the selection from this repository and includes newly added skills. Keep the same harness and global/project scope as your original install. Start a new agent session afterward unless your harness documents automatic refresh; verify that the refreshed skill is available.
 
 To update only skills you have already installed through the CLI, including those from other repositories:
 
@@ -787,9 +798,11 @@ npx skills update --global
 npx skills update --project
 ```
 
-The [CLI update command](https://github.com/vercel-labs/skills#skills-update) updates installed skills; rerun the full-catalog `add` command to pick up new catalog entries. Refreshes can replace installed files, so keep personal edits in a separate skill or fork.
+The [CLI update command](https://github.com/vercel-labs/skills/blob/main/docs/commands.md#skills-update) updates installed skills; rerun the full-catalog `add` command to pick up new catalog entries. Refreshes can replace installed files, so keep personal edits in a separate skill or fork.
 
-For native plugin installs or a mounted checkout, use the matching refresh instructions below. Choose one installation method per harness to avoid duplicate skills.
+Updates do not necessarily remove skills deleted or renamed upstream. Review obsolete entries separately, and use your installer's removal command for copies you no longer want.
+
+For native plugin installs or a mounted checkout, use the matching refresh instructions below or in the [maintenance guide](docs/harness-installation.md). Choose one installation method per harness to avoid duplicate skills.
 
 The [skills.sh catalog page](https://skills.sh/magnus919/agent-skills) is populated from installation telemetry rather than a separately submitted registry manifest.
 
@@ -816,7 +829,7 @@ The eval manifest contract is checked with `python3 scripts/validate-evals.py`; 
 
 ### Harness-native installation
 
-Skills don't require installation in the traditional sense. They are loaded by your AI agent when triggered. Each agent framework documents its own skill directory path and loading mechanism — follow the links below for the authoritative setup guide for your harness.
+Each harness controls skill discovery, activation, and execution. Follow its setup guide for directory paths, scope, and enablement; installing the files alone may not activate them.
 
 | Harness | Setup Guide |
 |---------|-------------|
@@ -827,6 +840,7 @@ Skills don't require installation in the traditional sense. They are loaded by y
 | **Cursor** | [cursor.com/docs/context/skills](https://cursor.com/docs/context/skills) |
 | **Gemini CLI** | [geminicli.com/docs/cli/skills](https://geminicli.com/docs/cli/skills) |
 | **Hermes Agent** | See below |
+| **OpenClaw and other personal-agent harnesses** | [Installation and maintenance guide](docs/harness-installation.md) |
 
 ### Claude Code
 
@@ -925,7 +939,7 @@ Codex scans `.agents/skills/` in every directory from cwd up to the repo root.
 
 ### Generic / Other Frameworks
 
-The [agentskills.io clients page](https://agentskills.io/clients) maintains an up-to-date list of every agent framework that supports the Agent Skills format, with links to each one's setup instructions. Any framework listed there can load these skills — follow that framework's specific documentation for the correct directory path and loading mechanism.
+The [agentskills.io clients page](https://agentskills.io/clients) maintains an up-to-date list of every agent framework that supports the Agent Skills format, with links to each one's setup instructions. Format support is a starting point: follow the framework's documentation for discovery and activation, and check each skill's tool, dependency, and environment requirements. See our [harness matrix](docs/harness-installation.md#harness-compatibility) for documented routes and unverified integrations.
 
 For another harness supported by the `skills` CLI, use its [agent identifier](https://github.com/vercel-labs/skills#supported-agents) in the full-catalog command above and rerun it periodically.
 
