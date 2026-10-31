@@ -113,6 +113,8 @@ for six worked examples and mode-specific exit artifacts.
 | Context retrieval, compression/reset, budgets | [Context design](references/context-design.md) | [Context budget](templates/context-budget.md) |
 | Persistence, state transitions, partial effects | [State and recovery](references/context-and-state.md) | [State](templates/state.json), [recovery drill](templates/recovery-drill.md) |
 | Environment and custom runtime boundaries | [Runtime design](references/runtime-design.md) | [Runtime decision](templates/runtime-design.md) |
+| Credential handles, session reuse/handoff, revocation | [Credential/session authority](references/credential-session-authority.md) | Bind separate grants; challenge synthetic leaks and residual sessions |
+| Imported assistant memory, stale claims, rollback | [Memory import acceptance](references/memory-import-acceptance.md) | Stage reviewed claims; never import authority |
 | Tool contracts, events, authorization, hooks | [Tools and events](references/tool-and-event-contracts.md) | [Tool contract](templates/tool-contract.json), [event contract](templates/event-contract.md) |
 | Find task-relevant tools and operate on large result sets | [Tool discovery and bulk results](references/tool-discovery-and-bulk-results.md) | [Bulk result contract](templates/bulk-result-contract.json), [tool contract](templates/tool-contract.json) |
 | Actual runtime journey and trace-to-action loop | [Observability feedback](references/observability-and-feedback.md) | [Observability plan](templates/observability-plan.md) |
@@ -190,7 +192,10 @@ improvement without comparable real agent runs.
 
 Read [forward-test report](evals/forward-test-report.md) when assessing tested
 coverage and remaining evidence gaps. Independent fixture reviews complement
-the declarative cases; they do not establish field efficacy.
+the declarative cases; they do not establish field efficacy. For synthetic
+credential/session and imported-memory challenges, read the
+[rubric and limits](evals/authority-memory-challenges.md); passing offline example
+tests does not establish live adapter safety or model behavior.
 
 For bounded selection or routing with a typed decision model, read
 [System One decisions](references/system-one-decisions.md) before proposing an

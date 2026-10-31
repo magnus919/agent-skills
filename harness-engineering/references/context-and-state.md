@@ -62,6 +62,10 @@ with current writes; stale extraction must not override a newer user correction.
 Use retention/access controls and exclude secrets. Product-specific memory
 caps and precedence are adapters, not discipline-wide rules.
 
+When transferring memory between assistants, follow
+[memory import acceptance](memory-import-acceptance.md) for staging, provenance,
+conflict review, authority rejection, restart and batch rollback.
+
 ## Challenge recovery
 
 Inject cancellation/process death, failed checkpoint write, stale cache,

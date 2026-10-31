@@ -31,6 +31,10 @@ isolates checkout changes, not secrets, network, process privileges, or shared
 services. Read-only can still expose confidential data. Denial must be visible;
 do not retry under a different tool merely to evade policy.
 
+For brokered login, browser cookies, or worker session handoff, read
+[credential/session authority](credential-session-authority.md). Authentication,
+session custody, and action approval need separate grants.
+
 ## Per-call concurrency and side effects
 
 Declare resource keys and conflict classes. Two writes to distinct files may be

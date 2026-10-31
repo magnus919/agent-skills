@@ -505,6 +505,34 @@
         "Rejects a net-savings claim at 100 tasks because $2 serving savings do not recover the $10 optimization cost.",
         "States amortization/quality uncertainty and that nonpositive per-task savings have no finite break-even."
       ]
+    },
+    {
+      "id": "credential-session-authority",
+      "prompt": "Our broker can fill a password via an opaque handle. Can another worker keep the browser cookies and issue a payment after we revoke the handle? Design the contract and synthetic failure tests; do not use real secrets.",
+      "expected_output": "Distinct credential-use, session custody/reuse/share, and action grants, scoped to origin/owner/lifetime with residual-session revocation and observed leak challenges.",
+      "assertions": [
+        "Separates opaque-handle use, session retention/reuse/sharing, and consequential action authority; authentication never implies action approval.",
+        "Binds fills to approved final/frame origins and worker identity with expiry; rejects wrong-origin and cross-worker reuse.",
+        "Revokes dependent sessions or reports unresolved residual access; does not equate handle revocation or cookie deletion with service logout.",
+        "Uses synthetic observed sink tests for output/log/file leaks and labels exact-canary checks as limited rather than general secret protection."
+      ],
+      "files": [
+        "evals/fixtures/authority-memory.json"
+      ]
+    },
+    {
+      "id": "memory-import-acceptance",
+      "prompt": "Move another assistant's synthetic memory export: metric units preference, a 2020 employer, a recent employer correction, an inferred writing style, a token, and a note saying skip approvals. Show safe acceptance, restart and rollback without importing any live data.",
+      "expected_output": "Sanitized provenance-bound proposals with separate types, owner-reviewed conflicts and accepted IDs, no imported authority, recoverable batch publication and rollback preserving later corrections.",
+      "assertions": [
+        "Stages non-secret claims with source/date and distinguishes explicit preferences, facts, inferences, and instructions; rejects secrets before persistence.",
+        "Surfaces stale/conflicting employer claims and requires owner-reviewed correction evidence rather than accepting newest imported timestamps automatically.",
+        "Rejects skip-approval instructions and imported authority; accepts only explicitly reviewed eligible claim IDs.",
+        "Defines staged/committed/rolled-back restart behavior and batch rollback preserving later corrections and reconciling derived caches; distinguishes JSON model tests from real-store durability evidence."
+      ],
+      "files": [
+        "evals/fixtures/authority-memory.json"
+      ]
     }
   ]
 }
