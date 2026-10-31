@@ -6,6 +6,8 @@ A specialist's pass applies only to its stated evidence boundary.
 
 | Active decision | Specialist | Provide | Consume and return to harness workflow |
 |---|---|---|---|
+| Discover recurring work and package role procedures | [workflow-architect](../../workflow-architect/SKILL.md) | Actual work samples, decision boundaries and repeated corrections | Evidence-backed workflow/bundle → role contracts; harness retains runtime authority and acceptance |
+| Factory demand, capacity and business operating model | [operational-design](../../operational-design/SKILL.md), [ai-operating-economics](../../ai-operating-economics/SKILL.md) | Demand classes, queues, accepted output, rework and full cost | Capacity/value decision → intake and WIP policy; do not infer ROI from worker count |
 | Domain/system architecture | [software-architecture](../../software-architecture/SKILL.md) | Drivers, constraints, candidate runtime boundaries | Accepted boundaries/fitness scenarios → tools and environment design |
 | One reproducible defect | [systematic-debugging](../../systematic-debugging/SKILL.md) | Trace, expected/actual, revision, reproduction | Supported root cause → smallest intervention |
 | Acceptance and phase contracts | [spec-driven-development](../../spec-driven-development/SKILL.md) | Intended product outcome and uncertainty | Testable spec/tasks → initializer and completion gate |

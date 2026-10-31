@@ -1,5 +1,7 @@
 # Bounded loops, graphs, and coordination
 
+For recurring production, begin with [the software factory procedure](software-factory.md): a worker graph is one mechanism inside intake, production, integration, acceptance and delivery. For changed intent during execution use [factory steering](factory-steering.md).
+
 ## Select the smallest control shape
 
 | Shape | Appropriate trigger | Required control |

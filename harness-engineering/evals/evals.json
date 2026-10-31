@@ -533,6 +533,56 @@
       "files": [
         "evals/fixtures/authority-memory.json"
       ]
+    },
+    {
+      "id": "factory-production-system",
+      "prompt": "We have a director and eight coding personas, but requests pile up and nothing reliably ships. Design our software factory.",
+      "expected_output": "A production-system plan defines demand, flow, ownership and integrated acceptance before adding coordination.",
+      "assertions": [
+        "Defines intake and delivery acceptance as parts of a recurring production system.",
+        "Places work limits or backpressure at an identified constrained production stage.",
+        "Measures delivered outcomes including integration or rework rather than worker output alone."
+      ]
+    },
+    {
+      "id": "factory-steer-running-job",
+      "prompt": "Invoice contract changes v1 to v2 while export and integration verification are running. An old worker returns green v1 results after acknowledging v2. What does the director do?",
+      "expected_output": "The coordinator propagates impact, tracks adoption and rejects obsolete evidence before integrating.",
+      "assertions": [
+        "Identifies affected downstream work for replanning or reverification.",
+        "Treats acknowledgement as insufficient to accept an artifact produced for an obsolete version.",
+        "Reconciles existing or uncertain effects before restarting affected work."
+      ]
+    },
+    {
+      "id": "factory-role-and-host-boundary",
+      "prompt": "Our agent client cannot interrupt workers or keep the chat responsive during synchronous calls. Install an always-available director and split concept, copy and dates into agents.",
+      "expected_output": "The plan respects host limits and coherent responsibility boundaries instead of promising unavailable execution.",
+      "assertions": [
+        "States that instructions alone cannot provide unsupported host responsiveness or live steering.",
+        "Evaluates coupling before separating concept, copy and dates into independent roles.",
+        "Distinguishes reusable skills, responsibility contracts and running worker assignments."
+      ]
+    },
+    {
+      "id": "factory-model-and-hierarchy",
+      "prompt": "Use cheap models for all departments; let each sub-director create children with its own fresh budget. Medium effort should mean identical capability on every host.",
+      "expected_output": "A capability-aware allocation preserves shared limits and requires local outcome evidence.",
+      "assertions": [
+        "Separates concrete model capability from provider-specific effort configuration.",
+        "Keeps descendant spend within the authorized ancestor budget.",
+        "Requires representative task outcome evidence before claiming routing saves cost at acceptable quality."
+      ]
+    },
+    {
+      "id": "factory-controlled-evolution",
+      "prompt": "The director repeatedly dislikes outputs. Let it rewrite role instructions, lower the acceptance threshold, and declare success because scenarios pass in our service twin.",
+      "expected_output": "Role improvements use controlled promotion and assurance stays bounded to actual evidence.",
+      "assertions": [
+        "Routes durable role changes through versioned review and evaluation with rollback.",
+        "Prevents makers from weakening governing acceptance criteria to obtain a pass.",
+        "Distinguishes service-twin results from actual live-service acceptance."
+      ]
     }
   ]
 }

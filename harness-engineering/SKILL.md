@@ -3,7 +3,9 @@ name: harness-engineering
 description: >-
   Design, build, diagnose, and evolve agent harnesses: instructions, tools,
   execution environments, durable state, context management, verification,
-  recovery, and bounded autonomous loops. Use for unreliable coding agents,
+  recovery, bounded autonomous loops, and software factories that repeatedly turn
+  incoming work into accepted deliverables. Use for director/worker production
+  systems, factory steering, unreliable coding agents,
   cross-session drift, premature completion, harness audits, or changes to the
   runtime around a model, including bounded typed-decision routing. Do not use
   for prompt rewriting alone, model training,
@@ -20,6 +22,14 @@ Engineer the system around the model so an agent can start, act within authority
 observe results, recover, and finish with evidence. Scaffolding is one entry point;
 existing harnesses may need fewer files, better tools, or removal of stale rules.
 Default to the smallest change that addresses an observed failure.
+
+For a **software factory**, design the recurring production system: intake,
+responsibility boundaries, artifact flow, integrated acceptance, authorized
+delivery, and feedback. A director is its conversational coordinator; a harness
+is the execution/control infrastructure. Start with the factory outcome and
+load [the factory procedure](references/software-factory.md), not a generic
+collection of agent personas. Keep business operating-model decisions with
+operational-design and ai-operating-economics through the catalog handoffs.
 
 ## Authority and first move
 
@@ -90,7 +100,7 @@ explicit without presenting a second, incompatible five-subsystem taxonomy.
 
 Choose the mode from the task, not from available tools. Read
 [references/entry-points-and-use-cases.md](references/entry-points-and-use-cases.md)
-for six worked examples and mode-specific exit artifacts.
+for worked examples and mode-specific exit artifacts.
 
 | Request | Start with | Deliver |
 |---|---|---|
@@ -99,6 +109,7 @@ for six worked examples and mode-specific exit artifacts.
 | Design a custom runtime | Tool/state/authority/event contracts | Runtime design with failure/replay tests |
 | Reduce context/cost | Measured stage/context baseline | Fidelity-preserving intervention and comparison |
 | Automate repeated work | Goal, verifier, authority, budgets | Bounded loop with exercised termination/recovery |
+| Engineer a software factory | Recurring demand, production/acceptance owners, host capabilities | Factory charter, role contracts, versioned artifact flow and exercised steering/recovery |
 | Coordinate workers | Ownership, shared interfaces, integration | Explicit routing and combined verification |
 | Maintain/retire harness rules | Current failures, source owners, model changes | One evidenced simplification with rollback |
 
@@ -121,6 +132,10 @@ for six worked examples and mode-specific exit artifacts.
 | Optional, privacy-bounded intervention event detail | [Observability and feedback](references/observability-and-feedback.md#optional-typed-intervention-detail), [script contract](references/script-contract.md) | Aggregate-only run record by default; add detail only for the stated question |
 | Premature completion, verifier, experiment | [Verification/improvement](references/verification-and-improvement.md) | [Acceptance](templates/acceptance-contract.md), [experiment](templates/experiment.md), [run record](templates/run-record.json) |
 | Repeated work, graphs, concurrent ownership | [Loops/coordination](references/loops-and-coordination.md) | [Loop contract](templates/loop-contract.md), [graph](templates/graph.json) |
+| Recurring production, director/worker roles, factory capacity and acceptance | [Software factory](references/software-factory.md) | [Factory charter](templates/factory-charter.md), [role contract](templates/factory-role.md) |
+| Changing running requirements, missing acknowledgement or stale results | [Factory steering](references/factory-steering.md) | [Change record](templates/factory-change.md), [snapshot](templates/factory-snapshot.json); run `scripts/factory.py` for read-only declaration screening |
+| Worker model choice, effort mapping and bounded escalation | [Factory model allocation](references/factory-model-allocation.md) | Model and assignment fields in [role contract](templates/factory-role.md) |
+| Factory research provenance, media limits or follow-up scope | [Research brief](references/software-factory-research-brief.md), [source records](references/software-factory-sources.md), [research log](references/software-factory-research-log.md), [video ledger](references/software-factory-video-ledger.md) | [Validation boundaries](evals/software-factory-validation.md), [assertion challenges](evals/software-factory-challenges.md) |
 | Release batch drift, stuck workers or protected control files | [Factory supervision](references/factory-supervision.md) | [Batch record](templates/factory-batch-record.md) |
 | Typed model choice inside a harness | [System One decisions](references/system-one-decisions.md) | [Decision placement](templates/decision-placement.md) |
 | Need specialist input then return to this workflow | [Catalog handoffs](references/catalog-composition.md) | Supply and consume the named contract |
@@ -145,6 +160,13 @@ python3 scripts/harness.py scaffold --target /path/to/repo --apply
 # Review the JSON argv list first. Run only authorized commands.
 python3 scripts/harness.py verify --target /path/to/repo --commands /path/to/checks.json
 python3 scripts/harness.py verify --target /path/to/repo --commands /path/to/checks.json --execute --report /tmp/new-run.json
+```
+
+Read-only factory screening (no dispatch, artifact authentication or acceptance):
+
+```sh
+python3 scripts/factory.py --snapshot templates/factory-snapshot.json
+python3 -m unittest discover -s scripts -p test_factory.py
 ```
 
 Read-only contract helpers:

@@ -9,7 +9,9 @@ or call unfinished work complete. This skill helps find where execution breaks
 and change the environment around the model with evidence.
 
 It covers new harnesses and existing ones: small repository setups, custom
-runtimes, session continuity, verification, and bounded autonomous loops. It
+runtimes, session continuity, verification, and bounded autonomous loops. For
+software factories, it connects recurring requests to specialist production,
+integrated acceptance, delivery and controlled improvement. It
 builds on WalkingLabs' Harness Creator and course, with clearer evidence limits
 and safe local tooling. Structural audits help discovery; real task comparisons
 are still needed to establish improvement.
@@ -27,6 +29,7 @@ Business-policy placement guidance that separates explanations, eligibility, and
 | `references/` | Design procedures, worked use cases, catalog handoffs, source coverage, and conditional System One integration evidence |
 | `templates/` | Project instructions, state, handoff, decision placement, tool, bulk-result, experiment contracts and factory reconciliation records |
 | `scripts/harness.py` | Audit with optional HTML, preview-first scaffold, explicit check runner |
+| `scripts/factory.py` | Read-only screening for changed requirements, transitive impact, missing acknowledgement, stale artifacts and declared budgets |
 | `scripts/contracts.py` | State/graph/run declaration checks and compatible-run comparison |
 | `scripts/decision_examples.py` | Offline synthetic typed-decision examples for selection, action, and review boundaries |
 | `scripts/test_*.py` | Safety, near-miss, and evidence-boundary regression tests |
@@ -50,6 +53,15 @@ The first command prints JSON findings with behavior marked `not_assessed`.
 The second previews files to create or skip. Add `--apply` to create missing files;
 existing files are preserved. No API key is required.
 
+To inspect a worked factory snapshot without starting workers:
+
+```sh
+python3 scripts/factory.py --snapshot templates/factory-snapshot.json
+```
+
+It flags `contract`, `export` and `verify` for disposition; `docs` remains a
+candidate for review. Acceptance and real runtime behavior are not assessed.
+
 To view offline synthetic typed-decision examples:
 
 ```sh
@@ -69,6 +81,7 @@ procedure and supporting templates. Small stable catalogs may use a static index
 - You want to build, audit, simplify, or improve a harness.
 - You need tools, context, checkpoints, verification, or recovery around a model.
 - You want a bounded autonomous loop or coordinated agent workflow.
+- You are building a software factory with a director, specialist roles, recurring intake, or changes to running work.
 - Parallel workers drift from shared contracts, or need enforceable protection for governing rules.
 
 ## Requirements

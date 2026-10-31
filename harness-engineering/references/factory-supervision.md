@@ -5,6 +5,8 @@ stale dependencies, abandoned ownership or broken integration. Reuse the existin
 state owner and integration process. A supervisor is a responsibility, not a
 requirement to add another model or polling service.
 
+For the full recurring production system, use [software factory design](software-factory.md); for user changes during a job, use [factory steering](factory-steering.md). The read-only `scripts/factory.py` helper screens supplied version/dependency declarations; it does not authenticate worker state or act as this supervisor.
+
 ## Define the batch before dispatch
 
 Record accepted scope/contract version, task dependency graph, shared resources,

@@ -2,11 +2,16 @@
   "should_trigger": [
     "Design the runtime around my coding agent.",
     "My agent forgets work across restarts; fix its harness.",
-    "Audit and improve our agent tools and verification."
+    "Audit and improve our agent tools and verification.",
+    "Build a software factory that turns incoming product requests into accepted releases.",
+    "Keep our director available while specialist workers produce artifacts.",
+    "Change the running factory job without accepting obsolete worker results."
   ],
   "should_not_trigger": [
     "Rewrite this prompt in plain English.",
     "Fine-tune model weights on our corpus.",
-    "Set production SLOs for an evaluated support agent."
+    "Set production SLOs for an evaluated support agent.",
+    "Calculate staffing and revenue targets for our manufacturing business.",
+    "Implement this LangGraph checkpoint using its Python SDK."
   ]
 }
