@@ -113,7 +113,7 @@ Discover and compare cloud-native technologies from the live CNCF Landscape API,
 
 ### [code-review](code-review/SKILL.md)
 
-Review a change for correctness, security, maintainability, and test adequacy, and reach a verdict the evidence supports. Covers scoping and attention budgets, risk tiers, a 13-class defect taxonomy, severity-labeled comments, verdict and residual-risk records, AI-authored and AI-reviewed changes, and review metrics that resist gaming. Grounded in Google's engineering practices, the Microsoft and Google review studies, and recent AI-review deployments. Ships a read-only diff-scope tool with test mapping and risk flags, a review-record checker, five fillable templates, and eight evals.
+Review a change for correctness, security, maintainability, and test adequacy, and reach a verdict the evidence supports. Covers scoping and attention budgets, risk tiers, a 13-class defect taxonomy, severity-labeled comments, verdict and residual-risk records, AI-authored and AI-reviewed changes, and review metrics that resist gaming. Grounded in Google's engineering practices, the Microsoft and Google review studies, and recent AI-review deployments. Ships a read-only diff-scope tool with test mapping and risk flags, a review-record checker, five fillable templates, and ten evals.
 
 ### [color-management](color-management/SKILL.md)
 

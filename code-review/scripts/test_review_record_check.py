@@ -25,6 +25,7 @@ VALID_RECORD = """# Review record — retry handling
 - Head: 33de901
 - Files changed: 2 (+48/-12, 60 effective)
 - Attention tier: small
+- Coverage: full
 - Change type: fix
 
 ## Intent
@@ -172,3 +173,39 @@ def test_strict_promotes_warnings(tmp_path: Path, capsys: pytest.CaptureFixture[
     assert review_record_check.main([str(path)]) == 0
     capsys.readouterr()
     assert review_record_check.main([str(path), "--strict"]) == 1
+
+
+def test_missing_coverage_is_an_error() -> None:
+    text = VALID_RECORD.replace("- Coverage: full\n", "")
+    result = review_record_check.check(text)
+    assert not result.valid
+    assert any("Coverage" in error for error in result.errors)
+
+
+def test_partial_coverage_must_state_what_was_read() -> None:
+    text = VALID_RECORD.replace("- Coverage: full", "- Coverage: partial")
+    result = review_record_check.check(text)
+    assert not result.valid
+    assert any("does not say what was read" in error for error in result.errors)
+
+
+def test_partial_coverage_with_approval_warns() -> None:
+    text = VALID_RECORD.replace("- Coverage: full", "- Coverage: partial (retry.py only)")
+    text = text.replace("REQUEST CHANGES", "APPROVE WITH COMMENTS")
+    text = text.replace(
+        "- [blocking] The exhaustion path returns None instead of the last error — evidence: "
+        "`worker/retry.py:88` — verify: `test_retry_keeps_final_error` fails before the fix and passes after",
+        "- [question] Is the exhaustion path intended to return the last error?",
+    )
+    result = review_record_check.check(text)
+    assert result.valid, result.errors
+    assert result.coverage == "partial"
+    assert any("partial coverage" in warning for warning in result.warnings)
+
+
+def test_partial_coverage_with_resolution_is_accepted() -> None:
+    text = VALID_RECORD.replace("- Coverage: full", "- Coverage: partial (worker/retry.py only)")
+    result = review_record_check.check(text)
+    assert result.valid, result.errors
+    assert result.coverage == "partial"
+    assert result.warnings == []

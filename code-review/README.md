@@ -39,7 +39,7 @@ describe the diff, and never pretend to judge it.
 | `scripts/review_scope.py` | Read-only diff scope: effective lines, risk flags by path, test mapping, attention budget, review order |
 | `scripts/review_record_check.py` | Validates a review record: required sections, labeled findings, evidence and verification on blockers, verdict consistency |
 | `scripts/test_*.py` | Tests against real temporary git repositories and against the shipped template |
-| `evals/evals.json` | Seven output-quality cases for agent runs |
+| `evals/evals.json` | Ten output-quality cases for agent runs |
 
 ## Quick Start
 

@@ -96,6 +96,12 @@ whether source files moved with tests, and an attention budget:
 ```bash
 python3 scripts/review_scope.py --base origin/main --head HEAD --markdown
 python3 scripts/review_scope.py --base origin/main --head HEAD --json
+
+# Reviewing an already-merged squash commit (or any single commit)
+python3 scripts/review_scope.py --base <merge-sha>^ --head <merge-sha>
+
+# Project-specific build output that the default markers do not know
+python3 scripts/review_scope.py --base origin/main --head HEAD --exclude 'reports/*.json'
 ```
 
 Use its output for three decisions:
@@ -108,6 +114,7 @@ Use its output for three decisions:
   split the review or ask for a split change.
 - **Order attention.** Risk-bearing and behavioral code first. Generated files,
   lockfiles, and vendored code are inspected for provenance, not read line by line.
+  Exclusion is a claim about provenance: if a path is generated, say what generates it.
 
 If the change is oversized, write a review plan and ask for it to be split or stacked.
 Reviewing an oversized diff in one pass produces an approval that covers less than it
@@ -251,8 +258,8 @@ and the specialist skill supplies the depth for its own domain.
 ## Completion criteria
 
 The review is complete when the record states scope, evidence, labeled findings with
-evidence and verification, a verdict consistent with those findings, residual risk,
-and explicitly unreviewed scope — and the record passes
+evidence and verification, a verdict consistent with those findings, an explicit
+coverage level, residual risk, and explicitly unreviewed scope — and the record passes
 `scripts/review_record_check.py`. Stop when the budget is spent rather than skimming
 the remainder; reschedule or split instead of pretending coverage.
 

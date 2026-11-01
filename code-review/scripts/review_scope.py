@@ -24,6 +24,7 @@ Exit codes:
 from __future__ import annotations
 
 import argparse
+import fnmatch
 import json
 import re
 import subprocess
@@ -42,19 +43,33 @@ MAX_SESSION_MINUTES = 60
 TIER_BOUNDARIES = ((200, "small"), (400, "standard"), (1000, "large"))
 OVERSIZED_TIER = "oversized"
 
+# Risk terms live inside compound filenames all the time
+# (credential-session-authority.md, tenant-isolation.md). An exact path-segment
+# match silently misses those, so a hyphen, dot, or underscore also ends a term.
+TERM_LEFT = r"(^|[/_.-])"
+TERM_RIGHT = r"([/_.-]|$)"
+
+
+def _term(alternation: str) -> str:
+    """Compile a risk vocabulary into a path-matching expression."""
+    return rf"{TERM_LEFT}(?:{alternation}){TERM_RIGHT}"
+
+
 RISK_RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
     (
         "authentication",
         (
-            r"(^|/)(auth|authn|authz|login|logout|session|sessions|oauth|saml|oidc|sso)(/|\.|$)",
-            r"(^|/)(password|passwd|credential|credentials|token|tokens|jwt|apikey|api_key)(/|\.|$)",
+            _term("auth|authn|authz|login|logout|session|sessions|oauth|saml|oidc|sso"),
+            _term(
+                "password|passwd|credential|credentials|token|tokens|jwt|apikey|api_key"
+            ),
         ),
     ),
-    ("cryptography", (r"(^|/)(crypto|cipher|encrypt|decrypt|hmac|signature|signing|tls|ssl)(/|\.|$)",)),
-    ("authorization-policy", (r"(^|/)(policy|policies|rbac|permissions|acl|iam)(/|\.|$)",)),
-    ("payment-or-billing", (r"(^|/)(payment|payments|billing|invoice|checkout|pricing|ledger)(/|\.|$)",)),
-    ("data-migration", (r"(^|/)(migrations?|migrate|alembic|flyway|liquibase)(/|\.|$)",)),
-    ("destructive-data-path", (r"(^|/)(delete|purge|truncate|drop|retention|gdpr|erase)(/|\.|$)",)),
+    ("cryptography", (_term("crypto|cipher|encrypt|decrypt|hmac|signature|signing|tls|ssl"),)),
+    ("authorization-policy", (_term("policy|policies|rbac|permissions|acl|iam|tenant|tenants"),)),
+    ("payment-or-billing", (_term("payment|payments|billing|invoice|checkout|pricing|ledger"),)),
+    ("data-migration", (_term("migrations?|migrate|alembic|flyway|liquibase"),)),
+    ("destructive-data-path", (_term("delete|purge|truncate|drop|retention|gdpr|erase"),)),
     (
         "dependency-manifest",
         (
@@ -76,7 +91,7 @@ RISK_RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
         "public-contract",
         (r"(^|/)(openapi|swagger|asyncapi|\.proto$|graphql|schema\.(json|graphql|yaml)$|api/|routes?/)",),
     ),
-    ("concurrency", (r"(^|/)(lock|mutex|semaphore|queue|worker|scheduler|async|thread|parallel)(/|\.|$)",)),
+    ("concurrency", (_term("lock|mutex|semaphore|queue|worker|scheduler|async|thread|parallel"),)),
 )
 RISK_PATTERNS = tuple(
     (label, re.compile("|".join(patterns), re.IGNORECASE)) for label, patterns in RISK_RULES
@@ -109,6 +124,13 @@ GENERATED_MARKERS = (
     re.compile(
         r"(^|/)(package-lock\.json|pnpm-lock\.yaml|yarn\.lock|Cargo\.lock|poetry\.lock|composer\.lock)$"
     ),
+    # Catalog/plugin projections and report directories are produced by
+    # generators, not written by hand. Add project-specific paths with --exclude.
+    re.compile(
+        r"(^|/)(\.claude-plugin/marketplace\.json|\.codex-plugin/plugin\.json|"
+        r"\.agents/plugins/marketplace\.json|llms\.txt)$"
+    ),
+    re.compile(r"(^|/)(graphify-out|test-results)/"),
 )
 
 
@@ -252,6 +274,14 @@ def is_generated(path: str) -> bool:
     return any(marker.search(path) for marker in GENERATED_MARKERS)
 
 
+def matches_exclude(path: str, patterns: tuple[str, ...]) -> bool:
+    """True when a path matches a caller-supplied exclusion glob."""
+    return any(
+        fnmatch.fnmatch(path, pattern) or fnmatch.fnmatch(path, pattern.rstrip("/") + "/*")
+        for pattern in patterns
+    )
+
+
 def risk_labels(path: str) -> list[str]:
     return sorted(label for label, pattern in RISK_PATTERNS if pattern.search(path))
 
@@ -286,7 +316,12 @@ def review_budget(lines: int) -> dict[str, int]:
 
 
 def build_scope(
-    repo: Path, base: str, head: str, staged: bool, tier_override: str | None
+    repo: Path,
+    base: str,
+    head: str,
+    staged: bool,
+    tier_override: str | None,
+    excludes: tuple[str, ...] = (),
 ) -> dict:
     statuses = parse_name_status(_diff(repo, base, head, staged, "--name-status"))
     counts = parse_numstat(_diff(repo, base, head, staged, "--numstat"))
@@ -302,7 +337,7 @@ def build_scope(
             deleted=deleted,
             binary=binary,
             kind=classify(path),
-            generated=is_generated(path),
+            generated=is_generated(path) or matches_exclude(path, excludes),
         )
         entry.risks = risk_labels(path)
         files.append(entry)
@@ -338,6 +373,7 @@ def build_scope(
             "binary_files": sum(1 for f in files if f.binary),
         },
         "tier": tier_override or tier_for(effective),
+        "exclude_patterns": list(excludes),
         "budget": review_budget(effective),
         "by_kind": {kind: by_kind[kind] for kind in sorted(by_kind)},
         "risks": {label: sorted(risks[label]) for label in sorted(risks)},
@@ -360,6 +396,7 @@ def build_scope(
             }
             for f in files
         ],
+        "generated_paths": sorted(f.path for f in files if f.generated),
         "attention_order": attention_order(files),
     }
 
@@ -443,6 +480,13 @@ def build_parser() -> argparse.ArgumentParser:
         choices=["small", "standard", "large", "oversized"],
         help="override the path-derived attention tier",
     )
+    parser.add_argument(
+        "--exclude",
+        action="append",
+        default=[],
+        metavar="GLOB",
+        help="treat matching paths as generated (repeatable); use for project-specific build output",
+    )
     output = parser.add_mutually_exclusive_group()
     output.add_argument("--json", action="store_true", help="emit machine-readable JSON (default)")
     output.add_argument("--markdown", action="store_true", help="emit a human-readable summary")
@@ -454,7 +498,7 @@ def main(argv: list[str] | None = None) -> int:
     repo = Path(args.repo).expanduser()
     try:
         base, head = resolve_range(repo, args.base, args.head, args.staged)
-        scope = build_scope(repo, base, head, args.staged, args.tier)
+        scope = build_scope(repo, base, head, args.staged, args.tier, tuple(args.exclude))
     except ScopeError as error:
         print(f"review_scope: {error}", file=sys.stderr)
         return 1
