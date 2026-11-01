@@ -21,6 +21,9 @@ It can also assess the monitors supervising an agent: shared blind spots, missin
 trace evidence, detection errors, and alerts that never reach their owner. A correct
 answer or a monitor's reassurance cannot substitute for verified conduct.
 
+For agents with consequential tools, it also addresses protected supervision: who
+can change controls, how to verify they are active, and when work must stop.
+
 ## What You Get
 
 | Contents | Provides |

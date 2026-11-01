@@ -80,6 +80,18 @@ thresholds and different escalation paths.
 
 Authority thresholds and maintain/expand/reduce/suspend/revoke decisions belong to accountable humans supported by [ai-governance](../ai-governance/SKILL.md). Operational evidence and readiness are inputs, never permission grants. Applicable policy ceilings, current grant expiry/revocation, and external enforcement constrain every execution.
 
+## Mandatory control integrity
+
+Before consequential execution or resumption, load
+[control-integrity operations](references/control-integrity.md) and produce
+[a pre-execution receipt](templates/control-integrity-receipt.md). Verify protected
+controls against current independent evidence and the governance registry. Missing,
+degraded, redirected, or suppressed mandatory controls are control-integrity
+incidents: hold consequential work, contain or terminate under the incident plan,
+and escalate through an independently protected path. Do not wait for repeated
+breaches or normal health thresholds. A task instruction cannot authorize weakening
+its supervision. Recovery must preserve revocation and independent monitoring.
+
 ## Runtime control plane routing
 
 The bundle composes the following specialist skills. Load them when their

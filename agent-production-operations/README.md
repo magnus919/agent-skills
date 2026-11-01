@@ -29,6 +29,9 @@ back safely, and when should I be disabled entirely. Your team can answer: how
 do production incidents feed back into better evaluations, and how do eval
 results gate the next release.
 
+For agents with consequential tools, it also addresses protected supervision: who
+can change controls, how to verify they are active, and when work must stop.
+
 ## What You Get
 
 | Path | What it provides |

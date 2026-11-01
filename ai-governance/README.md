@@ -26,6 +26,9 @@ You can also ask two concrete questions: “May this Skill, MCP server or A2A ag
 environment?” and “What may our agent actually do?” Linked records capture ownership,
 configuration, evidence, restrictions and review dates, including when to reduce or remove access.
 
+For agents with consequential tools, it also addresses protected supervision: who
+can change controls, how to verify they are active, and when work must stop.
+
 ## What You Get
 
 | Path | What it provides |
