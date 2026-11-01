@@ -25,6 +25,17 @@ Do not use it for an authorized post-build assessment: use [security-audit-metho
 
 Use [multi-tenant-saas-architecture](../multi-tenant-saas-architecture/SKILL.md) for the end-to-end tenant model, control/application-plane placement, commercial lifecycle, and SaaS operating architecture; this skill owns the threat model and enforceable isolation controls. Use [capacity-and-cost-engineering](../capacity-and-cost-engineering/SKILL.md) for quantitative tenant demand, quota sizing, fairness, load/soak evidence, and unit-cost tradeoffs. Route privacy lifecycle and deletion-verification artifacts to [privacy-engineering](../privacy-engineering/SKILL.md).
 
+## Agent control-plane protection
+
+When an agent can reach assets that supervise or constrain it, load
+[protected-control enforcement](references/protected-control-enforcement.md).
+Threat-model monitors, alert routes, audit sinks, authority ceilings, kill switches,
+evaluation oracles, and gates as protected assets. Enforce rights outside the
+controlled agent's writable authority, including indirect tools and child identities.
+A Markdown prohibition is not enforcement. Missing, degraded, redirected, or
+suppressed mandatory controls are control-integrity incidents; runtime operations
+owns containment and governance owns rights and human exceptions.
+
 ## Workflow
 
 1. **Requirements**: identify assets, actors, harm, data classifications, regulatory or contractual constraints, and security outcomes. Write testable acceptance criteria before selecting controls.

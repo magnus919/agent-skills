@@ -1,0 +1,31 @@
+{
+  "provenance": "synthetic authored fixture; not a deployment receipt",
+  "record": {
+    "id": "H1",
+    "case_rosters": {
+      "representative": [
+        "R1",
+        "R2"
+      ],
+      "injected": [
+        "I1"
+      ]
+    },
+    "R1": {
+      "monitor_a": {
+        "scope": "actions",
+        "result": "safe"
+      },
+      "monitor_b": {
+        "scope": "actions-and-audit",
+        "result": "violation",
+        "severity": "abstain",
+        "missing_event": "R1-tool-3"
+      },
+      "alert_emitted": true,
+      "sink_acknowledgement": null
+    },
+    "base_rate": null,
+    "independent_labels": null
+  }
+}

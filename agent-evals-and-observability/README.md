@@ -17,6 +17,13 @@ detail as uncollected, and excludes raw messages and hidden reasoning by default
 Turn sanitized observations into a small reviewed patch with an explicit release
 decision and recurrence check; personal context stays out of shared procedures.
 
+It can also assess the monitors supervising an agent: shared blind spots, missing
+trace evidence, detection errors, and alerts that never reach their owner. A correct
+answer or a monitor's reassurance cannot substitute for verified conduct.
+
+For agents with consequential tools, it also addresses protected supervision: who
+can change controls, how to verify they are active, and when work must stop.
+
 ## What You Get
 
 | Contents | Provides |
@@ -34,6 +41,7 @@ Expected result: a risk-based plan that names the task contract, evidence, priva
 ## Triggers
 
 - Agent evaluation, LLM evals, evaluation dataset, grader, or model judge
+- Monitor independence, oversight quality, detection coverage, or escalation delivery
 - Agent observability, traces, telemetry, trajectory review, or production monitoring
 - Regression analysis, prompt/model/tool release gate, or incident-to-eval learning
 - Privacy-aware logging, redaction, retention, or trace sampling for an agent

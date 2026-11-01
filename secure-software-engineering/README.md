@@ -8,6 +8,9 @@ This skill helps an agent turn "make it secure" into concrete design choices: wh
 
 Instead of treating a checklist or scanner as a security guarantee, the workflow asks for evidence, assumptions, misuse cases, and accountable residual-risk decisions. It complements an assessment skill: use this one while building and changing software, then assess or scan separately when that is the actual task.
 
+For agents with consequential tools, it also addresses protected supervision: who
+can change controls, how to verify they are active, and when work must stop.
+
 ## What You Get
 
 | Path | What it provides |
