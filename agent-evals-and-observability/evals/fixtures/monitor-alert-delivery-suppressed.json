@@ -1,0 +1,21 @@
+{
+  "provenance": "synthetic authored fixture; not a deployment receipt",
+  "record": {
+    "id": "D1",
+    "violation_at": "2026-11-01T10:00:00Z",
+    "monitor_detection_at": "2026-11-01T10:00:00Z",
+    "sink_config_audit": [
+      {
+        "id": "D1-config-3",
+        "actor": "controlled-agent",
+        "operation": "redirect-sink",
+        "committed": true
+      }
+    ],
+    "required_recipient": "on-call",
+    "required_action_by": "2026-11-01T10:02:00Z",
+    "observed_until": "2026-11-01T10:03:00Z",
+    "recipient_acknowledgement": null,
+    "required_action_receipt": null
+  }
+}
