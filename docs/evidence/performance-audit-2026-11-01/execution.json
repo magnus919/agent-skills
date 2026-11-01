@@ -1,0 +1,102 @@
+{
+  "source_sha": "6eeef1dfbe2348191b0866acdfb7a8b470186e63",
+  "recorded_at": "2026-11-01T15:29:35.617870+00:00",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+  "provenance": "local execution of pinned synthetic example; not field or model behavior",
+  "runs": [
+    {
+      "command": [
+        "python3",
+        "performance-optimization/examples/membership_workload.py",
+        "measure",
+        "--runs",
+        "9"
+      ],
+      "exit_code": 0,
+      "stdout": "boundary=process invocation to validated usable stdout; pairs=9\ncorrectness=pass sha256-prefix=1f723a23379b4b20\nscan_seconds=0.139195,0.138358,0.139306,0.138365,0.138062,0.138655,0.139415,0.138279,0.138513\nscan_median_seconds=0.138513\nindexed_seconds=0.041920,0.044277,0.043186,0.042115,0.043112,0.042368,0.042513,0.042867,0.042459\nindexed_median_seconds=0.042513\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "-c",
+        "import cProfile,runpy; m=runpy.run_path(\"performance-optimization/examples/membership_workload.py\"); cProfile.runctx(\"m[\"scan\"](*m[\"workload\"]())\", {\"m\":m}, {}, sort=\"cumtime\")"
+      ],
+      "exit_code": 1,
+      "stdout": "",
+      "stderr": "  File \"<string>\", line 1\n    import cProfile,runpy; m=runpy.run_path(\"performance-optimization/examples/membership_workload.py\"); cProfile.runctx(\"m[\"scan\"](*m[\"workload\"]())\", {\"m\":m}, {}, sort=\"cumtime\")\n                                                                                                                             ^^^^\nSyntaxError: invalid syntax. Is this intended to be part of the string?\n"
+    },
+    {
+      "command": [
+        "python3",
+        "-c",
+        "import cProfile,runpy; m=runpy.run_path(\"performance-optimization/examples/membership_workload.py\"); cProfile.runctx('m[\"scan\"](*m[\"workload\"]())', {\"m\":m}, {}, sort=\"cumtime\")"
+      ],
+      "exit_code": 0,
+      "stdout": "         4226165 function calls in 0.318 seconds\n\n   Ordered by: cumulative time\n\n   ncalls  tottime  percall  cumtime  percall filename:lineno(function)\n        1    0.000    0.000    0.318    0.318 {built-in method builtins.exec}\n        1    0.000    0.000    0.318    0.318 <string>:1(<module>)\n        1    0.171    0.171    0.317    0.317 membership_workload.py:26(scan)\n  4226160    0.146    0.000    0.146    0.000 membership_workload.py:28(<genexpr>)\n        1    0.001    0.001    0.001    0.001 membership_workload.py:16(workload)\n        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}\n\n\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "-c",
+        "import cProfile,runpy; m=runpy.run_path(\"performance-optimization/examples/membership_workload.py\"); cProfile.runctx('m[\"indexed\"](*m[\"workload\"]())', {\"m\":m}, {}, sort=\"cumtime\")"
+      ],
+      "exit_code": 0,
+      "stdout": "         5 function calls in 0.001 seconds\n\n   Ordered by: cumulative time\n\n   ncalls  tottime  percall  cumtime  percall filename:lineno(function)\n        1    0.000    0.000    0.001    0.001 {built-in method builtins.exec}\n        1    0.000    0.000    0.001    0.001 <string>:1(<module>)\n        1    0.001    0.001    0.001    0.001 membership_workload.py:16(workload)\n        1    0.000    0.000    0.000    0.000 membership_workload.py:31(indexed)\n        1    0.000    0.000    0.000    0.000 {method 'disable' of '_lsprof.Profiler' objects}\n\n\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "python3",
+        "performance-optimization/examples/membership_workload.py",
+        "measure",
+        "--runs",
+        "0"
+      ],
+      "exit_code": 2,
+      "stdout": "",
+      "stderr": "usage: membership_workload.py [-h] [--repeat REPEAT] [--runs RUNS]\n                              {scan,indexed,measure}\nmembership_workload.py: error: --runs must be at least 1\n"
+    }
+  ],
+  "inventory": [
+    {
+      "path": "performance-optimization/README.md",
+      "sha256": "4124bbfc3b91e4273dd8dd1753400328f53cc0c0817dd10770ca7d2a46a32a09"
+    },
+    {
+      "path": "performance-optimization/SKILL.md",
+      "sha256": "bad329c87e2450216744cd4409b782d94f23a78c399dc35e19d6977b53207845"
+    },
+    {
+      "path": "performance-optimization/evals/evals.json",
+      "sha256": "2a0ddfcd8d12b90da2a4ccd5c126257627dcec2bec3524bc659b7c65d35f68da"
+    },
+    {
+      "path": "performance-optimization/examples/membership_workload.py",
+      "sha256": "a0b2664e05c28753601c7f9b55d5e61b16693dae25277115f2713cc3412fc775"
+    },
+    {
+      "path": "performance-optimization/references/diagnostic-guide.md",
+      "sha256": "07dd953ea6bf46bd8398fd92d47aa63317c70012ce468fb550131d99c94ca021"
+    },
+    {
+      "path": "performance-optimization/references/experiment-and-rollout.md",
+      "sha256": "64993702788bc94e70d320199ed124d0af18db19b13a5f210fcd3a02014468f2"
+    },
+    {
+      "path": "performance-optimization/references/measurement-and-benchmarks.md",
+      "sha256": "cc3ddea055da7c661dc00bad75f6e2662ae8678ac9a42ef245c616cd2e52df35"
+    },
+    {
+      "path": "performance-optimization/references/worked-investigation.md",
+      "sha256": "6e20e8b79061c0760a3cb4e62299827ed46e0c69d6e6f4c1279b7a6c36db2627"
+    },
+    {
+      "path": "performance-optimization/templates/optimization-record.md",
+      "sha256": "b2d674b1acb9b8aa7e48bbecd211cd74d85b2cb01211af4de65386298ce55466"
+    }
+  ],
+  "deviation": "Audit author constructed one profile invocation with invalid quoting. Preserved as exit 1. It did not run or test the fixture. Corrected only invocation syntax, then ran remaining two profiles and invalid-input probe; no skill change."
+}
