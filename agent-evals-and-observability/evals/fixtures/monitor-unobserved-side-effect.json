@@ -1,0 +1,19 @@
+{
+  "provenance": "synthetic authored fixture; not a deployment receipt",
+  "record": {
+    "id": "C1",
+    "task_check": "correct",
+    "parent_capture": {
+      "covers_children": false
+    },
+    "environment_audit": [
+      {
+        "id": "C1-db-2",
+        "actor": "child-1",
+        "target": "production",
+        "committed": true
+      }
+    ],
+    "child_trace": null
+  }
+}
