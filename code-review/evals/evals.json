@@ -122,6 +122,21 @@
         "The verdict is needs more evidence unless another named reviewer covered the remaining units",
         "Residual risk and the unreviewed units are recorded explicitly"
       ]
+    },
+    {
+      "id": "audit-partial-approval-record",
+      "prompt": "Audit the attached review record for a 1,200-line refactor. Is the verdict justified by what the record shows, and what should the reviewer have done differently?",
+      "files": [
+        "evals/fixtures/review-records/partial-approval-counterexample.md"
+      ],
+      "expected_output": "An audit that finds the record internally inconsistent. Coverage is partial (one of three units) while the verdict approves the whole change, and the approval is only defensible if another named reviewer covered the remaining two units, which the record does not show. The evidence is an assertion that the code 'looks correct' with no executed check, so even the reviewed unit is unproven. Residual risk is dismissed as 'None' despite two unread units, one of which is the scheduler configuration introduced by the change. The record should carry NEEDS MORE EVIDENCE with the missing evidence named, or narrow its scope and verdict to unit 1 while another reviewer covers the rest; the structural coverage check in the record checker is the mechanism that surfaces the inconsistency.",
+      "assertions": [
+        "The audit identifies that partial coverage sits under a verdict approving the whole change",
+        "It states that an approving verdict is only valid if another named reviewer covered the remaining units",
+        "It notes that the evidence is an unexecuted assertion rather than a check that was run",
+        "It rejects the 'None' residual risk as unjustified given the unread units",
+        "It recommends NEEDS MORE EVIDENCE or narrowing the verdict instead of approving"
+      ]
     }
   ]
 }

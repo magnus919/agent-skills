@@ -60,8 +60,12 @@ def accept_batch(memory, journal, accepted_ids):
         raise ValueError("resolve same-key conflict before acceptance")
     result, receipt = deepcopy(memory), deepcopy(journal)
     receipt["before"] = {}
+    # Presence is tracked separately from value: a key may legitimately hold
+    # None, and rollback must not confuse "was None" with "did not exist".
+    receipt["existed"] = {}
     for claim in selected:
         key = claim["key"]
+        receipt["existed"][key] = key in result
         receipt["before"][key] = deepcopy(result.get(key))
         result[key] = {"value": claim["value"], "batch": journal["batch"], "claim": claim["id"]}
     receipt["after"] = {key: deepcopy(result[key]) for key in receipt["before"]}
@@ -70,15 +74,15 @@ def accept_batch(memory, journal, accepted_ids):
 
 
 def rollback_batch(memory, receipt):
-    """Restore batch-owned values; retain later corrections and report conflicts."""
+    """Restore batch-owned values, including explicit None; retain later corrections."""
     if receipt["state"] != "committed":
         raise ValueError("batch is not committed")
     result, conflicts = deepcopy(memory), []
     for key, previous in receipt["before"].items():
         if result.get(key) != receipt["after"][key]:
             conflicts.append(key)
-        elif previous is None:
-            result.pop(key)
+        elif not receipt.get("existed", {}).get(key, previous is not None):
+            result.pop(key, None)
         else:
             result[key] = deepcopy(previous)
     state = "rollback_conflict" if conflicts else "rolled_back"
