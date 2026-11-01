@@ -2,6 +2,9 @@
 
 <!-- Copy this file into the review thread, the PR, or a durable record.
      Fill every section; delete these guidance comments before posting.
+     Coverage: `full` means every changed unit was read. When you read only
+     some units, write `Coverage: partial (unit 1 of 3: worker/retry.py)` — a
+     partial review is not an approval of the rest.
      Check it with: python3 scripts/review_record_check.py this-file.md -->
 
 ## Scope
@@ -11,6 +14,7 @@
 - Files changed: <n> (+<added>/-<deleted>, <effective lines> effective)
 - Attention tier: <small | standard | large | oversized>
 - Attention spent: <minutes> of ~<estimated minutes>
+- Coverage: full
 - Change type: <feature | fix | refactor | migration | config | docs | dependency | test-only>
 - Review authority: <comment-only | approve | approve-and-merge>
 

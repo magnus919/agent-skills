@@ -163,3 +163,50 @@ def test_tier_override_is_honoured(repo: Path) -> None:
     commit(repo)
     scope = scope_for(repo, tier="large")
     assert scope["tier"] == "large"
+
+
+def test_compound_risk_filenames_are_flagged(repo: Path) -> None:
+    write(repo, "app/credential-session-authority.md", "contract\n")
+    write(repo, "app/tenant-isolation.md", "contract\n")
+    commit(repo)
+    scope = scope_for(repo)
+    assert "authentication" in scope["risks"]
+    assert "app/credential-session-authority.md" in scope["risks"]["authentication"]
+    assert "authorization-policy" in scope["risks"]
+    assert "app/tenant-isolation.md" in scope["risks"]["authorization-policy"]
+
+
+def test_harmless_words_are_not_flagged_as_risk_terms(repo: Path) -> None:
+    # "author", "retained", and "sessionless" contain risk substrings but are not
+    # separated risk terms; over-matching would make every review look sensitive.
+    write(repo, "app/author.py", "def author():\n    return 'me'\n")
+    write(repo, "app/retained_notes.md", "notes\n")
+    write(repo, "app/sessionless.py", "VALUE = 1\n")
+    commit(repo)
+    scope = scope_for(repo)
+    assert scope["risks"] == {}
+
+
+def test_generated_catalog_projections_do_not_inflate_effective_lines(repo: Path) -> None:
+    write(repo, "llms.txt", "- [x](x/SKILL.md)\n" * 400)
+    write(repo, ".claude-plugin/marketplace.json", '{}\n')
+    write(repo, "app/service.py", "def serve():\n    return 'ok'\n")
+    commit(repo)
+    scope = scope_for(repo)
+    assert scope["totals"]["generated_lines"] >= 400
+    assert scope["totals"]["effective_lines"] < 50
+    assert scope["tier"] == "small"
+    assert "llms.txt" in scope["generated_paths"]
+
+
+def test_exclude_glob_marks_project_specific_output(repo: Path) -> None:
+    write(repo, "reports/summary.json", "".join(f'{{"row": {i}}}\n' for i in range(300)))
+    write(repo, "app/service.py", "def serve():\n    return 'ok'\n")
+    commit(repo)
+    base, head = review_scope.resolve_range(repo, "HEAD~1", "HEAD", False)
+    scope = review_scope.build_scope(
+        repo, base, head, False, None, excludes=("reports/*.json",)
+    )
+    assert scope["totals"]["effective_lines"] < 50
+    assert "reports/summary.json" in scope["generated_paths"]
+    assert scope["exclude_patterns"] == ["reports/*.json"]

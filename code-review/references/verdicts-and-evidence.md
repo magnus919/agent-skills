@@ -119,7 +119,7 @@ If you use the emergency path:
 
 A verdict without a record is an assertion without scope. The record states:
 
-1. **Scope** — base, head, files, tier, time spent, authority.
+1. **Scope** — base, head, files, tier, time spent, authority, coverage.
 2. **Intent** — what the change claims to do, and where that claim comes from.
 3. **Evidence** — what was run or read, and what was not.
 4. **Findings** — labeled, with evidence and verification for blocking items.
@@ -131,6 +131,20 @@ A verdict without a record is an assertion without scope. The record states:
 `scripts/review_record_check.py` enforces completeness and verdict consistency.
 The checker cannot judge whether your findings are true — only that the record is
 not self-contradictory.
+
+## Partial coverage
+
+`Coverage: full` means every changed unit was read. `Coverage: partial (unit 1 of 3)`
+means exactly that, and it changes what a verdict can assert.
+
+Approving with partial coverage is only honest when another named reviewer covered the
+remainder. Otherwise the remainder is unexamined, and the verdict is
+`NEEDS MORE EVIDENCE` with the missing evidence named — not `APPROVE WITH COMMENTS`.
+Google's reviewer guide allows an "LGTM with comments" after confirming other reviewers
+covered other parts, but the confirmation has to exist in the thread.
+
+The record checker warns when a partial review carries an approving verdict, so the
+claim is at least visible to whoever reads the record later.
 
 ## Residual risk is not a disclaimer
 

@@ -54,6 +54,7 @@ VERDICTS = {
 PLACEHOLDERS = re.compile(r"^(?:todo|tbd|tba|n/?a|none|\.\.\.|-\s*)$", re.IGNORECASE)
 HEADING = re.compile(r"^(#{1,6})\s+(.*?)\s*#*\s*$")
 SEVERITY_LABEL = re.compile(r"^[-*+]\s+\[([^\]]+)\]\s*(.*)$")
+COVERAGE_LINE = re.compile(r"coverage\s*[:=]\s*(full|partial)\b(.*)$", re.IGNORECASE)
 
 
 @dataclass
@@ -76,6 +77,7 @@ class Result:
     errors: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
     verdict: str | None = None
+    coverage: str | None = None
     counts: dict[str, int] = field(default_factory=dict)
 
     @property
@@ -86,6 +88,7 @@ class Result:
         return {
             "valid": self.valid,
             "verdict": self.verdict,
+            "coverage": self.coverage,
             "counts": self.counts,
             "errors": self.errors,
             "warnings": self.warnings,
@@ -192,6 +195,22 @@ def check(text: str) -> Result:
     scope = substantive(sections["scope"])
     if not scope:
         result.errors.append("Scope is empty; record the base and head revisions reviewed")
+
+    coverage_detail = ""
+    for line in sections["scope"]:
+        match = COVERAGE_LINE.search(line)
+        if match:
+            result.coverage = match.group(1).lower()
+            coverage_detail = match.group(2).strip(" .-:\t")
+            break
+    if result.coverage is None:
+        result.errors.append(
+            "Scope must record `Coverage: full` or `Coverage: partial (<units read>)`"
+        )
+    elif result.coverage == "partial" and not coverage_detail:
+        result.errors.append(
+            "Coverage is partial but does not say what was read; add the units or paths covered"
+        )
     evidence = substantive(sections["evidence"])
     if not evidence:
         result.errors.append(
@@ -268,6 +287,11 @@ def check(text: str) -> Result:
         )
     if verdict == "NEEDS MORE EVIDENCE" and len(evidence) == 0:
         result.errors.append("NEEDS MORE EVIDENCE requires a stated evidence gap")
+    if result.coverage == "partial" and verdict in {"APPROVE", "APPROVE WITH COMMENTS"}:
+        result.warnings.append(
+            "partial coverage recorded with an approving verdict; confirm another reviewer "
+            "covered the remainder, or record NEEDS MORE EVIDENCE"
+        )
     if verdict == "NEEDS MORE EVIDENCE" and len(evidence) < 2:
         result.warnings.append(
             "NEEDS MORE EVIDENCE usually names what was checked and what is missing"
@@ -276,7 +300,10 @@ def check(text: str) -> Result:
 
 
 def render(result: Result, path: Path) -> str:
-    lines = [f"{path}: {'VALID' if result.valid else 'INVALID'} (verdict: {result.verdict})"]
+    lines = [
+        f"{path}: {'VALID' if result.valid else 'INVALID'} "
+        f"(verdict: {result.verdict}, coverage: {result.coverage})"
+    ]
     if result.counts:
         counts = ", ".join(f"{name}={value}" for name, value in sorted(result.counts.items()))
         lines.append(f"findings: {counts}")
