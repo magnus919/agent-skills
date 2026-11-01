@@ -1,0 +1,9 @@
+{
+  "baseline_sha256": "d539ead48e3996d1f33a42f45510244a22aac6185849576e36c009db31e85bd6",
+  "provenance": "Authored unblinded comparison on public reconstructions, not actual organizational changes",
+  "case_count": 3,
+  "decisions_materially_changed": 0,
+  "go_gate": "not-supported",
+  "implementation_recommendation": "no-build",
+  "private_data_collected": false
+}
