@@ -1,0 +1,9 @@
+{
+  "provenance": "Authored route-only recommendations frozen before filling the shared worksheet; no participant or human-adjudicated labels",
+  "catalog_sha": "d284993fc6dc786d53496a3e9a7298de87292715",
+  "cases": [
+    {"id": "support-service", "organization_context": "Klarna, February 2024 public announcement", "owners": ["operational-design", "ai-operating-economics", "ai-governance", "agent-production-operations"], "recommendation": "Do not infer supervisory capacity or grant unattended consequential scope from conversation volume or headcount-equivalent claims. Preserve a staffed human path and constrain any proposed expansion pending qualified-review, escalation and outcome evidence.", "decision_class": "constrain expansion; instrument missing review evidence"},
+    {"id": "software-devex", "organization_context": "GitLab Developer Experience public handbook, retrieved 2026-11-01", "owners": ["operational-design", "org-design", "ai-governance", "code-review"], "recommendation": "Retain human review and human security expertise. Measure arrival mix, reviewer availability/qualification, queue age and rework before changing AI-assisted throughput or review policy.", "decision_class": "retain human review; instrument queue and review burden"},
+    {"id": "research-lab", "organization_context": "Anthropic internal research/engineering platform, disclosed August 2026 snapshot", "owners": ["agent-evals-and-observability", "agent-production-operations", "ai-governance", "operational-design"], "recommendation": "Assess detection and delivery evidence separately from coverage. Preserve independent monitoring and severity-aware human escalation; no broader authority or staffing conclusion from agent count or blocked rate alone.", "decision_class": "maintain scoped controls; verify severity and escalation latency"}
+  ]
+}
