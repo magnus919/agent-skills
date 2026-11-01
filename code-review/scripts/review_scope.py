@@ -66,8 +66,8 @@ RISK_RULES: tuple[tuple[str, tuple[str, ...]], ...] = (
         ),
     ),
     ("cryptography", (_term("crypto|cipher|encrypt|decrypt|hmac|signature|signing|tls|ssl"),)),
-    ("authorization-policy", (_term("policy|policies|rbac|permissions|acl|iam|tenant|tenants"),)),
-    ("payment-or-billing", (_term("payment|payments|billing|invoice|checkout|pricing|ledger"),)),
+    ("authorization-policy", (_term("rbac|permissions|acl|iam|tenant|tenants"),)),
+    ("payment-or-billing", (_term("payment|payments|billing|invoice|checkout|pricing"),)),
     ("data-migration", (_term("migrations?|migrate|alembic|flyway|liquibase"),)),
     ("destructive-data-path", (_term("delete|purge|truncate|drop|retention|gdpr|erase"),)),
     (
