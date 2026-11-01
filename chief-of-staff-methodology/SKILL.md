@@ -1,16 +1,19 @@
 ---
 name: chief-of-staff-methodology
 description: >-
-  Prepare accountable executive decisions, information triage, briefing, calendar choices,
-  organizational sensing, and institutional memory without assuming authority or
-  monitoring people. Use when a chief of staff or CoS, executive office, gatekeeping,
-  decision memo, executive briefing, board materials, organizational sensing, team health,
-  institutional memory, calendar triage, meeting audit, strategic time, or attention
-  allocation is requested. Do not use this skill for unrelated requests; route to the
-  nearest named specialist.
+  Prepare accountable executive decisions, decision support, briefings, information
+  triage, calendar choices, and institutional memory. Use for chief of staff or CoS,
+  executive operations, founder operations, operating rhythm, strategic attention,
+  executive office, board materials, organizational sensing, team health, leadership
+  transitions, gatekeeping, decision memos, executive briefing, strategic time,
+  attention allocation, calendar triage, or meeting audits for a solo operator or organization.
+  Do not use for generic personal assistance, employee surveillance, inferred
+  commitments, automatic task mutation, meeting facilitation, org structure design,
+  or business operating-process design; route to the owning specialist.
 license: MIT
 compatibility: No runtime dependency.
 metadata:
+  tags: chief-of-staff, cos, executive-operations, founder-operations, decision-support, operating-rhythm, strategic-attention
   source_repo: https://github.com/magnus919/hermes-profiles
   source_commit: "867a555"
   source_path: skills/chief-of-staff-methodology
@@ -23,6 +26,21 @@ The Chief of Staff supports an accountable leader's capacity to operate across
 domains. This skill helps prepare, triage, coordinate, surface trade-offs, and
 preserve decision context; it does not transfer the leader's authority.
 
+## Solo operators and organizations
+
+For a solo founder, the founder is the accountable decision-maker: prepare options,
+trade-offs, an attention plan, and a review rhythm around their real decisions.
+Do not invent a leadership team, delegated authority, or commitments. For an
+organization, identify the executive sponsor and existing decision rights before
+coordinating across teams. In both settings, prepare, coordinate, brief, and record;
+the human decides and authorizes action.
+
+An executive operating rhythm here connects pending decisions, evidence, and review
+dates. Route meeting facilitation and records to `meetings`, organizational
+structure and reporting lines to `org-design`, and repeatable business-process
+ownership and handoffs to `operational-design`. Use an authorized task-system skill
+only for confirmed commitments under the task-creation discipline below.
+
 ## When to Load
 
 Load this skill for executive-office work involving:
@@ -33,9 +51,14 @@ Load this skill for executive-office work involving:
 - Cross-functional coordination where ownership, dependencies, or escalation need clarification.
 - Transparent organizational sensing or team-health concerns.
 - Institutional memory, leadership transitions, documented decisions, or commitments.
-- Chief of staff, CoS, or leader-effectiveness work that needs a bounded operating method.
+- Chief of staff, CoS, executive operations, founder operations, decision support,
+  operating rhythm, or strategic attention that needs a bounded operating method.
 
 ## When Not to Use
+
+Do not use this skill for generic personal errands or covert employee surveillance.
+For meeting facilitation use `meetings`; for organization structure use `org-design`;
+for business operating processes use `operational-design`.
 
 Do not use this skill as a meeting-transcript action-item generator or a general
 backlog-capture mechanism. A recommendation, a discussion topic, or an inferred
@@ -151,6 +174,13 @@ professionals for matters in their remit.
 - `slack` — channel triage and message search through the Slack Web API; confirmed posting only. The everyday read layer for "what was said, find it later."
 - `notion` — knowledge search, page and database reads through the Notion API; confirmed edits only.
 - `email` — transactional email sends and delivery verification (bounces, spam reports, event-webhook signature check) through SendGrid. Read-only discovery before any send.
+
+## Completion
+
+Complete when the requested brief, triage recommendation, attention plan, or decision
+record identifies the human decision owner, evidence gaps, and next review or
+escalation. Stop at missing authority or unavailable evidence; record the gap rather
+than claiming a decision or commitment was made.
 
 ## Portability
 
