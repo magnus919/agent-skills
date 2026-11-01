@@ -75,6 +75,19 @@ When setting agent promotion/demotion thresholds or reviewing earned autonomy, r
 
 When deciding which software-factory decisions remain with humans and which an agent may execute, read `references/agentic-engineering-governance.md` and use `templates/engineering-decision-rights.md`. Reuse scoped grants; distinguish technical readiness, intent acceptance, residual-risk acceptance and production authority. Check whether reserved human review has enough evidence, capacity and ability to stop the action.
 
+## Protected control-plane decisions
+
+When an agent could weaken its own supervision, load
+[protected-control governance](references/protected-controls.md) and use
+[the protected-control registry](templates/protected-control-registry.md).
+Monitoring, alert routes, audit sinks, authority ceilings, kill switches, evaluator
+oracles, and gate configuration are protected assets. The controlled agent cannot
+be sole approver or sole evidence source for changing them. Missing, degraded,
+redirected, or suppressed mandatory controls are control-integrity incidents,
+not ordinary task failures. Governance owns rights and bounded human exceptions;
+operations verifies live controls, security designs external enforcement, harnesses
+cover child workloads, and evals challenge the evidence.
+
 ## Reference Files (load on demand, one per task)
 
 Progressive disclosure: load only the reference relevant to the current question.

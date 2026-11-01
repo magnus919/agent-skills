@@ -17,6 +17,9 @@ detail as uncollected, and excludes raw messages and hidden reasoning by default
 Turn sanitized observations into a small reviewed patch with an explicit release
 decision and recurrence check; personal context stays out of shared procedures.
 
+For agents with consequential tools, it also addresses protected supervision: who
+can change controls, how to verify they are active, and when work must stop.
+
 ## What You Get
 
 | Contents | Provides |
