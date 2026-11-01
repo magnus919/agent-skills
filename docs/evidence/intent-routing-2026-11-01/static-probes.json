@@ -1,0 +1,78 @@
+{
+  "base_sha": "64f78597c23f7f073509f57e4381e1e03bcb766d",
+  "method": "Literal README phrase coverage and local target existence; not client activation, semantic behavior, search ranking, or aliases",
+  "results": [
+    {
+      "intent": "Take an issue through implementation and a verified PR",
+      "before_readme_exact_phrase": false,
+      "after_readme_exact_phrase": true
+    },
+    {
+      "intent": "Plan implementation of an approved spec",
+      "before_readme_exact_phrase": false,
+      "after_readme_exact_phrase": true
+    },
+    {
+      "intent": "Fix an unreliable agent or build its runtime",
+      "before_readme_exact_phrase": false,
+      "after_readme_exact_phrase": true
+    },
+    {
+      "intent": "Review this patch or pull request",
+      "before_readme_exact_phrase": false,
+      "after_readme_exact_phrase": true
+    },
+    {
+      "intent": "Finish an authorized change through merge and verify it",
+      "before_readme_exact_phrase": false,
+      "after_readme_exact_phrase": true
+    },
+    {
+      "intent": "Is this customer problem worth further investment?",
+      "before_readme_exact_phrase": false,
+      "after_readme_exact_phrase": true
+    },
+    {
+      "intent": "Support founder operations or an executive operating rhythm",
+      "before_readme_exact_phrase": false,
+      "after_readme_exact_phrase": true
+    },
+    {
+      "intent": "May this agent act?",
+      "before_readme_exact_phrase": false,
+      "after_readme_exact_phrase": true
+    },
+    {
+      "intent": "May this capability enter our environment?",
+      "before_readme_exact_phrase": false,
+      "after_readme_exact_phrase": true
+    },
+    {
+      "intent": "Should we scale this AI pilot?",
+      "before_readme_exact_phrase": false,
+      "after_readme_exact_phrase": true
+    },
+    {
+      "intent": "Grill this specification or proposal",
+      "before_readme_exact_phrase": false,
+      "after_readme_exact_phrase": true
+    },
+    {
+      "intent": "Why did this agent fail, and may it resume?",
+      "before_readme_exact_phrase": false,
+      "after_readme_exact_phrase": true
+    },
+    {
+      "intent": "Can the agent weaken its own controls?",
+      "before_readme_exact_phrase": false,
+      "after_readme_exact_phrase": true
+    },
+    {
+      "intent": "Can humans supervise this volume of agent work?",
+      "before_readme_exact_phrase": false,
+      "after_readme_exact_phrase": true
+    }
+  ],
+  "local_links_checked": 369,
+  "missing_local_links": []
+}
