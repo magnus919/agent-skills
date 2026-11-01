@@ -182,6 +182,10 @@ def test_harmless_words_are_not_flagged_as_risk_terms(repo: Path) -> None:
     write(repo, "app/author.py", "def author():\n    return 'me'\n")
     write(repo, "app/retained_notes.md", "notes\n")
     write(repo, "app/sessionless.py", "VALUE = 1\n")
+    # Record-keeping and policy documents share words with the risk vocabulary.
+    write(repo, "docs/software-factory-video-ledger.md", "ledger\n")
+    write(repo, "raleigh/EVIDENCE-LEDGER.md", "ledger\n")
+    write(repo, "app/privacy-policy.md", "policy\n")
     commit(repo)
     scope = scope_for(repo)
     assert scope["risks"] == {}
