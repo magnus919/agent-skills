@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "skill_name": "code-review",
+  "evals": [
+    {
+      "id": "oversized-diff-one-pass-refusal",
+      "prompt": "PR #812 is 1,420 lines across 38 files: a new billing webhook handler, a schema migration for invoices, some Terraform changes, and doc updates. The author says everything is tested and asks for a quick approval because the release is tomorrow. Can you review it?",
+      "expected_output": "A refusal to approve in one pass, with a concrete plan instead. The response runs or reproduces scope evidence (effective lines, risk-bearing paths), tiers the change as critical because it touches billing, a migration, and infrastructure, and proposes splitting along behavior boundaries: the webhook handler, the migration and backfill, the infrastructure change, and the docs. It asks for specific evidence before reading — migration forward and rollback dry run, a denial or signature-verification test for the webhook, and the Terraform plan — rather than accepting 'everything is tested'. It records that a partial review covers only the units actually read and that a release deadline is not an emergency under the emergency definition. It offers to review the highest-risk unit first to unblock the release.",
+      "assertions": [
+        "The response declines to approve the change in a single pass rather than skimming and approving",
+        "The change is tiered as critical or equivalent because billing, migration, and infrastructure paths are involved",
+        "A split along behavior boundaries is proposed instead of a split by file count or directory",
+        "Specific evidence is requested for the migration rollback and the webhook signature or authorization path",
+        "The response states that any review performed covers only the units actually read, rather than implying full coverage",
+        "The release deadline is not accepted as an emergency that justifies skipping review"
+      ]
+    },
+    {
+      "id": "tenant-boundary-authorization",
+      "prompt": "Here's a small diff adding GET /api/reports/{id}. It loads the report with repo.load_report(report_id) and returns it. It's 18 lines, tests pass, and it follows the pattern of the other endpoints. LGTM?",
+      "expected_output": "A review that treats the endpoint as a trust-boundary change regardless of size. It checks whether the handler authorizes on the report's owner or tenant, not merely on an authenticated session, and asks whether load_report is tenant-scoped. It asks for a denial test — authenticate as tenant A, request tenant B's report ID, expect 404 or 403 — because a passing happy-path test proves only the allowed path. It notes that following the pattern of other endpoints is not evidence that the pattern is correct and may mean the flaw is widespread. It routes threat modeling and secure design to secure-software-engineering, and it does not approve until the denial evidence exists.",
+      "assertions": [
+        "The handler is examined for object-level authorization or tenant scoping, not just session authentication",
+        "A denial test with a cross-tenant request is required as the evidence that settles the question",
+        "Copying an existing endpoint pattern is explicitly rejected as evidence of correctness",
+        "Approval is withheld until the authorization evidence exists",
+        "Threat modeling or secure design is routed to the secure-software-engineering skill"
+      ]
+    },
+    {
+      "id": "severity-discipline-nits-versus-defect",
+      "prompt": "Please review this 40-line change to worker/retry.py. I renamed a variable for clarity, added two logging lines, and reworked the exhaustion branch. The tests still pass. Do you have any comments?",
+      "expected_output": "A review that finds the substantive issue and labels it above the cosmetic ones. It identifies that the exhaustion branch now returns None instead of the last error, states the evidence as a path and line, and requires a test that fails before the fix and passes after. The renames and logging lines are labelled as nits or questions, not blockers, and the response says explicitly that they do not gate the merge. If it cannot determine the intended exhaustion behavior from the diff, it asks a question rather than asserting a defect. The verdict is request changes because of the single blocking finding, and the non-blocking items are given a disposition.",
+      "assertions": [
+        "The exhausted-retry branch returning None instead of the last error is identified as the blocking finding",
+        "The blocking finding carries evidence (path and line or equivalent observation) and a verification method",
+        "The rename and logging changes are labelled non-blocking and are stated not to gate the merge",
+        "Uncertainty about intended exhaustion behavior is expressed as a question rather than as an asserted defect",
+        "The verdict is request changes, consistent with exactly one blocking finding"
+      ]
+    },
+    {
+      "id": "ai-authored-change-verification",
+      "prompt": "I had an agent implement the CSV export feature end to end — about 600 lines plus its own tests — and then had the same agent review the diff. It says the tests pass and the implementation looks correct. Can we merge?",
+      "expected_output": "A review that separates the two AI problems. It treats same-agent self-review as not independent verification and does not accept the model's verdict as evidence. It requires the tests to be derived from the requirement rather than from the patch, since a test written by reading the implementation cannot detect a wrong implementation. It verifies that every external symbol, flag, and configuration key the change calls exists at the pinned version, checks for silently added dependencies, and asks what the human author personally verified. It reviews the diff itself rather than the model summary, and states that the human approver remains accountable as if they had written the code.",
+      "assertions": [
+        "Same-agent review of its own change is identified as not independent verification",
+        "Tests derived from the implementation are distinguished from tests derived from the requirement",
+        "The response verifies that called APIs, flags, or configuration keys exist rather than assuming they do",
+        "Silently added dependencies or provenance are checked as part of the review",
+        "Human accountability for approving the AI-authored change is stated explicitly"
+      ]
+    },
+    {
+      "id": "approval-lapse-after-rebase",
+      "prompt": "You approved PR #455 yesterday. Since then it was rebased onto main, a new transitive dependency appeared in the lockfile, and the author added an error-handling branch. The author says my approval still stands. Merge it?",
+      "expected_output": "A review that states the approval has lapsed and explains why: the diff itself changed, a dependency was added, and error semantics changed, so the approval no longer covers the code being merged. It proposes reviewing the delta since the approved commit rather than re-reading everything, checks that the approved commit is an ancestor of what merges, and inspects the new dependency's provenance and license. It treats the new error-handling branch as a behavior change that needs its own evidence, and records the re-review in the review record rather than relying on the earlier approval.",
+      "assertions": [
+        "The previous approval is explicitly stated to have lapsed rather than carried forward",
+        "The reason given is that the diff, dependency set, or behavior changed after the approval",
+        "Re-review is scoped to the delta since the approved revision rather than a full re-read",
+        "The new dependency is checked for provenance, license, or transitive impact",
+        "The new error-handling branch is treated as behavior requiring its own evidence"
+      ]
+    },
+    {
+      "id": "review-folklore-evidence-question",
+      "prompt": "Our engineering director wants to mandate that every PR gets two reviewers and that reviews find 70-90% of defects, citing 'the SmartBear study'. Is that a good policy?",
+      "expected_output": "An answer that separates the evidence from the folklore. It identifies the 70-90% figure as vendor research from a single Cisco team, not a property that transfers to another codebase, and the 400-line and 60-minute numbers as practice defaults rather than established constants. It cites Google's measured practice that fewer than a quarter of changes have more than one reviewer with a median of one, alongside cross-project evidence that two reviewers can be optimal, and concludes that reviewer count should depend on change tier rather than a blanket mandate. It proposes measuring time to first response, effective change size, and risk-tier coverage locally instead of adopting an unvalidated target, and it warns against using defect-detection numbers in individual performance evaluation.",
+      "assertions": [
+        "The 70-90% defect figure is identified as vendor research from a single-company case study rather than an established constant",
+        "Counter-evidence on reviewer count is presented, including that Google's median change has one reviewer",
+        "The recommendation is tier-dependent reviewer assignment rather than a blanket two-reviewer mandate",
+        "Local measurement of review latency, change size, or tier coverage is proposed instead of an unvalidated target",
+        "Using defect-detection figures for individual performance evaluation is explicitly warned against"
+      ]
+    },
+    {
+      "id": "defect-escape-control-attribution",
+      "prompt": "We shipped a bug last week where the invoice total used the pre-discount subtotal. It was in a 900-line PR that one reviewer approved in about 15 minutes. Who's at fault and how do we stop this happening again?",
+      "expected_output": "An analysis that refuses individual blame and attributes the escape to controls. It asks whether the defective line was in the reviewed diff at all, then classifies the defect — a domain invariant about invoice totals — and notes that review by a non-owner may not have had the context to catch it. It identifies the 900-line change against a 15-minute review as a scope and attention mismatch, proposes a regression test asserting the total includes the discount, and proposes a tiered review expectation for billing changes plus a review question about money invariants. It distinguishes the review control from tests and from deploy safeguards, and records the outcome as a process change rather than a reviewer performance issue.",
+      "assertions": [
+        "The response declines to assign individual blame and frames the escape as a control failure",
+        "It establishes whether the defective line was inside the reviewed diff before attributing the miss to the reviewer",
+        "The 900-line change and the 15-minute review are identified as a scope and attention mismatch",
+        "A regression test asserting the discount-adjusted total is proposed as the durable fix",
+        "A tier or assignment change for billing changes is proposed, such as requiring a domain owner"
+      ]
+    },
+    {
+      "id": "review-record-contradiction-check",
+      "prompt": "Write up the review record for PR #455. I found two blockers: the migration has no rollback, and the denial test for the new endpoint is missing. I also have three nitpicks and one thing I liked. I spent about 35 minutes on it.",
+      "expected_output": "A completed review record using the record structure: scope with base, head, files, tier, and time; intent quoted from the author; evidence with the commands or files actually inspected; findings labelled blocking, should-fix, nit, question, and praise, with evidence and verification on both blockers; a verdict of request changes consistent with two open blockers; residual risk stated; and an explicit not-reviewed section covering what the partial review did not cover. It does not record an approval, and it notes that the record can be checked with the record checker script.",
+      "assertions": [
+        "The record contains scope, intent, evidence, findings, verdict, residual risk, and not-reviewed sections",
+        "Both blockers carry an evidence locator and a verification method",
+        "The verdict is request changes, consistent with two open blocking findings",
+        "The three nitpicks and the praise are labelled as non-blocking and do not conflict with the verdict",
+        "Residual risk and the explicitly unreviewed scope are stated rather than left empty"
+      ]
+    }
+  ]
+}
