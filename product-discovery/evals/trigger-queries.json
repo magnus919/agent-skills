@@ -40,6 +40,16 @@
       "prompt": "Plan implementation of these already agreed requirements.",
       "expected_skill": "implementation-planning",
       "expected_mode": "not-artifact-first"
+    },
+    {
+      "prompt": "Do these enthusiastic customer interviews justify investing in this problem?",
+      "expected_skill": "product-discovery",
+      "expected_mode": "customer-problem"
+    },
+    {
+      "prompt": "Design a randomized experiment for an already defined product hypothesis.",
+      "expected_skill": "product-experimentation",
+      "expected_mode": "not-customer-problem"
     }
   ]
 }
