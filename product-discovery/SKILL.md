@@ -1,7 +1,8 @@
 ---
 name: product-discovery
 description: >-
-  Discover product requirements from human stakeholders — map who to talk to, ask
+  Discover external customer problems and product requirements from human stakeholders.
+  Assess customer evidence before investing, or map who to talk to, ask
   questions that surface hidden assumptions, detect gaps in real time, resolve conflicts,
   and translate conversations into structured SDD specs. Phase 0 upstream of Spec-Driven
   Development. Also grill a PRD, interrogate a proposal, poke holes in a spec, or
@@ -14,7 +15,10 @@ compatibility: Agent-agnostic — works with any agent supporting a spec-driven 
 
 # Product Discovery — Stakeholder Map
 
-For an existing draft, use the artifact-first entry below. For a new discovery effort, begin with stakeholder mapping:
+Choose the entry by the decision at stake. For an existing draft, preserve the
+artifact-first entry below. For external demand or problem uncertainty, load
+[customer/problem discovery](references/customer-problem-discovery.md) before
+turning an idea into requirements. For internal requirements, begin with stakeholder mapping:
 
 | Reference | Load when | File |
 |-----------|-----------|------|
@@ -44,6 +48,7 @@ Load the reference for the phase you're entering.
 | You have this | Start here |
 |-------------|-----------|
 | A PRD, brief, or spec to grill with its author | Load `references/artifact-first-interview.md` — ask one consequential question at a time, then patch only affected passages |
+| Unproven external customer problem or demand | Load `references/customer-problem-discovery.md` and use `templates/customer-evidence-ledger.md` — assess the problem before requirements |
 | A vague idea or problem space | Load `references/stakeholder-mapping.md` — identify who to interview |
 | An interview scheduled with no protocol | Load `references/question-patterns.md` and `references/gap-detection.md` — design your question stack |
 | Raw interview notes from one or more sessions | Load `references/transcript-to-spec.md` — distill into structured spec components |
@@ -58,6 +63,25 @@ Load the reference for the phase you're entering.
 
 When the user brings a draft to interrogate, load [artifact-first interviewing](references/artifact-first-interview.md). Read the artifact before asking; choose one decision-bearing question, wait for the answer, then adapt. Reuse the gap register for assumptions and unresolved conflicts, and the interpretation log for decisions and patch provenance. Stop when the user stops, the agreed question budget expires, or no consequential unresolved decision remains. Return a targeted proposed patch and explicitly unverified gaps. This bounded review does **not** satisfy the full-discovery checklist below.
 
+## Customer/problem discovery
+
+Keep internal requests separate from external customer evidence. Record stated
+preference, reported past behavior, observed behavior, and costly commitment as
+distinct evidence classes; enthusiasm is not validation. Assess problem severity,
+frequency, workarounds, segment differences, and contradictions before specifying a
+solution. A real problem does not establish solution value, usability, feasibility,
+or business viability. Route experiment design to `product-experimentation`,
+measurement to `product-analytics-and-measurement`, product choices to
+`product-strategy`, and economics to `financial-modeling` (AI workflow economics to
+`ai-operating-economics`). Stop, defer, or narrow when evidence does not justify the
+next bounded investment; do not manufacture requirements to keep a pipeline moving.
+
+Load `references/customer-problem-discovery.md` for the workflow and evidence limits;
+use `templates/customer-evidence-ledger.md` when recording customer claims or a
+continue/narrow/defer/stop recommendation. This path ends with an evidence-backed
+investment recommendation and gaps, not automatically a SPEC.md. Existing draft
+review remains one question at a time and never establishes external validation.
+
 ## When not to use
 
 Route personal routines and life priorities to [daily-life-discovery](../daily-life-discovery/SKILL.md), general research plans to [research-methodology](../research-methodology/SKILL.md), and execution sequencing for settled requirements to [implementation-planning](../implementation-planning/SKILL.md). General stakeholder research for a product still uses this skill’s existing MAP/INTERVIEW workflow; do not force it into draft review.
@@ -65,6 +89,7 @@ Route personal routines and life priorities to [daily-life-discovery](../daily-l
 ## Trigger Conditions
 
 Load this skill when:
+- You need to know whether an external customer problem warrants investment
 - You want to grill a PRD, poke holes in a proposal, or be interviewed about a draft
 - You're starting product discovery for a new feature or project
 - You have a vague idea that needs to become a structured specification
