@@ -1,0 +1,211 @@
+{
+  "source_sha": "67ef94cc7958e43f956add2fcb83325f03bff88c",
+  "recorded_at": "2026-11-01T15:47:53.488914+00:00",
+  "method": "Read-only source and representative-task inspection; seven existing authored fixtures; no fresh generated responses or participant observations",
+  "cases": [
+    {
+      "id": "task-flow-design",
+      "prompt": "We are designing the invite-teammates flow for our collaboration app. Users need to add multiple teammates, choose roles, and receive invites by email. What does the task flow look like, and what should I decide before the design handoff to engineering?",
+      "expected_output": "A task flow design that walks the complete user path including the decisions at each step: entry points into invite, the invite composition step (email addresses, roles, optional message), validation states for invalid or duplicate addresses, the confirmation and what happens next for the inviter, and the invitee-side journey (email receipt, acceptance, account creation or login, role assignment). The response makes the interface decisions explicit: whether invites can be sent partially (some valid, some invalid), whether resending and revoking are supported, the failure and error states, and the boundary conditions (max batch size, deduplication). It ends with the unresolved decision points that need product input before engineering handoff.",
+      "assertions": [
+        "The response covers both the inviter-side and invitee-side journeys end to end",
+        "Validation and error states are specified for invalid, duplicate, and partial batches of addresses",
+        "The response resolves or flags decisions on resend, revoke, deduplication, and batch limits",
+        "The flow includes the post-acceptance state such as role assignment and account creation",
+        "Unresolved decision points are explicitly listed for product input before handoff"
+      ]
+    },
+    {
+      "id": "state-recovery-model",
+      "prompt": "Our checkout form loses all user input when the page reloads or the session times out, and users abandon the flow. I want a state and recovery model so this stops happening. What states does the form have and how should recovery work in each?",
+      "expected_output": "A state and recovery model that enumerates the form's states: initial empty, partial input, validation error, submitting, submitted, and the failure states (network error, session expiry, server-side validation rejection, duplicate submission). For each state the response defines what is preserved and what is recoverable: input autosaved locally and restored on reload, session expiry handled by re-authentication that returns the user to the same step with data intact, idempotency so a retried submit does not double-charge, and explicit error recovery paths that tell the user what happened and what to do. The response also defines the timeout boundary after which recovery is no longer possible and the data is cleared with a clear message.",
+      "assertions": [
+        "The response enumerates the full state set including partial input, submitting, network failure, and session expiry",
+        "Input is preserved and restored on reload through autosave or local persistence",
+        "Session expiry recovery returns the user to the same step with data intact",
+        "Retried submissions are idempotent and cannot double-charge",
+        "The response defines when recovery is no longer possible and how that is communicated"
+      ]
+    },
+    {
+      "id": "interface-contract-handoff",
+      "prompt": "I am handing the search-results page design to engineering. Every handoff before has produced drift: different spacing, wrong empty states, unclear loading behavior. What should the interface contract contain so the implementation matches the design?",
+      "expected_output": "An interface contract that specifies behavior rather than only aesthetics: the component inventory with names matching the design system, spacing and sizing tokens with concrete values, the states each component must render (loading, empty, error, populated, end-of-results), interaction behavior (debounce timing, keyboard navigation, focus management), and the data contract the page consumes (fields, ordering, pagination model). The response explains how to make the contract verifiable: reference screenshots or fixtures for key states, named tokens instead of pixel values repeated ad hoc, and a checklist the engineer uses to confirm each state before the page is considered done.",
+      "assertions": [
+        "The contract covers behavior and states, not only visual appearance",
+        "Components map to the design system with concrete spacing and sizing tokens",
+        "All states including loading, empty, error, and end-of-results are specified",
+        "Interaction behavior such as debounce, keyboard navigation, and focus is specified",
+        "The contract is verifiable through named tokens, fixtures, and a state checklist"
+      ]
+    },
+    {
+      "id": "usability-study-plan",
+      "prompt": "We are about to redesign our dashboard navigation and want to test the new information architecture before building it. How do I plan a usability study that gives us signal we can act on, without over-engineering the research?",
+      "expected_output": "A usability study plan scoped to the decision at hand: a task-based test of the navigation where participants are asked to find specific information in the new IA, with a small set of well-chosen tasks that cover the highest-frequency user goals. The plan specifies participant criteria (a pragmatic small set of current users across the main personas, not a large panel), the protocol (moderated sessions with think-aloud, task success and time as measures, plus observation of where people look first), and the analysis: task success rates, the places where participants get lost, and a ranked list of IA problems with severity. The response right-sizes the study: 5-8 participants for a formative IA test, task selection driven by analytics data on what users actually do, and a report format that leads with the actionable problems.",
+      "assertions": [
+        "The study is task-based and tests the new IA against high-frequency user goals",
+        "Participant criteria are pragmatic and grounded in real usage, with a small formative sample",
+        "The protocol specifies moderated think-aloud sessions and the measures taken",
+        "Analysis produces ranked, severity-ordered problems from task success and lostness data",
+        "The response right-sizes the study and justifies the sample size for a formative test"
+      ]
+    },
+    {
+      "id": "ai-human-control-boundary",
+      "prompt": "A product team wants an AI system to recommend account changes and sometimes execute them. Define the interaction contract before implementation.",
+      "expected_output": "An interaction contract that compares assist, recommend, and execute modes against stakes, reversibility, observability, permissions, and review burden; identifies the human approval boundary; separates preview from external commit; and specifies authorization re-checks, cancellation or undo where real, partial failure, and completion evidence.",
+      "assertions": [
+        "The response compares control modes using task risk and reversibility",
+        "A human approval and authorization boundary is explicit",
+        "Preview is distinguished from an external side effect",
+        "Partial failure, retry or deduplication, and completion evidence are specified",
+        "The response records an owner and revisit trigger for the control decision"
+      ]
+    },
+    {
+      "id": "external-agent-cross-app-delegation",
+      "prompt": "A customer asks their own AI agent, in a separate agent app, to update three records in our project-management product. The agent can connect through an integration, but the product team has not yet specified how the agent identity maps to the customer's account or how cancellation works. Design the user journey and engineering handoff questions. Cover authority, evidence, switching between apps, human intervention, interruption, partial completion, and recovery without assuming the agent app is part of our product.",
+      "expected_output": "An evidence-grounded cross-app task and interaction contract that treats the person as the goal owner and decision-maker; distinguishes the human account from the authenticated agent or integration principal; identifies unresolved authority and integration facts; scopes requested product targets and operations; preserves an inspectable return path and product-side completion evidence; and defines honest cancellation, partial-result, retry, and re-entry behavior. The response does not assume the product can inspect the agent's private conversation or that sending a cancellation request stops already completed work.",
+      "assertions": [
+        "The flow keeps the human as goal owner and distinguishes their product identity from the authenticated agent or integration principal",
+        "The response flags unknown identity mapping and cancellation semantics for verification instead of inventing supported behavior",
+        "Delegated authority names the target records and allowed operations, and identifies the product-side authorization or fresh-decision boundary",
+        "The response includes an inspectable return path and product-side evidence of the intended record state rather than relying only on the agent's completion claim",
+        "The response specifies human intervention across the available surfaces, including a manual path or an explicit limitation when no control is supported",
+        "Cancellation is represented as a request whose effects may be unconfirmed, and already completed side effects are distinguished from stoppable work",
+        "Partial completion, safe retry or duplicate-effect risk, and re-entry after app switching or connection loss are addressed"
+      ]
+    },
+    {
+      "id": "embedded-loan-recovery",
+      "prompt": "Design an equipment-loan form with embedded recommendations. The user edits a proposal, approves, then loses permission. Another request times out after reservation succeeds and notification fails. Show the full task and recovery states.",
+      "expected_output": "A reviewable scoped design satisfying the authority and recovery boundaries below, with explicit evidence limitations.",
+      "assertions": [
+        "Presents editable proposed actions before approval",
+        "Invalidates prior approval when the draft changes",
+        "Blocks execution when permission is revoked after invocation",
+        "Queries command status after a timeout rather than blindly reserving again",
+        "Shows the confirmed reservation separately from failed notification",
+        "Distinguishes synthetic acceptance fixtures from observed usability evidence"
+      ],
+      "case_set": "regression"
+    }
+  ],
+  "inventory": [
+    {
+      "path": "product-design-and-ux/README.md",
+      "sha256": "878d966d00c961261c3da2561b48a57a6510a5aa22e95a31e29ab0b68935cc00"
+    },
+    {
+      "path": "product-design-and-ux/SKILL.md",
+      "sha256": "f4d93ad4389b76929922a1a652eefb4f9bac388884b1d85c23c74e1f71821573"
+    },
+    {
+      "path": "product-design-and-ux/evals/business-app-rubric-challenges.md",
+      "sha256": "3d4ac9aa201641ab1ed636f4ad71ba8b472e2ff599c81c724d6ef7f09c28ed03"
+    },
+    {
+      "path": "product-design-and-ux/evals/evals.json",
+      "sha256": "a7da5334dd09d1a6818416f5c7f63ecbdfb151024063bd5a12cec08b912e34a9"
+    },
+    {
+      "path": "product-design-and-ux/evals/openai-reference-inputs.json",
+      "sha256": "aef3b11ca2fecd47213100894e6e065e38b3ac0d135d36e758c41b14960020b7"
+    },
+    {
+      "path": "product-design-and-ux/references/ai-interaction-and-uncertainty.md",
+      "sha256": "947ef84b9ec8746290d7b8555f0115cd8912d7bf9990d4c882bc0e11355499ea"
+    },
+    {
+      "path": "product-design-and-ux/references/boundaries-and-traceability.md",
+      "sha256": "63a739eb55222a0ae49a03ae9472c41aa96e670f10748ccac95241b035ee61fc"
+    },
+    {
+      "path": "product-design-and-ux/references/content-and-cognitive-demand.md",
+      "sha256": "fdb66bef3d51600c98feb00d7f5fc9c0d681b25a911716d9976f5a04faf7b5b7"
+    },
+    {
+      "path": "product-design-and-ux/references/embedded-business-agent.md",
+      "sha256": "f114c4c0c8cd19d4d46a16c5e6c3b73399042596214dce83633f5d3d3925e9fb"
+    },
+    {
+      "path": "product-design-and-ux/references/engineering-handoff.md",
+      "sha256": "f2c8d74663b87be18ab0938083be87663486b85f581fda648f0e5ea528e3595b"
+    },
+    {
+      "path": "product-design-and-ux/references/external-agent-interactions.md",
+      "sha256": "57108aee84bc47786a7cdbd6f40a3b1e95a955366f9a72c23fa4595c60e8006c"
+    },
+    {
+      "path": "product-design-and-ux/references/information-architecture.md",
+      "sha256": "94d5362a8d0238fcc5c1fbe55c33d8686859f483f60890d3b7a2bb1322912bb5"
+    },
+    {
+      "path": "product-design-and-ux/references/interaction-pattern-selection.md",
+      "sha256": "66634acd71a740a054d21049f38aa5078a2a0c2fb8a48d3886a90db9c6cc29f2"
+    },
+    {
+      "path": "product-design-and-ux/references/interface-contracts-and-responsive-behavior.md",
+      "sha256": "4b371dd551e6ea7b92436b84d70d8a271d269b31b30379735cba658da73a055d"
+    },
+    {
+      "path": "product-design-and-ux/references/scenario-probes.md",
+      "sha256": "b2056d626b38c003a3cd739cf4365d3065ad77498dd9817752b7c238628acd24"
+    },
+    {
+      "path": "product-design-and-ux/references/source-index.md",
+      "sha256": "4b34176be6a4bffd4b856d4d8a4ee5e60e065511b57d6397560c15be21533410"
+    },
+    {
+      "path": "product-design-and-ux/references/task-flows-and-state-models.md",
+      "sha256": "eb1c2b550b6e781283237341508de7f21a594df45cbc27d8b33e44607def789b"
+    },
+    {
+      "path": "product-design-and-ux/references/usability-testing-and-privacy.md",
+      "sha256": "78a564d19c9623f04792880f7fdc7d3f51aca819097ab2c8bae5db1b818cc6ce"
+    },
+    {
+      "path": "product-design-and-ux/templates/ai-interaction-contract.md",
+      "sha256": "d0b82e7f6a43b35d5c1b2776fab009f8e412daf85041fb1e1337b7f0485d1af4"
+    },
+    {
+      "path": "product-design-and-ux/templates/engineering-handoff.md",
+      "sha256": "d2a22d2a53ef020b69fb8bb5f6d11184c2acf95f50a66227cecb95999ffbc687"
+    },
+    {
+      "path": "product-design-and-ux/templates/external-agent-handoff.md",
+      "sha256": "75045f5f30e7fdc92a6ae71e3d994c67b169237f7518cccb33abc56354c281a9"
+    },
+    {
+      "path": "product-design-and-ux/templates/interface-contract.md",
+      "sha256": "afc5bf713ffc04730d04af87ad16b4b78374958d17a31d8af376d9ee6aab537f"
+    },
+    {
+      "path": "product-design-and-ux/templates/outcomes-to-design.md",
+      "sha256": "1a1d752f5007f146c8c19115773cdcd5e149062cc5ff009fb00ecd32ea7e0189"
+    },
+    {
+      "path": "product-design-and-ux/templates/screen-state-inventory.md",
+      "sha256": "815d34b32e249f6d72b4d932aec868dffe635981cd1db75f30310ac4b3af62cf"
+    },
+    {
+      "path": "product-design-and-ux/templates/task-flow-state-model.md",
+      "sha256": "973cb7e04ef27098219f94a13e0ee0f9dc05fba204037329053a8de6cebbe00e"
+    },
+    {
+      "path": "product-design-and-ux/templates/usability-study.md",
+      "sha256": "9dc49a523ef48ac975a4f2658e796082cc7d4c7fc7dd3755400f0ac6d9f37a22"
+    }
+  ],
+  "reference_hash_checks": [
+    {
+      "case": "embedded-loan-recovery",
+      "path": "references/embedded-business-agent.md",
+      "expected": "f114c4c0c8cd19d4d46a16c5e6c3b73399042596214dce83633f5d3d3925e9fb",
+      "actual": "f114c4c0c8cd19d4d46a16c5e6c3b73399042596214dce83633f5d3d3925e9fb",
+      "matches": true
+    }
+  ],
+  "limits": "Static coverage/rubric consistency is not runtime activation, design execution, usability, conformance, or semantic model pass."
+}
