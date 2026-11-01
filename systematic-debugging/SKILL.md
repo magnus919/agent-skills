@@ -72,12 +72,14 @@ Complete each phase before proceeding to the next.
   and count signatures; a daemon log with 300 errors is usually ONE bug repeated. Reading lines in
   order makes it look like many:
 
-```bash
-grep ERROR some.log \
-  | sed -E 's/^\[[^]]*\] //' \
-  | sed -E 's#/(var|Volumes|tmp)/[^ :]*#<path>#g' \
-  | sort | uniq -c | sort -rn | head
-```
+  ```bash
+  grep ERROR some.log \
+    | sed -E 's/^\[[^]]*\] //' \
+    | sed -E 's#/(var|Volumes|tmp)/[^ :]*#<path>#g' \
+    | sed -E 's/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/<uuid>/g' \
+    | sed -E 's/(request_id|job|trace|span|pid)[= ]+[0-9a-fA-F-]+/<id>/g' \
+    | sort | uniq -c | sort -rn | head
+  ```
 
   One dominant signature → fix one code path with one regression test. Never patch symptoms
   inferred from a handful of scattered lines.

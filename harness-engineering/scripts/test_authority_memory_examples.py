@@ -125,6 +125,37 @@ class AuthorityMemoryTests(unittest.TestCase):
                 {}, examples.stage_claims(claims, "batch-1", "2026-01-01"), ["units", "other-units"]
             )
 
+    def test_rollback_restores_explicit_none_and_removes_created_keys(self):
+        claims = [
+            {
+                "id": "c1",
+                "key": "retention_days",
+                "value": 30,
+                "kind": "fact",
+                "source": "owner",
+                "date": "2026-06-01",
+            },
+            {
+                "id": "c2",
+                "key": "retention_note",
+                "value": "reviewed",
+                "kind": "fact",
+                "source": "owner",
+                "date": "2026-06-01",
+            },
+        ]
+        journal = examples.stage_claims(claims, "batch-1", "2026-01-01")
+        memory = {"retention_days": None}
+        accepted, receipt = examples.accept_batch(memory, journal, ["c1", "c2"])
+        self.assertIn("retention_note", accepted)
+
+        rolled, rollback_receipt = examples.rollback_batch(accepted, receipt)
+
+        self.assertEqual(rollback_receipt["state"], "rolled_back")
+        self.assertIn("retention_days", rolled)
+        self.assertIsNone(rolled["retention_days"])
+        self.assertNotIn("retention_note", rolled)
+
 
 if __name__ == "__main__":
     unittest.main()
