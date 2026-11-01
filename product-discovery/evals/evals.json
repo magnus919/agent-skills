@@ -109,6 +109,70 @@
         "The proposed changes cite the supplied exchanges or original artifact.",
         "The response does not claim that the author interview completes stakeholder validation."
       ]
+    },
+    {
+      "id": "enthusiasm-without-behavior",
+      "prompt": "Twelve prospects say they love our scheduling idea and would pay. We have no observations, past incidents, or commitments. Is demand validated?",
+      "expected_output": "Attribute enthusiasm as stated preference, leave demand unvalidated, and seek concrete problem evidence.",
+      "assertions": [
+        "Classifies the compliments and hypothetical payment as stated preference.",
+        "Does not label demand validated.",
+        "Proposes obtaining a recent concrete problem occurrence or authorized observation."
+      ]
+    },
+    {
+      "id": "internal-request-not-demand",
+      "prompt": "Our VP insists customers need a new dashboard. No customer has requested it and no usage evidence is available. Write our external demand finding.",
+      "expected_output": "Record an internal sponsor request separately from unknown customer demand.",
+      "assertions": [
+        "Identifies the VP request as internal evidence.",
+        "Leaves external demand unestablished.",
+        "Names a next customer-evidence step before treating the request as demand."
+      ]
+    },
+    {
+      "id": "pain-with-poor-viability",
+      "prompt": "Three clinics show redacted logs of a daily two-hour scheduling workaround. Each can spend at most $20/month; our current delivery estimate is $200/month per clinic. Should we build this solution?",
+      "expected_output": "Recognize observed pain while keeping viability unresolved or adverse and route economics before recommending build.",
+      "assertions": [
+        "Recognizes the supplied logs as evidence of a recurring problem.",
+        "Identifies the stated price-cost mismatch.",
+        "Does not infer business viability from problem severity.",
+        "Routes economics to financial-modeling."
+      ]
+    },
+    {
+      "id": "conflicting-customer-segments",
+      "prompt": "Freelancers abandon scheduling setup after ten minutes; hospital schedulers spend hours configuring and need audit trails. Interviews report these behaviors, but we have no observations. Combine them into a validated average customer.",
+      "expected_output": "Keep segments separate, attribute behavior reports, and avoid a fictitious averaged demand finding.",
+      "assertions": [
+        "Keeps freelancers and hospital schedulers as distinct segments.",
+        "Classifies the interviews as reported behavior rather than observed behavior.",
+        "Does not claim a validated average customer.",
+        "Proposes evidence that could discriminate a segment choice."
+      ]
+    },
+    {
+      "id": "stop-problem-investment",
+      "prompt": "Decision rule: stop if current tools solve the problem and no costly switching commitment appears. Five observed workflows meet the target using existing tools. No one has committed time or money. Recommend the next investment.",
+      "expected_output": "Recommend stop under the supplied rule, preserving evidence and reopening conditions.",
+      "assertions": [
+        "Recommends stopping the proposed investment under the supplied rule.",
+        "Cites the observed adequate workflows as evidence.",
+        "Does not substitute hypothetical enthusiasm for switching commitment.",
+        "Names a condition for reconsidering the decision."
+      ]
+    },
+    {
+      "id": "customer-evidence-draft-entry",
+      "prompt": "Grill this PRD: Build an AI scheduler because ten prospects loved the pitch. Keep existing calendar exports unchanged. Start the interview.",
+      "expected_output": "Preserve artifact-first one-question review while challenging unsupported demand.",
+      "assertions": [
+        "Asks exactly one independently answerable question.",
+        "The question requests evidence about the customer problem or behavior behind the pitch.",
+        "Does not treat pitch enthusiasm as demand validation.",
+        "Does not propose changing existing calendar exports."
+      ]
     }
   ]
 }
