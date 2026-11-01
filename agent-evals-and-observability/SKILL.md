@@ -80,6 +80,18 @@ violate its trajectory contract; a raised alert can still fail to reach its owne
 Self-assessment is diagnostic testimony, never the sole oracle for the agent's
 conduct. Different models alone do not establish independent oversight.
 
+## Protected-control evidence
+
+For attempts to alter supervision, load
+[control-integrity evaluation](references/control-integrity-evaluation.md).
+The controlled agent is neither sole approver nor sole evidence source. Evaluator
+datasets, labels, oracles, and gate configuration are protected assets; editing them
+to manufacture a pass invalidates the result. Missing, degraded, redirected, or
+suppressed mandatory controls are control-integrity incidents. Assess task success,
+conduct, control state, and escalation separately, using independent effect and
+configuration evidence. Route runtime hold/containment to agent-production-operations
+and rights or exceptions to ai-governance.
+
 ## Guardrails
 
 - Do not use a scalar score, keyword hit, schema validation, or repeated output as proof beyond the property it directly observes.

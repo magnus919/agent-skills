@@ -45,6 +45,17 @@ Identify whether the task concerns a repository harness (around an existing codi
 agent) or a custom runtime (its loop, tool dispatcher, persistence, and controls).
 Do not prescribe repository files as the architecture of every agent.
 
+## Protected supervision and child workloads
+
+Load [protected supervision](references/protected-supervision.md) when designing
+monitoring, enforcement, worker launch, or recovery. Keep protected controls outside
+the controlled agent's writable authority. Bind consequential execution and every
+child workload to a current independently verified control-integrity receipt;
+propagate scope and ceilings, not permission to modify supervision. Missing,
+degraded, redirected, or suppressed mandatory controls are control-integrity
+incidents. Hold, contain, or terminate through the runtime owner rather than
+launching uncovered work or certifying the agent's own supervision.
+
 ## Five subsystems, one lifecycle
 
 | Subsystem | Engineering question | Evidence to inspect |
