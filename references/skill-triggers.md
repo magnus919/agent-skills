@@ -144,3 +144,11 @@ Each skill's `description` field is the canonical routing contract. This conveni
 
 | "job interview", "mock interview", "critique my interview transcript", "interview candidates", "hiring scorecard", "interviewer coaching" | [job-interview-coaching](../job-interview-coaching/SKILL.md) |
 | "solarpunk", "hopeful ecological futures", "solarpunk fiction", "solarpunk image prompts", "solarpunk living", "solarpunk adaptive reuse" | [solarpunk](../solarpunk/SKILL.md) |
+
+## Intent-oriented entry points
+
+For common jobs across software delivery, agent trust, product decisions, and
+business operations, start with the [README workflow map](../README.md#find-a-workflow).
+For handoff evidence, decision owners and stop conditions, use
+[agent-trust routes](agent-trust-routes.md). The map routes to canonical skills;
+it does not create aliases or duplicate specialist ownership.
