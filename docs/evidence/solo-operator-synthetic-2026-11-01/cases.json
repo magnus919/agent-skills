@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "provenance": "synthetic, not consented actual-user evidence",
+  "cases": [
+    {
+      "id": "S1",
+      "business_type": "consulting service",
+      "decision": "Deliver one bounded reporting pilot or build a platform first?",
+      "synthetic_facts": [
+        "Three fictional buyers report spreadsheet reconciliation work; only one has placed a refundable $300 deposit.",
+        "Offer: one monthly report from one supplied export, one revision, no integrations; price $1,200.",
+        "Delivery estimate: 8 hours at $75 plus $100 direct cost; $1,000 initial setup; 16 delivery hours available monthly."
+      ],
+      "price": 1200,
+      "hours": 8,
+      "hour_cost": 75,
+      "direct_cost": 100,
+      "fixed_cost": 1000,
+      "available_hours": 16,
+      "baseline_disposition": "proceed with one bounded pilot; defer platform",
+      "evidence_limit": "A refundable deposit is reversible commitment, not proof of retained payment, delivery quality or recurring demand.",
+      "next_test": "One reviewed pilot; retain actual time, acceptance and final payment; stop expansion if scope or capacity assumptions fail.",
+      "provenance": "entirely synthetic authored fixture; no actual user or observed transaction"
+    },
+    {
+      "id": "S2",
+      "business_type": "education product",
+      "decision": "Record a full course because 18 people praised the idea?",
+      "synthetic_facts": [
+        "Eighteen fictional survey responses express interest; no payments or observed completion.",
+        "Course: $99 per seat, $9 variable cost, $2,000 fixed preparation cost.",
+        "Alternative workshop: six seats maximum, $150 each, $30 variable per seat and $480 fixed preparation/delivery cost."
+      ],
+      "price": 99,
+      "hours": 0,
+      "hour_cost": 0,
+      "direct_cost": 9,
+      "fixed_cost": 2000,
+      "available_hours": 0,
+      "baseline_disposition": "revise to bounded workshop hypothesis; defer full course",
+      "evidence_limit": "Stated preference is not demand validation; the workshop has no actual buyers.",
+      "next_test": "Prespecify a paid six-seat workshop with at least four retained paid seats before incurring the stated fixed cost; record cancellation, refund and learning outcomes, not hypothetical sales.",
+      "alternative": {
+        "price": 150,
+        "variable_cost": 30,
+        "fixed_cost": 480,
+        "seat_cap": 6
+      },
+      "provenance": "entirely synthetic authored fixture; no actual user or observed transaction"
+    },
+    {
+      "id": "S3",
+      "business_type": "software subscription",
+      "decision": "Scale a subscription because two fictional customers paid?",
+      "synthetic_facts": [
+        "Two fictional buyers each pay $100/month.",
+        "Each requires one hour of support at $100/hour plus $20/month infrastructure.",
+        "No demonstrated path reduces support or increases price; operator will not subsidize recurring negative contribution."
+      ],
+      "price": 100,
+      "hours": 1,
+      "hour_cost": 100,
+      "direct_cost": 20,
+      "fixed_cost": 300,
+      "available_hours": 10,
+      "baseline_disposition": "stop current subscription offer",
+      "evidence_limit": "Payment supports willingness to pay at that scope; it does not establish positive contribution or repeatable delivery.",
+      "next_test": "No expansion or new build. Reopen only with a separately evidenced bounded offer and nonnegative recurring economics; do not assume volume fixes the loss.",
+      "provenance": "entirely synthetic authored fixture; no actual user or observed transaction"
+    },
+    {
+      "id": "S4",
+      "business_type": "handmade physical goods",
+      "decision": "Accept custom proofing at the original price?",
+      "synthetic_facts": [
+        "Original product price $45; materials $18, shipping $5, fees $1, labor 0.6 hours at $30.",
+        "A fictional customer now asks for three custom proofs, increasing labor to 1.2 hours. No revised price was agreed.",
+        "Monthly delivery time after administration is 24 hours; initial photography costs $80; experimental loss cap is $100."
+      ],
+      "price": 45,
+      "hours": 0.6,
+      "hour_cost": 30,
+      "direct_cost": 24,
+      "fixed_cost": 80,
+      "available_hours": 24,
+      "baseline_disposition": "revise scope; reject custom proofing at unchanged price",
+      "evidence_limit": "The original quote cannot validate changed-scope economics; one request is not a market segment.",
+      "next_test": "Only the original bounded product in a five-order batch, with an explicit maximum $65 modeled setup loss; no custom proofing or implied scale success.",
+      "changed_scope": {
+        "hours": 1.2,
+        "batch_size": 5,
+        "loss_cap": 100
+      },
+      "provenance": "entirely synthetic authored fixture; no actual user or observed transaction"
+    },
+    {
+      "id": "S5",
+      "business_type": "freelance translation",
+      "decision": "Expand after delivery or inspect the real cost of the first job?",
+      "synthetic_facts": [
+        "A fictional $300 project is paid and accepted; the offer is 3,000 words and one revision.",
+        "Estimate was five hours, but the synthetic time log records six including quality review, at $40/hour plus $20 tools.",
+        "Setup cost is $160; ten delivery hours remain after administration. The buyer requests another quote but has not repurchased."
+      ],
+      "price": 300,
+      "hours": 6,
+      "hour_cost": 40,
+      "direct_cost": 20,
+      "fixed_cost": 160,
+      "available_hours": 10,
+      "baseline_disposition": "hold expansion; permit only one capacity-bounded follow-up proposal",
+      "evidence_limit": "One paid accepted job supports that transaction only; a request for another quote is not renewal or proof of a recurring business.",
+      "next_test": "One further same-scope job only if authorized; compare delivery/rework time and contribution before increasing commitments.",
+      "provenance": "entirely synthetic authored fixture; no actual user or observed transaction"
+    }
+  ]
+}

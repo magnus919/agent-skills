@@ -1,0 +1,60 @@
+{
+  "provenance": "authored application of the minimal record to wholly synthetic facts; no independent evaluator or actual decision change",
+  "handoffs": [
+    {
+      "case_id": "S1",
+      "decision": "proceed with one bounded pilot; defer platform",
+      "evidence_status": "Fictional reported problem plus refundable deposit; no retained payment or completed delivery.",
+      "offer": "One monthly report, one export, one revision; integrations excluded.",
+      "contradiction": "Platform build would exceed what the deposit tests. Deposit must remain distinguishable from final payment.",
+      "next_owner": "operational-design",
+      "handoff_question": "Can one eight-hour delivery fit the sixteen-hour limit without extra integrations or revisions?",
+      "gate": "Deliver only one pilot; inspect actual time, acceptance, refund/final payment and changed scope before a second commitment.",
+      "change_trigger": "New source format, integration or revision requirement invalidates delivery estimate and quote."
+    },
+    {
+      "case_id": "S2",
+      "decision": "revise to bounded workshop hypothesis; defer full course",
+      "evidence_status": "Fictional preference only; no payment or learning outcome.",
+      "offer": "Replace the unlimited course/feedback idea with one two-hour workshop, six seats and one bounded exercise.",
+      "contradiction": "Eighteen compliments neither fund the twenty-three-seat course break-even nor establish willingness to pay.",
+      "next_owner": "product-experimentation",
+      "handoff_question": "Define a paid presale test for the bounded workshop, including refunds and a four-seat minimum before fixed spend.",
+      "gate": "No course production; workshop only if the specified retained-payment threshold, cost cap and owner authorization hold; otherwise stop or report inconclusive exposure.",
+      "change_trigger": "Changed seat price, feedback scope or delivery hours requires a new economics record."
+    },
+    {
+      "case_id": "S3",
+      "decision": "stop current subscription offer",
+      "evidence_status": "Fictional paid subscriptions show price acceptance, not viable delivery.",
+      "offer": "Current $100 monthly service includes the assumed hour of support.",
+      "contradiction": "Recurring cost is $120 per subscriber; additional identical subscribers increase the modeled loss.",
+      "next_owner": "financial-modeling",
+      "handoff_question": "Is there independently supported different scope, cost structure or price that removes the recurring loss?",
+      "gate": "Stop the current offer and expansion. No finite fixed-cost break-even exists at negative contribution. Reopen only with changed, evidenced assumptions and operator decision.",
+      "change_trigger": "A new price or reduced-support assumption is a new hypothesis, not a retroactive pass."
+    },
+    {
+      "case_id": "S4",
+      "decision": "revise scope; reject custom proofing at unchanged price",
+      "evidence_status": "One fictional custom request; no agreed amended quote or completed batch.",
+      "offer": "Original standard item only, no three-proof customization; five-order pilot maximum.",
+      "contradiction": "Added proofing changes contribution from $3 to -$15 at the unchanged $45 price.",
+      "next_owner": "go-to-market",
+      "handoff_question": "Can the bounded original offer and exclusions be stated without promising the requested proofing?",
+      "gate": "Reject changed scope at old price. A five-order standard batch has modeled $65 setup loss within the fictional $100 cap; this is a bounded learning cost, not profitability.",
+      "change_trigger": "Any proofing, shipping, fees or labor change invalidates margin and capacity assumptions."
+    },
+    {
+      "case_id": "S5",
+      "decision": "hold expansion; permit only one capacity-bounded follow-up proposal",
+      "evidence_status": "One fictional paid accepted delivery; another quote request, not renewal.",
+      "offer": "3,000 words and one revision; no unlimited rework promise.",
+      "contradiction": "Including quality review raises hours from five to six and lowers modeled contribution; do not exclude that hour to preserve the forecast.",
+      "next_owner": "product-lifecycle-learning",
+      "handoff_question": "Does a second same-scope job repeat accepted quality and delivery economics, and what explains rework?",
+      "gate": "One job fits the remaining ten-hour capacity; no expansion until delivery/rework and repeat-payment evidence exist.",
+      "change_trigger": "Further revisions or deadline changes require operational and pricing review before a new commitment."
+    }
+  ]
+}
