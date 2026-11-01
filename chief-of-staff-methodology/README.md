@@ -1,6 +1,6 @@
 # Chief of Staff Methodology
 
-Prepare executive work with clear decision rights, useful context, and accountable human review.
+Support chief of staff, executive operations, and founder operations with clear decisions and accountable human review.
 
 ## Why Install This Skill
 
@@ -10,7 +10,9 @@ skill gives your agent a practical way to prepare briefs, triage information, an
 coordinate work while keeping authority with the person who is responsible for the
 decision.
 
-It also makes organizational care safer. Your agent can help turn authorized,
+For a solo operator, it helps protect strategic attention and establish an operating
+rhythm around pending decisions. In an organization, it supports the executive
+sponsor within existing decision rights. It also makes organizational care safer. Your agent can help turn authorized,
 aggregate signals into questions worth investigating and retain documented decision
 context through transitions, without covert monitoring, personal dossiers, or
 speculative profiles of employees.
@@ -30,18 +32,27 @@ speculative profiles of employees.
 
 ## Quick Start
 
+Try: “Help me set a founder operating rhythm for three pending decisions.” Expect
+an attention plan naming the decision owner, evidence gaps, and review dates.
+
 Ask for a decision brief, information-triage design, meeting audit, or documented
 decision record. The result identifies the accountable decision-maker, distinguishes
 facts from assumptions, and states the applicable review or escalation path.
 
 ## Triggers
 
-- Chief of staff, CoS, executive office, or leader effectiveness.
+- Chief of staff, CoS, executive operations, founder operations, or leader effectiveness.
+- Decision support, operating rhythm, or strategic attention for a founder or executive.
 - Gatekeeping, triage, decision rights, escalation paths, or executive access.
 - Decision memo, executive briefing, board materials, options, or trade-offs.
 - Force multiplication, strategic time, attention allocation, calendar triage, or meeting audit.
 - Organizational sensing, organizational radar, team health, or institutional memory.
 - Leadership transition, documented commitments, or decision history.
+
+Meeting facilitation belongs to `meetings`, structure decisions to `org-design`, and
+business-process design to `operational-design`. Generic personal errands and
+surveillance are outside this skill. Task changes require confirmed commitments
+and an authorized task system.
 
 ## Requirements
 

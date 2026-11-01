@@ -66,6 +66,30 @@
         "Does not create a task for the generic cross-team-communication recommendation.",
         "Reports a read-back verification of the created task's owner and due date."
       ]
+    },
+    {
+      "id": "solo-founder-operating-rhythm",
+      "prompt": "I run a solo consultancy. Help with founder operations: I need an operating rhythm for deciding whether to renew a client, spend $800 on software, and reserve time for sales. I have not delegated any decisions.",
+      "expected_output": "A decision-oriented attention plan that retains founder authority, identifies missing evidence, and proposes review points without inventing staff or making commitments.",
+      "assertions": [
+        "The plan identifies the founder as the decision owner.",
+        "The plan distinguishes the three pending decisions.",
+        "The plan names evidence needed before making a recommendation.",
+        "The response does not invent a team or delegated decision rights.",
+        "Review dates or cadence are proposals rather than accepted commitments."
+      ]
+    },
+    {
+      "id": "executive-operations-owner-routing",
+      "prompt": "I am the CoS for a 40-person company. Help with executive operations and decision support: our CEO wants an operating rhythm, a new reporting structure, facilitated weekly meetings, invoice-process redesign, and automatic task creation from meeting suggestions. No owners or deadlines have accepted those suggestions.",
+      "expected_output": "Prepare the CEO decision-review rhythm and route specialist work and task mutations without claiming authority to execute them.",
+      "assertions": [
+        "The response identifies the CEO as the accountable executive decision owner.",
+        "The response routes reporting structure to org-design.",
+        "The response routes meeting facilitation to meetings.",
+        "The response routes invoice-process design to operational-design.",
+        "The response withholds task creation for unconfirmed suggestions."
+      ]
     }
   ]
 }
