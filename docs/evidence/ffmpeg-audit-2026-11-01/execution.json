@@ -1,0 +1,213 @@
+{
+  "source_sha": "83d2784394ede4e4bab85aabc0545331fcb6ee31",
+  "recorded_at": "2026-11-01T15:38:18.275682+00:00",
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+  "tool_versions": {
+    "ffmpeg": "ffmpeg version 9.0.1 Copyright (c) 2000-2026 the FFmpeg developers",
+    "ffprobe": "ffprobe version 9.0.1 Copyright (c) 2007-2026 the FFmpeg developers"
+  },
+  "command": [
+    "/Volumes/tank01/magnus/git/agent-skills/.venv/bin/python",
+    "-m",
+    "pytest",
+    "ffmpeg/scripts/test_media_workflows.py::test_render_edl_concat_filter_plan_executes_against_synthetic_fixtures",
+    "ffmpeg/scripts/test_media_workflows.py::test_audio_inspect_measures_synthetic_candidates_and_builds_plan",
+    "ffmpeg/scripts/test_media_workflows.py::test_audio_inspect_reports_missing_measurement_filter",
+    "ffmpeg/scripts/test_media_workflows.py::test_media_verify_marks_missing_fields_and_evidence_unverified",
+    "ffmpeg/scripts/test_media_workflows.py::test_media_verify_preserves_blocked_review_status",
+    "ffmpeg/scripts/test_media_workflows.py::test_editorial_workflow_example_runs_with_real_tools",
+    "ffmpeg/scripts/test_media_workflows.py::test_editorial_workflow_example_refuses_nonempty_workspace",
+    "ffmpeg/scripts/test_media_workflows.py::test_target_compatibility_keeps_unavailable_lane_separate",
+    "-v",
+    "-o",
+    "addopts=-ra --tb=short",
+    "--basetemp=/tmp/ffmpeg-audit-2026-11-01-tests"
+  ],
+  "exit_code": 0,
+  "stdout": "============================= test session starts ==============================\nplatform darwin -- Python 3.14.7, pytest-9.1.1, pluggy-1.6.0 -- /Volumes/tank01/magnus/git/agent-skills/.venv/bin/python\ncachedir: .pytest_cache\nrootdir: /private/tmp/agent-skills-issue-batch\nconfigfile: pyproject.toml\nplugins: cov-7.1.0, xdist-3.8.0\ncollecting ... collected 8 items\n\nffmpeg/scripts/test_media_workflows.py::test_render_edl_concat_filter_plan_executes_against_synthetic_fixtures PASSED [ 12%]\nffmpeg/scripts/test_media_workflows.py::test_audio_inspect_measures_synthetic_candidates_and_builds_plan PASSED [ 25%]\nffmpeg/scripts/test_media_workflows.py::test_audio_inspect_reports_missing_measurement_filter PASSED [ 37%]\nffmpeg/scripts/test_media_workflows.py::test_media_verify_marks_missing_fields_and_evidence_unverified PASSED [ 50%]\nffmpeg/scripts/test_media_workflows.py::test_media_verify_preserves_blocked_review_status PASSED [ 62%]\nffmpeg/scripts/test_media_workflows.py::test_editorial_workflow_example_runs_with_real_tools PASSED [ 75%]\nffmpeg/scripts/test_media_workflows.py::test_editorial_workflow_example_refuses_nonempty_workspace PASSED [ 87%]\nffmpeg/scripts/test_media_workflows.py::test_target_compatibility_keeps_unavailable_lane_separate PASSED [100%]\n\n============================== 8 passed in 3.74s ===============================\n",
+  "stderr": "",
+  "inventory": [
+    {
+      "path": "ffmpeg/README.md",
+      "sha256": "a0aa3247ee9662764c2d4a4e5d25bae61b8718fc4495bb393d8c076d0fda2b58"
+    },
+    {
+      "path": "ffmpeg/SKILL.md",
+      "sha256": "d9da55f12398cf33b245bc32507d2d920528956cf8f5b06c517bf1d850735aca"
+    },
+    {
+      "path": "ffmpeg/evals/evals.json",
+      "sha256": "1cef89af19a716ab630312663f99c5c50ac5be59afebc539014322e3dd6d5d29"
+    },
+    {
+      "path": "ffmpeg/references/advanced-operations-and-safety.md",
+      "sha256": "41047f6afcaa3e5bcf39bdc5808f289a43305bc8f696bbe212cbf37fa1d17986"
+    },
+    {
+      "path": "ffmpeg/references/audio-and-podcast-editing.md",
+      "sha256": "45ec33d6153e8ac41a4af50cc286a89c419e1d8faa460274f7a7dd064167a625"
+    },
+    {
+      "path": "ffmpeg/references/command-cookbook.md",
+      "sha256": "abd165e5858ad6c1e0d472a4e9c5c016cac79dabf19d1327b0d688a8bb2923ed"
+    },
+    {
+      "path": "ffmpeg/references/core-model-and-command-anatomy.md",
+      "sha256": "a27169737b09cc92868610765be1afc96d8a57b27557a52d2a48d7442e5dda93"
+    },
+    {
+      "path": "ffmpeg/references/editorial-video-editing.md",
+      "sha256": "d490dd26071648fd1262a17b8e704ee2dc1f2f36267327f3865441ee5709cba1"
+    },
+    {
+      "path": "ffmpeg/references/editorial-workflow-example.md",
+      "sha256": "c85cd1419a3c4dd1d13eda5c5a1c1074bd2f913366c4a27d1ed4f3477ce73907"
+    },
+    {
+      "path": "ffmpeg/references/ffmpeg-edit-decision-lists.md",
+      "sha256": "cd10cb4e7109f3d34b029819904703fa213f0b5a78475b4c0f0fddba8511d0fe"
+    },
+    {
+      "path": "ffmpeg/references/filters-and-transformations.md",
+      "sha256": "827a648fdc18e8a22c21c0e6363cc924c210d4e6926283039c4096d9044a67fb"
+    },
+    {
+      "path": "ffmpeg/references/intermediate-workflows.md",
+      "sha256": "f7bd926ccfafd929ec1a97df279ca90b68f4a40790f02a891297ef818ab1d097"
+    },
+    {
+      "path": "ffmpeg/references/learning-summary.md",
+      "sha256": "693d46246799682b01d76faa5571c2c90b5d3dac833aa1a224a64e2e2216bd3c"
+    },
+    {
+      "path": "ffmpeg/references/local-verification.md",
+      "sha256": "77a40484fdf10b849687358eddf77c013e9b8f978e5be01aabbbaf4211fea764"
+    },
+    {
+      "path": "ffmpeg/references/media-failure-modes.md",
+      "sha256": "6d87da795e2877392286c62c7a53443ec6ca2637e1fb3ad1c33c95cb24c5bb08"
+    },
+    {
+      "path": "ffmpeg/references/media-intake-and-manifest.md",
+      "sha256": "f0b49ce034b8573950fea6b7c8c18f132a7b07843f3b3ed9be874316081ac156"
+    },
+    {
+      "path": "ffmpeg/references/media-research-source-index.md",
+      "sha256": "82f16031ea51b282153d023272281fad3f7617a2d8cbdf9f21ce42476c61ea9c"
+    },
+    {
+      "path": "ffmpeg/references/media-verification-and-acceptance.md",
+      "sha256": "e74cc70f0529a9e0f24cdd5ae11e9b899b3460350f16fe13f4efc3e50b746eed"
+    },
+    {
+      "path": "ffmpeg/references/source-inventory.md",
+      "sha256": "f8a66e56a3e819c3ea0f49072b3254c6515daa37c23fd69cd13750dbd3ce3022"
+    },
+    {
+      "path": "ffmpeg/references/synthetic-media-fixtures.md",
+      "sha256": "610be6b26a27b99f803537c5c0f8d7ea337340d82dc01876d52355f4c58a5dd6"
+    },
+    {
+      "path": "ffmpeg/references/video-inspection-and-visual-evidence.md",
+      "sha256": "ef0063105a7ef814987ab654e1d809033d896c8464abdcd2245aaa3ee7be6f9f"
+    },
+    {
+      "path": "ffmpeg/scripts/audio-inspect",
+      "sha256": "82cea8924e42ee9a972fd3bd8be0ec2e2029330cf86a983cce29310da5378aec"
+    },
+    {
+      "path": "ffmpeg/scripts/editorial-workflow-example",
+      "sha256": "e31baa14c06d9632f80a088a7d9a463eede917c1bd90be842e351cb9894f1786"
+    },
+    {
+      "path": "ffmpeg/scripts/extract-review-frames",
+      "sha256": "6825bb77a385e63a0a806289f5dd5070b81704219876f716c9d3b90ddc75f881"
+    },
+    {
+      "path": "ffmpeg/scripts/ffmpeg-preflight",
+      "sha256": "ec5eb6b33f37a714f6101916adb0cf3a95d102fa9ddbd4db3e6f333db2d066f0"
+    },
+    {
+      "path": "ffmpeg/scripts/fixtures/ffmpeg-8.1.2-inventories.json",
+      "sha256": "18ea95f075f108cc1a521c47c610a61dd18a80fe2e437c38c4e74aa98cba29f7"
+    },
+    {
+      "path": "ffmpeg/scripts/generate-media-fixtures",
+      "sha256": "d093be94e4ea90c30b1ba808c0bf06df12b17dccc7f3c200a5af4cab25770d79"
+    },
+    {
+      "path": "ffmpeg/scripts/import-vision-review",
+      "sha256": "704cc56b0f45c4053c9f81fe2778b97544a2b117606b28335fca7a89a8739ef6"
+    },
+    {
+      "path": "ffmpeg/scripts/media-intake",
+      "sha256": "339765c52d447f467b2aa120ced278f335e75f1e603ae9f561dea09123c62333"
+    },
+    {
+      "path": "ffmpeg/scripts/media-verify",
+      "sha256": "cd90e000d2f6f5a82dce3565fb8e55d49b797bb054450f36c326db50dec623f0"
+    },
+    {
+      "path": "ffmpeg/scripts/render-edl",
+      "sha256": "e313b69b642789a76b369179eee02dfdd0136ef57bce7165f67f63988b29bdeb"
+    },
+    {
+      "path": "ffmpeg/scripts/target-compatibility",
+      "sha256": "d1b73e2b67e4635aa348a25b2558d75e2155a375eb0eaefc137c8c4368aed814"
+    },
+    {
+      "path": "ffmpeg/scripts/test_ffmpeg_preflight.py",
+      "sha256": "c9a5b9aeb445d4f3dc3f93ad9b003e0894c2e1aefb6789ad3d26106f349f1a8f"
+    },
+    {
+      "path": "ffmpeg/scripts/test_media_workflows.py",
+      "sha256": "4d0a488d41f6344a1bd0c3db62160ae08475797e20f85976e13322c72468a17c"
+    },
+    {
+      "path": "ffmpeg/scripts/vision-review-handoff",
+      "sha256": "6f1d0236c21031e77049a6775f7a113bce53e5a9af84c575722b8133e7de7031"
+    },
+    {
+      "path": "ffmpeg/templates/edit-decision-list.json",
+      "sha256": "8b99a160a9ff7fd36ba6ca43a19b5967213f92a20d5cbfadf2194c6657971852"
+    },
+    {
+      "path": "ffmpeg/templates/media-acceptance-contract.json",
+      "sha256": "e16f271ad3dc3d02fc06781bea5c9be4cc7c568c995f23317071ae9628a6acfb"
+    },
+    {
+      "path": "ffmpeg/templates/media-acceptance-report.md",
+      "sha256": "338b626b1757f8e2b707e7e8dff6060f20ed430ed4a141656dcdf57f6bbcfc8b"
+    },
+    {
+      "path": "ffmpeg/templates/media-intake.json",
+      "sha256": "b8fa0ca67ea6bfcc0c272805a6925a94768d1611b43f21210faecbc699fe5f53"
+    },
+    {
+      "path": "ffmpeg/templates/podcast-edit-plan.md",
+      "sha256": "f39b070d6e385719bf85306724927e116934af2855af78d33a25a845675e4394"
+    },
+    {
+      "path": "ffmpeg/templates/research-experiment-record.md",
+      "sha256": "a1a32fcd19673b63b2578eb5a461887dce5acfba0e68b5ea5e0eaa6516dc576e"
+    },
+    {
+      "path": "ffmpeg/templates/target-compatibility-manifest.json",
+      "sha256": "834592acb1c237013dd481493077102ea744db0c8d26d01ba96c8c1c20953ea8"
+    },
+    {
+      "path": "ffmpeg/templates/video-inspection-report.md",
+      "sha256": "86c05ccf27dcc9e94dad37e01bd99b05535104e135ee2a1316bf9cb0e529928d"
+    },
+    {
+      "path": "ffmpeg/templates/vision-review-observations.json",
+      "sha256": "1719fe79b1c09f8be821c500058da83b0d7cbd33791178f86769bd05282ca742"
+    },
+    {
+      "path": "ffmpeg/templates/visual-review-packet.md",
+      "sha256": "0055ba11a7a21374064f0f4488ee0cc07a1ab9b87bf15732c8cbf4447ed361ea"
+    }
+  ],
+  "limits": "Existing local synthetic/structured fixture tests only; no semantic, listening, real consumer, cross-build, or user behavior acceptance"
+}
