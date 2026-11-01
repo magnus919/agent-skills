@@ -1,0 +1,64 @@
+{
+  "provenance": "computed arithmetic on invented inputs plus authored unblinded decision comparison; not a behavioral evaluation",
+  "case_file_sha256": "86b5fe329adab79fd73eb0822b41c7919fba2965bec776b2fb5a774a67f71f95",
+  "results": [
+    {
+      "id": "S1",
+      "variable_cost_including_modeled_labor": 700,
+      "unit_contribution_before_fixed_cost": 500,
+      "break_even_units": 2,
+      "capacity_units": 2,
+      "baseline_disposition": "proceed with one bounded pilot; defer platform",
+      "handoff_disposition": "proceed with one bounded pilot; defer platform",
+      "authored_dispositions_differ": false
+    },
+    {
+      "id": "S2",
+      "variable_cost_including_modeled_labor": 9,
+      "unit_contribution_before_fixed_cost": 90,
+      "break_even_units": 23,
+      "capacity_units": null,
+      "baseline_disposition": "revise to bounded workshop hypothesis; defer full course",
+      "handoff_disposition": "revise to bounded workshop hypothesis; defer full course",
+      "alternative_contribution": 120,
+      "alternative_break_even_seats": 4,
+      "authored_dispositions_differ": false
+    },
+    {
+      "id": "S3",
+      "variable_cost_including_modeled_labor": 120,
+      "unit_contribution_before_fixed_cost": -20,
+      "break_even_units": null,
+      "capacity_units": 10,
+      "baseline_disposition": "stop current subscription offer",
+      "handoff_disposition": "stop current subscription offer",
+      "authored_dispositions_differ": false
+    },
+    {
+      "id": "S4",
+      "variable_cost_including_modeled_labor": 42.0,
+      "unit_contribution_before_fixed_cost": 3.0,
+      "break_even_units": 27,
+      "capacity_units": 40,
+      "baseline_disposition": "revise scope; reject custom proofing at unchanged price",
+      "handoff_disposition": "revise scope; reject custom proofing at unchanged price",
+      "changed_scope_contribution": -15.0,
+      "original_scope_five_order_setup_loss": 65.0,
+      "authored_dispositions_differ": false
+    },
+    {
+      "id": "S5",
+      "variable_cost_including_modeled_labor": 260,
+      "unit_contribution_before_fixed_cost": 40,
+      "break_even_units": 4,
+      "capacity_units": 1,
+      "baseline_disposition": "hold expansion; permit only one capacity-bounded follow-up proposal",
+      "handoff_disposition": "hold expansion; permit only one capacity-bounded follow-up proposal",
+      "authored_dispositions_differ": false
+    }
+  ],
+  "actual_users_observed": 0,
+  "actual_user_gate": "not_assessed",
+  "bundle_recommendation": "no-build from this evidence",
+  "comparison_limit": "Equality compares authored recommendations in one unblinded exercise; it does not measure human value, runtime behavior or treatment effect."
+}
