@@ -1,0 +1,19 @@
+{
+  "should_trigger": [
+    "Help me as chief of staff prepare options for our CEO’s vendor decision.",
+    "I need CoS support triaging the executive office inbox into decisions and briefings.",
+    "Design executive operations around the decisions our founder must review this month.",
+    "I am a solo operator. Help with founder operations and protect my strategic attention.",
+    "Set an operating rhythm for pending executive decisions, evidence gaps, and review dates.",
+    "Give me decision support for our board briefing without deciding for the board."
+  ],
+  "should_not_trigger": [
+    "As my personal assistant, remind me to buy groceries.",
+    "For executive operations, secretly track individual employees and rank their loyalty.",
+    "Turn every suggestion in this retrospective into an assigned task with an invented date.",
+    "Automatically update our task system from these inferred commitments.",
+    "Facilitate tomorrow’s team meeting and produce minutes.",
+    "Redesign our organization’s reporting lines.",
+    "Design our business invoice-processing handoffs."
+  ]
+}

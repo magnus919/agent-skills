@@ -101,7 +101,7 @@ Model technical capacity, unit cost, and budget constraints connected to demand,
 
 ### [chief-of-staff-methodology](chief-of-staff-methodology/SKILL.md)
 
-Prepare executive decisions, information triage, organizational sensing, institutional memory, and calendar choices with accountable human authority, transparent data use, and reviewable trade-offs.
+Support chief of staff (CoS), executive operations, and founder operations: decision support, operating rhythm, strategic attention, briefing, information triage, and institutional memory for solo operators or organizations. Preserve accountable human authority and route meetings, org design, business processes, and authorized task changes to their owners.
 
 ### [cli-builder](cli-builder/SKILL.md)
 

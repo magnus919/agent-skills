@@ -210,7 +210,7 @@
         "./chief-of-staff-methodology"
       ],
       "strict": false,
-      "description": "Prepare accountable executive decisions, information triage, briefing, calendar choices, organizational sensing, and institutional memory without assuming authority or monitoring people. Use when a chief of staff or CoS, executive office, gatekeeping, decision memo, executive briefing, board materials, organizational sensing, team health, institutional memory, calendar triage, meeting audit, strategic time, or attention allocation is requested. Do not use this skill for unrelated requests; route to the nearest named specialist."
+      "description": "Prepare accountable executive decisions, decision support, briefings, information triage, calendar choices, and institutional memory. Use for chief of staff or CoS, executive operations, founder operations, operating rhythm, strategic attention, executive office, board materials, organizational sensing, team health, leadership transitions, gatekeeping, decision memos, executive briefing, strategic time, attention allocation, calendar triage, or meeting audits for a solo operator or organization. Do not use for generic personal assistance, employee surveillance, inferred commitments, automatic task mutation, meeting facilitation, org structure design, or business operating-process design; route to the owning specialist."
     },
     {
       "name": "cli-builder",
