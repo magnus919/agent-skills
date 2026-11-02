@@ -1320,6 +1320,15 @@
       "description": "Create, explore, critique, and practice solarpunk across visual art and image prompts, fiction and worldbuilding, fashion, games, education, everyday living, adaptive reuse, ecological design, parklets, guerrilla gardening, urban and rural planning, community infrastructure, and hopeful collective futures. Use for solarpunk aesthetics, stories, values, or practical paths toward equitable ecological flourishing. Do not use for generic sustainability tasks with no solarpunk intent, certified engineering, jurisdiction-specific legal advice, or operating an image or infrastructure tool; pair with the relevant specialist."
     },
     {
+      "name": "solo-startup",
+      "source": "./",
+      "skills": [
+        "./solo-startup"
+      ],
+      "strict": false,
+      "description": "Use this skill when a solopreneur or solo startup founder needs to choose, validate, or operate a business within one person's cash, time, and support capacity, including bootstrapped services, products, and AI-assisted businesses. Translate customer evidence into a bounded offer and a sustainable operating decision. Do not use for an isolated customer interview, financial calculation, growth analysis, or calendar triage; route those to the corresponding specialist."
+    },
+    {
       "name": "spec-driven-development",
       "source": "./",
       "skills": [
