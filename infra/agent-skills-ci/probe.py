@@ -1,16 +1,30 @@
 #!/usr/bin/env python3
 """Non-credentialed worker isolation probe. Does not register a GitHub runner."""
 
+import argparse
+import ipaddress
 import json
 import subprocess
-import sys
+from pathlib import Path
 
 import supervise
 
-host = sys.argv[1]
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("host", choices=["saru", "gpuslut01"])
+parser.add_argument("--toolchains", action="store_true")
+parser.add_argument("--deny-file", type=Path)
+args = parser.parse_args()
+host = args.host
 worker = "agent-skills-ci-probe-" + host
 guard = worker + "-network"
 public_addresses = supervise.addresses()
+if args.deny_file:
+    additional = [
+        str(ipaddress.IPv4Address(line.strip()))
+        for line in args.deny_file.read_text().splitlines()
+        if line.strip()
+    ]
+    public_addresses += " " + " ".join(additional)
 probe = r"""
 import glob, os, socket, subprocess
 from pathlib import Path
@@ -27,12 +41,13 @@ with socket.create_connection(('github.com', 443), 10):
     print('PASS github.com:443 reachable')
 for target in ['10.0.0.1', '172.17.0.1', '192.168.1.1', '100.64.0.1',
                '169.254.169.254', *os.environ['BLOCKED_PUBLIC'].split()]:
-    try:
-        socket.create_connection((target, 443), 1).close()
-    except OSError:
-        pass
-    else:
-        raise AssertionError('private/host destination reachable: ' + target)
+    for port in (80, 443):
+        try:
+            socket.create_connection((target, port), 1).close()
+        except OSError:
+            pass
+        else:
+            raise AssertionError('private/host destination reachable: ' + target + ':' + str(port))
 try:
     socket.create_connection(('2606:4700:4700::1111', 443), 1).close()
 except OSError:
@@ -84,15 +99,15 @@ try:
         "--user=1001:1001",
         "--read-only",
         "--tmpfs",
-        "/home/runner:rw,nosuid,nodev,size=2g,uid=1001,gid=1001",
+        "/home/runner:rw,exec,nosuid,nodev,size=2g,uid=1001,gid=1001",
         "--tmpfs",
-        "/opt/hostedtoolcache:rw,nosuid,nodev,size=1g,uid=1001,gid=1001",
+        "/opt/hostedtoolcache:rw,exec,nosuid,nodev,size=1g,uid=1001,gid=1001",
         "--cpus=2",
         "--memory=" + ("2g" if host == "saru" else "3g"),
         "--memory-swap=" + ("2g" if host == "saru" else "3g"),
         "--pids-limit=512",
         "--tmpfs",
-        "/tmp:rw,nosuid,nodev,size=512m,mode=1777",
+        "/tmp:rw,exec,nosuid,nodev,size=512m,mode=1777",
         "-e",
         "BLOCKED_PUBLIC=" + public_addresses,
         "--entrypoint",
@@ -114,6 +129,17 @@ try:
     else:
         raise RuntimeError("Seed failed")
     supervise.docker("exec", worker, "python3", "-c", probe)
+    if args.toolchains:
+        supervise.docker(
+            "exec",
+            "-i",
+            worker,
+            "python3",
+            "-",
+            input=Path(__file__).with_name("toolchains.py").read_text(),
+            text=True,
+            timeout=900,
+        )
     report = supervise.docker("inspect", worker, capture_output=True, text=True)
     data = json.loads(report.stdout)[0]
     config = data["HostConfig"]

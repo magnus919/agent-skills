@@ -14,7 +14,7 @@ enabled. The existing GPU evaluator container remained running throughout.
 | gpuslut01 | `sha256:d2a6127d13728ad4b35a3c039edcda9f0e410f1f4ab4edae94f2e3c4d8492b11` | `sha256:e0260a075fc9b7fffed2c8bd0356d792f5f218302f404c97bfb02b43c5dc164b` |
 
 `python3 probe.py <host>` passed on both hosts. Verified GitHub port 443 reachable;
-private, host bridge, tailnet, metadata, discovered host-public and IPv6 port 443
+private, host bridge, tailnet, metadata, discovered host-public port 80/443 and IPv6 port 443
 connections failed. Confirmed UID 1001, zero effective capabilities,
 no-new-privileges, sudo denied, no Docker socket or NVIDIA devices, no host mounts,
 read-only root and bounded tmpfs, 2-CPU / 2-GiB (Saru) and 2-CPU / 3-GiB
@@ -29,12 +29,32 @@ blocks replacement, and failed public-egress discovery fails closed. Independent
 found no remaining code blocker for a draft PR; activation gates remain below. Python
 compilation, shell syntax, ruff lint/format, and diff whitespace checks passed.
 
-Not yet verified: real runner registration, restart/timeout lifecycle against
-GitHub, Ruby 3.3 and Python setup actions, either full deterministic job, production
-public-service deny list, or continuous credential renewal. No new workflow has
-been dispatched; existing queued runs were neither rerun nor cancelled. Changes
-to routing remain a draft until these gates pass and a human merges the PR.
+Actual credential-free pinned setup actions also passed on both hosts: Ruby
+3.3.13 (`yaml`/`openssl` load), Python 3.12.16 (venv/pip), Node 24.22.2,
+npm 11.19.1, and the runner 2.338.1 executable. This exposed and fixed Docker's
+implicit `noexec` tmpfs behavior: worker home, toolcache, and temp now explicitly
+allow execution, retaining bounded tmpfs, nosuid/nodev, dropped capabilities,
+read-only root, no-new-privileges, and memory/no-swap limits.
 
-Blocking prerequisite: separately approve/provision a dedicated credential with
-repository Administration:write limited to agent-skills, or select an approved
-GitHub App broker. The existing desktop token is not copied to the hosts.
+Independent inventory review covered live Docker rules, 46 Traefik YAML provider
+files, 63 static router names, the active function wildcard DNS, public upstreams,
+and both hosts' public egress. Their current union contains two public IPv4s;
+the reviewed union was blocked in live probes on both hosts. Detailed infrastructure
+inventory and IPs stay private outside this public repository; drafts are on each
+host at `~/services/agent-skills-ci/denied-public-addresses.reviewed`. Refresh on
+WAN, DNS, reverse-proxy, public-service, or tunnel changes. Future endpoints are
+not automatically covered by this snapshot.
+
+Actionlint 1.7.12 (release checksum verified) passed both modified workflows with
+`actionlint.yaml` custom labels. This checked YAML, workflow semantics/expressions,
+and action inputs; embedded shell/Python external linters were disabled. Separate
+Python, ruff, and guard-shell checks passed.
+
+Not yet verified: real runner registration, restart/timeout lifecycle against
+GitHub, either full deterministic workflow, or continuous credential renewal.
+No workflow has been manually dispatched; existing queued runs were neither rerun nor
+cancelled. Routing remains a draft until these gates pass and a human merges.
+
+Provisioning currently awaits GitHub browser authentication and a dedicated
+repo-only Administration:write credential; no broader desktop credential is
+copied to either host. See `PROVISIONING.md` for supported options and handoff.

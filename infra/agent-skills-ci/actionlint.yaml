@@ -1,0 +1,4 @@
+self-hosted-runner:
+  labels:
+    - agent-skills-ci
+    - agent-skills-eval

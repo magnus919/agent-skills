@@ -31,6 +31,8 @@ The controller sends only a short-lived runner registration token into each fres
 container through stdin. Runner credentials still exist inside that one-job
 container; remove the entire container after completion or at the host deadline.
 
+For credential handoff and the GitHub App alternative, see [PROVISIONING.md](PROVISIONING.md).
+
 ## Install from a reviewed, trusted checkout
 
 Copy only this directory to `~/services/agent-skills-ci` on each host. Do not run
@@ -54,7 +56,8 @@ isolation gates pass, enable only the local host instance, for example
 persistence/lingering before claiming the service survives reboot.
 
 The worker root filesystem is read-only. Runner state/workspace (2 GiB),
-toolcache (1 GiB), and temporary files (512 MiB) use bounded tmpfs charged to
+toolcache (1 GiB), and temporary files (512 MiB) use explicitly executable,
+nosuid/nodev bounded tmpfs charged to
 the worker memory limit, with no swap. Jobs cannot grow the host root overlay;
 resource exhaustion may fail their own job. Docker worker logging is disabled.
 
@@ -76,6 +79,9 @@ egress is TCP 80/443 and DNS to 1.1.1.1; incoming traffic must be established or
 loopback. The guard must finish configuring every rule before the runner starts.
 If a host has additional public ingress/NAT addresses beyond its assigned and
 public egress addresses, add them to the deny list before activation.
+
+Run `python3 probe.py <host> --deny-file denied-public-addresses.reviewed --toolchains`
+for the credential-free network/resource and actual setup-action probes.
 
 Before registration, probe from an otherwise identical non-credentialed worker:
 
