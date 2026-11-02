@@ -1,0 +1,16 @@
+[Unit]
+Description=Ephemeral agent-skills CPU CI worker on %i
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/services/agent-skills-ci
+ExecStart=/usr/bin/python3 %h/services/agent-skills-ci/supervise.py --host %i --token-file %h/.config/agent-skills-ci/controller-token --deny-file %h/.config/agent-skills-ci/denied-public-addresses
+Restart=on-failure
+RestartSec=30
+TimeoutStopSec=60
+UMask=0077
+
+[Install]
+WantedBy=default.target

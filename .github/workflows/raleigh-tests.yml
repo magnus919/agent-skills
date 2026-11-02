@@ -19,7 +19,8 @@ permissions:
 jobs:
   test:
     name: Python ${{ matrix.python }} / protobuf ${{ matrix.protobuf }}
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, agent-skills-ci]
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -28,6 +29,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
