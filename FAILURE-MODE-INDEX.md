@@ -7,6 +7,8 @@ Use this index when the work is blocked by a recognizable failure pattern rather
 | The premise may be wrong | A plausible explanation has not been checked against source or live output | [systematic-debugging](systematic-debugging/SKILL.md) |
 | A tool or API may be missing | You are about to build a workaround without checking the native capability | [agent-skills](agent-skills/SKILL.md), then the domain skill |
 | Work keeps escalating | Two materially different approaches failed | [systematic-debugging](systematic-debugging/SKILL.md) |
+| An agent team is busy without integrated progress | Handoffs or proof loops multiply, ownership is unclear, or local work drifts from shared intent | [multi-agent-coordination](multi-agent-coordination/SKILL.md) |
+| A corrected practice returns through other agents | Stale role recaps, shared notes or retrieval paths reintroduce invalidated guidance | [multi-agent-coordination](multi-agent-coordination/SKILL.md) |
 | A multi-agent decision is converging too early | One perspective appears sufficient but alternatives have not been tested | [agent-council](agent-council/SKILL.md) |
 | A contribution may duplicate existing work | The requested feature sounds like something already in the repository | [opensource-contributions](opensource-contributions/SKILL.md) |
 | A workflow is repeated manually | The same sequence of skills is executed more than once | [workflow-architect](workflow-architect/SKILL.md) |
