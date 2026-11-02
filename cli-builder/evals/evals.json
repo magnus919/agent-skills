@@ -53,13 +53,33 @@
     {
       "id": "debugging-agent-cli-failures",
       "prompt": "An agent keeps failing to use our CLI: sometimes it passes flags the CLI does not have, other times it misreads the output, and occasionally it calls the wrong subcommand entirely. How do I debug this and make the tool easier to use correctly?",
-      "expected_output": "A debugging approach that looks at the tool surface before blaming the agent: the response walks through the failure modes and their tool-side causes — invented flags and wrong subcommands are usually a discoverability problem (help text not surfacing the real command tree, ambiguous names, missing examples), misread output is usually a formatting problem (tables that break parsers, progress bars, no JSON mode, colors obscuring values). The response prescribes concrete fixes: a complete and correct --help with examples for each subcommand, unambiguous naming, stable JSON output with documented fields, and a strict mode that errors on unknown flags instead of silently ignoring them, plus a test harness that replays the agent's failing invocations against the CLI to confirm the fixes.",
+      "expected_output": "A debugging approach that looks at the tool surface before blaming the agent: the response walks through the failure modes and their tool-side causes \u2014 invented flags and wrong subcommands are usually a discoverability problem (help text not surfacing the real command tree, ambiguous names, missing examples), misread output is usually a formatting problem (tables that break parsers, progress bars, no JSON mode, colors obscuring values). The response prescribes concrete fixes: a complete and correct --help with examples for each subcommand, unambiguous naming, stable JSON output with documented fields, and a strict mode that errors on unknown flags instead of silently ignoring them, plus a test harness that replays the agent's failing invocations against the CLI to confirm the fixes.",
       "assertions": [
         "The response maps each failure mode to a tool-side cause rather than blaming the agent",
         "Discoverability fixes include complete help, examples, and unambiguous naming",
         "Output readability fixes include JSON mode and removing parser-hostile formatting",
         "Unknown flags are rejected in strict mode rather than silently ignored",
         "A replay harness verifies the fixes against the agent's actual failing invocations"
+      ]
+    },
+    {
+      "id": "documented-command-grammar",
+      "prompt": "Design an offline docs checker. The grammar requires a subcommand after mycli; list is valid and oneshot is retired. --label consumes exactly one value, even list. deploy accepts a path positional; root --profile does not propagate. Explain how to handle mycli oneshot, mycli --label list list, and mycli deploy ./site --profile prod.",
+      "expected_output": "Use explicit grammar and scope rather than stopping at unknown tokens.",
+      "assertions": [
+        "Rejects oneshot at the required-subcommand position.",
+        "Consumes the first list as the value of --label in the supplied example.",
+        "Rejects the non-inherited --profile option at deploy."
+      ]
+    },
+    {
+      "id": "command-check-coverage",
+      "prompt": "Our offline checker silently ignores multiline examples and treats unrecognized quoting as passing. The captured CLI version is older than the installed one. Can we call all documented commands verified?",
+      "expected_output": "Report exclusions and unresolved syntax; separate offline capture checks from live validation.",
+      "assertions": [
+        "Reports skipped multiline examples as a coverage gap.",
+        "Does not treat unsupported syntax as a successful validation.",
+        "Limits an offline pass to the captured grammar version."
       ]
     }
   ]
