@@ -68,3 +68,20 @@ Use [templates/context-budget.md](../templates/context-budget.md). Primary sourc
 [Anthropic context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
 for JIT retrieval and long-horizon techniques; its examples motivate design choices,
 not a universal threshold or a guarantee for this skill.
+
+## Recover intent without broadening scope
+
+After compaction, handover or observed scope drift, follow current authoritative
+references from the assigned task through its parent outcome to the project
+purpose. Retain the exact accepted version and exclusions at every level. State
+how the next action serves the task; treat newly helpful dependencies as scope
+proposals. A broad purpose cannot override narrower authority or acceptance.
+
+Use a bounded packet with relevant facts and source pointers rather than reloading
+every project file. Challenge the worker's next decision or artifact against the
+recovered constraint. Sent, received, adopted and verified remain distinct.
+For paths spanning several agents, use multi-agent-coordination's communication
+and context procedure; this reference owns the single-agent loading mechanism.
+
+Motivation: [OpenRig video, 18:29–19:43](https://www.youtube.com/watch?v=AL-PQuB2wy0&t=1109s).
+This is a proposed mechanism and test obligation, not a reproduced prevention rate.

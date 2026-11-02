@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "skill_name": "multi-agent-coordination",
+  "evals": [
+    {
+      "id": "sequential-baseline",
+      "prompt": "Our agents implement one tightly coupled database migration. Should I add six specialists to finish faster?",
+      "expected_output": "A justified single-owner or sequential plan with a matched baseline.",
+      "assertions": [
+        "Keeps tightly coupled migration decisions under coherent ownership.",
+        "Requires integrated behavior evidence before claiming a speed or quality benefit."
+      ]
+    },
+    {
+      "id": "heterogeneous-team",
+      "prompt": "Coordinate Claude Code and Codex across two machines using HERDR for terminals and OpenRig for work. Design the contracts without installing anything.",
+      "expected_output": "A layered team plan with stable roles, execution identity, task ownership and acceptance.",
+      "assertions": [
+        "Distinguishes terminal/session management from owned work coordination.",
+        "Separates a persistent role from its current execution identity.",
+        "Names an owner for integrated acceptance."
+      ]
+    },
+    {
+      "id": "uninformed-peer-approval",
+      "prompt": "The worker knows a write affects a customer account; the lead knows the project goal but not that fact. The lead says GO. Parent authority is read-only. What happens?",
+      "expected_output": "Hold the write and assemble an informed decision packet without treating peer GO as a grant.",
+      "assertions": [
+        "Keeps the write outside the read-only parent grant.",
+        "Brings the local customer-account effect into the decision packet."
+      ]
+    },
+    {
+      "id": "recursive-proof-near-miss",
+      "prompt": "Acceptance is already evidenced, but agents keep checking whether earlier checks were checked. Security review is mandatory and still incomplete. How do we end this?",
+      "expected_output": "Separate redundant proof recursion from the required unresolved security evidence.",
+      "assertions": [
+        "Preserves the incomplete mandatory security review as an unresolved requirement.",
+        "Connects further proof work to a specific unresolved acceptance claim."
+      ]
+    },
+    {
+      "id": "intent-after-compaction",
+      "prompt": "A doghouse task now includes a generator and fuel depot after compaction. The broader project is to care for the dog. Refocus the worker.",
+      "expected_output": "Recover accepted scope and intent without using broad purpose to authorize additions.",
+      "assertions": [
+        "Reconstructs the current task-to-parent intent chain from authoritative versions.",
+        "Treats optional generator scope as a proposal rather than existing authorization."
+      ]
+    },
+    {
+      "id": "shared-knowledge-recurrence",
+      "prompt": "We corrected a bad practice in one agent, but it returns through role recaps on another machine. What is the recovery plan?",
+      "expected_output": "Trace source and derivative consumers, repair within scope and verify fresh-session adoption.",
+      "assertions": [
+        "Traces source-to-derived-artifact-to-consumer paths beyond the corrected agent.",
+        "Leaves unknown lineage coverage explicitly unresolved.",
+        "Requires behavioral evidence after correction rather than acknowledgement alone."
+      ]
+    },
+    {
+      "id": "lost-owner-late-result",
+      "prompt": "The lead restarts after handing off work. An expired worker later returns a patch after a replacement started. Design recovery.",
+      "expected_output": "Reconcile durable ownership and effects; fence obsolete output before integration.",
+      "assertions": [
+        "Reconciles acknowledged transfer and existing effects before redispatch.",
+        "Fences the expired execution at write or integration."
+      ]
+    },
+    {
+      "id": "ceremony-versus-outcomes",
+      "prompt": "Queue traffic doubled and accepted milestones stayed flat, but this week includes a regulated release. Can we delete approvals?",
+      "expected_output": "Investigate task mix and necessary assurance before changing coordination.",
+      "assertions": [
+        "Checks changed task mix and assurance needs before attributing stalled progress to bureaucracy.",
+        "Retains required approvals unless an authorized policy change permits removal."
+      ]
+    },
+    {
+      "id": "research-transfer",
+      "prompt": "A tool demo runs hundreds of agents and a paper finds a graph wins on one research benchmark. Should every coding team use a peer mesh?",
+      "expected_output": "Bound the evidence and propose a matched architecture experiment.",
+      "assertions": [
+        "Limits benchmark findings to their task and model conditions.",
+        "Includes a simpler baseline in the proposed comparison."
+      ]
+    },
+    {
+      "id": "snapshot-exposure-limits",
+      "prompt": "Run the bundled audit and exposure commands on templates/team-snapshot.json. Does a clean audit prove the invalidated lesson is gone?",
+      "expected_output": "Actual helper results with explicit declaration and lineage limits.",
+      "assertions": [
+        "Reports that clean audit findings do not establish runtime acceptance.",
+        "Distinguishes reachable consumers from proven infection or complete exposure coverage."
+      ]
+    }
+  ]
+}

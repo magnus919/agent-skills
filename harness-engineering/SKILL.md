@@ -31,6 +31,19 @@ load [the factory procedure](references/software-factory.md), not a generic
 collection of agent personas. Keep business operating-model decisions with
 operational-design and ai-operating-economics through the catalog handoffs.
 
+## Cross-agent coordination boundary
+
+For decomposition, topology, team ownership, distributed context and collective
+failure diagnosis, load [multi-agent-coordination](../multi-agent-coordination/SKILL.md).
+This skill owns the runtime implementation of those contracts. Existing software
+factory references remain available for production flow and steering.
+
+When compaction or local scope expansion loses intent, reconstruct the accepted
+task → parent outcome → project purpose chain from current source versions.
+Keep narrower scope and authority intact; a broad purpose cannot authorize new
+work. Challenge application of the recovered constraint rather than treating
+context delivery as adoption. See [context design](references/context-design.md).
+
 ## Authority and first move
 
 Confirm the target, scope, and rollback path before acting. Read-only discovery may proceed without confirmation.

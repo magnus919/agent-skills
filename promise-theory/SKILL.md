@@ -16,6 +16,20 @@ diagnosing delegation: promises, acceptances, assessments, breaches, and
 renegotiation. This skill is a thin router; load the dense material only when
 a row in [Load By Need](#load-by-need) matches your task.
 
+## Cross-agent design handoff
+
+Use [multi-agent-coordination](../multi-agent-coordination/SKILL.md) for topology,
+work ownership, communication contracts and collective recovery. Use this skill
+for the promise/acceptance/assessment model within that design. An accepted offer
+or peer approval cannot expand an execution grant; verify rights at the runtime
+boundary through harness-engineering and governance through ai-governance.
+
+When a worker has local facts and an approver has broad intent, assemble both
+before assessment. Record which claim is being assessed and what evidence the
+assessor can see. Repeated acceptance without relevant evidence is not calibrated
+trust. If either decision context or authority is missing, hold that decision and
+route it to its owner while authorized unaffected work continues.
+
 ## Core model
 A promise is an autonomous declaration of intended, but as yet unverified,
 behaviour from a promiser to a promisee (body: label Λ, type τ, constraint χ).
@@ -82,7 +96,7 @@ Append `--json` for machine-readable output (a single JSON object on stdout); `r
 |-------|---------------|
 | [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) | You need the assessment layer: evals, guardrails, and observability that verify promises are kept (also routed from `references/trust-and-verification.md`) |
 | [agent-council](../agent-council/SKILL.md) | You need multi-agent debate as structured promise exchange and convergence (also routed from `references/agent-coordination.md`) |
-| [workflow-architect](../workflow-architect/SKILL.md) | You need to design a workflow as a chain of promises (also routed from `references/patterns.md`) |
+| [multi-agent-coordination](../multi-agent-coordination/SKILL.md) | You need to design a workflow as a chain of promises (also routed from `references/patterns.md`) |
 | [artifact-pyramids](../artifact-pyramids/SKILL.md) | You need to structure promise-keeping evidence as summaries → analysis → evidence dossiers (also routed from `references/trust-and-verification.md`) |
 | [agent-skills](../agent-skills/SKILL.md) | You are authoring or editing an Agent Skills-format skill — the format this skill follows |
 | [cli-builder](../cli-builder/SKILL.md) | You are building or refactoring the bundled CLI — `scripts/promise-contract.py` follows cli-builder conventions (non-interactive, `--json`, `--dry-run`) |

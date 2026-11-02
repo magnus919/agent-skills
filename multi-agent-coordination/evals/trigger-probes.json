@@ -1,0 +1,34 @@
+[
+  {
+    "prompt": "Design a fleet across different harnesses.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Why do our agents keep handing work back and forth?",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Choose peer versus lead-worker topology.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "A corrected shared lesson returns through other workers.",
+    "should_trigger": true
+  },
+  {
+    "prompt": "Install HERDR and configure its shortcuts.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Fix one agent tool dispatcher timeout.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Run an agent-council debate on pricing.",
+    "should_trigger": false
+  },
+  {
+    "prompt": "Create a production agent rollback policy.",
+    "should_trigger": false
+  }
+]
