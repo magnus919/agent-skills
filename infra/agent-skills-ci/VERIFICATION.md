@@ -77,3 +77,8 @@ skipped because no skill changed. Required validation exited137 during pip on
 Saru at2GiB; the same install previously succeeded on the3GiB GPU worker. Saru
 is now bounded at3GiB as well, with pip cache disabled; the new full validation
 run is pending. The7-test controller suite and static workflow checks pass.
+
+The3GiB run cleared dependency installation, then the Ruby validator exposed an
+image-default US-ASCII locale. Workers now explicitly use C.UTF-8 for LANG and
+LC_ALL, and the toolchain probe asserts Ruby UTF-8 external encoding. Required
+full validation is rerun on the corrected environment.

@@ -74,6 +74,11 @@ subprocess.run(
 )
 for command in (
     ["ruby", "--version"],
+    [
+        "ruby",
+        "-e",
+        "abort 'Ruby locale is not UTF-8' unless Encoding.default_external == Encoding::UTF_8",
+    ],
     ["python3", "--version"],
     ["node", "--version"],
     ["npm", "--version"],
