@@ -69,4 +69,6 @@ outsourcing and hiring as options rather than failures of solo identity.
 
 Preservation gate: all retained sources have dated extraction and limitations;
 all material claims map to source IDs; exclusions and inaccessible retrievals are
-logged. Behavioral effectiveness and independent review remain unestablished.
+logged. Behavioral effectiveness and human certification remain unestablished. A
+separate model reviewed source calibration, routing, arithmetic and eval rubrics;
+that artifact review is not a behavioral execution or real-user comparison.
