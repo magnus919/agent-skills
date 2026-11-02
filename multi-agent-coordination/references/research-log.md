@@ -76,3 +76,14 @@ raw-session export and claimed scale/productivity gains were not promoted.
 No new retrieval script or graph database was needed: existing helper and host
 routing remain adequate; new templates/procedures carry the missing contracts.
 The fresh-agent and end-to-end team-effectiveness studies remain unperformed.
+
+## Pinned source audit follow-up
+
+2026-11-02: Read-only clone pinned S40 before tracing implementation and failure
+tests. GroktoCrawl retrieved coordination, messaging, workflows, architecture,
+telemetry, context and RigBundle pages through the explicit user-selected API.
+The map returned only 20 navigation URLs; it was not treated as exhaustive.
+Guides primarily describe 0.6.6 versus source 0.7.1. Source/test ledger preserves
+nine mechanisms, contrary cases and scope gaps. No dependencies installed or
+OpenRig tests executed; no runtime or fleet launched. Added an effect/recovery
+matrix and three behavioral eval specifications; no new helper was justified.

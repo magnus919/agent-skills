@@ -60,3 +60,7 @@ durable owned work and distinguishes closure from acceptance. HERDR's
 post-restart restoration. These are documented mechanisms, not evidence that
 our host implements either guarantee. Exercise a crash around transfer, two
 simultaneous claims, expired-worker output and lost wake-up before relying on them.
+
+## Source-traced qualification
+
+Commit source closure, successor and wake intent as one act when the host supports it; dispatch afterward. Give lost-wake recovery a narrow write set that restores liveness without advancing acceptance. See [the pinned source audit](openrig-source-audit.md) and [effect/recovery matrix](../templates/effect-recovery-matrix.md).

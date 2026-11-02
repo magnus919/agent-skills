@@ -89,6 +89,7 @@ a diagram, a prompt or a terminal status indicator.
 | Endless checking, scope inflation, consensus or stalled activity | [Collective failures](references/collective-failures.md) | [Incident record](templates/coordination-incident.md) |
 | Bad practice returns through another agent or memory source | [Shared knowledge containment](references/shared-knowledge.md) | [Knowledge correction](templates/knowledge-correction.md) |
 | Compare architectures; measure outcomes and overhead | [Evaluation](references/evaluation.md) | Experiment |
+| Trace coordination guarantees into state, effects and adverse tests | [Pinned OpenRig audit](references/openrig-source-audit.md) | [Effect/recovery matrix](templates/effect-recovery-matrix.md) |
 | Learn from emerging coordination tools without adopting their stack | [Tool lessons](references/tool-lessons.md) | [Tool assessment](templates/tool-assessment.md) |
 | Select another catalog owner | [Catalog boundaries](references/catalog-boundaries.md) | Named specialist input/return |
 | Emerging research on synthesis, topology-aware diagnosis, coding interference or resource contention | [Emerging research](references/emerging-research.md) | Local challenge design and transfer limits |

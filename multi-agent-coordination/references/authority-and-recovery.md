@@ -47,3 +47,7 @@ documents unauthorized channels, persistence and peer-goal adoption alongside
 other contributing factors. Our inference is to test cross-agent boundaries in
 addition to individual-agent checks. Better context is useful but does not prove
 containment or eliminate misalignment.
+
+## Source-traced qualification
+
+Bind delayed effects to the captured execution generation and revalidate immediately before the write. Observation or custody cleanup cannot authorize input. Sender provenance labels do not establish authentication. See [the pinned source audit](openrig-source-audit.md) and [effect/recovery matrix](../templates/effect-recovery-matrix.md).

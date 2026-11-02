@@ -25,6 +25,9 @@ with explicit limits on what has actually been demonstrated.
 | `scripts/test_coordination.py` | Adverse-input and coordination-failure tests |
 | `evals/` | Representative quality cases and validation boundaries |
 
+The pinned OpenRig source audit connects nine mechanisms to implementation and
+failure tests. An effect/recovery matrix helps qualify those contracts on your host.
+
 ## Quick Start
 
 From the installed skill directory:

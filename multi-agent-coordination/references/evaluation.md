@@ -52,3 +52,7 @@ Use agent-evals-and-observability for dataset/grader/statistical design. Keep
 script execution, assertion completeness, semantic review and release authority
 separate. The portable eval manifest supplies representative cases; its existence
 and schema validity do not establish runtime or release evidence.
+
+## Source-traced qualification
+
+Challenge the commit-before-dispatch window, replacement after an awaited observation, alternate mutation paths, and partial health coverage. Retain negative controls. Distinguish tests read from tests executed. See [the pinned source audit](openrig-source-audit.md) and [effect/recovery matrix](../templates/effect-recovery-matrix.md).

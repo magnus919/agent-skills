@@ -313,3 +313,11 @@ Accessed 2026-11-02 UTC. Records separate source claims from our synthesis. No f
 - Retained claims: Applies transactive-memory encoding, storage and retrieval distinctions to explicit knowledge of others expertise.
 - Limit/counterevidence: Design discussion, not a demonstrated LLM fleet outcome improvement or validation of human/model equivalence.
 - Disposition: retained → expert-directory design rationale and local transfer evaluation.
+
+## S40 — OpenRig pinned implementation and tests
+- Source: [OpenRig tree](https://github.com/mvschwarz/openrig/tree/22b574983e840f4a664abf46787e7d8949ed6de4)
+- Revision/date: `22b574983e840f4a664abf46787e7d8949ed6de4`, package 0.7.1; accessed 2026-11-02 UTC.
+- Evidence class: First-party source and test inspection; not executed.
+- Retained claims: Transactional handoff and wake intent, restart liveness, final-effect identity guards, workflow invariants, versioned recovery, attribution limits, bounded passive diagnosis, context resolution and declared package closure.
+- Limit/counterevidence: Public docs primarily 0.6.6; no runtime or general security certification. Default-off guard and trusted-network attribution are explicit qualifications.
+- Disposition: retained → openrig-source-audit.md; effect-recovery-matrix.md; three new evals.

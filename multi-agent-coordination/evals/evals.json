@@ -150,6 +150,35 @@
         "Keeps the memorable cue linked to a scoped principle instead of making it a blanket prohibition.",
         "Retains the explicit approved change when deciding whether the lesson applies."
       ]
+    },
+    {
+      "id": "committed-transfer-lost-wake",
+      "prompt": "The daemon committed source closure, successor and wake intent, then crashed before delivery. The successor is still pending. Should restart mark it done or create another task? Give a recovery contract and a test.",
+      "expected_output": "Recover delivery from durable intent without duplicating work or advancing acceptance.",
+      "assertions": [
+        "Keeps the committed successor instead of creating an unnecessary duplicate task.",
+        "Restores delivery or observation without treating recovery as accepted completion.",
+        "Tests the crash between commit and dispatch."
+      ]
+    },
+    {
+      "id": "recipient-replaced-after-await",
+      "prompt": "A delayed delivery captured worker@team, waited on an observation, and now the same address has a new occupant. Cleanup permission is available. What must the coordinator check before typing?",
+      "expected_output": "Refuse stale-bound delivery and separate cleanup authority from input authority.",
+      "assertions": [
+        "Checks current execution identity at the final effect boundary.",
+        "Does not let cleanup permission authorize typing to the replacement."
+      ]
+    },
+    {
+      "id": "partial-ceremony-diagnosis",
+      "prompt": "A passive health scan saw 300 handoffs and 40 proof files but omitted 80 families. No accepted product outcomes were inspected. A prior diagnosis used an older evidence hash. Can we report 100 percent waste and trigger repair?",
+      "expected_output": "Preserve unknown progress and partial coverage; reassess the changed basis before authorized action.",
+      "assertions": [
+        "Does not invent a waste ratio from handoff or proof counts.",
+        "Reports the omitted scope as incomplete observation rather than healthy coverage.",
+        "Does not reuse the stale assessment as authority for repair."
+      ]
     }
   ]
 }
