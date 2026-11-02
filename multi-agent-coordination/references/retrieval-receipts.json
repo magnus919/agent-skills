@@ -1,0 +1,389 @@
+[
+  {
+    "artifact": "coord-buzz-agents.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://raw.githubusercontent.com/metroncorp/blockbuzz/main/VISION_AGENT.md",
+    "markdown_characters": 4640,
+    "markdown_sha256": "d7e4c17f89d04d85f042b12efd5536758c15a99779098a0e54e8d10c9555b60f",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-buzz-pinned.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://raw.githubusercontent.com/metroncorp/blockbuzz/074561233eef71df9690ec22c2a9c5e798c297a7/README.md",
+    "markdown_characters": 15054,
+    "markdown_sha256": "4243f08223aa3023197a8c30c6e58bf53ea8a76f57097f63607379c5261b3771",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-buzz.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://raw.githubusercontent.com/metroncorp/blockbuzz/main/README.md",
+    "markdown_characters": 15018,
+    "markdown_sha256": "8823d4af7d8356127062b779d48ce9487a25fcb04ec4f0d158657451af24f523",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-collaboration.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://www.anthropic.com/research/multi-agent-research-system",
+    "markdown_characters": 24019,
+    "markdown_sha256": "a6f1c83943d03e09c1d3e76c2a9c670936c264fb1ed707908f82ec3d793794cb",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-consensus.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/html/2605.00914v1",
+    "markdown_characters": 126505,
+    "markdown_sha256": "53ecaccf62d43233f7e4804ce8d5d004f178209471fd54a9ab081b29ca5c2bce",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-full-2602.13255v2.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/html/2602.13255v2",
+    "markdown_characters": 89435,
+    "markdown_sha256": "533fbfca0859ad8484b07b937d4ff47d4d98d83e56e152f6e8413e4d3c805d55",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-full-2603.01045v2.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/html/2603.01045v2",
+    "markdown_characters": 93942,
+    "markdown_sha256": "863e9427e8b7ba8df65ef1622bbf858b0122f2370367fbc3f75fb124906163ce",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-full-2605.08647v1.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/html/2605.08647v1",
+    "markdown_characters": 169580,
+    "markdown_sha256": "ca293290413a55c519daf757fe0e47c8af1076e3f6861db636479e696cf4603d",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-full-2608.16801v1.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/html/2608.16801v1",
+    "markdown_characters": 59417,
+    "markdown_sha256": "2b2b577e97b401005a7eb7f9d36c5019e01603e47c8f72f640e4509ffb9ed05b",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-full-2609.25396v1.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/html/2609.25396v1",
+    "markdown_characters": 45522,
+    "markdown_sha256": "76c5e719057f4a5c382c409fa8575238d41d27168b3203348456fe54630cdcbe",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-full-2610.10126v1.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/html/2610.10126v1",
+    "markdown_characters": 39027,
+    "markdown_sha256": "bcc34709e857b7dcbf163efff3946ebebe85687c0179595bba85737dbdeb3cca",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-herdr-agent.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://herdr.dev/tui/docs/agent-skill/",
+    "markdown_characters": 2649,
+    "markdown_sha256": "b9bb2cf2c0c032b1fce487a1dc51c2b2c1538087f3d4fce3f840acfd44e2d1c5",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-herdr-pinned.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://raw.githubusercontent.com/herdrdev/herdr/ee5bfb5041bb3e4a49d591c72308aae3c81ecdde/README.md",
+    "markdown_characters": 5114,
+    "markdown_sha256": "0370c828608d298f8635e91afdc4f1f95996f4a1ed0301b95748a46b5f509dda",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-herdr.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://raw.githubusercontent.com/herdrdev/herdr/master/README.md",
+    "markdown_characters": 5080,
+    "markdown_sha256": "05a1dd86b3e9d1df692898bdf490d1e39a35fdb249dbd1dc1820b4d04b534191",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-infection.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/html/2410.07283v1",
+    "markdown_characters": 12969,
+    "markdown_sha256": "171b7e4b4a700c3e4d7594f3b8f72da5c9a03946c4ba51d2177617e68ffaca38",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-mass.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/html/2502.02533v2",
+    "markdown_characters": 145263,
+    "markdown_sha256": "2d6723e55a53fe61a93e9d7f9407eb1a440165b5e87d86ce590c12ab36929992",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-mast.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/html/2503.13657v3",
+    "markdown_characters": 36501,
+    "markdown_sha256": "32bb8d80f4f8b5ccf08fb5bb29f2f6de8f21243d0512e9bb1dbb82257da2b717",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-openrig-context.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/docs/context",
+    "markdown_characters": 6804,
+    "markdown_sha256": "724e1b1f076516ddcb86fcba841aabbf56ef6e10daa3bcb0ef59157ccd35dc29",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-openrig-pinned.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://raw.githubusercontent.com/mvschwarz/openrig/f3f8319d1ca6e7af3c7a2634603ffbf80be5ea90/README.md",
+    "markdown_characters": 42960,
+    "markdown_sha256": "67f63e8ca7620ec442b4f9259b0bf8744010f4f0f8a1e9a4c1e1a4e27e70261a",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-openrig-queue.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/docs/coordination",
+    "markdown_characters": 9692,
+    "markdown_sha256": "ba25718461570f3593f787e5bebd315d4a95fce784925bb002b2f693f49d73a9",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-openrig.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://github.com/mvschwarz/openrig",
+    "markdown_characters": 43460,
+    "markdown_sha256": "983cb4b9024e9c4ec2f3ab1394931b8260b6d0fc2e89d3a2dbd7e074d473fb45",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-paper-2602.13255.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/abs/2602.13255",
+    "markdown_characters": 7253,
+    "markdown_sha256": "19a806b544d09036bd27f53c719c41577f275a9a9795ec3d86bcc3078003f789",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-paper-2603.01045v2.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/abs/2603.01045v2",
+    "markdown_characters": 2399,
+    "markdown_sha256": "de64ac2a159f1b5bd5c7fbc7223fb52a4e83fc0a19249b896db7849efd675304",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-paper-2605.08647.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/abs/2605.08647",
+    "markdown_characters": 3155,
+    "markdown_sha256": "5625819b1b66705bd77bbd64e737ddcae4cffd773afc02d4f3405e38cb835063",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-paper-2608.16801.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/abs/2608.16801",
+    "markdown_characters": 2293,
+    "markdown_sha256": "750b9fcfedeedd8791d53eb4c4cbe78153b06b45c93d4873155824dbd2fce37b",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-paper-2609.25396.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/abs/2609.25396",
+    "markdown_characters": 6893,
+    "markdown_sha256": "a1ecda91df67b336b8024f9694551f10dae8ec5902ecf63debb530056fbf1a91",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-paper-2610.10126v1.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/abs/2610.10126v1",
+    "markdown_characters": 2604,
+    "markdown_sha256": "88a56a3b3f70a98bee4d8bdb7c63bf40b60254b45af302e1449c2a0eff10c627",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-scaling.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/html/2512.08296v3",
+    "markdown_characters": 22469,
+    "markdown_sha256": "d755a5c6a411f9bc685f042c3f15d524c311b3b1e16557d62b23ae5f097370ff",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-openrig-continuity.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/docs/continuity",
+    "markdown_characters": 9216,
+    "markdown_sha256": "7d63c2392cc017edb667558faab850c5775d379e6edeca97e1c1a34490263322",
+    "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-followup-gtc.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://www.youtube.com/watch?v=CYRJDTcTKhQ",
+    "markdown_characters": 37809,
+    "markdown_sha256": "897295f6178260b155111af70a6bf271beeecabfbc8bac63fc85644687494547",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-starting-map.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/blog/what-i-put-in-an-agents-starting-map",
+    "markdown_characters": 8892,
+    "markdown_sha256": "afe622c02aa41b8aaf2a8fd1517e74f13cb98c75365d683c192b3b64002b8f78",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-world-building.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/blog/how-my-agent-teams-find-their-way",
+    "markdown_characters": 17792,
+    "markdown_sha256": "7b47756cfcffbb92b8f8efddd88656be056ffcfa3b536c3919cdb1ceb97af297",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-other-minds.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/blog/some-roads-lead-to-other-minds",
+    "markdown_characters": 7521,
+    "markdown_sha256": "3c58ca084c68fe64da0976e4fc73121d5e4589559b3cef6309464bbfc4f8a000",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-contributor-team.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/blog/rig-bundles-for-open-source",
+    "markdown_characters": 6769,
+    "markdown_sha256": "6b992b6d889bd043ffbf144ec73fa72f7486348e21cc6c2f9ea3c1479ff92106",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-messaging.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/docs/messaging",
+    "markdown_characters": 6426,
+    "markdown_sha256": "50ec1874831fb8c68b46233409fed2a9fa9109c7b43c42e40a8bf07e631eb0bd",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-bundle.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/specs/rigbundle",
+    "markdown_characters": 42947,
+    "markdown_sha256": "1922e4fee78b0d14b4dbd4322335f1ea6a84d30a6a60b5248bbfb1b49543d985",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-workshop.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/rigs/workshop",
+    "markdown_characters": 12925,
+    "markdown_sha256": "757c84154068f84cb62ba16439007db7971d3588ec07ccd5b7e14edd8e50434c",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-anthropic-context.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+    "markdown_characters": 21409,
+    "markdown_sha256": "b83e0a58ea8a7b65e3dcae7e42b6ace711cb153471aff236d22534dc860121ff",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-prov.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://www.w3.org/TR/prov-primer/",
+    "markdown_characters": 40903,
+    "markdown_sha256": "2acb71b83030a5576cc717c9f223e2c3f42b695616290840529545bde5220bb1",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-skos.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://www.w3.org/TR/skos-primer/",
+    "markdown_characters": 92875,
+    "markdown_sha256": "2da421487374d48b8332eae0107783f6ad356bfc173c928742edcd5d6df358bf",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-tms.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/html/2305.05115",
+    "markdown_characters": 31486,
+    "markdown_sha256": "dbe9743faa951174d9432cdff97de5dfa76ba4730990c3d1fae8af33afbf0b37",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-context.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/docs/context",
+    "markdown_characters": 6804,
+    "markdown_sha256": "724e1b1f076516ddcb86fcba841aabbf56ef6e10daa3bcb0ef59157ccd35dc29",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-continuity.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/docs/continuity",
+    "markdown_characters": 9216,
+    "markdown_sha256": "7d63c2392cc017edb667558faab850c5775d379e6edeca97e1c1a34490263322",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  }
+]

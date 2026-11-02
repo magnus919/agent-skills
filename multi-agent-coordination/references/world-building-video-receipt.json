@@ -1,0 +1,9 @@
+{
+  "source": "https://www.youtube.com/watch?v=CYRJDTcTKhQ",
+  "track": "en",
+  "format": "json3",
+  "sha256": "a9e9f32587b72ccd817b27af570e9bbdeb237056a467276b2d2d22d551c33602",
+  "bytes": 92326,
+  "review_scope": "all caption text 00:00 to 30:15; no audiovisual verification",
+  "additional_retrieval": "GroktoCrawl YouTube adapter English transcript"
+}

@@ -112,6 +112,7 @@
     "./migration-engineering",
     "./ml-engineering",
     "./mobile-development",
+    "./multi-agent-coordination",
     "./multi-tenant-saas-architecture",
     "./neckbeard",
     "./notion",

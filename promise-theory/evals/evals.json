@@ -85,6 +85,16 @@
         "activation_evidence_contains:SKILL.md",
         "exit_status:completed"
       ]
+    },
+    {
+      "id": "uninformed-assessor",
+      "prompt": "A worker sees a customer-data effect; its approving peer sees only project goals and says yes. The current grant is read-only. Model the failure.",
+      "expected_output": "A bounded evidence-led response respecting the specialist ownership and authority boundary.",
+      "assertions": [
+        "Does not treat peer acceptance as permission to write.",
+        "Brings local effect evidence and governing intent together for assessment.",
+        "Assigns missing authority or evidence to a responsible decision owner."
+      ]
     }
   ]
 }

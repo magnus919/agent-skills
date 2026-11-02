@@ -420,6 +420,16 @@
         "Records attempted or committed evaluator mutation separately from task correctness.",
         "Does not accept the agent as sole evidence source for control integrity."
       ]
+    },
+    {
+      "id": "team-ceremony-near-miss",
+      "prompt": "Messages doubled and delivery stalled during a high-assurance release. Design the evaluation before removing approvals.",
+      "expected_output": "A bounded evidence-led response respecting the specialist ownership and authority boundary.",
+      "assertions": [
+        "Checks task mix and required assurance before attributing delay to ceremony.",
+        "Measures accepted integrated outcomes alongside coordination cost.",
+        "Retains mandatory authority and safety boundaries in the comparison."
+      ]
     }
   ]
 }

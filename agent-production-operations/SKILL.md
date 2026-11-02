@@ -26,6 +26,21 @@ The bundle does **not** build agents, design evaluations, run release pipelines,
 or own infrastructure. It composes those concerns from existing specialist
 skills and owns only the runtime control decisions between them.
 
+## Teams across harnesses
+
+Use [multi-agent-coordination](../multi-agent-coordination/SKILL.md) for team design
+and collective failure diagnosis. This bundle owns operational response after
+evaluation. For a shared-practice incident, identify affected sources, derivatives,
+retrieval caches, queued work and active consumers; contain only affected paths
+within current authority. Preserve unrelated work and independently protected
+controls. An agent acknowledging a correction does not prove adoption.
+
+Route source repair and fresh-session challenges to the owning harness. Record
+known exposure and missing lineage; no observed recurrence without exposure is
+inconclusive. Recovery must prevent stale memory, backups or extraction jobs from
+reintroducing the practice. Keep source/content compromise distinct from benign
+mistaken conventions, and escalate unknown effects through the incident owner.
+
 ## When to load this
 
 Load this bundle when you are operating an agent that:

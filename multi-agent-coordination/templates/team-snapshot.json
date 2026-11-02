@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "run_id": "fictional-export-run",
+  "as_of": "2026-11-02T00:00:00Z",
+  "intent_version": "invoice-export-v2",
+  "seats": [
+    {"id": "builder", "execution": "build-run-2"},
+    {"id": "integrator", "execution": "integration-run-1"}
+  ],
+  "tasks": [
+    {"id": "contract", "owner": "integrator", "status": "accepted", "intent_version": "invoice-export-v2", "depends_on": [], "claims": [], "continuation": null},
+    {"id": "export", "owner": "builder", "status": "working", "intent_version": "invoice-export-v2", "depends_on": ["contract"], "claims": [{"seat": "builder", "execution": "build-run-2", "epoch": 2, "expires_at": "2026-11-02T01:00:00Z"}], "continuation": null}
+  ],
+  "knowledge": [
+    {"id": "lesson-old", "kind": "source", "status": "invalidated"},
+    {"id": "role-recap", "kind": "artifact", "status": "suspect"},
+    {"id": "builder-context", "kind": "consumer", "status": "unknown"}
+  ],
+  "edges": [
+    {"source": "lesson-old", "target": "role-recap"},
+    {"source": "role-recap", "target": "builder-context"}
+  ]
+}
