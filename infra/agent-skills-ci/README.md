@@ -1,6 +1,6 @@
 # Dedicated agent-skills CPU CI pool
 
-One clean, single-job worker on Saru (2 CPU / 2 GiB) and one on gpuslut01
+One clean, single-job worker on Saru (2 CPU / 3 GiB) and one on gpuslut01
 (2 CPU / 3 GiB). Neither receives a GPU, host directory, Docker socket,
 SSH identity, durable GitHub credential, shared cache, or privileged capability.
 The existing GPU evaluator stays separate. Credential-free validation, paired tests/smoke,

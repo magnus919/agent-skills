@@ -70,3 +70,10 @@ routed to this pool; private-credential workflows remain GitHub-hosted.
 Full current-head deterministic workflow validation and post-merge integration
 checks remain pending. No formal PR approval is implied by the independent code
 reviews; normal repository merge gates still apply.
+
+Current-head real CI passed all four Raleigh matrix jobs and paired tests/fake
+smoke. Keyless advisory installation succeeded and skill scanning correctly
+skipped because no skill changed. Required validation exited137 during pip on
+Saru at2GiB; the same install previously succeeded on the3GiB GPU worker. Saru
+is now bounded at3GiB as well, with pip cache disabled; the new full validation
+run is pending. The7-test controller suite and static workflow checks pass.

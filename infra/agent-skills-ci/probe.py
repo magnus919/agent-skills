@@ -103,8 +103,8 @@ try:
         "--tmpfs",
         "/opt/hostedtoolcache:rw,exec,nosuid,nodev,size=1g,uid=1001,gid=1001",
         "--cpus=2",
-        "--memory=" + ("2g" if host == "saru" else "3g"),
-        "--memory-swap=" + ("2g" if host == "saru" else "3g"),
+        "--memory=3g",
+        "--memory-swap=3g",
         "--pids-limit=512",
         "--tmpfs",
         "/tmp:rw,exec,nosuid,nodev,size=512m,mode=1777",
@@ -145,9 +145,7 @@ try:
     config = data["HostConfig"]
     assert not data["Mounts"], "unexpected volume or bind mounts"
     assert not config["Privileged"] and config["CapDrop"] == ["ALL"]
-    assert config["NanoCpus"] == 2_000_000_000 and config["Memory"] == (
-        2_147_483_648 if host == "saru" else 3_221_225_472
-    )
+    assert config["NanoCpus"] == 2_000_000_000 and config["Memory"] == 3_221_225_472
     print("PASS effective mounts/capabilities/CPU/memory limits")
 finally:
     supervise.cleanup(worker, guard)
