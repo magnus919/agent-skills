@@ -50,7 +50,8 @@ permissions:
 jobs:
   advisory:
     name: Tier 1 keyless validation (advisory)
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64, agent-skills-ci]
+    timeout-minutes: 20
     # Genuinely advisory: failures surface as neutral checks and never block
     # merge. This job is intentionally NOT a required branch-protection check;
     # promote it to blocking only after the baseline noise floor (issue #383)
@@ -61,15 +62,20 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
 
       - name: Install pinned skillevaluator
         # Pinned exactly: skillevaluator v0.1.0 via git tag (not on PyPI).
         # Keyless: no SKILL_EVAL_LLM_* credentials are configured, and the
         # selected checks below are all LLM-free.
         run: |
-          python3 -m pip install --user \
+          python3 -m pip install \
             "skillevaluator @ git+https://github.com/NVIDIA/SkillEvaluator.git@v0.1.0"
-          echo "$(python3 -m site --user-base)/bin" >> "$GITHUB_PATH"
 
       - name: Detect changed skills
         id: changed
