@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "skill_name": "solo-startup",
+  "evals": [
+    {
+      "id": "service-capacity",
+      "prompt": "I have 12 hours weekly: 3 selling, 1 admin, 2 support/reserve. Each report takes 3 hours including review. Price $400, variable cash cost $40, fixed cash cost $100/week. I need $1000 owner draw weekly. Can I quit and deliver enough?",
+      "expected_output": "Two-report capacity versus four reports needed; revise rather than infer viability.",
+      "assertions": [
+        "Computes delivery capacity as two reports weekly.",
+        "Computes four reports needed to cover stated fixed costs and owner draw.",
+        "Does not conclude the income goal is feasible under the stated capacity."
+      ]
+    },
+    {
+      "id": "negative-contribution",
+      "prompt": "My solo SaaS has 100 customers paying $30/month. Each costs $8 infrastructure and $28 support labor. Should I triple customers to break even?",
+      "expected_output": "Reject scaling identical loss-making units and propose a capped change test.",
+      "assertions": [
+        "Computes negative $6 contribution per customer before fixed costs.",
+        "States that more identical units do not yield a finite break-even.",
+        "Proposes a bounded pricing, scope or support-cost experiment or stopping."
+      ]
+    },
+    {
+      "id": "waitlist-to-pilot",
+      "prompt": "I have 500 waitlist emails and 12 compliments for an AI newsletter. I can spend $300 and 15 hours testing. Build the platform?",
+      "expected_output": "Separate preference from payment and test a small outcome within caps.",
+      "assertions": [
+        "Does not equate waitlist or compliments with paid validation.",
+        "Proposes a specific bounded customer-outcome test within $300 and 15 hours.",
+        "Names observable proceed and stop conditions before expansion."
+      ]
+    },
+    {
+      "id": "scope-change",
+      "prompt": "My solo $600 monthly service takes 4 hours plus $50 tools. A client now wants daily custom reports adding 10 hours. Can I just keep the price to win them?",
+      "expected_output": "Recompute time and economics; negotiate/reject scope, not preserve stale margin.",
+      "assertions": [
+        "Includes the additional ten hours in capacity and economics.",
+        "Does not preserve the old margin or promise without re-evaluation.",
+        "Offers a revised bounded promise, price test or rejection."
+      ]
+    },
+    {
+      "id": "ai-review-capacity",
+      "prompt": "I want ten AI agents to run my solo store. A task took 4 hours/week manually. Automation takes 10 hours setup, 1.5 hours weekly review and 0.5 hours recovery. Assume equal quality. Is it free capacity?",
+      "expected_output": "Calculate net savings and setup payback; retain quality and commitment accountability.",
+      "assertions": [
+        "Computes two hours weekly net time saving under the stated assumptions.",
+        "Computes five-week setup payback under the stated assumptions.",
+        "Identifies tool cost as an additional consideration.",
+        "Identifies actual accepted quality as unverified.",
+        "Retains a human owner for customer commitments.",
+        "Defines a fallback for automation failure."
+      ]
+    },
+    {
+      "id": "absence-and-concentration",
+      "prompt": "My one-person product gets 80% of sales from one marketplace. I promise 24/7 support but need two weeks off. Revenue is fine. Should I just schedule a bot?",
+      "expected_output": "Address unsustainable support promise, channel risk and absence fallback.",
+      "assertions": [
+        "Flags channel concentration from the 80% marketplace dependency.",
+        "Flags the unsupported 24/7 support obligation.",
+        "Preserves existing support commitments unless explicitly renegotiated with affected customers.",
+        "Includes access recovery in the absence plan.",
+        "Includes customer expectations in the absence plan.",
+        "Assigns fallback ownership for the absence.",
+        "Does not treat a scheduled bot as proof of reliable coverage."
+      ]
+    },
+    {
+      "id": "outlier-and-goal",
+      "prompt": "Base44 sold for $80m so I want to start solo and replace my $5000/month income at 20 hours/week. What growth rate should I demand?",
+      "expected_output": "Separate exceptional acquisition and team from owner income goal; route models without imposing YC growth.",
+      "assertions": [
+        "Distinguishes the acquisition announcement and team from a typical solo founder outcome.",
+        "Centers the stated income and hours goal without inventing a universal growth benchmark.",
+        "Identifies buyer access, costs, support and cash assumptions needed for a bounded test."
+      ]
+    }
+  ]
+}
