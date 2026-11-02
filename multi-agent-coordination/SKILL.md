@@ -93,7 +93,24 @@ a diagram, a prompt or a terminal status indicator.
 | Select another catalog owner | [Catalog boundaries](references/catalog-boundaries.md) | Named specialist input/return |
 | Emerging research on synthesis, topology-aware diagnosis, coding interference or resource contention | [Emerging research](references/emerging-research.md) | Local challenge design and transfer limits |
 | Verify research claims, revisions or coverage | [Source records](references/source-records.md), [research synthesis](references/research-synthesis.md), [research brief](references/research-brief.md), [research log](references/research-log.md), [video ledger](references/video-ledger.md) | Evidence and limitations |
+| Onboarding maps, live/dormant experts, provenance or transferable team packages | [Knowledge navigation](references/knowledge-navigation.md), [team packages and lore](references/team-packages-and-lore.md), [second-video ledger](references/world-building-video-ledger.md) | Orientation map, expert directory, team package, scoped lesson |
 | Inspect the optional helper's input and guarantees | [Script contract](references/script-contract.md) | [Snapshot](templates/team-snapshot.json) |
+
+## Onboard a connected team
+
+When agents cannot recognize existing capabilities or locate expertise, use
+[knowledge navigation](references/knowledge-navigation.md). Start with broad,
+shallow landmarks and condition-based routes before detailed search. Include
+current documents, appropriate specialists and an explicit map-edge fallback;
+verify the fresh and post-compaction paths with actual tasks.
+
+When sharing a team or inherited lessons, use
+[team packages and lore](references/team-packages-and-lore.md). Package identity,
+harness compatibility, team-run evidence and recipient authority are distinct.
+A memorable story should retrieve a scoped evidence-backed lesson, not create
+policy or permission. Use the [orientation map](templates/orientation-map.md),
+[expert directory](templates/expert-directory.md), [team package](templates/team-package.md)
+and [lesson story](templates/lesson-story.md) only for the corresponding task.
 
 ## Read-only helper
 

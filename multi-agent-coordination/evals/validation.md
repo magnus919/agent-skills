@@ -39,8 +39,8 @@ operational skills. Existing cross-agent factory references stay reachable.
 
 ## Behavioral and release evidence
 
-Ten portable new-skill cases with 22 semantic assertions, plus one new case in
-each of four enriched skills. Assertion-challenges files give satisfying,
+Sixteen portable new-skill cases with 37 semantic assertions, plus additive
+cases in four enriched skills (two in harness-engineering). Assertion-challenges files give satisfying,
 contradictory and omitted-evidence examples. Trigger probes are separate and were
 author-reviewed as routing boundaries, not measured model-selection accuracy.
 
@@ -50,3 +50,15 @@ manual-review contracts; no claim of model-quality uplift, validated detector
 threshold or release-gated behavioral evidence follows from green tests. Any
 repository paired smoke must be read under its recorded coverage and grading
 limits. No extra live Jev generation/audit was manually dispatched.
+
+## Second-video additions
+
+Complete captions 00:00–30:15 and source records S28–S39 informed the navigation,
+expertise, knowledge/lore and portable-team additions. The new cases cover
+pre-search orientation, resumed reachability, archived-expert authority, support
+versus age, team qualification and legitimate exceptions to a remembered story.
+Each assertion has satisfying, contradictory and omitted-evidence examples.
+No scripts changed in this follow-up, so the prior 21-test helper evidence applies
+to identical implementation bytes; it is not a fresh-agent behavioral study.
+Final format/eval/catalog checks and exact-head CI must be assessed on the updated
+PR revision. Earlier CI or advisory dispositions do not approve a new revision.

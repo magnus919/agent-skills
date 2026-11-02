@@ -21,3 +21,16 @@ Cover topology selection, task ownership, context/intent, message semantics, aut
 ## Findings and preservation
 
 Completed findings, confidence, contradictions and open questions are recorded in research-synthesis.md; source-level extraction in source-records.md; searches/exclusions in research-log.md; video coverage in video-ledger.md. Script behavior and publication checks are separate in ../evals/validation.md.
+
+## Follow-up scope: supplied second video
+
+2026-11-02: User supplied CYRJDTcTKhQ as additional material for this ongoing
+skill delivery. Before promotion, extract the complete caption track, compare
+new lessons with existing coverage, and inspect official OpenRig context/team
+packaging documentation plus independent knowledge-provenance/navigation
+foundations. Focus on pre-search orientation, typed relationships, knowledge
+status, specialist/history routing and portable team packages. Preserve the
+video's metaphor/mechanism boundary; do not infer neuroscience, deployment
+quality or performance from the narrative. Reuse existing routing/lesson workflows
+where adequate; add focused references/templates/evals where the current package
+has gaps. Durable destination remains this PR's tracked skill artifacts.

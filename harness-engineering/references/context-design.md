@@ -85,3 +85,29 @@ and context procedure; this reference owns the single-agent loading mechanism.
 
 Motivation: [OpenRig video, 18:29–19:43](https://www.youtube.com/watch?v=AL-PQuB2wy0&t=1109s).
 This is a proposed mechanism and test obligation, not a reproduced prevention rate.
+
+## Orientation precedes targeted search
+
+If the agent does not recognize a project's existing capability, better keyword
+search may not solve the problem. Give startup a broad, shallow map of important
+capabilities, owning interfaces, unfinished work and conditional routes to detail.
+Keep the map small enough to leave execution/verification reserves. Its boundary
+needs an explicit fallback into neighboring maps, current code or an authorized
+expert. A search with no match is not proof the capability does not exist.
+
+Before building a new subsystem, inspect the existing architecture/capability
+routes and decide whether reuse, completion, extension or replacement fits.
+Existing work may be unsuitable; do not turn the check into a blanket reuse rule.
+Use stable section locators where the host resolver supports them, retaining
+source revision and cache invalidation. Verify renamed/duplicate headings and
+missing/denied sources rather than assuming a Markdown anchor is portable.
+
+Exercise the route from actual fresh-session startup, then after compaction.
+Distinguish missing knowledge, missing route, failed retrieval and incorrect
+application. File existence or a successful link check does not prove discovery.
+Multi-agent-coordination owns the shared knowledge/expert directory and team
+onboarding contract; this skill owns the loading and resolver implementation.
+
+Motivation: [second OpenRig video, 10:35–15:09](https://www.youtube.com/watch?v=CYRJDTcTKhQ&t=635s)
+and [Anthropic context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents).
+These motivate a candidate design; effectiveness remains a local test question.

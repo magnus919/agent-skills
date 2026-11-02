@@ -217,3 +217,99 @@ Accessed 2026-11-02 UTC. Records separate source claims from our synthesis. No f
 - Retained claims: Varies action protocol, communication and group size; resource ordering and symmetry breaking change deadlock behavior in its testbed.
 - Limit/counterevidence: Dining Philosophers is a controlled mechanism probe, not a fleet-wide reliability or team-size prescription.
 - Disposition: retained → emerging-research.md; resource-ordering recovery drill.
+
+## S28 — How My AI Civilization Actually Works
+- Source: [How My AI Civilization Actually Works](https://www.youtube.com/watch?v=CYRJDTcTKhQ)
+- Revision/date: Full English captions 00:00–30:15.
+- Evidence class: Author report and design metaphor.
+- Retained claims: Pre-search orientation, typed knowledge relationships, section addresses, support versus age, specialist/history routing, scoped lore and portable team context.
+- Limit/counterevidence: No reproduced competence or scale gain; mnemonic/spatial analogies are not neuroscientific evidence.
+- Disposition: retained → knowledge-navigation.md, team-packages-and-lore.md, world-building-video-ledger.md.
+
+## S29 — What I put in an agent starting map
+- Source: [What I put in an agent starting map](https://openrig.dev/blog/what-i-put-in-an-agents-starting-map)
+- Revision/date: 2026-10-20; mutable article.
+- Evidence class: First-party design explanation.
+- Retained claims: Question-conditioned routes to capabilities, code, current work and expertise, with a map-edge fallback. Distinguishes the installed runtime from the checkout being changed.
+- Limit/counterevidence: Examples describe the authors system, not this hosts loading behavior. Same author as video, not independent efficacy corroboration.
+- Disposition: retained → orientation-map template and harness context design.
+
+## S30 — Context engineering as world building
+- Source: [Context engineering as world building](https://openrig.dev/blog/how-my-agent-teams-find-their-way)
+- Revision/date: 2026-10-16; mutable article.
+- Evidence class: First-party explanation.
+- Retained claims: Connects discoverability, relationships, knowledge support and lessons over time; calls the map a thinking aid rather than the system itself.
+- Limit/counterevidence: Narrative and demonstration do not establish outcome improvement or human/model cognitive equivalence.
+- Disposition: retained → knowledge-navigation.md and scoped lesson template.
+
+## S31 — Some roads lead to other minds
+- Source: [Some roads lead to other minds](https://openrig.dev/blog/some-roads-lead-to-other-minds)
+- Revision/date: 2026-10-22; mutable article.
+- Evidence class: First-party design explanation.
+- Retained claims: Routes project questions through documents, specialists and retained history rather than requiring all expertise in one context.
+- Limit/counterevidence: Historical testimony may be stale or mistaken; no automatic grant, availability or retention rights follow from an address.
+- Disposition: retained → expert-directory template; archive consultation boundaries.
+
+## S32 — Ship a contributor team with your open-source project
+- Source: [Ship a contributor team with your open-source project](https://openrig.dev/blog/rig-bundles-for-open-source)
+- Revision/date: 2026-10-17; mutable article.
+- Evidence class: First-party packaging proposal.
+- Retained claims: Team resources and project context can be shared as a contributor starting point.
+- Limit/counterevidence: Proposal and early example, not evidence of universal PR quality or review benefits.
+- Disposition: retained → team-package template and qualification procedure.
+
+## S33 — OpenRig messaging: historical ask and wake
+- Source: [OpenRig messaging: historical ask and wake](https://openrig.dev/docs/messaging)
+- Revision/date: Documentation declares 0.6.6; mutable page.
+- Evidence class: Documented semantics.
+- Retained claims: Without wake, ask returns historical evidence excerpts; explicit wake resumes a supported session. Example demonstrations are labeled, not live output.
+- Limit/counterevidence: No local query/wake test; message delivery and comprehension remain distinct. Retained transcripts need access/privacy controls.
+- Disposition: retained → knowledge-navigation.md expert consultation.
+
+## S34 — RigBundle reference
+- Source: [RigBundle reference](https://openrig.dev/specs/rigbundle)
+- Revision/date: Schema v2; documents code validation at 0.6.6 cut 2620dea8.
+- Evidence class: Documented packaging contract.
+- Retained claims: Separates source/configuration/package/archive identities, packaged and host-resolved resources, compatibility declarations and advisory checks. Digest coverage has exclusions and does not prove execution.
+- Limit/counterevidence: No import or launch performed. Static/package checks are not provenance authentication, arbitrary-secret detection or team readiness.
+- Disposition: retained → team-packages-and-lore.md; team-package template.
+
+## S35 — Workshop registry team
+- Source: [Workshop registry team](https://openrig.dev/rigs/workshop)
+- Revision/date: Page data 2026-11-01, registry 26408957ce5c; configuration source 582084a72d025103fd81d5fdc22ea6d9a8cb982e.
+- Evidence class: First-party configuration and test disclosure.
+- Retained claims: Four-seat contributor configuration. Published harness test status explicitly does not show a run of that team/configuration; host resources remain unresolved before launch. Broad permission defaults are disclosed.
+- Limit/counterevidence: Do not adopt permission-bypass defaults or infer current local compatibility. No installation authorized or performed.
+- Disposition: retained → portable-team-qualification eval and authority boundary.
+
+## S36 — Effective context engineering for AI agents
+- Source: [Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)
+- Revision/date: Mutable primary engineering article, access-dated.
+- Evidence class: First-party engineering guidance.
+- Retained claims: Lightweight identifiers, just-in-time retrieval and hybrid upfront orientation support progressive disclosure under a bounded context budget.
+- Limit/counterevidence: Tradeoffs are workload/model dependent; no universal token allocation or comparative reproduction here.
+- Disposition: retained → knowledge-navigation.md and harness loading guidance.
+
+## S37 — PROV Primer
+- Source: [PROV Primer](https://www.w3.org/TR/prov-primer/)
+- Revision/date: W3C Working Group Note, 2013-04-30.
+- Evidence class: Provenance standard primer.
+- Retained claims: Distinguishes entities, activities, agents and derivation/responsibility relationships useful for tracing knowledge sources.
+- Limit/counterevidence: Provenance is not truth, evidence quality, authentication or permission; using these distinctions does not require adopting RDF infrastructure.
+- Disposition: retained → knowledge-navigation.md and lore provenance.
+
+## S38 — SKOS Primer
+- Source: [SKOS Primer](https://www.w3.org/TR/skos-primer/)
+- Revision/date: W3C Working Group Note, 2009-08-18.
+- Evidence class: Knowledge organization standard primer.
+- Retained claims: Labels and explicit broader/narrower/related relationships support concept organization and navigation.
+- Limit/counterevidence: Concept proximity or hierarchy does not establish equivalence, evidence support, transitive authority or effectiveness.
+- Disposition: retained → typed landmark relationships and alias guidance.
+
+## S39 — Knowing Who Knows What: Designing Socially Assistive Robots with Transactive Memory System
+- Source: [Knowing Who Knows What: Designing Socially Assistive Robots with Transactive Memory System](https://arxiv.org/abs/2305.05115)
+- Revision/date: Hu, Stegner and Mutlu; 2023; retrieved HTML.
+- Evidence class: Human-robot design proposal.
+- Retained claims: Applies transactive-memory encoding, storage and retrieval distinctions to explicit knowledge of others expertise.
+- Limit/counterevidence: Design discussion, not a demonstrated LLM fleet outcome improvement or validation of human/model equivalence.
+- Disposition: retained → expert-directory design rationale and local transfer evaluation.

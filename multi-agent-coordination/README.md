@@ -9,7 +9,8 @@ work or drifting away from the original request. This skill helps you decide
 when collaboration pays off, divide work cleanly and verify the combined result.
 
 Your agent gains a practical method for coordinating persistent teams across
-harnesses, recovering interrupted work and correcting bad shared practices.
+harnesses, recovering interrupted work and correcting bad shared practices. It also helps
+new agents find existing capabilities and specialists before they duplicate work.
 Research and lessons from OpenRig, HERDR and Block/Buzz inform the guidance,
 with explicit limits on what has actually been demonstrated.
 
@@ -19,7 +20,7 @@ with explicit limits on what has actually been demonstrated.
 |---|---|
 | `SKILL.md` | A complete coordination workflow and specialist handoffs |
 | `references/` | Topology, ownership, communication, recovery, diagnosis, evaluation and source-linked research |
-| `templates/` | Team charter, assignment, handoff, decision packet, experiment, recovery and knowledge correction |
+| `templates/` | Team charter, assignment, handoff, decision packet, experiment, recovery, knowledge correction, onboarding map, expertise directory and team package |
 | `scripts/coordination.py` | Offline snapshot audit and knowledge-exposure tracing |
 | `scripts/test_coordination.py` | Adverse-input and coordination-failure tests |
 | `evals/` | Representative quality cases and validation boundaries |

@@ -1,7 +1,7 @@
 # Research synthesis and claim closure
 
 Question, scope and stopping criteria were declared in research-brief.md. Source
-records S01–S27 contain source-level extraction and limits; research-log.md records
+records S01–S39 contain source-level extraction and limits; research-log.md records
 searches and exclusions. Accessed 2026-11-02 UTC.
 
 ## Findings
@@ -46,12 +46,12 @@ challenges are not independently adjudicated model-quality/release evidence.
 
 ## Durable inventory and completion audit
 
-- Source-level claims, contradictions and limits: source-records.md, all S01–S27.
+- Source-level claims, contradictions and limits: source-records.md, all S01–S39.
 - Video extraction: video-ledger.md, complete caption interval accounted for.
 - Discovery/fallback/exclusion decisions: research-log.md.
 - Retrieval digests: retrieval-receipts.json, not substitutes for source text.
 - Portable procedures: topic references and SKILL.md, linked to evidence records.
-- Reusable artifacts: nine Markdown templates and the fictional snapshot.
+- Reusable artifacts: thirteen Markdown templates and the fictional snapshot.
 - Executable bounded mechanism: coordination.py plus test_coordination.py.
 - Behavioral contracts and challenge examples: evals/evals.json and assertion-challenges.md.
 - Verification/publication boundaries: evals/validation.md.
@@ -60,3 +60,27 @@ All retained sources have an extraction/disposition record. Remaining research
 questions are preserved in emerging-research.md. Broad discovery stopped after
 coverage of every scope dimension, primary counterevidence and recent 2026 work;
 additional source count alone would not establish completeness or effectiveness.
+
+## Second-video synthesis
+
+S28–S39 add a distinct pre-search failure: the agent may not recognize which
+capability or question exists. A broad, bounded, role-appropriate map plus
+conditional routes is a candidate remedy; knowledge-navigation.md includes
+map-edge fallback and fresh/post-compaction application tests. A directory may
+route to documents, current specialists or authorized retained evidence, while
+separating evidence query from waking an agent and from permission.
+
+Source support, freshness and accepted guidance remain independent dimensions;
+the video's terrain metaphor does not justify a universal maturity ladder.
+team-packages-and-lore.md separates blueprint, packaged resources and actual
+qualification, and preserves counterexamples for narrative lessons. The Workshop
+registry's explicit harness-only test and host-resource limits provide important
+counterevidence to treating a distributable team as proven competence.
+
+Added durable artifacts: source records S28–S39; second-video ledger/receipt;
+knowledge-navigation and team-package/lore references; orientation-map,
+expert-directory, team-package and lesson-story templates; six new coordination
+evals plus one harness eval, each with assertion challenge examples. Existing
+source records and stable eval IDs remain intact. Confidence is high in the
+semantic/authority distinctions, moderate in these transferable procedures and
+unassessed for actual fleet outcome improvement.

@@ -259,5 +259,131 @@
     "markdown_characters": 9216,
     "markdown_sha256": "7d63c2392cc017edb667558faab850c5775d379e6edeca97e1c1a34490263322",
     "note": "Retrieval digest only; not proof of complete extraction or source truth."
+  },
+  {
+    "artifact": "coord-followup-gtc.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://www.youtube.com/watch?v=CYRJDTcTKhQ",
+    "markdown_characters": 37809,
+    "markdown_sha256": "897295f6178260b155111af70a6bf271beeecabfbc8bac63fc85644687494547",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-starting-map.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/blog/what-i-put-in-an-agents-starting-map",
+    "markdown_characters": 8892,
+    "markdown_sha256": "afe622c02aa41b8aaf2a8fd1517e74f13cb98c75365d683c192b3b64002b8f78",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-world-building.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/blog/how-my-agent-teams-find-their-way",
+    "markdown_characters": 17792,
+    "markdown_sha256": "7b47756cfcffbb92b8f8efddd88656be056ffcfa3b536c3919cdb1ceb97af297",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-other-minds.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/blog/some-roads-lead-to-other-minds",
+    "markdown_characters": 7521,
+    "markdown_sha256": "3c58ca084c68fe64da0976e4fc73121d5e4589559b3cef6309464bbfc4f8a000",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-contributor-team.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/blog/rig-bundles-for-open-source",
+    "markdown_characters": 6769,
+    "markdown_sha256": "6b992b6d889bd043ffbf144ec73fa72f7486348e21cc6c2f9ea3c1479ff92106",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-messaging.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/docs/messaging",
+    "markdown_characters": 6426,
+    "markdown_sha256": "50ec1874831fb8c68b46233409fed2a9fa9109c7b43c42e40a8bf07e631eb0bd",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-bundle.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/specs/rigbundle",
+    "markdown_characters": 42947,
+    "markdown_sha256": "1922e4fee78b0d14b4dbd4322335f1ea6a84d30a6a60b5248bbfb1b49543d985",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-workshop.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/rigs/workshop",
+    "markdown_characters": 12925,
+    "markdown_sha256": "757c84154068f84cb62ba16439007db7971d3588ec07ccd5b7e14edd8e50434c",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-anthropic-context.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents",
+    "markdown_characters": 21409,
+    "markdown_sha256": "b83e0a58ea8a7b65e3dcae7e42b6ace711cb153471aff236d22534dc860121ff",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-prov.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://www.w3.org/TR/prov-primer/",
+    "markdown_characters": 40903,
+    "markdown_sha256": "2acb71b83030a5576cc717c9f223e2c3f42b695616290840529545bde5220bb1",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-skos.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://www.w3.org/TR/skos-primer/",
+    "markdown_characters": 92875,
+    "markdown_sha256": "2da421487374d48b8332eae0107783f6ad356bfc173c928742edcd5d6df358bf",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-tms.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://arxiv.org/html/2305.05115",
+    "markdown_characters": 31486,
+    "markdown_sha256": "dbe9743faa951174d9432cdff97de5dfa76ba4730990c3d1fae8af33afbf0b37",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-context.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/docs/context",
+    "markdown_characters": 6804,
+    "markdown_sha256": "724e1b1f076516ddcb86fcba841aabbf56ef6e10daa3bcb0ef59157ccd35dc29",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
+  },
+  {
+    "artifact": "coord-followup-continuity.json",
+    "retrieval": "GroktoCrawl CLI with explicit user-selected research API",
+    "accessed": "2026-11-02",
+    "source_url": "https://openrig.dev/docs/continuity",
+    "markdown_characters": 9216,
+    "markdown_sha256": "7d63c2392cc017edb667558faab850c5775d379e6edeca97e1c1a34490263322",
+    "note": "Retrieval digest only; not proof of complete extraction, efficacy or source truth."
   }
 ]

@@ -51,3 +51,28 @@ evaluation and all three requested tools had primary evidence or explicit limits
 Counterexamples and unresolved questions are preserved. No fixed source count was
 used as the acceptance criterion. Every retained source is represented durably;
 raw retrieval files in temporary storage are conveniences, not the sole evidence.
+
+## Second-video follow-up
+
+2026-11-02: User supplied CYRJDTcTKhQ during the still-open delivery. Retained
+source records S28–S39 and the complete-caption world-building-video-ledger.md
+preserve the additional material. GroktoCrawl's YouTube adapter returned English
+transcript/metadata; yt-dlp also retrieved English JSON3 captions, all read.
+
+| Discovery/extraction | Decision |
+|---|---|
+| Video ID search and official blog navigation | Followed actual creator links; third-party translation was discovery only, not transcript authority |
+| Guessed short blog slugs / RigSpec path | Unavailable/404; no claim retained; actual navigation URLs and RigBundle reference used instead |
+| Official starting-map, world-building, other-minds, contributor-team articles | S29–S32; same-author corroboration of design, not independent efficacy evidence |
+| OpenRig messaging, context, continuity and bundle/Workshop pages | S33–S35 plus existing S04/S05; narrowed historical query versus wake and digest/harness/team-test claims |
+| transactive memory who knows what teams Wegner 1987 original | Web discovery; human-group results/secondary summaries not promoted as LLM evidence; retained the inspected primary human-robot design proposal S39 with its limits |
+| PROV and SKOS primers; Anthropic context engineering | S36–S38; independent vocabulary/design foundations, not proofs of fleet performance |
+
+Extraction covered orientation before search, typed route relationships, map
+boundaries, source/section versioning, support versus age/authority, scoped
+narrative lessons, live/historical expertise, and portable team qualification.
+Neuroscience/memory-palace equivalence, vendor permission bypass, automatic wake,
+raw-session export and claimed scale/productivity gains were not promoted.
+No new retrieval script or graph database was needed: existing helper and host
+routing remain adequate; new templates/procedures carry the missing contracts.
+The fresh-agent and end-to-end team-effectiveness studies remain unperformed.
