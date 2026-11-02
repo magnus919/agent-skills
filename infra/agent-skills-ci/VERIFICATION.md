@@ -4,8 +4,9 @@ Prepared from main `1b092570161ec69e9f26efaa9b00c59cf0c9c1e0` in a separate
 branch, without modifying PR #785 or its queued runs.
 
 Both hosts have the bundle at `/home/magnus/services/agent-skills-ci` and built
-images; no controller credential, runner registration, or user service activation
-has been provisioned. Both user systemd managers are running with lingering
+images; both host-only credentials have been provisioned and verified against
+the intended repository API without disclosure. Both user services are active
+and enabled, using the reviewed immutable image IDs. Both user systemd managers are running with lingering
 enabled. The existing GPU evaluator container remained running throughout.
 
 | Host | CPU worker image ID | Guard image ID |
@@ -21,7 +22,8 @@ read-only root and bounded tmpfs, 2-CPU / 2-GiB (Saru) and 2-CPU / 3-GiB
 (gpuslut01) effective limits. Fresh container had no prior marker. Both
 probe containers were absent afterward. Neither worker requests a GPU.
 
-Six host-controller recovery tests passed locally: startup removes old containers
+Seven host-controller recovery tests passed locally, including actual BOM-prefixed
+runner identity parsing: startup removes old containers
 before missing configuration/credentials can block it, interrupted registration
 reconciles only the exact dedicated runner name, wrong registration identity
 cannot be removed, failed API deletion retains identity, failed container cleanup
@@ -50,11 +52,21 @@ Actionlint 1.7.12 (release checksum verified) passed both modified workflows wit
 and action inputs; embedded shell/Python external linters were disabled. Separate
 Python, ruff, and guard-shell checks passed.
 
-Not yet verified: real runner registration, restart/timeout lifecycle against
-GitHub, either full deterministic workflow, or continuous credential renewal.
-No workflow has been manually dispatched; existing queued runs were neither rerun nor
-cancelled. Routing remains a draft until these gates pass and a human merges.
+Live validation-only lifecycle tests passed on both hosts: online/idle registration
+without the production label; independent 45-second host watchdog; deletion of
+the exact GitHub registration and both containers; a new registration with a
+fresh workspace; graceful SIGTERM cleanup; and guard failure creating no job
+worker or registration. The initial real registration exposed GitHub's UTF-8 BOM
+in `.runner`; the parser was fixed and the orphan registration was reconciled.
 
-Provisioning currently awaits GitHub browser authentication and a dedicated
-repo-only Administration:write credential; no broader desktop credential is
-copied to either host. See `PROVISIONING.md` for supported options and handoff.
+The production pool is online with the common `agent-skills-ci` label. Saru
+successfully completed `paired-eval-tests` for both initial PR heads, and both
+controllers automatically replaced completed single-job workers with new IDs.
+The validation job reached deptry and found an infrastructure-local import
+classification issue; `supervise` is now declared first-party. The remaining
+credential-free paired smoke, Raleigh matrix, and keyless advisory jobs are
+routed to this pool; private-credential workflows remain GitHub-hosted.
+
+Full current-head deterministic workflow validation and post-merge integration
+checks remain pending. No formal PR approval is implied by the independent code
+reviews; normal repository merge gates still apply.

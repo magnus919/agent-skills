@@ -15,6 +15,10 @@ spec.loader.exec_module(supervise)
 
 
 class RecoveryTests(unittest.TestCase):
+    def test_runner_identity_accepts_actual_bom_format(self):
+        actual = "\ufeff" + json.dumps({"agentId": 22, "agentName": "agent-skills-ci-saru"})
+        self.assertEqual(supervise.parse_runner_id(actual), 22)
+
     def test_interrupted_registration_reconciles_only_own_pool(self):
         with patch.object(
             supervise,

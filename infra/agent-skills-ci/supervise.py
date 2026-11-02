@@ -106,11 +106,27 @@ def cleanup(worker, guard):
             raise RuntimeError("Container cleanup not confirmed: " + name)
 
 
+def parse_runner_id(output):
+    """GitHub writes .runner with a UTF-8 BOM on current Linux images."""
+    return int(json.loads(output.removeprefix("\ufeff"))["agentId"])
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--host", required=True, choices=["saru", "gpuslut01"])
     parser.add_argument("--token-file", type=Path, required=True)
     parser.add_argument("--once", action="store_true")
+    parser.add_argument(
+        "--validation-only",
+        action="store_true",
+        help="Use a non-production label for idle lifecycle tests",
+    )
+    parser.add_argument(
+        "--listener-timeout",
+        type=int,
+        default=2700,
+        help="Host deadline in seconds; may shorten but never exceed 2700",
+    )
     parser.add_argument(
         "--deny-file",
         type=Path,
@@ -120,6 +136,13 @@ def main():
     parser.add_argument("--runner-image", default="local/agent-skills-ci:reviewed")
     parser.add_argument("--guard-image", default="local/agent-skills-ci-guard:reviewed")
     args = parser.parse_args()
+    if not 5 <= args.listener_timeout <= 2700:
+        parser.error("listener timeout must be between 5 and 2700 seconds")
+    labels = (
+        LABELS.replace("agent-skills-ci", "agent-skills-ci-validation")
+        if args.validation_only
+        else LABELS
+    )
     worker = f"agent-skills-ci-{args.host}"
     guard = worker + "-network"
     with open(Path.home() / ("." + worker + ".lock"), "w") as lock:
@@ -207,6 +230,8 @@ def main():
                     "/tmp:rw,exec,nosuid,nodev,size=512m,mode=1777",
                     "-e",
                     "RUNNER_TOOL_CACHE=/opt/hostedtoolcache",
+                    "-e",
+                    "PYTEST_XDIST_AUTO_NUM_WORKERS=2",
                     "--entrypoint",
                     "/bin/bash",
                     args.runner_image,
@@ -239,7 +264,7 @@ def main():
                     + " --name "
                     + worker
                     + " --labels "
-                    + LABELS
+                    + labels
                     + ' --work _work --token "$token"',
                     input=token + "\n",
                     text=True,
@@ -248,7 +273,7 @@ def main():
                     timeout=120,
                 )
                 identity = docker("exec", worker, "cat", ".runner", capture_output=True, text=True)
-                runner_id = int(json.loads(identity.stdout)["agentId"])
+                runner_id = parse_runner_id(identity.stdout)
                 temporary = state.with_suffix(".new")
                 temporary.write_text(str(runner_id))
                 temporary.chmod(0o600)
@@ -256,7 +281,7 @@ def main():
                 token = None
                 print(f"{worker}: registered ephemeral worker", flush=True)
                 # Independent host deadline cannot be disabled by a CI job.
-                docker("exec", worker, "./run.sh", timeout=2700)
+                docker("exec", worker, "./run.sh", timeout=args.listener_timeout)
             finally:
                 cleanup(worker, guard)
                 unregister(args.token_file, state, worker)

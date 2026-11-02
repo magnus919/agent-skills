@@ -3,14 +3,15 @@
 One clean, single-job worker on Saru (2 CPU / 2 GiB) and one on gpuslut01
 (2 CPU / 3 GiB). Neither receives a GPU, host directory, Docker socket,
 SSH identity, durable GitHub credential, shared cache, or privileged capability.
-The existing GPU evaluator stays separate. Common routing labels are
+The existing GPU evaluator stays separate. Credential-free validation, paired tests/smoke,
+Raleigh matrix tests and the keyless advisory scanner use this pool. Workflows with
+private API credentials remain GitHub-hosted. Common routing labels are
 `[self-hosted, linux, x64, agent-skills-ci]`.
 
 ## Activation gate
 
-This deployment is a draft until an independent isolation review and the network
-probes below pass on each host. Do not merge workflow routing before both workers
-are online. The public repository currently requires approval for all external
+Both controller services are deployed; current evidence is in [VERIFICATION.md](VERIFICATION.md).
+Merge workflow routing only after the current-head required checks pass. The public repository currently requires approval for all external
 contributors; preserve that setting and the `pull_request` trigger. Do not replace
 it with `pull_request_target`. External PR approval is not a sandbox.
 
@@ -110,3 +111,11 @@ user service instances. Remove only `agent-skills-ci-<host>` and its `-network`
 container, then remove the matching repo runner registrations by exact name.
 Revoke the dedicated controller credential. Do not touch the GPU evaluator,
 other runners, networks, or workloads. No queued job cancellation is necessary.
+
+## Explicit idle lifecycle tests
+
+With the local production service stopped, `python3 lifecycle_probe.py <host>`
+uses a validation-only label so queued CI is not taken during watchdog and guard
+failure tests. The listener timeout may be shortened (5–2700 seconds), never
+raised beyond the production 45-minute ceiling. Do not use short test deadlines
+with a production-labelled worker. The controller enforces one host lock.
