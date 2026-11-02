@@ -68,6 +68,8 @@ service, test a real authenticated read and dry-run each mutation. Use the
 [agent-readiness checklist](references/agent-readiness-checklist.md) for the final
 review.
 
+When command examples or wrapper documentation can drift independently of the CLI, read [documented command contracts](references/documented-command-contracts.md) for versioned grammar checks and extraction-coverage limits.
+
 ### 4. Wrap and maintain
 
 Keep the entry-point skill concise and put conditional detail in references. A

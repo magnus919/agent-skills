@@ -51,6 +51,8 @@ skill-name/
 4. For this repository, also verify its required human-facing `README.md`: title, **Why Install This Skill**, **What You Get**, **Quick Start** (unless genuinely reference-only), **Triggers**, and **Requirements**. Keep it human-facing, concise, and free of agent-only instructions.
 5. Verify every new skill has `evals/evals.json` with at least five output-quality cases, and check that their expected outcomes and assertions test meaningful behavior. For an untouched legacy skill without evals, report the gap. When any tracked file in an existing skill changes, add or update its eval manifest in the same change and enforce the coverage ratchet; grandfathering is not a blanket exemption for modified skills. Read [repository evaluation requirements](references/repository-evaluations.md) for the schema, evidence boundaries, and review procedure. Read [evaluating skills](references/evaluating-skills.md) before declaring the work complete.
 
+When a skill is installed but absent from a session, or when reviewing client-specific eligibility fields, read [activation gates and reachability](references/activation-gates.md).
+
 ### Client implementation work
 
 When implementing skill discovery, activation, or context management in an agent product, read [client implementation guidance](references/client-implementation.md). Do not apply client conventions such as search paths as universal format requirements.

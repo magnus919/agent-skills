@@ -10,7 +10,7 @@ compatibility: Compatible with any agent supporting the Agent Skills format (Her
   Agent, Claude Code, GitHub Copilot, OpenCode, Cursor, etc.)
 metadata:
   tags: opensource, contributing, github, etiquette, PRs, issues
-  related_skills: github-issues, github-pr-workflow, github-code-review
+  related_skills: code-review, verified-delivery, release-engineering
   version: 1.6.0
   author: agent-skills
   source_repo: https://agentskills.io
@@ -53,6 +53,10 @@ When a project has no contributing guide, load `references/default-posture.md` f
 ### Agent-Specific Checklist
 
 If you are an AI agent filing or contributing on behalf of a human, load `references/agent-checklist.md` before submitting anything.
+
+### Reports derived from private work
+
+Before preparing a public report or PR from private material, read [filing from private work](references/filing-from-private-work.md) for synthetic reproductions, artifact-wide disclosure checks and publishing boundaries.
 
 ### Pitfalls
 
