@@ -47,9 +47,12 @@
       "prompt": "I want ten AI agents to run my solo store. A task took 4 hours/week manually. Automation takes 10 hours setup, 1.5 hours weekly review and 0.5 hours recovery. Assume equal quality. Is it free capacity?",
       "expected_output": "Calculate net savings and setup payback; retain quality and commitment accountability.",
       "assertions": [
-        "Computes two hours weekly net time saving and five-week setup payback under the stated assumptions.",
-        "Identifies tool cost and unverified quality as additional considerations.",
-        "Retains a human owner and fallback for customer commitments."
+        "Computes two hours weekly net time saving under the stated assumptions.",
+        "Computes five-week setup payback under the stated assumptions.",
+        "Identifies tool cost as an additional consideration.",
+        "Identifies actual accepted quality as unverified.",
+        "Retains a human owner for customer commitments.",
+        "Defines a fallback for automation failure."
       ]
     },
     {
@@ -57,8 +60,12 @@
       "prompt": "My one-person product gets 80% of sales from one marketplace. I promise 24/7 support but need two weeks off. Revenue is fine. Should I just schedule a bot?",
       "expected_output": "Address unsustainable support promise, channel risk and absence fallback.",
       "assertions": [
-        "Flags both channel concentration and unsupported 24/7 support.",
-        "Proposes an absence plan with access recovery, customer expectations and fallback ownership.",
+        "Flags channel concentration from the 80% marketplace dependency.",
+        "Flags the unsupported 24/7 support obligation.",
+        "Preserves existing support commitments unless explicitly renegotiated with affected customers.",
+        "Includes access recovery in the absence plan.",
+        "Includes customer expectations in the absence plan.",
+        "Assigns fallback ownership for the absence.",
         "Does not treat a scheduled bot as proof of reliable coverage."
       ]
     },

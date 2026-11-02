@@ -12,7 +12,7 @@ exclusions in [research log](research-log.md).
 category, Gumroad's solo founder with employees, and Storemapper's small-team
 transition describe different things. Do not use them interchangeably to estimate
 solo-startup prevalence or profit. See census, gumroad, storemapper and team records.
-2. **A reachable buyer and bounded promise matter more than cheap production —
+2. **Cheaper production does not remove buyer and offer questions —
 moderate confidence.** Buffer's conversations and Dunn's offer design provide
 practitioner mechanisms, not a causal estimate. Services and products impose
 different delivery and acquisition burdens. See buffer and service records.

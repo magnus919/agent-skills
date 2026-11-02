@@ -117,7 +117,11 @@ and concentration risk. Building in public is optional, not a distribution plan.
 ## 5. Make the promise survivable
 
 Limit simultaneous offers and work in progress. Set support hours and response
-expectations the founder can actually meet. Use repeated support questions to
+expectations the founder can actually meet for new offers. Existing customer
+commitments remain binding until fulfilled or explicitly renegotiated; a new
+support notice or bot does not replace already-promised 24/7 coverage. Arrange
+coverage, agree a change with affected customers, or stop making new commitments
+while resolving the gap. Use repeated support questions to
 improve onboarding/product/docs before adding complexity. Define a small absence
 plan: billing and domain access recovery, tested backup/export, incident contact,
 customer communications draft, and a way to pause sales or gracefully close.

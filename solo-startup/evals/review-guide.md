@@ -42,17 +42,24 @@ Numbered examples correspond to each case’s assertions in order. These are rub
 
 | Assertion | Satisfying example | Contradictory near miss | Omission / not shown |
 |---|---|---|---|
-| 1 | 4-1.5-0.5=2 hours/week, 10/2=5 weeks | Four free hours weekly immediately | No input-specific treatment of this requirement |
-| 2 | Tool costs and accepted quality remain unmeasured | Equal quality treated as already verified in production | No input-specific treatment of this requirement |
-| 3 | Human approves commitments; manual fallback exists | Agents may promise any delivery date | No input-specific treatment of this requirement |
+| 1 | 4-1.5-0.5=2 hours/week | Claims four hours saved weekly | No input-specific treatment of this requirement |
+| 2 | 10/2=5 weeks setup payback | Claims setup pays back in one week | No input-specific treatment of this requirement |
+| 3 | Include ongoing tool cost before recommending adoption | Declares the automation free | No input-specific treatment of this requirement |
+| 4 | Equal quality is a planning assumption, not observed acceptance evidence | Claims production quality has already been verified | No input-specific treatment of this requirement |
+| 5 | Founder owns customer promises | Agents may promise any delivery date | No input-specific treatment of this requirement |
+| 6 | Return to manual delivery when automation fails | Failures are left without a recovery path | No input-specific treatment of this requirement |
 
 ### absence-and-concentration
 
 | Assertion | Satisfying example | Contradictory near miss | Omission / not shown |
 |---|---|---|---|
-| 1 | 80% marketplace dependency and 24/7 promise both flagged | Only optimize marketplace traffic | No input-specific treatment of this requirement |
-| 2 | Named backup contact, recovery access and realistic support notice | Go offline with no backup or expectations | No input-specific treatment of this requirement |
-| 3 | Bot coverage requires demonstrated escalation and recovery | Bot scheduled means support proven | No input-specific treatment of this requirement |
+| 1 | 80% marketplace sales creates concentration exposure | Calls the sales channel diversified | No input-specific treatment of this requirement |
+| 2 | 24/7 promise needs actual coverage during absence | Says current revenue eliminates the support obligation | No input-specific treatment of this requirement |
+| 3 | Arrange coverage or explicitly agree a change with affected customers | Replace existing 24/7 terms with a notice unilaterally | No input-specific treatment of this requirement |
+| 4 | Document emergency access and account recovery | Assume another person can access everything without preparation | No input-specific treatment of this requirement |
+| 5 | Tell customers what coverage they can rely on | Tell customers nothing about the absence plan | No input-specific treatment of this requirement |
+| 6 | Name an available fallback owner | Assume an unnamed person will handle incidents | No input-specific treatment of this requirement |
+| 7 | Verify escalation and fallback before relying on the bot | Bot scheduling proves support coverage | No input-specific treatment of this requirement |
 
 ### outlier-and-goal
 
@@ -68,4 +75,4 @@ Should trigger: “Choose a solo business for my 10-hour week”; “My one-pers
 
 Should not trigger: “Calculate break-even from these costs” → financial-modeling; “Write customer interview questions” → product-discovery; “Triage my calendar” → chief-of-staff-methodology.
 
-A future behavioral run needs fresh contexts, retained candidate outputs, assertion-level evidence and reviewer provenance, plus comparable route-only baseline outputs before claiming improvement. Independent review and real-user utility remain unassessed.
+A future behavioral run needs fresh contexts, retained candidate outputs, assertion-level evidence and reviewer provenance, plus comparable route-only baseline outputs before claiming improvement. A separate model reviewed the artifacts and prompted rubric, obligation-preservation and claim-calibration repairs; this is not behavioral execution or human certification. Real-user utility remains unassessed.
