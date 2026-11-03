@@ -100,6 +100,28 @@
         "The response compares matched build, platform, workload, cohort, and time-window field slices where available",
         "The response checks relevant countermetrics and does not claim a field-verified win from successful-run median alone"
       ]
+    },
+    {
+      "id": "valkey-benchmark-durability-parity",
+      "prompt": "Our synchronous Redis benchmark used AOF always; the Valkey candidate used no persistence and a pipeline of 1000. It is faster. Can we claim the BSD-preferred engine wins our endpoint latency target?",
+      "expected_output": "Preserve the license preference while rejecting an unmatched performance claim and designing a representative comparison.",
+      "assertions": [
+        "Does not treat different persistence policies as an equivalent performance comparison.",
+        "Requires pipeline length and concurrency representative of the real endpoint.",
+        "Requires end-to-end latency and error/timeout evidence beyond component throughput.",
+        "Separates a Valkey licensing preference from an unmeasured performance advantage."
+      ]
+    },
+    {
+      "id": "leaderboard-lua-collateral-latency",
+      "prompt": "A Lua leaderboard script reduced network calls, but unrelated endpoints now stall. The team wants to accept its better successful-run median. What should we measure and change?",
+      "expected_output": "Investigate blocking and bounded native/batched alternatives with correctness and full-distribution evidence.",
+      "assertions": [
+        "Identifies server-side script blocking as a hypothesis requiring measurement.",
+        "Includes unrelated traffic and tail latency in the comparison.",
+        "Requires preservation of ranking/order or snapshot requirements when batching reads.",
+        "Retains failures and timeouts in the evidence rather than dropping them from the conclusion."
+      ]
     }
   ]
 }

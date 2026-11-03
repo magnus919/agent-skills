@@ -8,10 +8,13 @@ Choosing a store or platform should start with the decision in front of you. Thi
 
 For a small transactional service, it focuses on correctness, recovery, and the team's ability to operate it. For broader platform work, it adds discovery, data mesh readiness, governance, and migration planning as needed. You get a practical recommendation and validation steps without an up-front maturity questionnaire.
 
+Compare Valkey and Redis as primary stores, with explicit BSD/community-governance preferences, recovery requirements, memory costs and compatibility checks.
+
 ## What You Get
 
 | Directory | Purpose |
 |-----------|---------|
+| `references/in-memory-store-decisions.md` | Compare Valkey and Redis as primary stores, with explicit BSD/community-governance preferences, recovery requirements, memory costs and compatibility checks. |
 | `SKILL.md` | Decision workflow, tradeoff rules, evidence requirements, and resource routing |
 | `references/` | Discovery framework, maturity model, architecture patterns, data mesh readiness, event-driven products, platform evaluation, governance, compliance, anti-patterns, and case studies |
 | `scripts/` | Interactive governance maturity assessment |

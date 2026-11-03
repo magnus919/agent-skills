@@ -121,6 +121,37 @@
         "The response stores quarantined content as bounded opaque or encrypted data with sanitized metadata and restricted access rather than blindly reparsing raw payloads",
         "The response includes backend boundary tests for forged identity, unsafe payloads, injection attempts, and quarantine handling without redesigning the public event contract"
       ]
+    },
+    {
+      "id": "native-counter-and-script-failure",
+      "prompt": "Two workers GET a Valkey counter and SET counter+1. Someone proposes a Lua script that updates two keys in different cluster slots, then validates the second argument. What implementation and failure tests should we use?",
+      "expected_output": "Prefer a native increment for the counter, respect slot boundaries, validate before writes and handle partial script failures.",
+      "assertions": [
+        "Chooses a native atomic increment instead of client read-modify-write for the simple counter.",
+        "Identifies the cross-slot boundary for the proposed script.",
+        "Moves predictable argument and type validation before mutations.",
+        "States that a runtime script error does not automatically roll back earlier mutations."
+      ]
+    },
+    {
+      "id": "stream-reclaim-duplicate-effects",
+      "prompt": "A Valkey Streams worker charges an external payment service, crashes before XACK, and another worker reclaims its pending event while the original worker is merely slow. Can we promise exactly-once charging?",
+      "expected_output": "Explain duplicate/concurrent effect risk and define durable effect identity, acknowledgement and recovery boundaries.",
+      "assertions": [
+        "Identifies duplicate-effect risk after an external effect but before acknowledgement.",
+        "Requires a stable effect identity or equivalent durable sink-side deduplication boundary.",
+        "Recognizes reclaim does not fence a still-running worker from external effects.",
+        "Acknowledges only after required durable effects are established."
+      ]
+    },
+    {
+      "id": "pubsub-disconnected-jobs",
+      "prompt": "We use Valkey Pub/Sub as the only job queue. Workers disconnect during deploys, but every job must eventually run. Is subscribing again enough?",
+      "expected_output": "Reject Pub/Sub as the sole durable job mechanism and define retained/recoverable work requirements.",
+      "assertions": [
+        "Identifies that Pub/Sub subscribers can miss messages while disconnected.",
+        "Requires retained authoritative work and an explicit recovery path for the eventual-processing requirement."
+      ]
     }
   ]
 }
