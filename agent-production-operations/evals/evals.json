@@ -251,6 +251,16 @@
         "Requires effect reconciliation before replay of the unknown write outcome.",
         "Tracks queue age or active/pending load separately from idle resident-agent count."
       ]
+    },
+    {
+      "id": "restore-and-lifecycle-control",
+      "prompt": "The local runtime drops callbacks to stopped sessions, except that lookup errors proceed and user text can resume a thread. An operator restored messages without pending-choice/dedup state and wants to resume a previously revoked agent. Define the control decision.",
+      "expected_output": "Holds the inconsistent restore and independently enforces current revocation.",
+      "assertions": [
+        "Does not treat stopped-session screening as sufficient authority enforcement when checks can fail open or be bypassed by resume input.",
+        "Preserves current revocation through restore and rechecks authority before consequential dispatch.",
+        "Holds consequential execution until missing or inconsistent runtime state is reconciled."
+      ]
     }
   ]
 }

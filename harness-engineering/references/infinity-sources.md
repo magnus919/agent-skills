@@ -1,6 +1,8 @@
 # Infinity source and claim records
 
-Accessed 2026-11-03. Source pin: `1abc6fcff1f186124f924b56aa92c3a3684c90c5`.
+Accessed 2026-11-03. These S1–S9 records describe the initial pass;
+[follow-up findings](infinity-design-findings.md) add S10–S14 and deeper selected
+paper-section reading. Source pin: `1abc6fcff1f186124f924b56aa92c3a3684c90c5`.
 Links under that commit refer to inspected files, not a floating release. Static
 inspection is evidence of code structure, not executed behavior. Paraphrases below
 preserve distinct reusable claims; they do not copy upstream implementation.

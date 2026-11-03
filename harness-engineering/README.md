@@ -25,7 +25,8 @@ can change controls, how to verify they are active, and when work must stop.
 Design agents that can release runtime resources during long waits and resume
 from durable events. The Infinity case study explains the architecture, recovery
 gaps, and limits of high-concurrency claims, with a decision record for your own
-runtime.
+runtime. A worked coding task follows configuration reconstruction, a long CI
+wait, restart, client reconnection and reviewed integration.
 
 ## What You Get
 

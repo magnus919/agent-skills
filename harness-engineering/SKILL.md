@@ -141,7 +141,7 @@ for worked examples and mode-specific exit artifacts.
 
 | Active problem | Reference | Working template |
 |---|---|---|
-| Long waits, callbacks, subscriptions, hibernation or Infinity-style runtime design | [event-driven-continuations](references/event-driven-continuations.md) | [Event runtime decision](templates/event-runtime-decision.md) |
+| Long waits, callbacks, subscriptions, hibernation or Infinity-style runtime design | [event-driven-continuations](references/event-driven-continuations.md) | [Event runtime decision](templates/event-runtime-decision.md), [worked coding journey](references/event-runtime-worked-example.md) |
 | Trace, conversation or review suggests a lasting lesson | [Lesson-to-PR](references/lesson-to-pr.md) | [Lesson candidate](templates/lesson-candidate.md) |
 | Failures or uncertain audit findings | [Diagnosis](references/diagnosis.md) | [Harness contract](templates/harness-contract.md) |
 | Startup/worker split and fresh-session discovery | [Session lifecycle](references/initialization-and-session-lifecycle.md) | [Session protocol](templates/session-protocol.md) |
@@ -170,8 +170,10 @@ for worked examples and mode-specific exit artifacts.
 For Infinity provenance or architecture claims, read the
 [research brief](references/infinity-research-brief.md),
 [source records](references/infinity-sources.md), and
-[research log](references/infinity-research-log.md). For new event-runtime rubric
-boundaries, read [assertion challenges](evals/infinity-challenges.md). Keep reported
+[research log](references/infinity-research-log.md), and
+[follow-up architecture findings](references/infinity-design-findings.md). For new event-runtime rubric
+boundaries, read [initial assertion challenges](evals/infinity-challenges.md) and
+[positive design challenges](evals/infinity-design-challenges.md). Keep reported
 capacity, inspected mechanisms and reproduced behavior separate.
 
 ## Bundled tools

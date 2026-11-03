@@ -665,6 +665,83 @@
         "Requires a revision check before accepting the child report against changed requirements.",
         "Distinguishes cancellation acknowledgement from evidence that external effects stopped."
       ]
+    },
+    {
+      "id": "engine-seam-positive-design",
+      "prompt": "Design a coding service with an existing durable FIFO queue, per-conversation scheduling and a UI. We need custom stores and a model adapter, but the normal prepare/complete/commit/dispatch policy is fine. Choose the runtime seams and identify what the application owns.",
+      "expected_output": "A coherent platform-step design reusing the engine and naming its extension owners.",
+      "assertions": [
+        "Selects platform-driven step execution because the existing platform owns queue scheduling.",
+        "Assigns conversation persistence and runtime metadata to explicitly identified store responsibilities.",
+        "Assigns per-conversation serialization and delivery acknowledgement policy to the platform adapter.",
+        "Explains that replacing the low-level pipeline transfers commit and dispatch ordering responsibility to the application."
+      ]
+    },
+    {
+      "id": "restartable-thread-configuration",
+      "prompt": "A service launches tools and prompts from in-memory objects, then restarts with durable history. Children have generated IDs. Model selection can change while fast synchronous tools loop. Design configuration reconstruction and binding, including missing configuration.",
+      "expected_output": "A restartable configuration source with explicit identity mapping and binding boundaries.",
+      "assertions": [
+        "Persists reconstructable configuration inputs rather than relying only on launch-time objects.",
+        "Uses explicit root or leaf ownership records to derive child configuration.",
+        "Defines refresh or invalidation for tools and prompts cached by an active thread.",
+        "Distinguishes model resolution before the completion pipeline from reuse during synchronous loop-back.",
+        "Holds or uses an explicitly approved compatible fallback when required configuration or model selection is unavailable."
+      ]
+    },
+    {
+      "id": "provider-recovery-positive-design",
+      "prompt": "Design provider recovery for throttling, a dropped stream, fatal credentials, one oversized new tool result, and a mixed input batch whose new user constraint cannot fit. The core has no initiation/stall timeout.",
+      "expected_output": "Typed recovery preserving intent and incomplete-output boundaries.",
+      "assertions": [
+        "Maps typed failure classes to different recovery actions rather than parsing error prose.",
+        "Names an owner for request-initiation or stream-stall timeout policy.",
+        "Stops visibly when new user instructions cannot be retained instead of silently continuing on older intent.",
+        "Keeps partial streamed tool proposals from authorizing dispatch before they are accepted and committed."
+      ]
+    },
+    {
+      "id": "client-reattach-positive-design",
+      "prompt": "A user detaches during CI. A persisted choice is pending when they reconnect, and an event arrives between snapshot capture and live subscriber registration. Design attach and stale-choice behavior without starting a new coding task.",
+      "expected_output": "A gap-free replay/live boundary and persistent choice recovery.",
+      "assertions": [
+        "Closes the snapshot-to-live registration gap through serialization or an equivalent cursor protocol.",
+        "Reconstructs unresolved choices from persisted state on reconnect.",
+        "Rejects responses to a choice that became obsolete after interruption or revision change.",
+        "Separates client detachment from task cancellation or duplicate task launch."
+      ]
+    },
+    {
+      "id": "coordinated-store-restore",
+      "prompt": "Design recovery after restoring chat history from checkpoint A but runtime metadata from unrelated checkpoint B. We have a pending subscription, a choice, and a tool that may have written after A. What evidence permits resume?",
+      "expected_output": "A coordinated restore hold and effect-aware reconstruction.",
+      "assertions": [
+        "Requires compatible recovery lineage for conversation and runtime-state stores.",
+        "Includes deduplication state, subscription ownership or pending choices in restore validation.",
+        "Holds consequential dispatch on unresolved snapshot mismatch.",
+        "Reconciles external effects newer than the restored checkpoint before replaying mutations."
+      ]
+    },
+    {
+      "id": "mcp-session-lifetime-design",
+      "prompt": "An MCP tool creates an in-memory handle in call A and consumes it in call B. We are moving from a long-lived local proxy to a fresh-per-invocation serverless proxy. Choose and validate a compatible design.",
+      "expected_output": "Session-lifetime decision with an explicit cross-call restart probe.",
+      "assertions": [
+        "Identifies that a fresh per-invocation session may lose the handle required by call B.",
+        "Selects a session-preserving adapter or explicit durable-state redesign with stated tradeoffs.",
+        "Proposes a probe spanning handle creation, use and adapter restart."
+      ]
+    },
+    {
+      "id": "workspace-lineage-integration",
+      "prompt": "A parent advanced after a child branched. The child closed without integration; its changes are still needed. Design integration/cleanup for a tool called squash_sandbox whose Git backend merges and jj backend squashes.",
+      "expected_output": "Revision-bound integration retaining recoverable child work and verifying the combined candidate.",
+      "assertions": [
+        "Distinguishes context ancestry from repository-base and accepted-artifact lineage.",
+        "Preserves recoverable child work before cleanup or integration.",
+        "Treats Git merge and Jujutsu squash as different backend history semantics.",
+        "Requires verification on the combined candidate after integration or conflict resolution."
+      ]
     }
   ]
 }
