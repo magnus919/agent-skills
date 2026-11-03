@@ -35,6 +35,10 @@ For brokered login, browser cookies, or worker session handoff, read
 [credential/session authority](credential-session-authority.md). Authentication,
 session custody, and action approval need separate grants.
 
+For local tool listeners, host-side file handlers or project-configured process
+launch, load [tool-service boundaries](tool-service-boundaries.md). Verify each
+execution path rather than inheriting a shell sandbox claim.
+
 ## Per-call concurrency and side effects
 
 Declare resource keys and conflict classes. Two writes to distinct files may be
@@ -154,3 +158,20 @@ requires access control, lifetime and reconciliation contracts; an MCP session I
 alone cannot recreate a vanished subprocess. Do not treat “MCP compatible” as a
 session-equivalence or scale-to-zero guarantee. Source: pinned
 [MCP compatibility](https://github.com/hydro-project/infinity/blob/1abc6fcff1f186124f924b56aa92c3a3684c90c5/docs/docs/rap/about/mcp-compatibility.md).
+
+## Separate display progress from agent-facing results
+
+Declare whether each payload updates a client display, enters model context, or
+settles an invocation. Streaming progress can be display-only; route a bounded,
+structured final result with evidence/artifact references to the agent when it
+needs to continue. A displayed success must not settle a pending call unless the
+result contract was satisfied. Conversely, losing a client must not discard the
+agent's durable result. Preserve invocation and event identities across both
+views, with explicit partial/final status and reconnect/retrieval behavior.
+
+Apply access and redaction rules to both routes; display-only does not mean
+public or safe. Challenge an early progress message saying “done,” an oversized
+output with a recoverable artifact, and client disconnect before the final result.
+Check conversation settlement and observed effects separately from screen output.
+This extends the existing observer/reattach contract; it adds no new authority to
+observers or tool text.

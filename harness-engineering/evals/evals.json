@@ -744,6 +744,64 @@
         "Treats Git merge and Jujutsu squash as different backend history semantics.",
         "Requires verification on the combined candidate after integration or conflict resolution."
       ]
+    },
+    {
+      "id": "tool-service-caller-scope",
+      "prompt": "Our local agent tool service binds all interfaces on a random port. Requests contain a thread ID and expose read/edit/run tools. Can we treat the port and ID as authentication? Design the smallest caller boundary and its acceptance checks.",
+      "expected_output": "A bounded listener plus authenticated and scoped dispatch, with negative effect checks.",
+      "assertions": [
+        "Rejects random ports or thread IDs as sufficient caller authentication.",
+        "Requires authorization binding the authenticated caller to the requested workspace or resource.",
+        "Requires expiry or revocation checks for reused service sessions.",
+        "Proposes checking that unauthenticated or wrong-scope requests cause no mutation or process launch and disclose no protected synthetic data in observable output.",
+        "Includes a successful authorized call as a control for denial checks."
+      ]
+    },
+    {
+      "id": "mixed-tool-containment",
+      "prompt": "Our shell runs in a sandbox, but read_file, edit_file and create_file run inside the host HTTP server using a workspace plus supplied path. We call all tools sandboxed. What must our runtime contract and readiness checks change?",
+      "expected_output": "Per-path enforcement evidence rather than inherited sandbox guarantees.",
+      "assertions": [
+        "Distinguishes native host file handlers from sandboxed command execution.",
+        "Requires filesystem containment checks on each native file route.",
+        "Includes absolute, parent-relative and symlink paths in proposed negative tests.",
+        "Treats filesystem read access and network egress as distinct guarantees.",
+        "Requires observed effects or sink evidence before claiming a tested boundary."
+      ]
+    },
+    {
+      "id": "project-config-activation-trust",
+      "prompt": "Opening a checkout automatically loads its project integration config and launches declared commands with our daemon environment. The JSON schema validates and a user approved this repo last month. A new commit changes argv and the endpoint. How should startup and reconnect work?",
+      "expected_output": "Parse without activation, check effective launch scope and revalidate changed capabilities.",
+      "assertions": [
+        "Treats project process configuration as executable input despite schema validity.",
+        "Requires authorization before launching untrusted project-defined commands.",
+        "Binds trust to the effective launch configuration rather than repository name alone.",
+        "Requires rechecking changed launch capabilities instead of reusing stale trust.",
+        "Proposes observing no process before authorization and expected activation afterward."
+      ]
+    },
+    {
+      "id": "compacted-view-causal-record",
+      "prompt": "A tool call is still unresolved after two conversation compactions. We want to replace original messages and the operation ledger with the newest summary, and call compaction privacy deletion. What should we preserve and test?",
+      "expected_output": "A derived prompt view with stable recovery identities and explicit retention boundaries.",
+      "assertions": [
+        "Keeps operation identity and unresolved-effect reconciliation independent of summary prose.",
+        "Rejects compaction alone as deletion of originals or other retained copies.",
+        "Defines an explicit missing-evidence disposition when an original record has expired.",
+        "Proposes checking recovered pending-operation identity across two compactions."
+      ]
+    },
+    {
+      "id": "display-progress-result-boundary",
+      "prompt": "A tool streams progress to the web client, including a line saying done, but its final result is stored later. The client disconnects first. Should the harness settle the call from that screen text and omit it from the next model turn?",
+      "expected_output": "Separate UI progress, durable result and invocation settlement contracts.",
+      "assertions": [
+        "Distinguishes display progress from an agent-facing final result.",
+        "Requires settlement according to the result contract rather than a progress message saying done.",
+        "Preserves recoverable final-result delivery despite client disconnect.",
+        "Applies access or redaction controls to display-only output."
+      ]
     }
   ]
 }

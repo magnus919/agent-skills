@@ -148,6 +148,7 @@ for worked examples and mode-specific exit artifacts.
 | Invisible knowledge, stale/contradictory rules | [Knowledge and invariants](references/instructions-and-knowledge.md) | [Guardrail promotion](templates/guardrail-promotion.md) |
 | Context retrieval, compression/reset, budgets | [Context design](references/context-design.md) | [Context budget](templates/context-budget.md) |
 | Persistence, state transitions, partial effects | [State and recovery](references/context-and-state.md) | [State](templates/state.json), [recovery drill](templates/recovery-drill.md) |
+| Local tool services, mixed sandbox paths or executable project configuration | [Tool-service trust and containment](references/tool-service-boundaries.md) | Per-path guarantees, caller grants and negative boundary probes |
 | Environment and custom runtime boundaries | [Runtime design](references/runtime-design.md) | [Runtime decision](templates/runtime-design.md) |
 | Credential handles, session reuse/handoff, revocation | [Credential/session authority](references/credential-session-authority.md) | Bind separate grants; challenge synthetic leaks and residual sessions |
 | Imported assistant memory, stale claims, rollback | [Memory import acceptance](references/memory-import-acceptance.md) | Stage reviewed claims; never import authority |
