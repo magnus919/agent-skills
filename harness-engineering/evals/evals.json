@@ -679,14 +679,15 @@
     },
     {
       "id": "restartable-thread-configuration",
-      "prompt": "A service launches tools and prompts from in-memory objects, then restarts with durable history. Children have generated IDs. Model selection can change while fast synchronous tools loop. Design configuration reconstruction and binding, including missing configuration.",
+      "prompt": "A service launches tools and prompts from in-memory objects, then restarts with durable history. Children have generated IDs. Model selection can change while fast synchronous tools loop. Design configuration reconstruction and binding, including missing configuration. The replacement model has a smaller context window and no image-input support.",
       "expected_output": "A restartable configuration source with explicit identity mapping and binding boundaries.",
       "assertions": [
         "Persists reconstructable configuration inputs rather than relying only on launch-time objects.",
         "Uses explicit root or leaf ownership records to derive child configuration.",
         "Defines refresh or invalidation for tools and prompts cached by an active thread.",
         "Distinguishes model resolution before the completion pipeline from reuse during synchronous loop-back.",
-        "Holds or uses an explicitly approved compatible fallback when required configuration or model selection is unavailable."
+        "Holds or uses an explicitly approved compatible fallback when required configuration or model selection is unavailable.",
+        "Revalidates context or multimodal-input compatibility when the resolved model capabilities change."
       ]
     },
     {
@@ -697,7 +698,8 @@
         "Maps typed failure classes to different recovery actions rather than parsing error prose.",
         "Names an owner for request-initiation or stream-stall timeout policy.",
         "Stops visibly when new user instructions cannot be retained instead of silently continuing on older intent.",
-        "Keeps partial streamed tool proposals from authorizing dispatch before they are accepted and committed."
+        "Keeps partial streamed tool proposals from authorizing dispatch before they are accepted and committed.",
+        "Provides an explicit omitted-evidence or retrieval disposition for the oversized tool result."
       ]
     },
     {

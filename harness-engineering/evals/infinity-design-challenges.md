@@ -53,6 +53,12 @@ execution claims still require the corresponding state/effect receipts.
 | `agent-production-operations/restore-and-lifecycle-control` #2 | Preserves current revocation through restore and rechecks authority before consequential dispatch. | The old restored grant cannot undo current revocation. | Restore yesterday’s grant and deploy immediately. | Current revocation not addressed. |
 | `agent-production-operations/restore-and-lifecycle-control` #3 | Holds consequential execution until missing or inconsistent runtime state is reconciled. | Fence dispatch until dedup/choice lineage matches restored history. | Empty runtime state is fine; resume and infer choices from chat. | No restore hold or reconciliation requirement. |
 
+| `harness-engineering/restartable-thread-configuration` #6 | Revalidates context or multimodal-input compatibility when the resolved model capabilities change. | Rebudget for the smaller window; transform the image only through a compatible path or hold. | Reuse the old context and image assumptions unchanged after switching models. | New model capabilities receive no compatibility check. |
+| `harness-engineering/provider-recovery-positive-design` #5 | Provides an explicit omitted-evidence or retrieval disposition for the oversized tool result. | Settle the result with a visible omitted-evidence marker and retrieve the required excerpt before deciding. | Silently discard the result and claim its evidence supported the decision. | No disposition for the oversized tool evidence. |
+
+Pre-merge author review added the two explicit capability/evidence assertions
+above; no prior released case or assertion was changed.
+
 Rubric review: every added assertion has an independently targeted satisfying,
 contradictory and omission example above. This is an author discriminability
 check, not a measured real-output success rate. No runtime or model pass is
