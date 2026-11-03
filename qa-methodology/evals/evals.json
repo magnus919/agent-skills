@@ -261,6 +261,38 @@
         "States that fresh sessions can retain correlated model errors.",
         "Requires reviewed oracles or direct observable evidence for acceptance."
       ]
+    },
+    {
+      "id": "in-memory-independent-loss-oracle",
+      "prompt": "A test restarts a Valkey replica, reads its own key count and declares zero acknowledged-write loss. All server flags are correct. Design a better acceptance test without authorizing production faults.",
+      "expected_output": "Require an external accepted-write oracle and scenario-bound evidence in an authorized test environment.",
+      "assertions": [
+        "Requires independently retained acknowledged-request IDs rather than only the recovered store's own count.",
+        "Specifies the fault boundary and accepted loss/recovery criteria before testing.",
+        "Does not treat configuration or mocks as runtime failure evidence.",
+        "Keeps production fault injection outside the supplied test-design authority."
+      ]
+    },
+    {
+      "id": "stream-effect-oracle-and-trim",
+      "prompt": "The proposed Streams test checks only XACK counts after a worker crashes following an external effect. It also trims pending payloads and assumes a reclaimed original worker cannot continue. What oracles and cases are missing?",
+      "expected_output": "Use effect identity, pending/reclaim and retention evidence rather than acknowledgement counts as an exactly-once oracle.",
+      "assertions": [
+        "Requires sink effect IDs or equivalent durable external-effect evidence in addition to acknowledgement state.",
+        "Tests a still-running original worker after reclaim rather than assuming ownership transfer fences it.",
+        "Treats missing trimmed payloads as a recovery-coverage gap requiring repair or an incomplete verdict."
+      ]
+    },
+    {
+      "id": "valkey-migration-test-boundaries",
+      "prompt": "Our Redis 7.4 JSON/search application uses the same RESP client against a Valkey mock. The test passed and row counts match. Can QA certify the weekend migration because we prefer BSD?",
+      "expected_output": "Preserve preference without substituting mocks/protocol/counts for engine and migration acceptance evidence.",
+      "assertions": [
+        "Does not let the Valkey/BSD preference waive compatibility or correctness evidence.",
+        "Requires actual source/candidate versions and supported file or logical-import evidence.",
+        "Requires feature/value/query and lifecycle checks beyond matching counts.",
+        "Requires rollback evidence accounting for writes accepted after cutover."
+      ]
     }
   ]
 }

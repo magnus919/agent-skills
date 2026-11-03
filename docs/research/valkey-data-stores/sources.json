@@ -603,6 +603,46 @@
       "evidence_class": "failed retrieval",
       "claims": [],
       "reason": "Both rendered-page attempts returned a CAPTCHA barrier; replaced by successful official valkey-doc source retrieval. No CAPTCHA was solved."
+    },
+    {
+      "id": "harbor-issue",
+      "url": "https://github.com/goharbor/harbor/issues/22935",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "05f58ab4405609ff1ec422396b8f87f1e4aaaa6606f22fde2ba7113ccaf09257",
+      "markdown_sha256": "ea5d122422a88a7868ee1e139b406937087b4bc785adece9aa00b1ccea61cc15",
+      "status": "retained",
+      "evidence_class": "primary project decision record",
+      "claims": [
+        {
+          "id": "harbor-issue-1",
+          "summary": "Harbor's March 2026 issue states that repeated Redis licensing changes created risk and proposes Valkey's more friendly license."
+        },
+        {
+          "id": "harbor-issue-2",
+          "summary": "The issue also requires smooth migration, so a licensing preference does not waive compatibility work."
+        }
+      ]
+    },
+    {
+      "id": "harbor-pr",
+      "url": "https://github.com/goharbor/harbor/pull/23157",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "b2821b8c7d2b1c3e22d3fec212775b3a6015cb69c1eb891ebede18db29f59574",
+      "markdown_sha256": "eefde4f92699bc58748ece117d22fa4b2998e55e6209ad915ebd910f455a48d7",
+      "status": "retained",
+      "evidence_class": "primary project decision record",
+      "claims": [
+        {
+          "id": "harbor-pr-1",
+          "summary": "Harbor's own PR records the cache-backend replacement and links the licensing-risk issue."
+        },
+        {
+          "id": "harbor-pr-2",
+          "summary": "The PR was merged on April 28, 2026; this establishes a concrete post-AGPL project decision, not community-wide sentiment or a benchmark."
+        }
+      ]
     }
   ]
 }

@@ -68,3 +68,9 @@ The video was fully audio-transcribed in the prior assessment; visual demonstrat
 - Missing runtime evidence is handed to the intended skill user as explicit acceptance work. New operational skills and live datastore mutations are outside this delivery.
 
 A final extraction audit corrected the INCR record: the rendered page and a canonical-path retry returned barriers, so its failed receipt is excluded and the retained claim IDs now point to the successfully retrieved official valkey-doc source with its own hashes. No documentation claim relies on a blocked page.
+
+## Follow-through verification for the secondary enrichment
+
+Retrieved Harbor's own [issue #22935](https://github.com/goharbor/harbor/issues/22935) and [merged PR #23157](https://github.com/goharbor/harbor/pull/23157) through GroktoCrawl on 2026-11-03, following the community account's citations. The March 2026 issue explicitly identifies repeated Redis licensing changes as risk and asks for Valkey with smooth migration; the April 2026 merged PR implements the cache replacement. These primary project records strengthen the named post-AGPL example without claiming population sentiment or a performance advantage. Their four extracted claims and retrieval hashes are in sources.json under harbor-issue and harbor-pr. The final ledger has 25 retained sources, two failed/replaced sources and 78 extracted claims. Bot coverage comments and promotional content in the PR were excluded from the enrichment.
+
+The capacity/cost and QA guides use the same technical sources for per-node headroom, durability-preserving unit cost, independent loss/effect oracles and bounded failure/migration test design. Their numeric examples and fault scenarios are explicitly synthetic planning material, not executed evidence.
