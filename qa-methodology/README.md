@@ -10,15 +10,18 @@ Beyond traditional QA, the bundle covers the agentic era: independent verificati
 
 Install once and your agent designs test strategies, triages CI failures by exit code, writes exploratory charters, scores risks on a 5x5 grid, reviews AI-generated PRs with independence, and maps QA career growth from Senior through Principal.
 
+Design Valkey/Redis failure tests with independent oracles for acknowledged writes, duplicate effects, memory pressure and migration boundaries.
+
 ## What You Get
 
 | Directory | Contents |
 |-----------|----------|
-| `references/` | 19 deep-dive files: test-strategy, test-automation, quality-gates-and-metrics, regression-testing, test-data-management, performance-testing, security-testing, ci-failure-triage, test-debugging, risk-based-testing, exploratory-testing, test-design-techniques, qa-career-levels, sdet-engineering, ai-code-quality-gates, agentic-eval-design, ai-test-artifact-evidence, agent-ui-navigation, holdout-scenarios |
+| `references/in-memory-store-failure-tests.md` | Design Valkey/Redis failure tests with independent oracles for acknowledged writes, duplicate effects, memory pressure and migration boundaries. |
+| `references/` | Focused guides, including: test-strategy, test-automation, quality-gates-and-metrics, regression-testing, test-data-management, performance-testing, security-testing, ci-failure-triage, test-debugging, risk-based-testing, exploratory-testing, test-design-techniques, qa-career-levels, sdet-engineering, ai-code-quality-gates, agentic-eval-design, ai-test-artifact-evidence, agent-ui-navigation, holdout-scenarios |
 | `templates/` | Fillable templates for strategy, verification, mutation review, risk, exploratory work, and AI-assisted artifact evidence and agent UI run records, plus holdout exposure records |
 | `assets/` | 3 quick-reference assets: risk-matrix-grid, test-design-techniques-checklist, qa-definition-of-done |
 | `scripts/` | 2 Python CLIs: risk-prioritize (P×I ranking with --json output), check-ac-testability (vague-AC scanner) |
-| `evals/` | Schema-v1 output-quality eval manifest (23 cases) |
+| `evals/` | Schema-v1 output-quality eval manifest (26 cases) |
 
 ## Quick Start
 

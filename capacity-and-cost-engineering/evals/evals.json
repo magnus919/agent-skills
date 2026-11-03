@@ -138,6 +138,28 @@
         "Representative per-tenant load and soak evidence remains owned by capacity-and-cost-engineering",
         "The response avoids duplicating neighboring methodologies"
       ]
+    },
+    {
+      "id": "in-memory-per-node-headroom",
+      "prompt": "A Valkey primary and replica each hold 24 GiB values, 8 GiB metadata/indexes, 4 GiB buffers and 2 GiB baseline. Each can add 12 GiB copy-on-write during persistence. We propose maxmemory equal to each 64 GiB node limit. Model the baseline and peak and explain the missing evidence.",
+      "expected_output": "Compute per-node and fleet arithmetic, separate maxmemory from RSS and require representative validation.",
+      "assertions": [
+        "Calculates 38 GiB steady and 50 GiB assumed peak per node from the supplied nonoverlapping components.",
+        "Accounts for both copies rather than treating replicas as free memory.",
+        "Rejects equating maxmemory with a safe total-RSS or container limit.",
+        "Labels the model as assumed and requires load/soak plus persistence/recovery peak evidence."
+      ]
+    },
+    {
+      "id": "in-memory-cost-durability-boundary",
+      "prompt": "We prefer Valkey/BSD. Two nodes cost $0.50 each per hour for 730 hours and serve 100 million successful useful operations. The team wants to disable AOF and ignore errors to show savings. Calculate node-only unit cost and review the proposal.",
+      "expected_output": "Compute bounded node-only costs while preserving durability requirements and full outcome accounting.",
+      "assertions": [
+        "Calculates node-only cost as $730 per month and $7.30 per million successful useful operations.",
+        "States that storage, network, operations and other omitted costs prevent treating the node-only figure as full TCO.",
+        "Rejects silently weakening durability to improve cost.",
+        "Keeps errors and completion evidence visible despite the successful-operation unit denominator."
+      ]
     }
   ]
 }

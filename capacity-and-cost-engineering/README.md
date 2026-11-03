@@ -8,10 +8,13 @@ Every service that serves users has a capacity limit and a cost. When your agent
 
 After installing this skill, your agent can: project capacity from growth forecasts with utilization targets and scaling triggers; model multi-tenant demand distributions, hot tenants, partition skew, and pooled versus siloed headroom; connect tier promises to quotas, admission, and contextual fairness evidence; calculate platform baseline, tenant-variable, and allocated unit cost; define budget thresholds with operational consequences (alert, throttle, deny); design representative per-tenant load and soak tests as mandatory capacity evidence; and resolve SLO-cost tradeoffs with explicit evidence, ownership, and accountability.
 
+Size Valkey/Redis memory and cost with buffer, index, replica and persistence headroom, including a labeled synthetic example.
+
 ## What You Get
 
 | Directory | What it provides |
 |-----------|-----------------|
+| `references/in-memory-store-capacity.md` | Size Valkey/Redis memory and cost with buffer, index, replica and persistence headroom, including a labeled synthetic example. |
 | `SKILL.md` | Core methodology: connected dimensions (demand/performance/reliability/spend), multi-tenant loading route, working method with five steps, four named scenarios, routing table to adjacent skills, and guardrails against generic cloud-cost tips and universal thresholds |
 | `README.md` | This human-facing overview |
 | `references/discovery-brief.md` | Ownership boundary analysis for financial, platform, SRE, analytics, SaaS architecture, security, software architecture, readiness, roadmap, and recovery concerns |
@@ -23,7 +26,7 @@ After installing this skill, your agent can: project capacity from growth foreca
 | `templates/budget-quota-decision.md` | Fillable budget/quota decision: budget owner, period, thresholds (alert/soft/hard), quota/rate-limit configuration, enforcement mechanism, operational behavior at each threshold, cost attribution, and approval |
 | `templates/slo-cost-tradeoff-record.md` | Fillable SLO-cost tradeoff record: SLO under discussion, current and projected cost, alternative SLO comparison, degradation path, error budget impact, accountable owner, and approval |
 | `templates/tenant-capacity-model.md` | Fillable tenant capacity and unit-cost model covering profiles, skew, pooled/siloed comparison, quotas, fairness, cost allocation, and representative per-tenant load/soak evidence |
-| `evals/evals.json` | Ten output-quality evaluation cases covering general capacity/cost decisions plus tenant distributions, pooled/siloed headroom, fairness, tenant-variable cost, and routing boundaries |
+| `evals/evals.json` | Twelve output-quality evaluation cases covering general capacity/cost decisions plus tenant distributions, pooled/siloed headroom, fairness, tenant-variable cost, and routing boundaries |
 
 ## Quick Start
 
