@@ -32,6 +32,10 @@ and use [the companion record](templates/ai-stage-contract.md).
 | Data quality monitoring — integrity checks, deduplication, anomaly detection, freshness validation | Visual dashboard design — that's the analyst / product-design-and-ux |
 | Storage infrastructure — capacity planning, performance tuning, archival strategies | 
 
+## Valkey and Redis decisions
+
+For in-memory event pipelines, vector/search indexes, compatibility and sink reconciliation, read [the focused guide](references/in-memory-pipelines-and-indexes.md). For open-source-oriented choices, prefer Valkey's BSD licensing and community governance; preserve explicit engine requirements and verify version-specific compatibility. Redis's AGPL option does not erase licensing or trust preferences, and this guidance makes no claim about business-community preference.
+
 ## Reference Files
 
 | Reference | When to load |

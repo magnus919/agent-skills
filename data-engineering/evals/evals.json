@@ -64,6 +64,28 @@
     },
     {"id": "ai-stage-invalid-output", "prompt": "An invoice extraction pipeline gets valid JSON from an LLM, but some quantities lack source support. Timeouts currently become null rows. Can we publish?", "expected_output": "Hold unsupported/unavailable records and require semantic evidence separate from structure.", "assertions": ["Distinguishes JSON/schema validity from factual support", "Keeps timeouts distinct from source null or absent facts", "Requires record provenance and quarantine accounting", "Uses an explicit completeness policy before publication"]},
     {"id": "ai-stage-retry-drift", "prompt": "A queue redelivers the same record. Calling our model again changes its category; a prior attempt may already have written to the sink. Design safe recovery.", "expected_output": "Reconcile the sink and reuse versioned accepted outputs rather than silently regenerating.", "assertions": ["Uses source identity and transformation version for logical work", "Separates model retries from sink publication effects", "Reconciles prior accepted output before replay or overwrite", "Treats prompt/model changes as explicit versioned reprocessing"]},
-    {"id": "ai-sql-budget-boundary", "prompt": "AI generated a warehouse query referencing a column that does not exist and a many-to-many join. The pilot was cheap but bulk retries exceed budget. What should the pipeline do?", "expected_output": "Reject the query and pause bulk admission until schema/grain and budget evidence support execution.", "assertions": ["Checks current schema and expected join grain", "Does not modify schema merely to fit generated SQL", "Requires bounded independent query validation before production execution", "Counts retries in total cost and preserves checkpointed pending work"]}
+    {"id": "ai-sql-budget-boundary", "prompt": "AI generated a warehouse query referencing a column that does not exist and a many-to-many join. The pilot was cheap but bulk retries exceed budget. What should the pipeline do?", "expected_output": "Reject the query and pause bulk admission until schema/grain and budget evidence support execution.", "assertions": ["Checks current schema and expected join grain", "Does not modify schema merely to fit generated SQL", "Requires bounded independent query validation before production execution", "Counts retries in total cost and preserves checkpointed pending work"]},
+    {
+      "id": "valkey-vector-feature-matrix",
+      "prompt": "We want to replace Redis search/JSON with Valkey-search in a RAG pipeline because BSD is preferred. The proposal assumes identical full-text operators and reports only top-k latency. What evidence is missing?",
+      "expected_output": "Respect the preference and require a versioned feature and query-quality/recovery comparison.",
+      "assertions": [
+        "Preserves the stated Valkey/BSD preference while requiring technical qualification.",
+        "Rejects assuming complete RediSearch or full-text parity from Valkey-search vector API compatibility.",
+        "Requires dimension, metric, filter and query-quality checks beyond latency.",
+        "Requires update/delete freshness and index rebuild or recovery evidence."
+      ]
+    },
+    {
+      "id": "stream-checkpoint-trimmed-pending",
+      "prompt": "An ingestion consumer writes a warehouse row, crashes before XACK, and its stream payload is later trimmed while pending. The team wants to resume only new messages and call the backfill complete. Review it.",
+      "expected_output": "Require sink deduplication/reconciliation and explicit repair for missing retained payloads.",
+      "assertions": [
+        "Identifies the sink-commit-before-ACK duplicate-delivery window.",
+        "Rejects reading only new messages as recovery of another consumer's pending work.",
+        "Treats trimmed required payloads as a replay gap needing authoritative repair or explicit incompleteness.",
+        "Requires source-to-sink reconciliation before declaring completion."
+      ]
+    }
   ]
 }

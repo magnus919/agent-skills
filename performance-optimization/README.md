@@ -6,10 +6,13 @@
 
 An agent using it can add missing measurements, design a representative benchmark, run focused experiments, check correctness and tradeoffs, and verify the result after rollout. It also knows when a promising local result is still unproven and when to stop spending effort on a tiny gain.
 
+Investigate Valkey/Redis latency with realistic round trips, script costs and persistence-aware benchmarks.
+
 ## What You Get
 
 | File | Purpose |
 |---|---|
+| `references/in-memory-store-investigation.md` | Investigate Valkey/Redis latency with realistic round trips, script costs and persistence-aware benchmarks. |
 | `SKILL.md` | The seven-step optimization loop and routing to specialist skills |
 | `references/measurement-and-benchmarks.md` | Field, trace, profile, and benchmark design |
 | `references/experiment-and-rollout.md` | Comparison, decision, and rollout rules |

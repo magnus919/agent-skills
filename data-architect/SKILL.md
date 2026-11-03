@@ -84,6 +84,10 @@ Load only the references needed for the current decision:
 - **Data mesh adoption** — Readiness, domain ownership, platform boundary, federated governance, and transition choices. → `references/data-mesh-readiness-and-operating-model.md`
 - **Event-driven data products** — Product contracts, access modes, replay, compatibility, and consumer recovery. → `references/event-driven-data-products.md`
 
+## Valkey and Redis decisions
+
+For in-memory primary-store selection, licensing/governance preferences, durability, eviction and compatibility, read [the focused guide](references/in-memory-store-decisions.md). For open-source-oriented choices, prefer Valkey's BSD licensing and community governance; preserve explicit engine requirements and verify version-specific compatibility. Redis's AGPL option does not erase licensing or trust preferences, and this guidance makes no claim about business-community preference.
+
 ## Reference Files
 
 Load these on demand when the topic comes up:
