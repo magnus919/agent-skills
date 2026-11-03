@@ -840,7 +840,7 @@
         "./ml-engineering"
       ],
       "strict": false,
-      "description": "Plan and execute production ML engineering work — classifier versus generative model selection, zero-shot baselines, coding specialization, model training and fine-tuning (LoRA/QLoRA), evaluation and eval-set design, quantization decisions, inference deployment, lineage, feature parity, drift response, and regression triage, grounded in practical engineering patterns for production ML systems. Do not use for statistical modeling and experimental design (that's the data scientist) or for operating a specific inference engine (that's a tool skill such as llama-cpp or vllm)."
+      "description": "Plan and execute production ML engineering work — classifier versus generative model selection, zero-shot baselines, coding specialization, model training and fine-tuning (LoRA/QLoRA), evaluation and eval-set design, quantization decisions, inference deployment, lineage, feature parity, drift response, and regression triage, experimental weight inspection and targeted editing, grounded in practical engineering patterns for production ML systems. Do not use for statistical modeling and experimental design (that's the data scientist) or for operating a specific inference engine (that's a tool skill such as llama-cpp or vllm)."
     },
     {
       "name": "mobile-development",

@@ -5,7 +5,7 @@ description: >-
   model selection, zero-shot baselines, coding specialization, model training and
   fine-tuning (LoRA/QLoRA), evaluation and eval-set design, quantization
   decisions, inference deployment, lineage, feature parity, drift response, and
-  regression triage, grounded in practical engineering patterns for production ML
+  regression triage, experimental weight inspection and targeted editing, grounded in practical engineering patterns for production ML
   systems. Do not use for statistical
   modeling and experimental design (that's the data scientist) or for operating
   a specific inference engine (that's a tool skill such as llama-cpp or vllm).
@@ -46,6 +46,7 @@ Machine learning engineering is the bridge between model research and production
 | `references/transaction-sequences.md` | Ordered-event representation, windows, label maturity, forward/entity validation and stateful serving |
 | `references/specialization-decisions.md` | Choosing rules/classifiers/zero-shot/prompt/SFT/RL, designing fixed-budget comparisons and interpreting verifier or case-study claims |
 | `references/specialization-evidence.md` | Primary-source findings, contradictory results and local validation limits |
+| `references/weight-space-programming.md` | Direct tensor inspection/editing hypotheses, feedback budgets, negative results and artifact validation |
 | `references/fine-tuning.md` | Setting up a LoRA/QLoRA/ full fine-tuning run — data prep, hyperparameters, validation strategy |
 | `references/evaluation.md` | Evaluating a model — benchmark selection, custom eval sets, regression tracking, comparison methodology |
 | `references/evaluation-and-lineage.md` | Metric/configuration decisions, repeated stochastic comparisons, end-to-end lineage, temporal feature parity, drift response, and adaptation/serving tradeoffs |
@@ -62,6 +63,7 @@ Machine learning engineering is the bridge between model research and production
 | `templates/sequence-windows.json` | Synthetic time-aware window audit contract |
 | `templates/specialization-study.md` | Preregistering task-matched alternatives, data freeze, quality/resource guardrails and stopping rules |
 | `templates/task-run-baseline.json`, `templates/task-run-candidate.json` | Synthetic saved-receipt contract examples; not model results |
+| `templates/weight-edit-study.md` | Preregistering a targeted weight repair, exact patch lineage, controls and rollback |
 | `templates/training-run-record.md` | Recording a training or fine-tuning run — model and data versions, full config, environment, eval results — so it can be reproduced |
 | `templates/eval-regression-table.md` | Tracking model quality across runs and triaging a regression — one row per eval case or capability subset |
 | `templates/quantization-decision-record.md` | Recording a quantization decision — baseline, candidates compared, quality threshold, and rollback path |
