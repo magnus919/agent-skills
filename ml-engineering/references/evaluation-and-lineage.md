@@ -31,3 +31,8 @@ The response options are bounded: continue with a documented observation, repair
 Treat prompting, adapter fine-tuning, full fine-tuning, retrieval augmentation, quantization, and a serving-engine change as different hypotheses. Compare them against the same baseline and task eval, while recording data freshness, quality delta by capability, latency/throughput, memory, cost, operational complexity, and rollback path. Keep the smallest intervention that clears the target; do not spend training budget to solve a data, retrieval, or serving bottleneck without evidence.
 
 This is methodology. Commands and lifecycle details for a named model server, orchestrator, registry, feature store, or monitoring product belong to that tool’s skill.
+
+For direct weight interventions, also record the immutable base, exact tensor
+patch, editor/probe history and final artifact identity using
+`templates/weight-edit-study.md`. Require held-out behavioral and post-export
+checks; sparse changes and successful tensor diffs do not establish limited impact.

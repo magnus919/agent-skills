@@ -33,6 +33,12 @@ vendor speed or minimum-memory claim into a promise about the user's workload.
 - For container platform design use `platform-engineering`; for Docker Compose
   mechanics use `docker-compose`. Do not turn this skill into a platform manual.
 
+For direct weight inspection or targeted tensor editing, route to
+[ml-engineering](../ml-engineering/SKILL.md). Weight-space programming research
+does not establish an Unsloth editing recipe. Reuse reload/export checks only
+after verifying edited-checkpoint compatibility; repeat task and regression
+evaluation in the target runtime.
+
 ## Start here
 
 1. Identify the requested surface: Core Python/notebook, Studio web UI, or

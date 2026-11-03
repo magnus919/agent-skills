@@ -300,6 +300,57 @@
         "States that semantic label-map provenance is not verified by the helper",
         "Requires real model and independently labeled task evidence before claiming accuracy"
       ]
+    },
+    {
+      "id": "weight-edit-repair-limits",
+      "prompt": "A weight edit fixes Qwen reasoning loops. Can we promise new math ability in Gemma and skip fine-tuning?",
+      "expected_output": "Bound the proposal to a measured failure and preserve negative evidence.",
+      "assertions": [
+        "Distinguishes loop repair from demonstrated acquisition of new mathematical capability",
+        "Preserves the reported non-looping Gemma negative result",
+        "Requires local measured evidence before generalizing to another checkpoint"
+      ]
+    },
+    {
+      "id": "weight-inspection-evidence",
+      "prompt": "Tensor differences reveal our sycophantic model. Certify this behavior without running any probes.",
+      "expected_output": "Static differences are hypotheses, not behavioral certification.",
+      "assertions": [
+        "Does not certify sycophancy from tensor differences alone",
+        "Preserves the source distinction between unsuccessful weights-only inspection and attention-assisted identification",
+        "Requires behavioral testing and intervention evidence for a causal claim"
+      ]
+    },
+    {
+      "id": "weight-edit-controls-budget",
+      "prompt": "We changed decoding and weights, used 50 calls of 512 examples, and selected patches on MATH-500. The result is data-free and held-out. Review.",
+      "expected_output": "Reject confounded attribution and exposed final-test claims.",
+      "assertions": [
+        "Separates a same-decoding weight comparison from separately tuned decoding controls",
+        "Counts batch examples and feedback rather than equating fifty calls to fifty examples",
+        "Treats repeated test-based patch selection as development exposure requiring fresh held-out assessment"
+      ]
+    },
+    {
+      "id": "weight-edit-lineage-rollback",
+      "prompt": "A sparse tensor edit improved average math accuracy but harmed instruction following. We overwrote the base. A hash check passed; ship?",
+      "expected_output": "Hold promotion and restore an auditable artifact boundary.",
+      "assertions": [
+        "Holds promotion for the unresolved critical regression",
+        "Requires an immutable recoverable base and exact reproducible tensor patch lineage",
+        "Does not treat a sparse edit or hash check as behavioral safety evidence",
+        "Requires fresh reload and target-runtime evaluation after export"
+      ]
+    },
+    {
+      "id": "weight-edit-no-improvement",
+      "prompt": "The registered feedback budget is exhausted and no patch improves the held-out quality. Write the study decision.",
+      "expected_output": "Preserve failure and stop rather than extend until success.",
+      "assertions": [
+        "Stops at the registered budget",
+        "Records ineffective candidates and an explicit rejected or inconclusive decision",
+        "Does not claim successful optimization without measured improvement"
+      ]
     }
   ]
 }

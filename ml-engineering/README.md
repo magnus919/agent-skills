@@ -16,6 +16,10 @@ cover extraction, summarization and information-preserving context compaction. N
 explain candidate-dependent scores, binary/ternary heads, calibration and abstention;
 a saved-logit helper makes the arithmetic inspectable without calling a model.
 
+Experimental weight-editing guidance helps distinguish a targeted repair from an
+unsupported capability claim, with a study record for controls, feedback budgets,
+exact artifact changes and rollback.
+
 ## What You Get
 
 | Directory | Purpose |
