@@ -430,6 +430,27 @@
         "Measures accepted integrated outcomes alongside coordination cost.",
         "Retains mandatory authority and safety boundaries in the comparison."
       ]
+    },
+    {
+      "id": "idle-capacity-evidence",
+      "prompt": "A report says 80,000 scripted agents on an EPYC thread used about 100 KB each after waves became idle. The team claims it proved 75,000 useful simultaneous agents on a Raspberry Pi. Assess the evidence and next measurement.",
+      "expected_output": "Labels the Pi estimate as extrapolation and separates active throughput and task quality.",
+      "assertions": [
+        "Identifies the Raspberry Pi claim as a memory-capacity extrapolation rather than a measured Pi deployment.",
+        "Distinguishes scripted idle-memory evidence from real-model task quality.",
+        "Requires active-load or latency measurement before claiming simultaneous useful throughput."
+      ]
+    },
+    {
+      "id": "event-trajectory-oracles",
+      "prompt": "Our benchmark has syntactically valid synthetic call/result pairs and no worker errors. Is it safe to release? Plan tests for forged callbacks with matching IDs, a tool effect before callback persistence, and process loss while events are deferred.",
+      "expected_output": "Requires authenticity, independent effect evidence and cross-process event lineage; structural validity alone is insufficient.",
+      "assertions": [
+        "Includes an authenticity challenge using a callback whose correlation IDs look valid.",
+        "Uses external target state or an operation ledger to determine tool-effect correctness.",
+        "Links event or call identity to persisted checkpoint state across process restarts.",
+        "Includes process death with deferred input in the proposed recovery tests."
+      ]
     }
   ]
 }

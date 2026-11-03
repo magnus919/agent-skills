@@ -22,6 +22,11 @@ decision and recurrence check; personal context stays out of shared procedures.
 For agents with consequential tools, it also addresses protected supervision: who
 can change controls, how to verify they are active, and when work must stop.
 
+Design agents that can release runtime resources during long waits and resume
+from durable events. The Infinity case study explains the architecture, recovery
+gaps, and limits of high-concurrency claims, with a decision record for your own
+runtime.
+
 ## What You Get
 
 Business-policy placement guidance that separates explanations, eligibility, and command authority.

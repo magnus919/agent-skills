@@ -32,6 +32,10 @@ results gate the next release.
 For agents with consequential tools, it also addresses protected supervision: who
 can change controls, how to verify they are active, and when work must stop.
 
+For agents that sleep between events, define wake-up admission, backlog limits,
+current permission checks and pending-effect reconciliation. Stopping a worker
+alone cannot disable a subscription that can wake it again.
+
 ## What You Get
 
 | Path | What it provides |
