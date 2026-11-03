@@ -56,3 +56,23 @@ incident ownership for unknown effects or spoofed events. Record what was held,
 rejected, reconciled and resumed. End when the tested operating envelope, current
 authority, pending-effect disposition, evidence gaps and rollback owner are recorded.
 A source review or synthetic capacity benchmark cannot authorize production.
+
+## Release a coordinated-restore hold
+
+Recovery must restore the logical agent deployment, including conversation and
+runtime-state stores, configuration references, input replay position and pending
+external operations. Inventory dedup records, subscriptions and pending human
+choices, not just messages. Hold consequential dispatch on missing/incompatible
+snapshot lineage; an operator must reconcile effects newer than the recovery
+point before deciding what can resume. Preserve current revocation across restore.
+The paired recovery manifest is an application control proposal, not a verified
+Infinity facility. Use harness-engineering's
+[restore drill](../../harness-engineering/references/context-and-state.md#restore-the-logical-deployment-not-only-its-transcript).
+
+Distinguish stopped-session admission from authority enforcement. The inspected
+Infinity local router checks existence/stopped state for event-style inputs, but
+user text can create/resume threads, the stopped check defaults to admitting,
+and store-check errors are processed fail-open. These lifecycle choices are not
+a security revocation guarantee. Enforce current grants independently before
+consequential dispatch, and test store failure and user-triggered resume under
+a revoked grant. Source: [router](https://github.com/hydro-project/infinity/blob/1abc6fcff1f186124f924b56aa92c3a3684c90c5/crates/infinity-agent-core/src/system/local/router.rs).

@@ -61,3 +61,25 @@ from an unknown effect. Idle memory gains do not compensate for duplicate writes
 authority violations or starvation. Stop with a supported decision and explicit
 unassessed dimensions; route runtime repair to harness-engineering and operating
 hold/rollback to agent-production-operations.
+
+## Evaluate a coherent positive design
+
+Pair adverse cases with a complete task such as the
+[worked coding journey](../../harness-engineering/references/event-runtime-worked-example.md).
+Require an ownership map and actual transitions through configuration reconstruction,
+CI wait, coordinated restore, client reattachment and artifact integration.
+A list of hazards does not establish that the design can perform the task.
+
+Use independent oracles for configuration identity, paired-store consistency,
+current authority, effect state and accepted artifact revision. Add a root/leaf
+configuration mismatch, model removal/capability change, typed provider failures,
+oversized new user input, stateful bridge restart and parent-advancement conflict.
+For UI attachment, place an event immediately before, during and after the attach
+boundary; compare the replay/live union for omissions and duplicates, and check
+pending-choice settlement separately from its display. This is a narrow attach
+property, not end-to-end exactly-once effects.
+
+Keep output-quality grading separate from execution receipts. An architecture
+answer can demonstrate a coherent plan; only a run with the relevant state/effect
+oracles can demonstrate those transitions. Test summary/constraint fidelity with
+representative model outputs instead of inferring it from durable positions.

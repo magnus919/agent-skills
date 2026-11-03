@@ -45,7 +45,9 @@ bounded from unbounded streams and studies progress/eager execution. The SIGMOD
 semantics. These are useful lenses for reasoning about waiting and ordering;
 they neither prove Infinity's correctness nor transfer guarantees to LLM decisions.
 Laddad's 2025 dissertation supplies broader Hydro context. See source records for
-reading depth and scope.
+reading depth and scope. The [follow-up findings](infinity-design-findings.md)
+now extend that initial reading to selected paper sections and the runtime
+extension, provider, client and workspace contracts.
 
 ## Evidence and limits
 
@@ -86,6 +88,10 @@ scheduler fairness, and model decisions under interleaved events.
   and failure drill record, without installing a runtime.
 - [Rubric challenges](../evals/infinity-challenges.md): satisfying, contradictory
   and missing-evidence examples for new semantic assertions across three skills.
+
+The [worked coding journey](event-runtime-worked-example.md) composes architecture
+selection, durable configuration, CI waiting, restore, reconnect and integration.
+See the research log for closure of the follow-up gaps.
 
 Every retained source group is represented in the source records and log. Material
 claims are connected to either pinned implementation, documented contract,

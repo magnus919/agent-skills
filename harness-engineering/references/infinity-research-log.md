@@ -54,11 +54,11 @@ has claim extraction there; the [brief](infinity-research-brief.md) synthesizes 
   measurement code would create a different experiment. No fabricated repetition.
 - Upstream Rust tests, live models, MCP integration, cloud fault injection and
   production cost measurements were not run. Source inspection cannot replace them.
-- Literature reading stopped at primary abstracts/records plus dissertation
+- Initial-pass literature reading stopped at primary abstracts/records plus dissertation
   abstract/contents. No full-paper review or Infinity-specific formal guarantee
   is claimed. Broader Hydro compiler details do not change this runtime guidance.
 
-## Closure audit
+## Initial-pass closure audit
 
 All retained groups S1–S9 have source records. Design recommendations are labeled
 as synthesis and connected to evidence. Documentation/implementation differences
@@ -67,3 +67,38 @@ focused additions and output-quality cases; other candidate owners are identifie
 in the brief. Structural validation and rubric review do not establish real-agent
 behavior. Remaining work for a deployment is the bounded failure/quality experiment
 in [event-driven continuations](event-driven-continuations.md).
+
+## Follow-up: architectural-learning gaps G1–G9
+
+User accepted the review plan on 2026-11-03. Preserve this as an additional pass,
+not a retroactive claim that the initial abstract-only reading was deeper.
+
+| Additional retrieval | Retained extraction | Durable destination |
+|---|---|---|
+| Engine customization, step mode, dynamic config, config/model/thread code | Extension ownership, cache/resolution boundaries, reconstructable launch inputs | Findings S10; runtime design and state recovery |
+| Provider docs, protocol completion types, event-processor overflow/retry code | Typed recovery, timeout ownership, tentative/accepted/durable output, lost-user-input stop | Findings S11; tool/event contracts |
+| Observer/background docs, thread/driver/router | Pending-choice durability, replay/live attach, lifecycle admission fail-open limits | Findings S12; client/operations procedures |
+| MCP compatibility, sandbox server/helpers/providers and two tests | Session lifetime, workspace ancestry, Git/Jujutsu integration differences, asynchronous cleanup | Findings S13; tool/session and integration procedures |
+| Flo v1 selected sections; protocol-rewrite v2 selected sections | Bounded progress and dependency/placement questions; explicit non-transfer of proofs | Findings S14; event procedure and worked task |
+
+Queries/retrieval used the existing upstream pin and versioned arXiv HTML, not a
+new floating implementation. No additional Infinity-specific paper was found;
+no broad literature-completeness claim is made. Dissertation full text and unrelated
+compiler internals were not expanded because they did not change this procedure.
+
+| Gap | Instructional closure artifact / acceptance evidence |
+|---|---|
+| G1 engine seam selection | Runtime selection and owner tables; worked task chooses platform step over low-level replacement |
+| G2 configuration reconstruction | Binding/invalidation procedure; restart journey; root/leaf and model-change cases |
+| G3 provider recovery | Typed failure/overflow matrix; positive provider-recovery case |
+| G4 reconnect and choices | Serialized attach and persisted-choice procedure; replay/live and stale-choice cases |
+| G5 coordinated restore | Paired-store drill, operations hold/release guidance and restore cases |
+| G6 session lifetime | Adapter choice table and stateful cross-call handle counterexample/case |
+| G7 integration | Source-inspected Git/Jujutsu differences and cleanup boundary; integration drill/case |
+| G8 literature | Sections explicitly read/extracted in S14; design questions applied, proofs not inherited |
+| G9 positive design evals | Added composition/restart/reattach/restore cases and assertion challenge triples; original IDs unchanged |
+
+These closures concern source-grounded instructional coverage and authored rubrics.
+They do not close the separate behavioral-efficacy, deployed adapter, upstream
+Rust execution, cloud recovery, benchmark or real-model evidence gaps. The worked
+journey is fictional; expected drill observations are not execution receipts.

@@ -48,3 +48,17 @@
 - Resident, active, queued and waiting populations; latency and total cost:
 - Comparable baseline/candidate schedule and uncertainty:
 - Remaining evidence, disposition and responsible decision owner:
+
+## Composition, restore and client decisions
+
+- Local scheduling / platform step / low-level pipeline; why this seam:
+- Engine, stores, scheduler, config, provider, observer and integration owners:
+- Reconstructable config inputs; root/leaf binding; cache invalidation:
+- Model resolution boundary; unavailable selection and capability-change policy:
+- Provider error classes; timeout/stall owner; partial-output and overflow policy:
+- Compatible store recovery points, schema/config versions and replay cursor:
+- MCP state/session lifetime and restart compatibility evidence:
+- Detach/idle/stop/close behavior; snapshot/live subscription boundary:
+- Pending-choice persistence, reconstruction and stale-response policy:
+- Conversation/workspace/artifact ancestry and integration conflict disposition:
+- Positive journey: startup → long wait → restart → reattach → verified artifact:

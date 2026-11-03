@@ -127,3 +127,15 @@ active completions, queue age, accepted outcomes, human review cost, recovery,
 model/tool/storage/transport cost and uncertainty separately. Stop when the design,
 tradeoff and bounded experiment are recorded; an untested plan is not deployment
 approval. For implementation, retain unresolved failures and rollback ownership.
+
+## Define progress and placement before scaling
+
+For an ongoing subscription, choose a bounded task completion condition, window,
+or incremental response policy; do not wait for an endless stream to finish.
+When moving work across workers, identify ordering/dependency assumptions and
+shared resource keys first. Conversation partitioning is not proof that external
+effects commute. Related stream/protocol research motivates these questions;
+its formal guarantees do not transfer to LLM reasoning. See the section-specific
+[literature extraction](infinity-design-findings.md#s14--selected-literature-beyond-abstracts).
+For seam selection and restartable configuration, use [runtime design](runtime-design.md);
+for a composed positive design use [the worked task](event-runtime-worked-example.md).
