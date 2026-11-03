@@ -623,6 +623,48 @@
         "Exercises the route after compaction rather than treating a present map as proof of discovery.",
         "Checks actual component suitability before deciding to reuse or replace it."
       ]
+    },
+    {
+      "id": "event-continuation-boundary",
+      "prompt": "Our coding agent waits six hours for CI. Would Infinity-style suspension help? Design the runtime boundary, including spawn_thread as a fast inline tool, and explain whether all slices contain exactly one completion.",
+      "expected_output": "An explicit continuation and asynchronous callback design with bounded synchronous exceptions.",
+      "assertions": [
+        "Identifies durable pending-operation and configuration state needed in addition to conversation text.",
+        "Distinguishes transport acknowledgement from the eventual tool outcome.",
+        "Allows synchronous loop-back to use multiple completions within a slice.",
+        "Defines a bound on synchronous loop-back execution."
+      ]
+    },
+    {
+      "id": "event-commit-crash-window",
+      "prompt": "We append history, then write processed IDs to another store, then POST a payment tool. We call this exactly once because inputs are deduplicated. Review failures after each boundary.",
+      "expected_output": "Rejects the exactly-once inference and specifies effect-aware recovery without claiming Infinity implements an outbox.",
+      "assertions": [
+        "Identifies the crash window between history append and separate processed-ID persistence.",
+        "Identifies the crash window between durable intent and external dispatch.",
+        "Requires external-effect reconciliation or effect idempotency before replaying an unknown payment outcome."
+      ]
+    },
+    {
+      "id": "event-routing-and-deferral",
+      "prompt": "A subscription already returned Subscribed. It later emits 500 alerts while a build is pending. We will append all alerts as more results to that original call and call every child context empty. Is this valid? Our defer queue is in memory.",
+      "expected_output": "Preserves conversation structure, distinguishes inherited context, and exposes deferred-event loss.",
+      "assertions": [
+        "Rejects appending multiple ordinary results to the already answered subscription call.",
+        "Distinguishes a child inheriting history at spawn from an explicitly empty or fresh context.",
+        "Identifies loss of in-memory deferred events on process death.",
+        "Bounds event child fan-out or its shared execution budget."
+      ]
+    },
+    {
+      "id": "event-cancel-compaction",
+      "prompt": "A child spawned at history position 40. The parent compacted through 80, changed requirements, and cancelled the child tool. A late success callback arrives. What state and checks allow safe continuation?",
+      "expected_output": "Treats child context and late effects as versioned recovery concerns.",
+      "assertions": [
+        "Binds child reconstruction to its spawn position when choosing compacted history.",
+        "Requires a revision check before accepting the child report against changed requirements.",
+        "Distinguishes cancellation acknowledgement from evidence that external effects stopped."
+      ]
     }
   ]
 }

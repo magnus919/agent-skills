@@ -141,6 +141,7 @@ for worked examples and mode-specific exit artifacts.
 
 | Active problem | Reference | Working template |
 |---|---|---|
+| Long waits, callbacks, subscriptions, hibernation or Infinity-style runtime design | [event-driven-continuations](references/event-driven-continuations.md) | [Event runtime decision](templates/event-runtime-decision.md) |
 | Trace, conversation or review suggests a lasting lesson | [Lesson-to-PR](references/lesson-to-pr.md) | [Lesson candidate](templates/lesson-candidate.md) |
 | Failures or uncertain audit findings | [Diagnosis](references/diagnosis.md) | [Harness contract](templates/harness-contract.md) |
 | Startup/worker split and fresh-session discovery | [Session lifecycle](references/initialization-and-session-lifecycle.md) | [Session protocol](templates/session-protocol.md) |
@@ -165,6 +166,13 @@ for worked examples and mode-specific exit artifacts.
 | Need specialist input then return to this workflow | [Catalog handoffs](references/catalog-composition.md) | Supply and consume the named contract |
 | Source provenance and extraction coverage | [Source assessment](references/source-assessment.md), [coverage map](references/source-coverage.md), [primary-source index](references/primary-sources.md), [source inventory](references/source-inventory.json) | Scope observations to their evidence |
 | Create a minimal repository harness | Use existing state owner first | [Instructions](templates/AGENTS.md), [handoff](templates/handoff.md) |
+
+For Infinity provenance or architecture claims, read the
+[research brief](references/infinity-research-brief.md),
+[source records](references/infinity-sources.md), and
+[research log](references/infinity-research-log.md). For new event-runtime rubric
+boundaries, read [assertion challenges](evals/infinity-challenges.md). Keep reported
+capacity, inspected mechanisms and reproduced behavior separate.
 
 ## Bundled tools
 

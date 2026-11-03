@@ -231,6 +231,26 @@
         "Keeps unknown lineage coverage unresolved.",
         "Requires fresh-session or stale-source challenge evidence before claiming the correction persists."
       ]
+    },
+    {
+      "id": "wake-revocation-and-disablement",
+      "prompt": "Our event-driven agent had deployment permission yesterday, slept overnight, and wakes from a webhook now that permission is revoked. We stopped its worker, but subscriptions and timers remain. Specify the operating response.",
+      "expected_output": "Holds consequential execution under current authority and accounts for future wake-ups.",
+      "assertions": [
+        "Requires current permission verification on wake rather than trusting the persisted grant.",
+        "Includes callback or queue admission in disablement rather than stopping only the current worker.",
+        "Assigns disposition or cleanup ownership for pending subscriptions, timers or tool effects."
+      ]
+    },
+    {
+      "id": "wake-backlog-and-unknown-effects",
+      "prompt": "A tool returns HTTP 200 immediately. No callback arrives before an event burst, so operators call it failed and plan to replay the write. The idle-agent footprint is tiny. Define the control decision.",
+      "expected_output": "Separates backlog and pending effects from idle capacity before allowing recovery.",
+      "assertions": [
+        "Distinguishes receipt acknowledgement from tool completion.",
+        "Requires effect reconciliation before replay of the unknown write outcome.",
+        "Tracks queue age or active/pending load separately from idle resident-agent count."
+      ]
     }
   ]
 }

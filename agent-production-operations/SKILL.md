@@ -129,6 +129,7 @@ used in this bundle. Reference files are loaded on trigger:
 
 | Reference | Loaded when |
 |---|---|
+| [references/event-driven-operations.md](references/event-driven-operations.md) | Operating callbacks, subscriptions, queued wake-ups or hibernating agents |
 | [references/discovery-brief.md](references/discovery-brief.md) | Reviewing the bundle's boundary decisions against specialist skills |
 | [references/agent-production-contract.md](references/agent-production-contract.md) | Defining capability, authority, uncertainty, escalation, and side-effect contracts for an agent |
 | [references/runtime-control-plan.md](references/runtime-control-plan.md) | Planning versioning, staged rollout, or fallback for an agent in production |
