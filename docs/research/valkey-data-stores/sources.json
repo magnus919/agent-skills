@@ -523,11 +523,11 @@
     },
     {
       "id": "valkey-incr",
-      "url": "https://valkey.io/commands/incr/",
+      "url": "https://raw.githubusercontent.com/valkey-io/valkey-doc/main/commands/incr.md",
       "accessed": "2026-11-03",
       "retrieval": "GroktoCrawl scrape",
-      "response_sha256": "c286ed122545dcd2961b0f8cf8304817485dcc19f13eabac97a3b6f15df0179b",
-      "markdown_sha256": null,
+      "response_sha256": "e092dd0cab108b8c200bc777c3a025648233b07ace3eeeacf8682323a0a6b17f",
+      "markdown_sha256": "0d65ee776b618e3fc5d4c12228122f4e44d8178503979ae13ac3d7590d3447e3",
       "status": "retained",
       "evidence_class": "primary documented semantics or attributed organizational statement",
       "claims": [
@@ -539,7 +539,8 @@
           "id": "valkey-incr-2",
           "summary": "Integer/type constraints must be handled at the application boundary."
         }
-      ]
+      ],
+      "reason": "Rendered command page was blocked twice; official documentation repository source retrieved successfully."
     },
     {
       "id": "valkey-history-current",
@@ -589,6 +590,19 @@
         }
       ],
       "source_interest": "Project/vendor-hosted account; no independent benchmark or population inference."
+    },
+    {
+      "id": "valkey-incr-page",
+      "url": "https://valkey.io/commands/incr/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "c286ed122545dcd2961b0f8cf8304817485dcc19f13eabac97a3b6f15df0179b",
+      "retry_response_sha256": "c286ed122545dcd2961b0f8cf8304817485dcc19f13eabac97a3b6f15df0179b",
+      "markdown_sha256": null,
+      "status": "excluded",
+      "evidence_class": "failed retrieval",
+      "claims": [],
+      "reason": "Both rendered-page attempts returned a CAPTCHA barrier; replaced by successful official valkey-doc source retrieval. No CAPTCHA was solved."
     }
   ]
 }

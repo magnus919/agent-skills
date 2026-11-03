@@ -18,6 +18,8 @@ All searches and page extraction used the configured GroktoCrawl service on 2026
 | site.valkey.io JSON search vector migration Redis compatibility | 5 | Followed official Valkey-search announcement; excluded third-party parity claims |
 | site:valkey.io Redis AGPL 2025 license community trust | 5 | Followed current history and named Harbor adoption account; excluded aggregator sentiment as a prevalence measure |
 
+| site:valkey.io Lua runtime error rollback writes | 5 | Additional source-gap check; existing Lua/transaction evidence retained, no search snippet promoted to authority |
+
 ## Evaluation and extraction ledger
 
 The machine-readable [source ledger](sources.json) records every attempted scrape, its disposition, response hash and independently reusable claim IDs. Sources are authoritative for their own documented behavior or stated rationale; vendor/project advocacy is not independent proof of comparative performance, universal preference or future governance outcomes. Source review covered material relevant to the research question; historical trivia, promotional claims, navigation, duplicated extraction spans and unrequested operational recipes were excluded.
@@ -45,9 +47,11 @@ The machine-readable [source ledger](sources.json) records every attempted scrap
 | [valkey-search](https://valkey.io/blog/introducing-valkey-search/) | retained | valkey-search-1, valkey-search-2, valkey-search-3, valkey-search-4 |
 | [valkey-zrange](https://valkey.io/commands/zrange/) | retained | valkey-zrange-1, valkey-zrange-2 |
 | [valkey-hset](https://valkey.io/commands/hset/) | retained | valkey-hset-1, valkey-hset-2 |
-| [valkey-incr](https://valkey.io/commands/incr/) | retained | valkey-incr-1, valkey-incr-2 |
+| [valkey-incr](https://raw.githubusercontent.com/valkey-io/valkey-doc/main/commands/incr.md) | retained | valkey-incr-1, valkey-incr-2 |
 | [valkey-history-current](https://valkey.io/topics/history/) | retained | valkey-history-current-1, valkey-history-current-2, valkey-history-current-3 |
 | [harbor-valkey](https://valkey.io/blog/harbor-chose-valkey/) | retained | harbor-valkey-1, harbor-valkey-2, harbor-valkey-3 |
+
+| [valkey-incr-page](https://valkey.io/commands/incr/) | excluded | Rendered page blocked twice; official documentation source successfully retrieved instead |
 
 ## Citation chains and corrections
 
@@ -57,8 +61,10 @@ The video was fully audio-transcribed in the prior assessment; visual demonstrat
 
 ## Completion and limitations
 
-- Every retained source has access-dated extraction and a source hash in sources.json; the failed /about/ path has an exclusion and successful replacement.
+- Every retained source has access-dated extraction and a source hash in sources.json; the failed /about/ path and blocked INCR page each have an exclusion and successful replacement.
 - Material findings are preserved in the focused skill guides, not only this synthesis. Proposed evals retain assertion-level satisfying, contradictory and omission fragments.
 - These fragments are authored rubric challenges, not real-user results, independent human labels or model-run evidence. No actual-user sample was observed.
 - No legal opinion, runtime reliability certification, performance win or successful migration is claimed. AGPL's OSI status does not settle the author's BSD/governance preference; the preference does not establish technical equivalence.
 - Missing runtime evidence is handed to the intended skill user as explicit acceptance work. New operational skills and live datastore mutations are outside this delivery.
+
+A final extraction audit corrected the INCR record: the rendered page and a canonical-path retry returned barriers, so its failed receipt is excluded and the retained claim IDs now point to the successfully retrieved official valkey-doc source with its own hashes. No documentation claim relies on a blocked page.
