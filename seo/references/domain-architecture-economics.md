@@ -20,7 +20,7 @@ Illustration only: 1,000 registrations at US$11.81 annual renewal cost US$11,810
 
 A thousand hostnames do not imply a thousand free hosting projects. Verify project/account limits, custom-domain/wildcard support, DNS record quotas, certificate issuance/renewal limits, build/API/traffic quotas, commercial-use terms and billing alerts. Distinguish wildcard DNS, wildcard certificates and wildcard application routing: one does not supply the others. Define tenant routing, unknown-host rejection, cookie boundaries, credential isolation, renewal alerts and recovery tests with the owning infrastructure skills.
 
-For example, Cloudflare Pages documentation checked 2026-11-06 specifies no wildcard custom domains and a soft 100-project/account limit; its Free DNS record limit for newly created zones is 200. These are dated provider constraints, not universal limits or a recommendation to evade quotas. A deliberately designed multi-tenant service may fit better, but needs architecture/security review. Route implementation to `data-architect`, the hosting/tool skill and security owners; SEO owns the search decision, not deployment.
+For example, Cloudflare Pages documentation checked 2026-11-06 specifies no wildcard custom domains and a 100-project/account limit that is not routinely increased (larger portfolios are directed to Workers for Platforms); its Free DNS record limit for newly created zones is 200. These are dated provider constraints, not universal limits or a recommendation to evade quotas. A deliberately designed multi-tenant service may fit better, but needs architecture/security review. Route implementation to `data-architect`, the hosting/tool skill and security owners; SEO owns the search decision, not deployment.
 
 ## Evidence-generating pilot
 
@@ -33,6 +33,7 @@ Reviewed 2026-11-06; recheck before implementation or pricing decisions.
 - https://developers.google.com/search/docs/appearance/site-names — domain/subdomain site-name scope.
 - https://developers.google.com/search/docs/appearance/ranking-systems-guide — site diversity, not an architecture experiment.
 - https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy — browser origin distinction.
-- https://developers.cloudflare.com/pages/platform/limits/ — project/custom-domain constraints.
+- https://developers.cloudflare.com/pages/platform/limits/ — project constraints.
+- https://developers.cloudflare.com/pages/configuration/custom-domains/ — custom-domain support.
 - https://developers.cloudflare.com/dns/manage-dns-records/reference/wildcard-dns-records/ — wildcard DNS scope.
 - https://developers.cloudflare.com/dns/manage-dns-records/ — documented record quotas; verify account applicability.

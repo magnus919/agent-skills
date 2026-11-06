@@ -78,7 +78,7 @@
     {
       "id": "portfolio-overlap-grain",
       "case_set": "regression",
-      "prompt": "Our Domain property and URL-prefix property both contain the same pages. Join query rows to daily sessions and average all site CTRs.",
+      "prompt": "Our Domain property and URL-prefix property both contain the same pages. Our search rows include query, page and date with compatible scope and timezone. Join these rows to daily page sessions and average all site CTRs.",
       "expected_output": "A corrected grain/overlap and weighted metric contract.",
       "assertions": [
         "Defines an overlap policy to prevent duplicate property totals.",

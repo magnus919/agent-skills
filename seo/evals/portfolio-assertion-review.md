@@ -48,7 +48,12 @@ Rubric challenges, not behavioral execution evidence. Existing IDs/assertions re
   - Contradictory: Join GSC queries to visitor IDs for exact sales.
   - Omitted: The answer gives no relevant calculation, field, or decision for this assertion.
 
-- Assertion: Offers bulk export with prospective start and permission requirements rather than promising historical backfill.
+- Assertion: Describes bulk export as prospective rather than promising historical backfill.
   - Satisfying: Owner-approved bulk export starts prospectively; historical API data remains limited.
   - Contradictory: Bulk export automatically backfills all past dates.
   - Omitted: The answer gives no relevant calculation, field, or decision for this assertion.
+
+- Assertion: Requires authorized property-owner setup before configuring bulk export.
+  - Satisfying: Export setup is proposed for an authorized property owner, with permission checked before changes.
+  - Contradictory: Configures export without ownership or authorization.
+  - Omitted: Gives no setup authority requirement.

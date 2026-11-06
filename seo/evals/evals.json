@@ -242,7 +242,8 @@
       "assertions": [
         "States that exhausted pagination does not prove complete long-tail coverage.",
         "Rejects joining individual search impressions or queries to sales.",
-        "Offers bulk export with prospective start and permission requirements rather than promising historical backfill."
+        "Describes bulk export as prospective rather than promising historical backfill.",
+        "Requires authorized property-owner setup before configuring bulk export."
       ]
     }
   ]
