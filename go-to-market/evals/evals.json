@@ -137,6 +137,40 @@
         "Keeps follow-up terms unknown instead of inventing turnaround or contact commitments",
         "Labels comprehension or conversion validation as planned rather than completed"
       ]
+    },
+    {
+      "id": "message-craft-candidate-selection",
+      "prompt": "Fictional supplied offer: bench repair for espresso machines at independent Westport cafes. Customers otherwise replace machines or call general repairers. Difference: written fault diagnosis and repair-or-replace recommendation before paid repair approval. Inspection fee amount unknown; customers drop off machines. Audience arrives looking for a repair service. Draft three meaningfully different headline/support options and select one with a reason and tradeoff.",
+      "expected_output": "Offer-led, outcome-led and alternative-led options make distinct choices; the selection fits service-seeking visitors and preserves the diagnosis/recommendation difference.",
+      "assertions": [
+        "Provides candidate openings with materially different offer, outcome or alternative emphases",
+        "Makes the supplied written diagnosis and recommendation visible in the selected headline or supporting line",
+        "Explains the selection using the supplied service-seeking visit intent",
+        "Identifies a specific tradeoff of the selected opening"
+      ]
+    },
+    {
+      "id": "message-craft-constructive-revision",
+      "prompt": "Rewrite: Our passionate team empowers hospitality. Buy now / Download brochure / Contact us. Supplied fictional service: Westport espresso-machine bench repair with a written diagnosis and repair-or-replace recommendation before approval of paid repairs. Inspection fee applies, amount unknown; customer drop-off required. Sample diagnosis available. Main action is requesting an inspection slot, confirmed afterward. Show diagnosis, replacement copy, relevant proof and action expectations.",
+      "expected_output": "A constructive revision names the service and useful difference, pairs proof with the demonstrated deliverable and explains the inspection request.",
+      "assertions": [
+        "Replaces the vague opening with actual copy naming the espresso-machine repair service",
+        "Connects the written diagnosis to deciding whether to repair or replace",
+        "Uses the sample diagnosis as proof of the deliverable being described",
+        "Provides replacement action copy explaining that inspection availability is confirmed after a request",
+        "Makes the inspection fee visible in the proposed action expectations as distinct from later paid repair approval"
+      ]
+    },
+    {
+      "id": "message-craft-role-objections",
+      "prompt": "Supplied fictional product Vendor Thread links a supplier questionnaire to multiple review requests and records dated decisions for each. Analysts use copied spreadsheets and email today. Security needs decision visibility, procurement needs scope. Security review and migration required; onboarding estimate four to eight weeks subject to scope. Integration coverage and pricing unknown. Write an analyst opening, security pitch and procurement objection answer with proof from an available sandbox.",
+      "expected_output": "Specific role-aware copy explains the same reusable-questionnaire mechanism, demonstrates decision history and treats missing commercial information as an open question.",
+      "assertions": [
+        "Explains in analyst copy how linking one questionnaire to multiple requests changes repeated-copy work",
+        "Provides a security-facing expression centered on the dated decision record",
+        "Answers the procurement rollout question with the supplied scope-dependent estimate and prerequisites",
+        "Specifies a sandbox demonstration relevant to questionnaire reuse or decision records"
+      ]
     }
   ]
 }

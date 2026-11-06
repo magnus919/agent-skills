@@ -33,6 +33,20 @@ Approval and evidence state are separate. Supersedes revision: ____.
 - Optional alternative action and its separate purpose:
 - Voice attributes and examples inherited from the brand:
 
+## Candidate selection and revision
+
+| Candidate | Headline and supporting line | Audience/intent fit | Proof and limits | Tradeoff |
+|-----------|------------------------------|---------------------|------------------|----------|
+| | | | | |
+
+- Selected candidate and input-based reason (or hypothesis to test):
+- Capability → changed customer activity → supported outcome:
+- Decision-blocking objection and supported answer / open question:
+
+| Original passage | Diagnosis | Replacement copy | Evidence or input supporting the change |
+|------------------|-----------|------------------|-----------------------------------------|
+| | | | |
+
 ## Claim review
 
 | Claim in draft | Supporting source and scope | Limitation | Keep / revise / remove / needs evidence |
