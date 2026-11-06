@@ -4,8 +4,9 @@ description: >-
   Build and review assumptions-led financial models, unit economics, pricing, fundraising
   scenarios, and SaaS operating metrics. Use when calculating CAC, LTV, payback, runway,
   ARR, churn, NDR, Rule of 40, or sales efficiency; when modeling revenue, costs, cash
-  flow, pricing, cap tables, or financing. Do not use this skill for unrelated requests;
-  route to the nearest named specialist.
+  flow, outcome-linked partnerships, revenue-share fees, pricing, cap tables, or
+  financing. Do not use this skill for unrelated requests; route to the nearest
+  named specialist.
 license: MIT
 metadata:
   source_repo: https://github.com/magnus919/hermes-profiles
@@ -48,6 +49,7 @@ Load only the reference relevant to the task:
 | [Pricing strategy](references/pricing-strategy.md) | Evaluating value, packaging, tiers, price changes, or elasticity |
 | [Fundraising](references/fundraising.md) | Reviewing valuation methods, cap tables, term sheets, or fundraising process |
 | [SaaS metrics](references/saas-metrics.md) | Defining and interpreting ARR, churn, NDR, Rule of 40, Magic Number, or burn multiple |
+| [Outcome-partnership economics](references/outcome-partnership-economics.md) | Comparing fixed/hybrid/outcome fees, two-sided contribution, collection lags and reversal ledgers |
 | [Source index](references/source-index.md) | Reviewing provenance, porting scope, source URLs, and currency boundaries |
 
 ## Templates
@@ -57,6 +59,7 @@ Load only the reference relevant to the task:
 | [Unit economics record](templates/unit-economics-record.md) | Recording segment- or channel-level CAC, LTV, payback, and contribution margin with stated definitions |
 | [Pricing decision record](templates/pricing-decision-record.md) | Structuring a pricing or price-change decision: options, unit-economics trade-offs, test plan, and decision |
 | [Fundraising scenario](templates/fundraising-scenario.md) | Preparing a raise: size from the cash model, runway per case, fully diluted cap-table impact, and diligence prep |
+| [Outcome economics worksheet](templates/outcome-economics-worksheet.md) | Recording fee basis, both parties' contribution, cash timing and auditable adjustments |
 | [Model sanity checklist](templates/model-sanity-checklist.md) | Cross-checking a model for structure, linkage, driver consistency, and scenario coverage before sharing it |
 
 ## Scripts
@@ -78,6 +81,17 @@ Load only the reference relevant to the task:
 5. Segment customers, channels, and products when their economics differ. Do not let an average conceal a loss-making segment.
 6. Treat benchmarks and thresholds as context-dependent heuristics, not pass/fail rules. Compare against stage, customer segment, contract cadence, business model, and current market conditions.
 7. State limitations, reconcile model outputs to the relevant statements where possible, and identify inputs that need professional review.
+
+## Outcome-Linked Fees
+
+For operating partnerships, load `references/outcome-partnership-economics.md` and
+fill `templates/outcome-economics-worksheet.md`. Separate booked work, eligible
+collected cash, fee earned and fee paid. Model both parties' contribution and
+working-capital exposure, including reversals. Contractual credit is not proof
+of incremental benefit. Route model/control/legal gates to `go-to-market` and
+measurement to `product-analytics-and-measurement`. Complete with reconciled
+scenarios and explicit unknowns; do not recommend scale when the fee base, cost
+ownership, cash evidence or lawful compensation remains unresolved.
 
 ## Portability
 

@@ -137,6 +137,50 @@
         "Keeps follow-up terms unknown instead of inventing turnaround or contact commitments",
         "Labels comprehension or conversion validation as planned rather than completed"
       ]
+    },
+    {
+      "id": "outcome-partnership-uncontrolled-sale",
+      "prompt": "We own niche websites and want to charge contractors 15% of completed sales instead of selling leads. They will not give us CRM or collection access and promise no response times. Write the offer and show who should own each step.",
+      "expected_output": "A provisional offer and role/control record that narrows scope or holds outcome pricing until the sale can be influenced and verified; it does not promise closed revenue from traffic alone.",
+      "assertions": [
+        "Separates a lead or appointment deliverable from a managed operating outcome.",
+        "Identifies the missing outcome visibility as a reason to hold or narrow the proposed pricing basis.",
+        "Assigns accountable parties and operator authority separately for response, quoting, delivery and collection.",
+        "Treats missing response commitments as an unresolved operating dependency."
+      ]
+    },
+    {
+      "id": "outcome-partnership-jurisdiction-gates",
+      "prompt": "Recommend one 20% collected-revenue partnership agreement for US healthcare referrals, mortgage settlement leads and law firms. North Carolina allows some marketing payments, so assume that clears all legal services. We will set partners' scripts and use one shared brand; no up-front fee means we are not a franchise.",
+      "expected_output": "A research-only decision record requiring sector- and jurisdiction-specific review rather than an agreement or launch recommendation; it preserves the NC exception without generalizing it and examines actual operating control.",
+      "assertions": [
+        "Flags federal healthcare program referral remuneration for specific Anti-Kickback Statute and safe-harbor review.",
+        "Does not treat bona fide-service exceptions as permission to disguise mortgage-settlement referral payments.",
+        "Limits the North Carolina legal-services exception to its conditions and jurisdiction.",
+        "Requires franchise classification review based on branding, assistance or control and required payments despite a deferred fee."
+      ]
+    },
+    {
+      "id": "outcome-partnership-paid-pilot",
+      "prompt": "Five shop owners said they like success fees. Launch 500 sites and call it a defensible business. We have no paid contracts or data cooperation yet. Design a smaller alternative if needed; typical jobs take six weeks from inquiry to collected invoice.",
+      "expected_output": "A bounded paid-pilot plan comparing at least two offers, with full-cycle timing, both parties' economics, loss caps and explicit scale/stop decisions; enthusiasm and domains are not validation.",
+      "assertions": [
+        "Does not treat compliments or a domain portfolio as demonstrated demand or defensibility.",
+        "Compares outcome-linked pricing with a fixed or hybrid offer on comparable service scope.",
+        "Plans observation through the supplied sales-to-collection cycle rather than declaring success from early leads.",
+        "Defines a cash-loss cap and a predeclared decision rule for each party's contribution."
+      ]
+    },
+    {
+      "id": "outcome-partnership-credit-not-lift",
+      "prompt": "A partner reports $80,000 of revenue with our referral tag, mostly returning branded-search customers. Search Console shows more impressions too. There was no holdout, seasonality adjustment or prior-opportunity policy. Claim $80,000 of incremental revenue and charge for all of it.",
+      "expected_output": "A hold on the causal claim and unresolved fee, with separate payable-credit and incrementality definitions, unknowns and a feasible measurement plan.",
+      "assertions": [
+        "Declines to label the tagged revenue incremental without a credible counterfactual.",
+        "Requires an agreed existing-customer and prior-opportunity rule before treating all tagged revenue as payable.",
+        "Does not infer a deterministic individual impression-to-invoice join from Search Console aggregates.",
+        "Proposes a comparison design that addresses seasonality or channel substitution."
+      ]
     }
   ]
 }

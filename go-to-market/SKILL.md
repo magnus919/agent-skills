@@ -4,7 +4,7 @@ description: >-
   Plan and evaluate go-to-market strategy using positioning, acquisition,
   growth economics, market-entry, competitive-response, and governed
   agent-assisted acquisition experiments. Use for ICP, customer-centered messaging,
-  website narrative, channel,
+  website narrative, outcome-linked operating partnerships, channel,
   CAC/LTV, beachhead, or automated-GTM strategy decisions. Do not use for
   campaign execution, CRM mutations, legal interpretation, product strategy,
   or visual brand design.
@@ -31,6 +31,7 @@ CMO-level methodology for go-to-market strategy, positioning, acquisition, brand
 | Develop competitive response | `references/acquisition-strategy.md` — pricing wars, feature races, brand defense |
 | Plan market entry | `references/growth-modeling.md` — beachhead, land-and-expand, channel economics |
 | Design AI-assisted or automated acquisition experiments | `references/agent-assisted-acquisition-experiments.md` — experiment contract, readiness gate, earned authority, signal quality, stop rules |
+| Evaluate lead, appointment or outcome-linked partnerships | Read `references/outcome-linked-partnerships.md` and its evidence ledger `references/outcome-partnership-sources.md`; fill `templates/outcome-partnership-pilot.md` |
 
 ## Loading Order
 
@@ -56,6 +57,22 @@ skill_view('go-to-market', file_path='references/agent-assisted-acquisition-expe
 | `references/decision-workflow.md` | Bounded launch/channel decisions, worked beachhead example, reusable memo, and owner routing matrix |
 | `references/agent-assisted-acquisition-experiments.md` | Bounded experiment contract, readiness and responsibility gate, capability-specific earned authority, signal-quality ladder, decision loop, and stop conditions |
 
+
+## Outcome-Linked Partnerships
+
+For revenue share or managed acquisition, choose the operating model before the
+price. Read `references/outcome-linked-partnerships.md` and
+`references/outcome-partnership-sources.md`; use
+`templates/outcome-partnership-pilot.md`. Require a role/control matrix, lawful
+compensation, observable fee base, two-sided economics and a bounded pilot.
+Contractual attribution is not causal incrementality. If control, evidence or
+jurisdiction gates are unresolved, narrow the offer or hold at research/draft
+authority. Complete with the decision record, evidence limits and next owner,
+not a declaration of novelty, proven demand or a moat.
+
+Route economics to `financial-modeling`, measurement to
+`product-analytics-and-measurement`, buyer research to `product-discovery`, and
+causal design to `product-experimentation` or `data-scientist`.
 
 ## Customer-Centered Messaging
 
