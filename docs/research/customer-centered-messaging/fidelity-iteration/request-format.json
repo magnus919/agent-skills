@@ -1,0 +1,12 @@
+{
+  "system": "Complete the supplied writing task directly. Use the supplied skill context. Return requested artifacts as Markdown in your response; do not claim to have written files or conducted research. No tools are available.",
+  "user_format": "SKILL CONTEXT\\n + json.dumps(context.files,ensure_ascii=False) + \\nTASK\\n + task.prompt",
+  "parameters": {
+    "temperature": 0,
+    "top_p": 1,
+    "max_tokens": 6000,
+    "seed": "dispatch.seed"
+  },
+  "serialization": "Python json.dumps(payload,ensure_ascii=False).encode(); insertion order model,messages,temperature,top_p,seed,max_tokens",
+  "retries": 0
+}

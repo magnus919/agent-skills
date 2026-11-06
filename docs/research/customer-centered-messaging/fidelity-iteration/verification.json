@@ -1,0 +1,191 @@
+{
+  "verified_at": "2026-11-06T21:27:10.325414+00:00",
+  "calls_this_iteration": 16,
+  "checks": [
+    {
+      "response_id": "2faad8",
+      "task_id": "textile-assessment",
+      "arm": "baseline",
+      "phase": "development",
+      "request_hash_reconstructed": true,
+      "context_hashes_valid": true,
+      "returned_model_matches": true,
+      "complete": true,
+      "reported_cost_usd": 0.020799075
+    },
+    {
+      "response_id": "ea8321",
+      "task_id": "textile-assessment",
+      "arm": "candidate-v1",
+      "phase": "development",
+      "request_hash_reconstructed": true,
+      "context_hashes_valid": true,
+      "returned_model_matches": true,
+      "complete": true,
+      "reported_cost_usd": 0.026763825
+    },
+    {
+      "response_id": "c1ec34",
+      "task_id": "volunteer-roster",
+      "arm": "candidate-v1",
+      "phase": "development",
+      "request_hash_reconstructed": true,
+      "context_hashes_valid": true,
+      "returned_model_matches": true,
+      "complete": true,
+      "reported_cost_usd": 0.026694525
+    },
+    {
+      "response_id": "ad301b",
+      "task_id": "volunteer-roster",
+      "arm": "baseline",
+      "phase": "development",
+      "request_hash_reconstructed": true,
+      "context_hashes_valid": true,
+      "returned_model_matches": true,
+      "complete": true,
+      "reported_cost_usd": 0.025143525
+    },
+    {
+      "response_id": "35879c",
+      "task_id": "collection-inventory",
+      "arm": "baseline",
+      "phase": "held-out",
+      "request_hash_reconstructed": true,
+      "context_hashes_valid": true,
+      "returned_model_matches": true,
+      "complete": true,
+      "reported_cost_usd": 0.022132275
+    },
+    {
+      "response_id": "c4107d",
+      "task_id": "collection-inventory",
+      "arm": "candidate-v2",
+      "phase": "held-out",
+      "request_hash_reconstructed": true,
+      "context_hashes_valid": true,
+      "returned_model_matches": true,
+      "complete": true,
+      "reported_cost_usd": 0.023170125
+    },
+    {
+      "response_id": "b5b785",
+      "task_id": "greenhouse-readings",
+      "arm": "candidate-v2",
+      "phase": "held-out",
+      "request_hash_reconstructed": true,
+      "context_hashes_valid": true,
+      "returned_model_matches": true,
+      "complete": true,
+      "reported_cost_usd": 0.0245916
+    },
+    {
+      "response_id": "9b4adc",
+      "task_id": "greenhouse-readings",
+      "arm": "baseline",
+      "phase": "held-out",
+      "request_hash_reconstructed": true,
+      "context_hashes_valid": true,
+      "returned_model_matches": true,
+      "complete": true,
+      "reported_cost_usd": 0.023054625
+    },
+    {
+      "response_id": "e40bdf",
+      "task_id": "textile-assessment",
+      "arm": "candidate-v2",
+      "phase": "development-rerun",
+      "request_hash_reconstructed": true,
+      "context_hashes_valid": true,
+      "returned_model_matches": true,
+      "complete": true,
+      "reported_cost_usd": 0.021935925
+    },
+    {
+      "response_id": "01ebcb",
+      "task_id": "volunteer-roster",
+      "arm": "candidate-v2",
+      "phase": "development-rerun",
+      "request_hash_reconstructed": true,
+      "context_hashes_valid": true,
+      "returned_model_matches": true,
+      "complete": true,
+      "reported_cost_usd": 0.024382875
+    },
+    {
+      "response_id": "39443b",
+      "task_id": "heritage-layout",
+      "arm": "baseline",
+      "phase": "phase2",
+      "request_hash_reconstructed": true,
+      "context_hashes_valid": true,
+      "returned_model_matches": true,
+      "complete": true,
+      "reported_cost_usd": 0.010578975
+    },
+    {
+      "response_id": "b54ff0",
+      "task_id": "heritage-layout",
+      "arm": "candidate-v3",
+      "phase": "phase2",
+      "request_hash_reconstructed": true,
+      "context_hashes_valid": true,
+      "returned_model_matches": true,
+      "complete": true,
+      "reported_cost_usd": 0.028847775
+    },
+    {
+      "response_id": "23fc48",
+      "task_id": "heritage-layout",
+      "arm": "candidate-v2",
+      "phase": "phase2",
+      "request_hash_reconstructed": true,
+      "context_hashes_valid": true,
+      "returned_model_matches": true,
+      "complete": true,
+      "reported_cost_usd": 0.026470125
+    },
+    {
+      "response_id": "18b695",
+      "task_id": "building-ticket-summary",
+      "arm": "candidate-v2",
+      "phase": "phase2",
+      "request_hash_reconstructed": true,
+      "context_hashes_valid": true,
+      "returned_model_matches": true,
+      "complete": true,
+      "reported_cost_usd": 0.011851125
+    },
+    {
+      "response_id": "ce4256",
+      "task_id": "building-ticket-summary",
+      "arm": "candidate-v3",
+      "phase": "phase2",
+      "request_hash_reconstructed": true,
+      "context_hashes_valid": true,
+      "returned_model_matches": true,
+      "complete": true,
+      "reported_cost_usd": 0.0115344075
+    },
+    {
+      "response_id": "405ac8",
+      "task_id": "building-ticket-summary",
+      "arm": "baseline",
+      "phase": "phase2",
+      "request_hash_reconstructed": true,
+      "context_hashes_valid": true,
+      "returned_model_matches": true,
+      "complete": true,
+      "reported_cost_usd": 0.021563025
+    }
+  ],
+  "costs": {
+    "prior_usd": 0.1055236,
+    "phase1_usd": 0.238668375,
+    "phase2_usd": 0.1108454325,
+    "cumulative_usd": 0.4550374075,
+    "remaining_usd": 4.5449625925
+  },
+  "final_skill_context_matches_candidate_v3": true,
+  "scope": "Transport, accounting, source bytes and request reconstruction only; not semantic or release acceptance."
+}

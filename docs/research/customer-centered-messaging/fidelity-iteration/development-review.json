@@ -1,0 +1,210 @@
+{
+  "reviewer_kind": "model_teacher",
+  "reviewer": "authoring assistant",
+  "independent_human_adjudication": false,
+  "blind": false,
+  "reviewed_at": "2026-11-06T21:15:25.516534+00:00",
+  "interpretation": "Provisional semantic judgments against fictional inputs; not calibrated labels or a release gate. No aggregate pass rate.",
+  "responses": [
+    {
+      "response_id": "2faad8",
+      "task_id": "textile-assessment",
+      "arm": "baseline",
+      "criteria": [
+        {
+          "criterion": "material_factual_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "The fee is said to apply prior to or as part of evaluation despite unknown timing."
+        },
+        {
+          "criterion": "uncertainty_fidelity",
+          "suggested_state": "met",
+          "evidence": "Credential and methodology gaps remain unknown."
+        },
+        {
+          "criterion": "commitment_consistency",
+          "suggested_state": "not_met",
+          "evidence": "Submitting a request reserves a review slot is not supplied; booking remains unconfirmed."
+        },
+        {
+          "criterion": "deliverable_completeness",
+          "suggested_state": "met",
+          "evidence": "Opening, caption, path/action, objection, card and revision record exist."
+        },
+        {
+          "criterion": "useful_specificity",
+          "suggested_state": "met",
+          "evidence": "Written condition assessment and recommendation remain explicit."
+        }
+      ],
+      "response_sha256": "382e96283bc8bc347391bb182d453152bb3ba0a7c7eb77d5dd60a454482dc132"
+    },
+    {
+      "response_id": "ea8321",
+      "task_id": "textile-assessment",
+      "arm": "candidate-v1",
+      "criteria": [
+        {
+          "criterion": "material_factual_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Caption asserts methodology and test standards are defined per review without support."
+        },
+        {
+          "criterion": "uncertainty_fidelity",
+          "suggested_state": "met",
+          "evidence": "Certification is recorded as unsupplied rather than absent."
+        },
+        {
+          "criterion": "commitment_consistency",
+          "suggested_state": "met",
+          "evidence": "Fee applies and later pattern approval is separate; availability after request."
+        },
+        {
+          "criterion": "deliverable_completeness",
+          "suggested_state": "met",
+          "evidence": "All requested expression types exist."
+        },
+        {
+          "criterion": "useful_specificity",
+          "suggested_state": "met",
+          "evidence": "Fabric assessment and recommendation remain concrete."
+        }
+      ],
+      "response_sha256": "417da2a477d5a1fa54014c90931122a937db1918363e202fe1986473337ce778"
+    },
+    {
+      "response_id": "c1ec34",
+      "task_id": "volunteer-roster",
+      "arm": "candidate-v1",
+      "criteria": [
+        {
+          "criterion": "material_factual_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Setup promises publishing assignments for venue teams although that sharing/access permission is not supplied."
+        },
+        {
+          "criterion": "uncertainty_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Caption says the record does not log editor identity while the fact table says identity logging is unknown."
+        },
+        {
+          "criterion": "commitment_consistency",
+          "suggested_state": "not_met",
+          "evidence": "Scheduling terms will be confirmed after request is a new resolution commitment."
+        },
+        {
+          "criterion": "deliverable_completeness",
+          "suggested_state": "met",
+          "evidence": "All requested artifacts exist."
+        },
+        {
+          "criterion": "useful_specificity",
+          "suggested_state": "met",
+          "evidence": "CSV import, shift view and dated record remain visible."
+        }
+      ],
+      "response_sha256": "f97afc7ce97fd636ac392d8089b41fcc5c16d2f54465eb85c77ea639119f230f"
+    },
+    {
+      "response_id": "ad301b",
+      "task_id": "volunteer-roster",
+      "arm": "baseline",
+      "criteria": [
+        {
+          "criterion": "material_factual_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Proof asset adds a two-week schedule and time-of-day logging beyond the dated record input."
+        },
+        {
+          "criterion": "uncertainty_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Caption and pitch deny identity/login tracking despite unknown identity logging."
+        },
+        {
+          "criterion": "commitment_consistency",
+          "suggested_state": "not_met",
+          "evidence": "Review format/confirmation timelines will be provided upon inquiry adds an unprovided resolution stage."
+        },
+        {
+          "criterion": "deliverable_completeness",
+          "suggested_state": "met",
+          "evidence": "All requested expression types exist."
+        },
+        {
+          "criterion": "useful_specificity",
+          "suggested_state": "met",
+          "evidence": "CSV and dated changes retained."
+        }
+      ],
+      "response_sha256": "b809666b283ad338516c7cdde3a8464782e6d2e01f979cd99614f79f84d5e03a"
+    },
+    {
+      "response_id": "e40bdf",
+      "task_id": "textile-assessment",
+      "arm": "candidate-v2",
+      "criteria": [
+        {
+          "criterion": "material_factual_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Caption asserts assessment criteria/methods vary by fabric without support."
+        },
+        {
+          "criterion": "uncertainty_fidelity",
+          "suggested_state": "met",
+          "evidence": "Certification is unsupplied, not categorically absent."
+        },
+        {
+          "criterion": "commitment_consistency",
+          "suggested_state": "not_met",
+          "evidence": "Fee amount/payment timing/terms are promised prior to booking despite no such process supplied."
+        },
+        {
+          "criterion": "deliverable_completeness",
+          "suggested_state": "met",
+          "evidence": "All requested artifacts exist."
+        },
+        {
+          "criterion": "useful_specificity",
+          "suggested_state": "met",
+          "evidence": "Assessment and recommendation remain clear."
+        }
+      ],
+      "response_sha256": "6b18dd6f514b6a4d3a487f37e7d382037392c6e15d952159be8520ae4e7e272d"
+    },
+    {
+      "response_id": "01ebcb",
+      "task_id": "volunteer-roster",
+      "arm": "candidate-v2",
+      "criteria": [
+        {
+          "criterion": "material_factual_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Pitch grants venue partners direct visibility without supplied product access/sharing permissions."
+        },
+        {
+          "criterion": "uncertainty_fidelity",
+          "suggested_state": "met",
+          "evidence": "Identity and certifications are unknown and not denied in the revised caption."
+        },
+        {
+          "criterion": "commitment_consistency",
+          "suggested_state": "not_met",
+          "evidence": "Submitting a request schedules a demonstration overstates an unconfirmed scheduling step."
+        },
+        {
+          "criterion": "deliverable_completeness",
+          "suggested_state": "met",
+          "evidence": "All requested artifact types exist."
+        },
+        {
+          "criterion": "useful_specificity",
+          "suggested_state": "met",
+          "evidence": "CSV import/shift view/dated records remain visible."
+        }
+      ],
+      "response_sha256": "95bb3a7d38e400f35d85e2e20d4b810e6c60e64b13ba4c715863dd3e703667dc"
+    }
+  ],
+  "reviewer_model": "not exposed by host",
+  "rubric_revision": "plan.md five-criterion roster"
+}

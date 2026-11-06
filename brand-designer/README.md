@@ -16,7 +16,9 @@ guide, refine editable concepts, and preserve approved examples without reinvent
 your brand on every task. Customer message handoffs carry the approved offer into
 your strategy and voice guidelines while keeping evidence, claim limits, and
 review decisions visible. Worked adaptations show how the same offer can sound
-different across channels while keeping its meaning intact.
+different across channels while keeping its meaning intact. Final-copy review
+compares polished expressions with supplied facts and uncertainties; it is not an
+automatic verifier.
 
 ## What You Get
 

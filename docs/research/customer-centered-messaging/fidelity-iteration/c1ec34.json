@@ -1,0 +1,49 @@
+{
+  "response_id": "c1ec34",
+  "task_id": "volunteer-roster",
+  "arm": "candidate-v1",
+  "phase": "development",
+  "requested_model": "google/gemini-3.8-flash",
+  "returned_model": "google/gemini-3.8-flash",
+  "provider": null,
+  "completion_id": "gen-1793999468-0c9Zn9BK8ioUdL0I8aDb",
+  "receipt": {
+    "response_id": "c1ec34",
+    "task_id": "volunteer-roster",
+    "phase": "development",
+    "arm": "candidate-v1",
+    "seed": 2026110611,
+    "started_at": "2026-11-06T21:11:07.065040+00:00",
+    "reserved_usd": 0.3803415,
+    "request_sha256": "f6ae685b78f9280325cd7ad04c011b25342c8a3be2ed15d374d2e226985e8d43",
+    "status": "complete",
+    "finish_reason": "stop",
+    "completed_at": "2026-11-06T21:11:40.714377+00:00",
+    "elapsed_seconds": 33.649,
+    "reported_cost_usd": 0.026694525,
+    "catalog_estimate_usd": 0.026694525
+  },
+  "usage": {
+    "prompt_tokens": 18337,
+    "completion_tokens": 2804,
+    "total_tokens": 21141,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 1453,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    },
+    "cost": 0.026694525,
+    "cost_details": {
+      "source": "openrouter_list",
+      "floor_applied": false,
+      "rate_source": "openrouter_catalog"
+    }
+  },
+  "response": "# Customer Message Brief & Brand Handoff: Roster Window\n\n**Status:** Untested draft  \n**Tone/Voice:** Exact and approachable  \n**Target Audience:** Neighborhood volunteer coordinators (primary), venue partners (stakeholder)  \n**Alternative:** Copied spreadsheets and email threads  \n\n---\n\n## 1. Homepage Opening\n\n### Headline\n**Coordinate neighborhood volunteer shifts without juggling spreadsheets**\n\n### Supporting Line\nRoster Window lets you import a CSV roster, view assignments by shift, and maintain a dated record of assignment changes in one central view.\n\n---\n\n## 2. Proof Caption\n\n> **Caption for Walkthrough Interface Preview:**  \n> *Sample walkthrough view showing volunteer assignments grouped by shift alongside a chronological, dated log of updates. (Sample data shown for illustration. The record logs change dates; it does not log editor identity or guarantee volunteer attendance.)*\n\n---\n\n## 3. Action Expectations & Setup Path\n\n### Primary Call to Action\n**Request a roster walkthrough**\n\n* **What happens next:** Walk through shift views and dated change tracking using a sample dataset. *(Scheduling and response turnaround terms are currently unassigned and will be confirmed after request submission.)*\n* **What it is not:** This is an exploratory walkthrough, not an instant account provisioning or a live data import.\n\n### Setup Path to Value\n1. **Sample Walkthrough:** Tour shift views and inspect how dated change records operate using sample volunteer data.\n2. **Field & Role Agreement:** Align on required CSV import fields and agree on coordinator administration responsibilities. *(Prerequisite for setup; completion duration depends on organizational scope.)*\n3. **CSV Import & Shift Setup:** Import your existing roster via CSV and publish shift assignments for coordinators and venue teams.\n\n---\n\n## 4. Venue-Partner Pitch Opener\n\n> “To make shift handoffs straightforward, Roster Window gives venue partners a clear view of volunteer coverage alongside a dated record of every schedule change. You can see current coverage and verify when an assignment was last updated without sorting through forwarded email threads.”\n\n---\n\n## 5. Compressed Brand Card\n\n```yaml\nbrand: Roster Window\ncategory: Volunteer shift coordination\ntarget_audience: Neighborhood volunteer coordinators and venue partners\ncore_offer: CSV-based volunteer scheduling with shift-level visibility and dated change records\ndifferentiator: Replaces fragile spreadsheet copies and scattered emails with clear shift assignment views and a dated change history.\nvoice_attributes:\n  - Exact: States capabilities, records, and requirements precisely without inflated technical or operational claims.\n  - Approachable: Plain, direct language that community coordinators can put to work immediately.\nclaim_limits:\n  - Deliverable is shift assignment visibility and dated change tracking.\n  - Attendance, actor logging, retention limits, and integrations beyond CSV are not promised.\nnext_action: Request a roster walkthrough (sample dataset)\n```\n\n---\n\n## 6. Revision & Fact-Check Audit\n\n### Before & After Copy Revision\n\n| Original Passage (Off-Voice / Unsupported) | Diagnosis | Replacement Copy (On-Voice / Evidenced) | Supporting Input & Boundary |\n|---|---|---|---|\n| *\"The certified, tamper-proof roster that guarantees every volunteer turns up. Get instant access.\"* | • **\"Certified\"**: Certifications are unsupplied/unknown.<br>• **\"Tamper-proof\"**: A dated record does not constitute cryptographic or tamper-proof integrity controls.<br>• **\"Guarantees every volunteer turns up\"**: Software cannot guarantee human behavior/attendance.<br>• **\"Instant access\"**: Production setup requires CSV field mapping and role alignment. | **Headline:** \"Coordinate neighborhood volunteer shifts without juggling spreadsheets\"<br><br>**Supporting:** \"Roster Window lets you import a CSV roster, view assignments by shift, and maintain a dated record of assignment changes in one central view.\"<br><br>**Action:** \"Request a roster walkthrough\" | • Supported: CSV import, shift display, dated change record.<br>• Removed: Attendance guarantee, certification claims, tamper-proof claim, instant provisioning. |\n\n---\n\n### Fact Boundary & Claim Review\n\n| Element / Claim in Copy | Evidentiary State | Copy Boundary & Decision | Open Owner Questions |\n|---|---|---|---|\n| **Import CSV roster** | Supplied fact | Permitted: Mentioned as primary data intake mechanism. | Are non-CSV file formats planned or supported? |\n| **Shift assignment view** | Supplied fact | Permitted: Framed as coordinator visibility into volunteer shifts. | None; capability confirmed. |\n| **Dated change record** | Supplied fact | Permitted: Described strictly as a \"dated record of updates.\" Must *not* be termed \"audit trail,\" \"tamper-proof,\" or \"immutable.\" | What timezone is recorded? Is historical export available? |\n| **Actor identity (who changed what)** | Unknown | Omitted: Do not claim user attribution. Do not claim absence; leave unknown. | Does the change record capture user IDs or coordinator names? |\n| **Retention duration** | Unknown | Omitted: No timeframe promised for change record storage. | How long are dated change records retained? |\n| **Integrity / Security controls** | Unknown | Omitted: No claims regarding tamper-evidence or data hardening. | Are there integrity controls on change logs? |\n| **Certifications & Compliance** | Unknown | Omitted: Keep unmentioned. Do not state \"uncertified.\" | Are there relevant security/privacy certifications? |\n| **Volunteer attendance** | Unsupported / Non-deliverable | Omitted: Product displays assignments; it cannot guarantee attendance. | Are check-in/attendance confirmation features planned? |\n| **Integrations** | Unknown (beyond CSV) | Omitted: Only CSV import is claimed. | Are calendar or email integrations roadmap items? |\n| **Setup & Scheduling SLA** | Unknown / Proposal | Stated as prerequisite: Setup requires agreeing import fields and owner responsibilities. No timeline promised. | What is the standard response SLA for walkthrough requests? What is typical onboarding duration? |\n\n---\n\n## 7. Next Owner Handoff\n\n* **Product Design & UX:** Define the walkthrough request form inputs, submission confirmation feedback, and sample data viewer states.\n* **Go-to-Market / Product Owner:** Resolve open questions regarding walkthrough scheduling SLAs, change-record actor attribution, and CSV field specifications prior to public release."
+}

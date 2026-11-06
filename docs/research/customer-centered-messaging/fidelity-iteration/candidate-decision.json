@@ -1,0 +1,9 @@
+{
+  "frozen_at": "2026-11-06T21:14:42.177357+00:00",
+  "candidate": "candidate-v2",
+  "context_sha256": "787a2bdba780f02c07afd3d73c370543e876ca3a05d62a5fb264c753b6421898",
+  "development_review": "mixed; not accepted as validated factual improvement",
+  "reason": "v2 removes the explicit unknown-identity denial in the roster caption but still invents a scheduling consequence; textile still invents method variability and confirmation timing. Use held-out pairs to assess transfer without further tuning in this plan.",
+  "reviewer_kind": "model_teacher",
+  "prohibited_inference": "not a human adjudication, calibration score or release approval"
+}

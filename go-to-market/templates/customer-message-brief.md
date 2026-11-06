@@ -20,6 +20,15 @@ Approval and evidence state are separate. Supersedes revision: ____.
 | Feelings/values, if relevant | | | |
 | Differentiation | | | |
 
+## Claim plan before final copy
+
+Quote proposed NEW customer-facing statements and literal supplied support. Reject
+unsupported claims before rendering copy; a legacy-copy revision table is separate.
+
+| Proposed new claim | Supplied support and state | Keep / narrow / omit / owner proposal |
+|--------------------|----------------------------|--------------------------------------|
+| | | |
+
 ## Message draft
 
 - Plain-language offer statement:
@@ -52,6 +61,19 @@ Approval and evidence state are separate. Supersedes revision: ____.
 | Claim in draft | Supporting source and scope | Limitation | Keep / revise / remove / needs evidence |
 |---|---|---|---|
 | | | | |
+
+## Final-copy audit
+
+Audit actual expressions after drafting; keep proposed choices outside final copy.
+
+| Location / exact claim | Supplied support and state: fact / proposal / unknown / explicit exclusion | Decision and final wording | Open owner question |
+|------------------------|---------------------------------------------------------------------------------|----------------------------|---------------------|
+| | | | |
+
+- Required deliverables present and the supplied differentiator still visible:
+- Conflicting statements removed from final copy (not merely noted elsewhere):
+- Unknown capabilities, credentials and outcomes remain unknown:
+- Proposed workflow improvements identified separately:
 
 ## Channel and UX handoff
 

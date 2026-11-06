@@ -81,6 +81,14 @@ sounds confident and matches the typography.
 5. Provide the revised copy, explain the change, and retain open questions. Review
    status means reviewed documentation; comprehension still needs reader evidence.
 
+Before handoff, apply the GTM
+[final-copy fact check](../../go-to-market/references/final-copy-fact-check.md).
+Audit the actual compact expression and objection answer, not just the source table.
+“Dated” must not become “immutable” or “tamper-evident”; an unknown credential must
+not become a categorical assertion that the brand lacks it. Keep proposed forms,
+service steps and response terms outside approved copy until supplied or approved.
+Replace unsupported detail with the supported mechanism, preserving useful copy.
+
 Complete with strategy/voice examples and a message-fidelity record in the existing
 brand templates. Route new market promises to `go-to-market`, and resulting page
 behavior or recovery states to `product-design-and-ux`.
