@@ -52,6 +52,8 @@ skill_view('go-to-market', file_path='references/agent-assisted-acquisition-expe
 | `references/acquisition-strategy.md` | Channel taxonomy, PLG vs SLG playbooks, sales funnel ratios, competitive response playbook, brand architecture |
 | `references/growth-modeling.md` | CAC/LTV deep dive, cohort analysis practical guide, NRR, market entry strategy (beachhead, land-and-expand) |
 | `references/customer-centered-messaging.md` | Customer goal, obstacle, credible help, path, action, outcome, channel adaptation and testing |
+| `references/message-drafting-and-revision.md` | Evidence-to-copy technique, candidate selection, diagnosis and revision |
+| `references/messaging-worked-examples.md` | Complete fictional service and enterprise examples from inputs to channel handoff |
 | `templates/customer-message-brief.md` | Evidence-linked message draft and strategy/voice/UX handoff |
 | `references/decision-workflow.md` | Bounded launch/channel decisions, worked beachhead example, reusable memo, and owner routing matrix |
 | `references/agent-assisted-acquisition-experiments.md` | Bounded experiment contract, readiness and responsibility gate, capability-specific earned authority, signal-quality ladder, decision loop, and stop conditions |
@@ -66,6 +68,11 @@ alternatives, differentiation and evidence before drafting. Read
 feelings or results. Produce a plain offer, credible help, realistic path to value,
 clear next action and claim/proof mapping. Keep approved voice intact; do not
 require a fixed page order or step count.
+
+When drafting alternatives or revising weak copy, read
+`references/message-drafting-and-revision.md`. For complete evidence-to-copy
+examples, read `references/messaging-worked-examples.md`. Record why the chosen
+copy fits the audience, the tradeoff, and the actual revised passages.
 
 Hand the versioned message brief to `brand-designer` for strategy/voice documentation,
 and action expectations to `product-design-and-ux` for page behavior. Drafting does

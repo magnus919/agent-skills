@@ -107,6 +107,11 @@ For messaging or website-copy handoffs, read
 the brief's version, approval status, evidence gaps and owner in the existing
 templates. Approval does not establish that its claims are true or tested.
 
+When writing channel or audience variants, read
+`references/message-adaptation-examples.md`. Produce the actual expressions and
+check their audience, offer, mechanism, claim limits and action commitment against
+the source brief; explain how the wording reflects the established voice.
+
 ### 3. Validate
 
 ```bash
@@ -180,6 +185,7 @@ Image prompt construction for brand-compliant generation. Subcommands:
 
 | File | What It Contains |
 |------|-----------------|
+| `references/message-adaptation-examples.md` | Voice and channel adaptations, semantic anchors and misleading near misses |
 | `references/customer-message-handoff.md` | Approved messaging into strategy, voice, imagery and application guidelines |
 | `references/canonical-components.md` | Definitive component hierarchy + maturity decision tree |
 | `references/artifact-hierarchy.md` | Every artifact: who consumes it, format, depth, relationships |
