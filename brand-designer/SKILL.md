@@ -3,11 +3,13 @@ name: brand-designer
 description: >-
   Create comprehensive brand identity documentation for any brand. Guides you through
   documenting strategy, visual identity (logo, color, typography, imagery), voice and
-  tone, application guidelines, governance, and asset inventory. Produces markdown specs,
+  tone, customer-centered messaging handoffs, application guidelines, governance,
+  and asset inventory. Produces markdown specs,
   compiled brand books, and brand-compliant images via reference-image-aware generation.
   Use when you need to capture a brand's identity in structured, durable form — for vault
-  storage, agency handoff, or press kit distribution. Do not use this skill for unrelated
-  requests; route to the nearest named specialist.
+  storage, agency handoff, or press kit distribution. Do not use for market positioning
+  decisions or conversion experiments; use go-to-market. Route interaction behavior
+  to product-design-and-ux.
 license: MIT
 compatibility: >-
   CLI requires Python 3.8+; generate script requires an image generation backend.
@@ -50,10 +52,15 @@ generate brand-card --brand-dir ./my-brand --layout landscape
 | "I need to document my brand strategy" | Strategy memo | Leadership, marketing |
 | "I need visual identity documentation" | Visual identity spec | Designers, developers |
 | "I need brand voice guidelines" | Voice & messaging spec | Writers, content team |
+| "Turn our approved customer message into brand voice guidelines" | Strategy/voice handoff with claim evidence | Brand owners, writers |
 | "I need a full brand book for agency handoff" | Compiled brand book | Agencies, partners |
 | "I need to inventory all my brand assets" | Asset inventory | Everyone |
 
 ## When not to use
+
+Use [go-to-market](../go-to-market/SKILL.md) for audience selection, alternatives,
+differentiation, customer narrative development and messaging experiments. Consume
+the approved message brief here rather than creating a second messaging method.
 
 Use [product-design-and-ux](../product-design-and-ux/SKILL.md) for task flows and
 interaction behavior, [frontend-engineering](../frontend-engineering/SKILL.md) for
@@ -95,6 +102,11 @@ The decision tree in `references/canonical-components.md` maps brand maturity to
 
 **Filling technique:** Replace `{{placeholders}}` in each template with your brand's information. Required fields are marked in frontmatter. Optional fields can be removed.
 
+For messaging or website-copy handoffs, read
+`references/customer-message-handoff.md` before filling strategy and voice. Record
+the brief's version, approval status, evidence gaps and owner in the existing
+templates. Approval does not establish that its claims are true or tested.
+
 ### 3. Validate
 
 ```bash
@@ -130,6 +142,15 @@ generate logo-bg primary --brand-dir ./my-brand --background dark  # Logo on dar
 
 The `generate` script is prompt-engineering-first: it reads your brand data and constructs optimized prompts for image generation backends. For best results with accurate logo rendering, provide reference images alongside the prompt.
 
+## Completion Check
+
+For message-driven brand work, verify that strategy, voice examples and application
+copy preserve the same audience, meaningful difference, claim limits and action
+expectations. Keep evidence and approval states visible. If the brief conflicts
+with positioning or lacks consequential evidence, return those decisions to
+`go-to-market`; continue only the documented, supported portion. Complete when the
+requested brand artifacts, unresolved decisions and handoff owner are recorded.
+
 ## Scripts Reference
 
 ### `scripts/brand-book`
@@ -159,6 +180,7 @@ Image prompt construction for brand-compliant generation. Subcommands:
 
 | File | What It Contains |
 |------|-----------------|
+| `references/customer-message-handoff.md` | Approved messaging into strategy, voice, imagery and application guidelines |
 | `references/canonical-components.md` | Definitive component hierarchy + maturity decision tree |
 | `references/artifact-hierarchy.md` | Every artifact: who consumes it, format, depth, relationships |
 | `references/gold-standard-analysis.md` | Structural analysis of Cash App, IBM, Netflix, Bang & Olufsen, Klarna |

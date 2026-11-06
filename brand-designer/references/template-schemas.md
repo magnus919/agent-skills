@@ -83,6 +83,8 @@ audiences:
 
 ---
 
+The strategy body also records the customer message foundation: brief revision, owner, approval scope/date, evidence state, goal, obstacle, capability, path, outcome limits, action consequence and unresolved decisions. These are Markdown body fields, not new required YAML keys.
+
 ## visual-id.md
 
 ```yaml
@@ -277,6 +279,8 @@ localization:
 **Body sections:** Voice attributes (3-5 with descriptions) → Tone matrix (context × audience → tone) → Messaging pillars → Vocabulary (approved words, words to avoid) → Copy examples (before/after pairs for common scenarios) → Localization notes
 
 ---
+
+The voice body also records message provenance, claim/proof limits, on-voice examples, misleading near misses and unresolved decisions. These are Markdown body fields, not new required YAML keys.
 
 ## application.md
 

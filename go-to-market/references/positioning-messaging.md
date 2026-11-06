@@ -66,6 +66,16 @@ Level 4: Objection Handling
 | **Evidence** | Can we back every claim with a data point or customer story? |
 | **Memorability** | Would someone repeat this to a colleague? |
 
+## Turn Positioning into Customer-Centered Messaging
+
+When the audience and differentiated value are established but the website or other
+marketing material remains unclear, use `references/customer-centered-messaging.md`
+and `templates/customer-message-brief.md`. Express the goal, obstacle, credible help,
+path, next action and outcome in the customer's decision context. Carry proof and
+limits into every channel; use the hierarchy above to control detail, not to discard
+new evidence that challenges the positioning. Send approved strategy and voice
+requirements to `brand-designer`, and page behavior to `product-design-and-ux`.
+
 ## Acquisition Strategy
 
 ### Channel Taxonomy

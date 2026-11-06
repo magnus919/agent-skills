@@ -1,0 +1,73 @@
+{
+  "access_date": "2026-11-06",
+  "tool": "GroktoCrawl CLI",
+  "note": "Hashes identify retrieved text. Full copyrighted extracts are temporary working material, not redistributed here. Durable evidence records are in sources.md. Hashes alone do not preserve source content.",
+  "extractions": [
+    {
+      "file": "framework.txt",
+      "bytes": 10280,
+      "sha256": "92ab3be7960478fc60ae258df4169c889ee7cf81d0ac3afb0f508382228ea4c6",
+      "status": "extracted"
+    },
+    {
+      "file": "hero.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "scrape_failed"
+    },
+    {
+      "file": "independent-usability.txt",
+      "bytes": 42345,
+      "sha256": "6f6984a32dcb6a33ae215616de9570872be33396017477235681f57ff9885bc0",
+      "status": "extracted"
+    },
+    {
+      "file": "introduction.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "scrape_failed"
+    },
+    {
+      "file": "official-book.txt",
+      "bytes": 10699,
+      "sha256": "2b636050e9dfa5403b8b34d02f14ffe45c76b43da9fee571a292c3e6bc0cb48b",
+      "status": "extracted"
+    },
+    {
+      "file": "official-feed.txt",
+      "bytes": 20998,
+      "sha256": "543790b8a5ea77048d5e4b775a0da0cf6563b7def793751ffdf99041785c785f",
+      "status": "extracted"
+    },
+    {
+      "file": "official-funnel.txt",
+      "bytes": 3570,
+      "sha256": "5918c8bcb296f408ffb58e556863c38fee8a6251f720908e5fecb6426e289283",
+      "status": "extracted"
+    },
+    {
+      "file": "official-home.txt",
+      "bytes": 11833,
+      "sha256": "9d0d3ef1e66bc729b589eca585ee2848bc4ea20bbbf2ac14881ee98dcf919d3d",
+      "status": "extracted"
+    },
+    {
+      "file": "website.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "scrape_failed"
+    },
+    {
+      "file": "introduction-download-extracted.txt",
+      "bytes": 13847,
+      "sha256": "ed527804cd6afdf8b61c65cc609a66280e77d61c28e8cabbef5e59879ce3cd7d",
+      "status": "download_extract_succeeded"
+    },
+    {
+      "file": "website-download-extracted.txt",
+      "bytes": 12244,
+      "sha256": "21a75fa6dd880319175c60224fcb4f1f951fc0c1e0dff91b41f9c8da6ba0e77b",
+      "status": "download_extract_succeeded"
+    }
+  ]
+}
