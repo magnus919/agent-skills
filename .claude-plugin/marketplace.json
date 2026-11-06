@@ -1272,7 +1272,7 @@
         "./seo"
       ],
       "strict": false,
-      "description": "Audit and improve website discoverability across traditional search, answer engines, and generative search. Use for technical SEO, on-page content, structured data, question and entity architecture, AI citations, crawler controls, agent-readable content, and reproducible visibility measurement. Do not use for only copy-editing, writing, CMS operations, or generic AI marketing claims without a defined search surface and verification plan."
+      "description": "Audit and improve website discoverability across traditional search, answer engines, and generative search. Use for technical SEO, on-page content, structured data, question and entity architecture, AI citations, crawler controls, agent-readable content, local/national site portfolios, scaled-content quality, and reproducible visibility measurement. Do not use for only copy-editing, writing, CMS operations, or generic AI marketing claims without a defined search surface and verification plan."
     },
     {
       "name": "site-reliability-engineering",
