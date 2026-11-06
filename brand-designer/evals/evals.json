@@ -133,6 +133,26 @@
         "Explains why timing is omitted from a compact expression or retains the estimate qualification if timing is included",
         "Maps at least one actual wording choice to a semantic anchor from the supplied brief"
       ]
+    },
+    {
+      "id": "final-copy-unknown-is-not-absence",
+      "prompt": "Adapt a supplied message for a serious technical brand: dated review records, manual CSV import. Integration, independent verification and certification information are not supplied. The proposed card says We are uncertified and have no integrations. Produce a corrected card and an audit note.",
+      "expected_output": "A useful card keeps the supplied capabilities while preserving unknowns outside final claims.",
+      "assertions": [
+        "Produces a brand-card expression retaining dated records or manual CSV import",
+        "Replaces categorical certification-absence language with an unknown-state note",
+        "Does not turn unspecified integration coverage into an assertion of no integrations"
+      ]
+    },
+    {
+      "id": "final-copy-cross-channel-fidelity",
+      "prompt": "Approved fictional message: a paid collection assessment before approval of a separate cataloging project. Fee amount, payment timing and refunds unknown. Adapt it into a headline and action caption. Voice: thoughtful and plain. Current slogan: Free certainty before commitment. Audit the actual expressions and replace any conflicting slogan.",
+      "expected_output": "Thoughtful concrete copy preserves the paid assessment and later-project distinction.",
+      "assertions": [
+        "Supplies a replacement headline compatible with a paid assessment",
+        "Keeps the assessment and later cataloging project as distinct commitments",
+        "Leaves refund terms unknown rather than creating a favorable policy"
+      ]
     }
   ]
 }

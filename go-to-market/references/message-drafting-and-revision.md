@@ -102,6 +102,10 @@ For an author's desk review, cite the lines and missing evidence. For user testi
 ask representative readers to explain these points without coaching; record their
 answers and misconceptions before revising. These are separate forms of evidence.
 
+Before completion, use `references/final-copy-fact-check.md` to check the actual
+expressions against facts, proposals and unknowns. An accurate claim table does not
+repair a contradictory headline or an invented objection answer.
+
 Complete when the selected copy, selection rationale, revision record and unresolved
 inputs are in the message brief. Route approved brand expressions to `brand-designer`
 and behavior questions to `product-design-and-ux`. If positioning is still unknown,

@@ -19,3 +19,5 @@ Implementation review: [eval challenge examples](eval-author-review.md), [trigge
 
 Second-pass craft enrichment: [review and task-exercise evidence](craft-review.md),
 [assertion challenges](craft-eval-author-review.md), and [fixed exercise inputs](task-runs/tasks.json).
+
+Final-copy fidelity iteration: [experiment, negative findings, guidance and budget](fidelity-iteration/report.md).

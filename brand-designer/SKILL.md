@@ -147,6 +147,12 @@ generate logo-bg primary --brand-dir ./my-brand --background dark  # Logo on dar
 
 The `generate` script is prompt-engineering-first: it reads your brand data and constructs optimized prompts for image generation backends. For best results with accurate logo rendering, provide reference images alongside the prompt.
 
+Before finalizing adapted copy, load `go-to-market` and its
+[final-copy fact check](../go-to-market/references/final-copy-fact-check.md). Check
+actual NEW brand expressions against the brief before rendering them. Show a
+compact claim/support plan, not just a critique of the original slogan. Tone edits cannot add technical
+properties or service promises, and missing evidence does not prove absence.
+
 ## Completion Check
 
 For message-driven brand work, verify that strategy, voice examples and application

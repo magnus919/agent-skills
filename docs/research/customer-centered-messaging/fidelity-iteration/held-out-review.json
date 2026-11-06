@@ -1,0 +1,144 @@
+{
+  "reviewer_kind": "model_teacher",
+  "reviewer": "authoring assistant",
+  "blind": false,
+  "independent_human_adjudication": false,
+  "reviewed_at": "2026-11-06T21:18:42.206094+00:00",
+  "interpretation": "Provisional author judgments against supplied fiction; no calibrated score or release gate. No changes made to phase-1 candidate after held-out generation.",
+  "responses": [
+    {
+      "response_id": "35879c",
+      "task_id": "collection-inventory",
+      "arm": "baseline",
+      "criteria": [
+        {
+          "criterion": "material_factual_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Adds scope establishment and project-scoping procedures not provided."
+        },
+        {
+          "criterion": "uncertainty_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Caption categorically denies valuation/authentication/certification despite unknown scope."
+        },
+        {
+          "criterion": "commitment_consistency",
+          "suggested_state": "not_met",
+          "evidence": "Fee terms promised during scheduling and before visit confirmation without supplied process."
+        },
+        {
+          "criterion": "deliverable_completeness",
+          "suggested_state": "met",
+          "evidence": "All requested expression types and revision record exist."
+        },
+        {
+          "criterion": "useful_specificity",
+          "suggested_state": "met",
+          "evidence": "Shelf-linked photos and unmatched list are explicit."
+        }
+      ],
+      "response_sha256": "f5d57ec61897d1512f351b50c454264e8c3239e3ce0cbb43b95b1a2e83978f86"
+    },
+    {
+      "response_id": "c4107d",
+      "task_id": "collection-inventory",
+      "arm": "candidate-v2",
+      "criteria": [
+        {
+          "criterion": "material_factual_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Promises a detailed post-assessment proposal not supplied."
+        },
+        {
+          "criterion": "uncertainty_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Caption denies valuation/authentication/condition work while its audit says it did not assert absence."
+        },
+        {
+          "criterion": "commitment_consistency",
+          "suggested_state": "not_met",
+          "evidence": "FAQ says requesting a visit begins the assessment despite unconfirmed date/capacity."
+        },
+        {
+          "criterion": "deliverable_completeness",
+          "suggested_state": "met",
+          "evidence": "Requested artifacts exist."
+        },
+        {
+          "criterion": "useful_specificity",
+          "suggested_state": "met",
+          "evidence": "Photographic shelf-ID mechanism remains clear."
+        }
+      ],
+      "response_sha256": "5df3ae5fb48b79a9d988a217d42905535fc83adb22a547f0b62f56068d07268e"
+    },
+    {
+      "response_id": "9b4adc",
+      "task_id": "greenhouse-readings",
+      "arm": "baseline",
+      "criteria": [
+        {
+          "criterion": "material_factual_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Finance pitch asserts no carbon accounting/signatures/third-party validation; only unknown status supplied."
+        },
+        {
+          "criterion": "uncertainty_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Unknown technical capabilities are turned into categorical negatives."
+        },
+        {
+          "criterion": "commitment_consistency",
+          "suggested_state": "not_met",
+          "evidence": "Request schedules a demo and terms confirmed after submission adds unprovided commitments."
+        },
+        {
+          "criterion": "deliverable_completeness",
+          "suggested_state": "met",
+          "evidence": "All requested artifacts exist."
+        },
+        {
+          "criterion": "useful_specificity",
+          "suggested_state": "met",
+          "evidence": "CSV, room/day view and dated export visible."
+        }
+      ],
+      "response_sha256": "3c593e190b5c251b8864a035e9b0b35a395bb806532acdddeb27c6fbbba5c87c"
+    },
+    {
+      "response_id": "b5b785",
+      "task_id": "greenhouse-readings",
+      "arm": "candidate-v2",
+      "criteria": [
+        {
+          "criterion": "material_factual_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Adds utility-billing substantiation and denies tariff verification without evidence."
+        },
+        {
+          "criterion": "uncertainty_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Finance boundary text denies independent certification and other unprovided capabilities."
+        },
+        {
+          "criterion": "commitment_consistency",
+          "suggested_state": "not_met",
+          "evidence": "Follow-up terms promised upon contact, though resolution stage unknown."
+        },
+        {
+          "criterion": "deliverable_completeness",
+          "suggested_state": "met",
+          "evidence": "All requested artifacts exist."
+        },
+        {
+          "criterion": "useful_specificity",
+          "suggested_state": "met",
+          "evidence": "Supplied CSV and dated-summary mechanism remains visible."
+        }
+      ],
+      "response_sha256": "e1c5dd1390eb6fc94a45507cdf6cac4a4a68df279ab96962936c94dc0a46387f"
+    }
+  ],
+  "reviewer_model": "not exposed by host",
+  "rubric_revision": "plan.md five-criterion roster"
+}

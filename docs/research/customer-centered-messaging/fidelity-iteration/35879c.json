@@ -1,0 +1,49 @@
+{
+  "response_id": "35879c",
+  "task_id": "collection-inventory",
+  "arm": "baseline",
+  "phase": "held-out",
+  "requested_model": "google/gemini-3.8-flash",
+  "returned_model": "google/gemini-3.8-flash",
+  "provider": null,
+  "completion_id": "gen-1793999686-QiILGejUJLCzAejhSUQd",
+  "receipt": {
+    "response_id": "35879c",
+    "task_id": "collection-inventory",
+    "phase": "held-out",
+    "arm": "baseline",
+    "seed": 2026110612,
+    "started_at": "2026-11-06T21:14:45.183946+00:00",
+    "reserved_usd": 0.3529185,
+    "request_sha256": "e480b5704cde008d8645a7a0277582bbc0ac994970980fba0aa55b47b47dd5b5",
+    "status": "complete",
+    "finish_reason": "stop",
+    "completed_at": "2026-11-06T21:15:01.572128+00:00",
+    "elapsed_seconds": 16.388,
+    "reported_cost_usd": 0.022132275,
+    "catalog_estimate_usd": 0.022132275
+  },
+  "usage": {
+    "prompt_tokens": 16662,
+    "completion_tokens": 2033,
+    "total_tokens": 18695,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 750,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    },
+    "cost": 0.022132275,
+    "cost_details": {
+      "source": "openrouter_list",
+      "floor_applied": false,
+      "rate_source": "openrouter_catalog"
+    }
+  },
+  "response": "### 1. Homepage Opening\n\n**Headline:**  \nPhotographic inventories linked to your existing shelf labels for Pinehaven’s independent museums.\n\n**Supporting line:**  \nShelf Map matches photographs of collection objects to your shelf identifiers and provides a written list of unmatched items, moving your records beyond paper lists and disconnected photo folders.\n\n---\n\n### 2. Sample Caption\n\n**Sample inventory page:**  \n*Shown above: An illustrative Shelf Map record page demonstrating how individual object photographs connect directly to a museum’s supplied shelf codes, alongside an unmatched item log. This sample illustrates format and structure only; Shelf Map does not provide valuation, authentication, condition reporting, or collection certification.*\n\n---\n\n### 3. Next-Action Expectations and Steps to Value\n\n**Primary action label:**  \n`Request a site-assessment visit`\n\n**What happens after requesting:**  \nSubmitting a request sends your museum's details to our team. We will review our schedule and contact you to confirm available dates and assessment capacity. Requesting a visit does not schedule an appointment automatically, nor does it commit your board or staff to an inventory project.\n\n#### Feasible Steps to Value\n\n1. **Request a site-assessment visit:** Submit your collection location in Pinehaven and contact details. We confirm scheduling availability and capacity directly with you.\n2. **Complete the initial site assessment:** We conduct an on-site evaluation of the collection space to determine scope. *(Note: An initial site-assessment fee applies before any further commitment. Specific fee amount, payment due dates, refund terms, and potential credit toward subsequent work are confirmed during scheduling.)*\n3. **Decide on the inventory project:** Based on the assessment, your museum decides whether to approve a separate, full inventory project.\n4. **Prepare collection access:** If approved, your staff provides physical access to the collection areas and ensures existing shelf labels are in place. *(Handling procedures, transport requirements, insurance coverage, and completion turnaround times are established in project scoping.)*\n5. **Receive inventory deliverables:** Shelf Map delivers your catalog of object photographs linked to your shelf identifiers, accompanied by a written record of any unmatched items.\n\n---\n\n### 4. Frequently Asked Question\n\n**Am I agreeing to the full inventory project by booking an assessment?**\n\nNo. The site assessment and the inventory project are two distinct stages:\n\n* The **site-assessment visit** allows us to examine the physical shelving and collection layout to determine project feasibility. An initial site-assessment fee applies for this visit.\n* The **inventory project** is an entirely separate engagement. You review the findings and scope after the assessment before deciding whether to commission the photographic inventory. Requesting or completing an assessment places your museum under no obligation to proceed with the larger project.\n\n*(Note: Invoicing schedules, fee structures, cancellation or refund policies, and whether the assessment fee applies toward subsequent project costs will be provided before confirming your assessment visit.)*\n\n---\n\n### 5. Museum-Association Directory Listing\n\n**Shelf Map**  \n*Collection Inventory Services | Pinehaven*\n\nShelf Map works with small independent museums across Pinehaven to create clear, durable photographic inventories. If your collection currently relies on paper lists and unsorted photo folders, we connect photographs of individual objects directly to your existing shelf identifiers and deliver a written log of any unmatched items. \n\nServices begin with an initial paid site assessment to review your layout and shelf labeling before you commit to a full inventory project. To discuss current capacity and arrange an initial site-assessment visit, contact Shelf Map.\n\n---\n\n### 6. Revision Record\n\n| Original passage | Diagnostic critique | Replacement copy | Evidence / input supporting the change |\n| :--- | :--- | :--- | :--- |\n| **\"Museum-grade certainty before you spend a cent.\"** | **Factually inaccurate & unsupported promise:** An initial site-assessment fee is explicitly required before a museum decides on a project, contradicting \"before you spend a cent.\" \"Museum-grade certainty\" is vague marketing puffery implying certified preservation or audit guarantees, which are unsupplied. | **\"An initial site-assessment fee applies before a museum decides whether to approve a separate inventory project.\"** *(Paired with the opening: \"Photographic inventories linked to your existing shelf labels for Pinehaven’s independent museums.\")* | Input confirms an initial assessment fee applies prior to project commitment. Valuation, authentication, preservation, and certification are unknown and must not be promised. |\n| **\"Accredited experts protect every object.\"** | **Unsubstantiated authority & scope creep:** Accreditation is not in the supplied evidence. \"Protect every object\" falsely implies physical conservation, preservation, or security services. Handling methods, insurance coverage, and transport terms remain unsupplied. | **\"Shelf Map matches photographs of collection objects to your shelf identifiers and provides a written list of unmatched items...\"** | Inputs specify the exact deliverable (photographs linked to shelf identifiers + unmatched list). Staff credentials, conservation skills, and insurance terms are unsupplied. |\n| **\"Book instantly.\"** | **Conceals capacity & confirmation process:** Suggests an automated booking engine with immediate calendar reservation, bypassing schedule checks and assessment fee acknowledgement. | **\"Request a site-assessment visit\"** *(Followed by: \"We will review our schedule and contact you to confirm available dates and assessment capacity.\")* | The brief explicitly states that visit dates and capacity are confirmed afterward upon request, requiring museum access and label prerequisites. |\n\n---\n\n### 7. Documented Open Gaps (Handoff Notes)\n\nThe following operational terms remain unsupplied and must be confirmed with the service owner prior to publishing contractual or promotional collateral:\n* **Commercial terms:** Specific assessment fee amount, billing milestones, refund rules, and whether the fee credits against a full inventory contract.\n* **Operational terms:** Turnaround timelines from site visit to delivery, object handling protocol during photography, physical transport policies (if any items move), and liability/insurance coverage for on-site work.\n* **Domain boundaries:** Formal policy stating that Shelf Map does not provide authentication, valuation, or conservation assessments (retaining these as outside scope rather than unexplained absences)."
+}

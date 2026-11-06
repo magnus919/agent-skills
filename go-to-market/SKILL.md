@@ -52,6 +52,7 @@ skill_view('go-to-market', file_path='references/agent-assisted-acquisition-expe
 | `references/acquisition-strategy.md` | Channel taxonomy, PLG vs SLG playbooks, sales funnel ratios, competitive response playbook, brand architecture |
 | `references/growth-modeling.md` | CAC/LTV deep dive, cohort analysis practical guide, NRR, market entry strategy (beachhead, land-and-expand) |
 | `references/customer-centered-messaging.md` | Customer goal, obstacle, credible help, path, action, outcome, channel adaptation and testing |
+| `references/final-copy-fact-check.md` | Facts/proposals/unknowns, final-expression audit and supported replacements |
 | `references/message-drafting-and-revision.md` | Evidence-to-copy technique, candidate selection, diagnosis and revision |
 | `references/messaging-worked-examples.md` | Complete fictional service and enterprise examples from inputs to channel handoff |
 | `templates/customer-message-brief.md` | Evidence-linked message draft and strategy/voice/UX handoff |
@@ -73,6 +74,14 @@ When drafting alternatives or revising weak copy, read
 `references/message-drafting-and-revision.md`. For complete evidence-to-copy
 examples, read `references/messaging-worked-examples.md`. Record why the chosen
 copy fits the audience, the tradeoff, and the actual revised passages.
+
+Before handoff, read `references/final-copy-fact-check.md` and audit the actual
+headline, proof, objections, action and adaptations. Before emitting final copy,
+show a compact plan of the proposed NEW claims with their supplied support and
+disposition, then render the accepted wording. A revision table about old copy
+is not a substitute. Keep unknowns unknown; do not
+turn plausible process choices into existing promises. Repair unsupported copy
+while preserving the supplied offer and differentiator.
 
 Hand the versioned message brief to `brand-designer` for strategy/voice documentation,
 and action expectations to `product-design-and-ux` for page behavior. Drafting does
