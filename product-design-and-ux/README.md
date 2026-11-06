@@ -8,6 +8,10 @@ Teams often agree on a feature but leave its navigation, permissions, failure re
 
 This skill helps an agent turn validated evidence and a chosen scope into traceable outcomes, task and state models, interaction contracts, usability evidence, and an engineering handoff. It stays portable: no design application, component library, CSS, or proprietary workflow is required.
 
+The collaboration guidance helps your agent ask useful questions at the right stage,
+explore concrete alternatives, and carry approved decisions into the next task
+without confusing personal preference with usability evidence.
+
 ## What You Get
 
 Regression cases include the relevant worked example with recorded source hashes.

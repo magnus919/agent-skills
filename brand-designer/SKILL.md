@@ -53,6 +53,21 @@ generate brand-card --brand-dir ./my-brand --layout landscape
 | "I need a full brand book for agency handoff" | Compiled brand book | Agencies, partners |
 | "I need to inventory all my brand assets" | Asset inventory | Everyone |
 
+## When not to use
+
+Use [product-design-and-ux](../product-design-and-ux/SKILL.md) for task flows and
+interaction behavior, [frontend-engineering](../frontend-engineering/SKILL.md) for
+component implementation, and [web-accessibility](../web-accessibility/SKILL.md)
+for accessibility conformance. A brand guide does not replace those disciplines.
+
+For an unsettled identity, vague feedback, or drift across generated assets, read
+[reference-led visual direction](references/reference-led-direction.md) before
+filling templates. Establish a scoped style guide through concrete examples and
+preserve approved decisions without turning every example into a global rule.
+
+Before generating files or changing existing brand artifacts, confirm the target,
+scope, and rollback path. Read-only discovery may proceed without confirmation.
+
 ## Workflow
 
 ### 1. Choose artifact type

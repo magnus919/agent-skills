@@ -22,15 +22,28 @@ Frontend engineering is the craft of building the user-facing layer of applicati
 |---------|--------------|
 | Component implementation — UI component composition, props/state interfaces, rendering patterns, lifecycle | User journeys, wireframes, accessibility standards, interaction design — that's the product-design-and-ux |
 | State management — client-side state architecture, data fetching patterns, caching, optimistic updates | API contract design — that's the api-design-and-evolution |
-| API integration — frontend-to-backend data flow, auth flows (OAuth, JWT), real-time updates | Test strategy and automation — that's the QA-engineer |
+| API integration — frontend-to-backend data flow, auth flows (OAuth, JWT), real-time updates | Test strategy and automation — that's [qa-methodology](../qa-methodology/SKILL.md) |
 | Responsive design implementation — layout systems, breakpoints, cross-device testing | Visual identity and brand guidelines — that's the brand-designer |
 | Client-side performance — bundle optimization, lazy loading, Core Web Vitals, render optimization | Editorial content and copy — owned by the content and marketing team, outside this skill's scope |
 | Frontend testing — component tests, integration tests, visual regression, accessibility tests | Code review and quality gates — that's the qa-methodology |
 | E2E test scenarios and user-flow coverage for frontend features | Operating the browser test tool (Playwright) — authoring/running specs, selectors, network mocking, scraping — route to [playwright](../playwright/SKILL.md) |
 | Mobile app implementation (iOS/Android/Flutter/React Native) | Mobile platform work — scaffolding, builds and code signing, device/emulator testing, store submission, mobile lifecycle — route to [mobile-development](../mobile-development/SKILL.md); this skill owns web frontends |
-| Build tooling — bundler config, TypeScript config, linting, formatting, dev environment | CI/CD pipeline infrastructure — that's the platform-engineer |
+| Build tooling — bundler config, TypeScript config, linting, formatting, dev environment | CI/CD pipeline infrastructure — that's [platform-engineering](../platform-engineering/SKILL.md) |
 
 For React component and hooks work, load [react](../react/SKILL.md); for Vite config, modes, plugins, and builds, load [vite](../vite/SKILL.md). This skill remains the owner of framework-neutral architecture and frontend strategy.
+
+## When not to use
+
+Use [product-design-and-ux](../product-design-and-ux/SKILL.md) for unchosen task flows
+and interaction behavior, [brand-designer](../brand-designer/SKILL.md) for visual
+identity, and [web-accessibility](../web-accessibility/SKILL.md) for conformance.
+Before modifying implementation, confirm the target, scope, and rollback path.
+Read-only discovery may proceed without confirmation.
+
+When implementing an approved design, extending UI, or repairing generated-design
+drift, read [design continuity](references/design-continuity.md). Reuse settled
+components and decisions, ask about genuine exceptions, and compare rendered states
+against the approved baseline rather than regenerating the design from scratch.
 
 ## Reference Files
 

@@ -51,6 +51,26 @@
         "Links concrete artifacts to validation evidence",
         "States unresolved risks and reproducible next steps"
       ]
+    },
+    {
+      "id": "rough-brief-to-style-guide",
+      "prompt": "I need a visual identity for a neighborhood repair service. I can explain the feeling but cannot name fonts. I like the spaciousness of a reference but its pale text is hard to read. Start small; I am not asking for a full design system.",
+      "expected_output": "An example-led scoped style guide explores specific properties and readability without requiring jargon or claiming a palette is a complete design system.",
+      "assertions": [
+        "Offers concrete visual directions or examples rather than requiring a full technical questionnaire first.",
+        "Preserves the spacing preference while addressing the pale-text concern separately.",
+        "Distinguishes the proposed style guide from a complete component-and-behavior design system."
+      ]
+    },
+    {
+      "id": "approved-mockup-vector-boundary",
+      "prompt": "Our owner approved the layout of a social mockup, not its draft logo. We now need a scalable editable logo and more social assets. Can we make the mockup the permanent brand standard and wrap its PNG in SVG?",
+      "expected_output": "Preserve layout-only approval, keep logo exploration open, require actual vector deliverable evidence and bounded reuse.",
+      "assertions": [
+        "Does not promote layout-only approval to a permanent whole-brand standard.",
+        "States that embedding a PNG in SVG does not produce editable vector geometry.",
+        "Keeps the draft logo unapproved until the owner decides."
+      ]
     }
   ]
 }
