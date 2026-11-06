@@ -211,6 +211,39 @@
         "Requires a partner-side outcome or reconciliation agreement before reporting completed conversions.",
         "Reports cross-property comparability limitations instead of implying a joined funnel exists."
       ]
+    },
+    {
+      "id": "subdomain-renewal-economics",
+      "case_set": "regression",
+      "prompt": "We have 1,000 microsites. Compare 1,000 .com registrations at US$11.81 renewal each with 10 parent domains at the same price. Can subdomains preserve SEO while cutting bills?",
+      "expected_output": "A renewal/TCO comparison that separates arithmetic from unproven search equivalence.",
+      "assertions": [
+        "Calculates annual registration totals of US$11,810 and US$118.10 with other costs excluded.",
+        "States that registration savings do not establish equivalent search or commercial performance.",
+        "Includes parent dependency and transferability in the architecture decision."
+      ]
+    },
+    {
+      "id": "wildcard-hosting-preflight",
+      "case_set": "regression",
+      "prompt": "Can I put 1,000 wildcard sites into free hosting projects because wildcard DNS is already working?",
+      "expected_output": "A provider-specific capacity preflight, not an unauthorized deployment.",
+      "assertions": [
+        "Distinguishes DNS, TLS and application wildcard support.",
+        "Requires verification of project, record and certificate limits before rollout.",
+        "Does not infer production deployment permission from the question."
+      ]
+    },
+    {
+      "id": "search-api-completeness",
+      "case_set": "regression",
+      "prompt": "The GSC API returned 50,000 rows and pagination is exhausted. Show our complete long-tail funnel to collected sales.",
+      "expected_output": "A bounded search-source contract that rejects completeness and person-level attribution claims.",
+      "assertions": [
+        "States that exhausted pagination does not prove complete long-tail coverage.",
+        "Rejects joining individual search impressions or queries to sales.",
+        "Offers bulk export with prospective start and permission requirements rather than promising historical backfill."
+      ]
     }
   ]
 }
