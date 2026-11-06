@@ -34,3 +34,14 @@ This source map supports the skill. Re-check provider documentation before relyi
 - Citation count equals authority, ranking, correctness, traffic, or conversions.
 
 These are unsupported, provider-specific, vendor-reported without portable evidence, or contradicted by current primary guidance.
+
+## Local/national portfolio update (reviewed 2026-11-06)
+
+- [Google spam policies](https://developers.google.com/search/docs/essentials/spam-policies): doorway, scaled content, links and site-reputation boundaries; recheck current regional enforcement.
+- [Google Business Profile representation](https://support.google.com/business/answer/3038177), [eligibility](https://support.google.com/business/answer/13763036?hl=en), [local ranking](https://support.google.com/business/answer/7091): profile rules do not equate to organic-site geography.
+- [Google ranking systems](https://developers.google.com/search/docs/appearance/ranking-systems-guide): exact-match domains are not a guarantee.
+- [Google updates](https://developers.google.com/search/updates), [HowTo/FAQ deprecation](https://developers.google.com/search/blog/2023/08/howto-faq-changes), [featured snippets](https://developers.google.com/search/docs/appearance/featured-snippets): time-sensitive feature support; no fixed snippet word-count rule.
+- [FTC review rule Q&A](https://www.ftc.gov/business-guidance/resources/consumer-reviews-testimonials-rule-questions-answers): false testimonials and independence claims, not a full legal opinion.
+- `references/microsite-evidence.md` records public practitioner transcripts, promotional incentives and inaccessible archive limits. They inform workflow hypotheses, not a demonstrated profitable portfolio.
+
+Refresh on provider policy/feature changes, new geography or business model, stale claims, complaints or launch decisions. Preserve source/date/provider scope instead of retroactively asserting universal rules.
