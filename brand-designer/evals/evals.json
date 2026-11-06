@@ -71,6 +71,46 @@
         "States that embedding a PNG in SVG does not produce editable vector geometry.",
         "Keeps the draft logo unapproved until the owner decides."
       ]
+    },
+    {
+      "id": "customer-message-voice-fidelity",
+      "prompt": "Turn this approved message into strategy and voice guidelines: weekly cash-flow forecasts for independent shops, with accounting-data connection and assumption review. No proven savings. Voice: precise, calm, practical. Brief v3 owned by Maya, approved for website drafts only.",
+      "expected_output": "Traceable brand documentation preserves the approved promise and scope.",
+      "assertions": [
+        "Records brief v3 and its website-draft-only approval scope",
+        "Retains the accounting-data and assumption-review prerequisites",
+        "Preserves the absence of proven savings in the claim guidance"
+      ]
+    },
+    {
+      "id": "customer-message-approval-is-not-proof",
+      "prompt": "Our founder approved a 40% cost-savings pillar but there is no supporting evidence. Create voice guidelines in our understated voice; do not launch anything.",
+      "expected_output": "Flags the unsupported claim while documenting supported draft material and the review owner.",
+      "assertions": [
+        "Separates founder approval from factual support for the savings claim",
+        "Proposes supported wording without a quantified savings promise",
+        "Returns the unsupported promise to the message or positioning owner for resolution"
+      ]
+    },
+    {
+      "id": "customer-message-imagery-and-task-boundary",
+      "prompt": "We have an approved message and a serious technical voice. Design imagery direction and an error-message example for our forecasting service. Use an AI-generated happy shop owner as proof that customers succeed. The error is an expired accounting connection; reconnecting restores access.",
+      "expected_output": "Illustrative imagery and task-focused error copy preserve the boundary between communication and proof.",
+      "assertions": [
+        "Labels generated customer imagery as illustration rather than customer-outcome evidence",
+        "Provides error copy that explains reconnecting the expired accounting connection",
+        "Keeps the error-copy example consistent with a serious technical voice"
+      ]
+    },
+    {
+      "id": "customer-message-role-conflict",
+      "prompt": "Our approved brand slogan is Brilliantly simple. Analysts want fewer repeated entries, security wants controls, procurement wants predictable terms. Marketing now wants guaranteed instant compliance for everyone. Document how to handle this in brand guidelines without redesigning the product.",
+      "expected_output": "Preserves the approved slogan record, proposes clear supporting copy and routes incompatible promises to GTM.",
+      "assertions": [
+        "Preserves the approved slogan record while proposing a clearer supporting line",
+        "Does not adopt guaranteed instant compliance as an approved brand promise",
+        "Routes conflicting audience promises to go-to-market rather than resolving them through visual design"
+      ]
     }
   ]
 }

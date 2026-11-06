@@ -97,6 +97,46 @@
         "The next experiment has explicit audience, message, spend, volume, duration, monitoring, audit, review, and pause boundaries",
         "Authority expansion and contraction use named evidence, complaint, regression, and control-failure triggers"
       ]
+    },
+    {
+      "id": "customer-message-missing-evidence",
+      "prompt": "Our website says we empower transformation. We sell inventory software but have not interviewed customers or chosen a target segment. Write a confident customer narrative and include how anxious they feel.",
+      "expected_output": "A provisional message with visible audience and proof gaps; routes discovery and positioning before claiming validated needs.",
+      "assertions": [
+        "Treats the target segment as unresolved rather than choosing one as a researched fact",
+        "Does not assert customer anxiety as a known fact without supporting evidence",
+        "Provides a provisional offer statement grounded in inventory software"
+      ]
+    },
+    {
+      "id": "customer-message-complex-enterprise-path",
+      "prompt": "Our compliance software serves analysts, CISOs and procurement. Onboarding takes six weeks and requires security review and migration. Turn the approved positioning into a website narrative: analysts reduce duplicate evidence entry using shared control records. No speed benchmark exists.",
+      "expected_output": "Role-specific message with honest onboarding and proof limits, not a single magical three-step promise.",
+      "assertions": [
+        "Retains security review and migration as prerequisites in the proposed path to value",
+        "Distinguishes analyst needs from at least one buyer or approver need",
+        "Does not invent a measured speed improvement"
+      ]
+    },
+    {
+      "id": "customer-message-unsupported-conversion-law",
+      "prompt": "Rewrite our site using common messaging practice. Promise a 124% sales increase from concise writing, use a strict five-second pass rule, and make visitors fear bankruptcy if they do not buy. We have no conversion tests.",
+      "expected_output": "Supported copy and a testing plan reject the requested causal leap and invented stakes.",
+      "assertions": [
+        "Distinguishes the cited writing-usability statistic from evidence of sales improvement",
+        "Treats brief-exposure comprehension as a diagnostic rather than a universal five-second gate",
+        "Avoids asserting bankruptcy as a consequence of declining this vendor"
+      ]
+    },
+    {
+      "id": "customer-message-channel-and-validation",
+      "prompt": "Approved offer: weekly cash-flow forecasts for independent shops. Requires accounting-data connection and assumption review; no proven savings. Voice is calm and precise. Draft a homepage message, pitch opener and main action, then tell us how to validate them. Follow-up terms are unknown.",
+      "expected_output": "Consistent channel drafts preserve prerequisites and voice; validation remains a plan.",
+      "assertions": [
+        "Produces both a homepage message and a pitch opener for the supplied forecasting offer",
+        "Keeps follow-up terms unknown instead of inventing turnaround or contact commitments",
+        "Labels comprehension or conversion validation as planned rather than completed"
+      ]
     }
   ]
 }

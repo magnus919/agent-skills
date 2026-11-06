@@ -39,13 +39,25 @@ Tone shifts based on context and audience. Fill in how your brand adapts:
 
 ## Messaging Pillars
 
-The core message categories your brand consistently communicates.
+Express approved customer value in the established voice. Preserve the evidence
+scope and qualifiers when shortening copy; draft pillars remain drafts.
 
-| Pillar | Description | Example Headline |
-|--------|-------------|-----------------|
-| {{Innovation}} | {{We push boundaries}} | {{"The future of X is here"}} |
-| {{Trust}} | {{We're reliable}} | {{"Built to last"}} |
-| {{}} | {{}} | {{}} |
+**Message brief / revision / owner:** {{}}
+
+**Approval scope and date:** {{}}
+
+| Pillar | Customer value and relevant difference | Proof / limits | On-voice example |
+|--------|----------------------------------------|----------------|------------------|
+| {{}} | {{}} | {{}} | {{}} |
+| {{}} | {{}} | {{}} | {{}} |
+
+### Message Fidelity Review
+
+| Approved claim or action | On-voice expression | Misleading near miss and why | Evidence / approval state |
+|--------------------------|---------------------|------------------------------|---------------------------|
+| {{}} | {{}} | {{}} | {{}} |
+
+**Open evidence gaps / next owner:** {{}}
 
 ## Vocabulary
 
