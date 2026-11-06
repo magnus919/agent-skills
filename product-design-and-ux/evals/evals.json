@@ -149,6 +149,26 @@
         "Distinguishes synthetic acceptance fixtures from observed usability evidence"
       ],
       "case_set": "regression"
+    },
+    {
+      "id": "reference-led-flow-exploration",
+      "prompt": "The approved scope is onboarding existing customers into our reporting app. I have two references: I like the first one's spacing and the second one's three-step flow. I do not know design terminology. Help me choose a direction without a big questionnaire. We have no usability results yet.",
+      "expected_output": "A small staged exploration distinguishes visual preferences from behavior, proposes an editable flow and asks only consequential questions without inventing validation.",
+      "assertions": [
+        "Separates the spacing preference from the three-step flow preference.",
+        "Proposes a concrete editable artifact to compare or refine a direction.",
+        "Labels usability of the selected direction as untested."
+      ]
+    },
+    {
+      "id": "scoped-design-approval",
+      "prompt": "The owner approved the three-step onboarding sequence in prototype v3, but explicitly left the illustration exploratory. Add an optional invitation step using the existing components. What should we preserve, ask, and record?",
+      "expected_output": "A scoped decision record reuses approved elements, preserves open choices and asks about invitation behavior rather than reopening every aesthetic decision.",
+      "assertions": [
+        "Preserves the approved sequence while treating the invitation change as a new behavior decision.",
+        "Keeps the illustration marked exploratory rather than approved.",
+        "Records the exact approved artifact revision and the limited scope of that approval."
+      ]
     }
   ]
 }

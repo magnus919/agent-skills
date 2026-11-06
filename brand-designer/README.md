@@ -11,6 +11,10 @@ When your agent loads this skill, it becomes a **brand identity specialist** who
 - **Compile brand deliverables** — one-page brand cards or full brand books
 - **Generate brand-compliant images** — reference-image-aware generation for consistent visuals
 
+Reference-led direction helps you turn rough visual preferences into a usable style
+guide, refine editable concepts, and preserve approved examples without reinventing
+your brand on every task.
+
 ## What You Get
 
 | Directory | Purpose |
