@@ -17,7 +17,8 @@ your brand on every task. Customer message handoffs carry the approved offer int
 your strategy and voice guidelines while keeping evidence, claim limits, and
 review decisions visible. Worked adaptations show how the same offer can sound
 different across channels while keeping its meaning intact. Final-copy review
-checks that polished expressions preserve the supplied facts and uncertainties.
+compares polished expressions with supplied facts and uncertainties; it is not an
+automatic verifier.
 
 ## What You Get
 
