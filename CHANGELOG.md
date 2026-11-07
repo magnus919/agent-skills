@@ -34,7 +34,6 @@
 * **seo:** add evidence-led search portfolio workflow ([#804](https://github.com/magnus919/agent-skills/issues/804)) ([2dfcf8f](https://github.com/magnus919/agent-skills/commit/2dfcf8f320b0a92362d7660a2e858a9cbc85afc5))
 * **skill:** add accessible meetings lifecycle and relationship workflows ([babff19](https://github.com/magnus919/agent-skills/commit/babff19ccf3d29e5c3513310eb85a4bea04bc800))
 * **skill:** add amazon-memo narrative writing workflow ([496c76b](https://github.com/magnus919/agent-skills/commit/496c76b8e9b7d9303b8f7ed941fccf256f2486ec))
-* **skill:** add amazon-memo narrative writing workflow ([89945ee](https://github.com/magnus919/agent-skills/commit/89945ee45b8ea6df4d7bd89ce098c106ea546a50))
 * **skill:** add evidence-grounded Teach Me tutoring ([#716](https://github.com/magnus919/agent-skills/issues/716)) ([b85cc3c](https://github.com/magnus919/agent-skills/commit/b85cc3cd16e29cd8b4a134f2932b8bc135888d20))
 * **skill:** add general-purpose infographic design workflow ([#720](https://github.com/magnus919/agent-skills/issues/720)) ([c7f6b5c](https://github.com/magnus919/agent-skills/commit/c7f6b5c71de6fd6c5b9002e45661197b6499f769))
 * **skill:** add meetings lifecycle guidance ([1e50718](https://github.com/magnus919/agent-skills/commit/1e507188c1e78fa703eb346cf253d797149881d0))
@@ -47,7 +46,6 @@
 * **unsloth:** add GPU-validated SFT, audits and export workflow ([#701](https://github.com/magnus919/agent-skills/issues/701)) ([dcfba03](https://github.com/magnus919/agent-skills/commit/dcfba034d1b6f9692a882ff76f028b0073d009af))
 * **unsloth:** enrich decision, agent and media workflows from research ([#702](https://github.com/magnus919/agent-skills/issues/702)) ([1e90cdf](https://github.com/magnus919/agent-skills/commit/1e90cdf5e4f7baf811ad704442453dd42e2c3faa))
 * **waiting-list:** add premium engagement guidance ([a9bac28](https://github.com/magnus919/agent-skills/commit/a9bac28b86888fa22527fa031be9b20c06461fe3))
-* **waiting-list:** add premium engagement guidance ([1607c3a](https://github.com/magnus919/agent-skills/commit/1607c3a1970738d3b48d82d159fc35e91c6ecf28))
 * **youtube-thumbnail:** add source-grounded thumbnail skill ([#640](https://github.com/magnus919/agent-skills/issues/640)) ([54d81f7](https://github.com/magnus919/agent-skills/commit/54d81f7e02051df2f31130a136dc68f8add42130))
 
 
@@ -86,7 +84,6 @@
 * **terraform:** enforce saved-plan taint and drift guard ([#669](https://github.com/magnus919/agent-skills/issues/669)) ([41e6f09](https://github.com/magnus919/agent-skills/commit/41e6f092b662a89627188b5952d4e61ae97348f9))
 * **trakt:** restrict routing to supported public discovery ([#664](https://github.com/magnus919/agent-skills/issues/664)) ([7cb7168](https://github.com/magnus919/agent-skills/commit/7cb7168d00594c88ddd8fc8c2d20f8dd24c94338))
 * **verification:** reconcile multi-lane gate verdicts ([1b753bb](https://github.com/magnus919/agent-skills/commit/1b753bb0f025c97e9edf6e49fa2fdfd2dd9d6435))
-* **verification:** reconcile multi-lane gate verdicts ([b3b844f](https://github.com/magnus919/agent-skills/commit/b3b844f35788926629d494bca22f93117da75fe5))
 * **waiting-list:** require campaign-grade artwork ([b6d292e](https://github.com/magnus919/agent-skills/commit/b6d292ecea8f95170736bfb99a601ec6ba979aac))
 
 ## [0.8.0](https://github.com/magnus919/agent-skills/compare/v0.7.0...v0.8.0) (2026-09-19)
