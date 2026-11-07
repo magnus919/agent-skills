@@ -36,6 +36,10 @@ method here or infer positioning from a preferred tone or image.
    `frontend-engineering`. Do not claim a working or accessible page from a brand
    document alone.
 
+For concrete channel and audience expressions, read
+`references/message-adaptation-examples.md`. Use its semantic-anchor review to
+check actual copy rather than only naming voice attributes.
+
 ## Conflict handling
 
 | Conflict | Action |

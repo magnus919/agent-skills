@@ -8,7 +8,7 @@ Your agent reasons about positioning, acquisition channels, and growth economics
 
 For outcome-linked partnerships, it compares selling leads with appointments and managed services, then checks operating responsibility, lawful pricing, cash exposure and a measurable pilot. A revenue share is treated as an option to test, not a proven advantage.
 
-It also helps turn a confusing website offer into a clear customer message, with a realistic path to value, an explicit next step, and evidence behind consequential claims. The resulting brief can feed brand voice guidelines and website design.
+It also helps turn a confusing website offer into a clear customer message, with a realistic path to value, an explicit next step, and evidence behind consequential claims. The resulting brief can feed brand voice guidelines and website design. Complete service and enterprise examples show how to choose between message candidates and revise weak copy. The final-copy checklist covers service promises and claim scope; it does not certify model-generated copy.
 
 The experiment workflow separates research, drafting, sending, optimization, and reply handling into distinct authority levels. It ties expansion to downstream evidence, preserves explicit stop controls, and keeps campaign operation and legal decisions with their proper owners.
 
