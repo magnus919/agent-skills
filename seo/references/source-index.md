@@ -45,3 +45,16 @@ These are unsupported, provider-specific, vendor-reported without portable evide
 - `references/microsite-evidence.md` records public practitioner transcripts, promotional incentives and inaccessible archive limits. They inform workflow hypotheses, not a demonstrated profitable portfolio.
 
 Refresh on provider policy/feature changes, new geography or business model, stale claims, complaints or launch decisions. Preserve source/date/provider scope instead of retroactively asserting universal rules.
+
+## Business GEO evidence update (reviewed 2026-11-07)
+
+Read `references/geo-practitioner-evidence.md` for the source-to-claim ledger, exact statistical scope, retrieval limitations and provider-documentation conflict. Material sources:
+
+- [Jennie Lakenan GEO playbook](https://youtu.be/qIjeCL5jB9g): complete transcript orientation; promotional practitioner anecdotes, not causal evidence.
+- [Growth Memo citation-position summary](https://library.growth-memo.com/p/ai-citation-brand-citation): 18,012 ChatGPT citations and 44.2% in the first 30%; original full methods unavailable.
+- [Peec domain-citation study](https://peec.ai/blog/top-domains-cited-by-ai-search-analysis-based-on-30m-sources): 30 million US direct sources across five products; no universal domain ranking.
+- [Muck Rack first-party syndicated release](https://www.globenewswire.com/news-release/2026/10/28/3390134/0/en/generative-pulse-earned-media-still-drives-more-than-84-of-ai-citations.html): broad earned/third-party categorization and sample-specific variability; no raw-data audit.
+- [OpenAI Temporary Chat FAQ](https://help.openai.com/en/articles/8914046-temporary-chat-faq): verify personalized versus unpersonalized mode instead of assuming session neutrality.
+- [Google newer AI guide](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide) and [Generative AI report](https://support.google.com/webmasters/answer/16984139?hl=en): report link corroborated, detailed report page inaccessible in this pass; older AI-features reporting guidance differs.
+
+Refresh before using statistics to allocate effort, changing provider controls or promising current reporting capability. Retain the audience, provider, locale, date, category definitions and access limits with every material claim.

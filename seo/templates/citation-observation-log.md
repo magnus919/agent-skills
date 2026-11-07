@@ -10,7 +10,11 @@ Definitions: **mention** is appearance without a source link; **citation** is a 
 
 - Prompt set version:
 - Retrieval/location settings:
-- Account/personalization state:
+- Search/browse mode and supplied-context boundary:
+- Account/personalization state (memory, instructions, connected apps/plugins; verify rather than assume Temporary Chat is neutral):
+- Cohort: identity / unbranded discovery / recommendation fit:
+- Recommendation fit and factual-error severity:
+- Missing/no-answer runs retained in denominator:
 - Sampling/repetition policy:
 - Known provider changes:
 - Interpretation limits:

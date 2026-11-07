@@ -6,6 +6,8 @@ One umbrella skill for technical SEO, on-page optimization, Answer Engine Optimi
 
 Search visibility now spans ranked results, direct answers, AI Overviews, conversational search, and generated answers. This skill consolidates the former SEO audit and AEO workflows so an agent can inspect the technical foundation, improve human-useful content, implement supported controls, and measure citations and referrals with explicit evidence boundaries.
 
+It also turns business GEO advice into practical identity audits, revenue-aligned topic and proof maps, careful content maintenance, and ethical earned-distribution plans. Video anecdotes and citation statistics retain their limits instead of becoming ranking promises.
+
 It also helps evaluate local, national and multi-site portfolios: whether another site should exist, what makes each page useful, how to verify local business claims, and when a measured pilot justifies expanding. It keeps generated content separate from proven rankings, qualified leads and profit.
 
 ## What You Get
@@ -13,8 +15,8 @@ It also helps evaluate local, national and multi-site portfolios: whether anothe
 | Path | Purpose |
 |---|---|
 | `SKILL.md` | Umbrella routing, terminology, workflow, evidence rules, and completion boundary |
-| `references/` | Technical SEO, on-page SEO, schema, content strategy, AEO/GEO implementation, provider guidance, agent-readable content, measurement, local/national strategy, portfolio economics, and scaled-content quality |
-| `templates/` | Implementation plan, question cluster, citation observation, optional `llms.txt`, crawler-policy, site-portfolio, location-evidence, intent-map and rollout-review templates |
+| `references/` | Technical SEO, on-page SEO, schema, content strategy, AEO/GEO implementation, provider guidance, agent-readable content, measurement, local/national strategy, portfolio economics, scaled-content quality, business identity, original evidence, content retirement and earned distribution |
+| `templates/` | Implementation plan, question cluster, citation observation, optional `llms.txt`, crawler-policy, site-portfolio, location-evidence, intent-map, rollout-review, identity-audit, topic-proof and content-disposition templates |
 | `scripts/aeo_audit.py` | Read-only structural audit of local HTML or a URL |
 | `scripts/build_prompt_matrix.py` | Deterministic prompt-set generation |
 | `scripts/test_aeo_scripts.py` | Offline regression tests for the scripts |
