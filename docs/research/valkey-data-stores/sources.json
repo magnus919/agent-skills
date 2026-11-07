@@ -1,0 +1,648 @@
+{
+  "schema_version": 1,
+  "question": "How should seven methodology skills apply the Redis video's orientation with a Valkey/BSD preference and stronger technical evidence?",
+  "accessed": "2026-11-03",
+  "source_records": [
+    {
+      "id": "valkey-history",
+      "url": "https://valkey.io/about/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "f6a24100d90162499c2ecebd1147da0bd38c75a9694bb9969e562515fe46e086",
+      "markdown_sha256": null,
+      "status": "excluded",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [],
+      "reason": "Initial /about/ retrieval failed with an adapter error; replaced by successful /topics/history/ retrieval."
+    },
+    {
+      "id": "valkey-intro",
+      "url": "https://valkey.io/topics/introduction/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "3783b2452b4159586c7be6efcdbc4612a8857cea52cb4adaf8545a2798e2debc",
+      "markdown_sha256": "6cf4c91dd48cef60398523f9062a8dbc602a92592c5e9ed91c3f1ab6e073ac73",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "valkey-intro-1",
+          "summary": "Valkey is an in-memory data structure store usable for databases, caches, messaging and streams."
+        },
+        {
+          "id": "valkey-intro-2",
+          "summary": "Native structures and atomic operations provide alternatives to application-level read-modify-write."
+        },
+        {
+          "id": "valkey-intro-3",
+          "summary": "Persistence, asynchronous replication, Sentinel and Cluster are distinct capabilities."
+        }
+      ]
+    },
+    {
+      "id": "valkey-migration",
+      "url": "https://valkey.io/topics/migration/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "332e3e4e4aef4412173bc3561fb88251443d25b6dbb23642381b9da08cedc043",
+      "markdown_sha256": "0668e526cb8a39dc11bfcb27b91a83e15d9296605fedade28d6ab28ccd10caa0",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "valkey-migration-1",
+          "summary": "Documented lineage compatibility is Redis OSS 7.2 and earlier, not unrestricted Redis compatibility."
+        },
+        {
+          "id": "valkey-migration-2",
+          "summary": "Redis CE 7.4+ persistence files are incompatible; RESP compatibility does not prove backup compatibility."
+        },
+        {
+          "id": "valkey-migration-3",
+          "summary": "Client, configuration, scripting and module compatibility require distinguishing old shared APIs from later features."
+        },
+        {
+          "id": "valkey-migration-4",
+          "summary": "Server identity can expose compatibility version fields; inventory actual engine identity, not only a Redis-compatible version string."
+        },
+        {
+          "id": "valkey-migration-5",
+          "summary": "Migration examples are version-specific and cannot establish target-write rollback safety for every deployment."
+        }
+      ]
+    },
+    {
+      "id": "valkey-persistence",
+      "url": "https://valkey.io/topics/persistence/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "0850a637d594b63d72159aa2325881202900bcc3c3c8a2aff85339f52b9a5def",
+      "markdown_sha256": "4e3ff15c1d25201994214be3f7ba2e5bf667cf560df17056db915a5a7182a81e",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "valkey-persistence-1",
+          "summary": "RDB snapshots preserve a point in time and expose later writes to loss."
+        },
+        {
+          "id": "valkey-persistence-2",
+          "summary": "AOF durability and latency depend on fsync policy; everysec has a loss window."
+        },
+        {
+          "id": "valkey-persistence-3",
+          "summary": "Background persistence forks; fork pauses and copy-on-write memory must be accounted for."
+        },
+        {
+          "id": "valkey-persistence-4",
+          "summary": "AOF rewriting, truncated logs and backup/restore require integrity and recovery handling, not just enabling a flag."
+        }
+      ]
+    },
+    {
+      "id": "valkey-replication",
+      "url": "https://valkey.io/topics/replication/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "37ecd8f004df65c258717ca67ff1685e5d26ee11f62bdfc707aa417b18c1271d",
+      "markdown_sha256": "0fb6c8f62aceb91b6d8451a8c3ce8efbf771845de97b97f35e0bb8fb792af251",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "valkey-replication-1",
+          "summary": "Default replication is asynchronous; acknowledged writes can be missing on a promoted replica."
+        },
+        {
+          "id": "valkey-replication-2",
+          "summary": "WAIT/WAITAOF can reduce risk but do not turn the topology into a strongly consistent CP system."
+        },
+        {
+          "id": "valkey-replication-3",
+          "summary": "Partial/full synchronization has different costs and can add recovery load."
+        },
+        {
+          "id": "valkey-replication-4",
+          "summary": "Expiry propagation and replica read behavior mean restored/replicated state needs explicit lifecycle checks."
+        }
+      ]
+    },
+    {
+      "id": "valkey-cluster",
+      "url": "https://valkey.io/topics/cluster-tutorial/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "079a908d6dc2c9c04e8ea07d3e80195b652ae19e55ecf0263285d6a98a6c5075",
+      "markdown_sha256": "bd504a01c842302b8a960bb88956033fdd5a080f47b0cf0c4f82fced612e0933",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "valkey-cluster-1",
+          "summary": "Cluster shards keys using 16,384 slots, with hash tags allowing intentional colocation."
+        },
+        {
+          "id": "valkey-cluster-2",
+          "summary": "Multi-key commands, transactions and scripts require the relevant same-slot boundary."
+        },
+        {
+          "id": "valkey-cluster-3",
+          "summary": "Cluster availability has failure/partition limits and does not guarantee strong consistency or zero acknowledged-write loss."
+        },
+        {
+          "id": "valkey-cluster-4",
+          "summary": "Resharding and client redirects are operational concerns requiring version/topology-aware clients."
+        }
+      ]
+    },
+    {
+      "id": "valkey-transactions",
+      "url": "https://valkey.io/topics/transactions/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "8f3a7a6223549df683d28249257bbcff947b532a59a151d21b8531ef7636b78b",
+      "markdown_sha256": "afa598c679709e64ecb0976574d556179ebde4b57de13eace7ce0f1f3b40ca5d",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "valkey-transactions-1",
+          "summary": "MULTI queues commands and EXEC runs them without interleaved client commands."
+        },
+        {
+          "id": "valkey-transactions-2",
+          "summary": "Queue-time errors differ from execution-time errors; successful earlier/other commands are not rolled back on runtime error."
+        },
+        {
+          "id": "valkey-transactions-3",
+          "summary": "WATCH supports optimistic check-and-set behavior and requires conflict handling."
+        },
+        {
+          "id": "valkey-transactions-4",
+          "summary": "Transactions and scripts do not create a transaction across independent stores or external effects."
+        }
+      ]
+    },
+    {
+      "id": "valkey-lua",
+      "url": "https://valkey.io/topics/eval-intro/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "8c19a35b776ffa33fce069caadd41a268e39c95ab54153b6815496d16a9dc459",
+      "markdown_sha256": "0667218ae0a86f46a0eb383938dc3f5371517158ad7335d2e24d9a6598eafef6",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "valkey-lua-1",
+          "summary": "Server-side scripts reduce round trips and isolate execution from other commands."
+        },
+        {
+          "id": "valkey-lua-2",
+          "summary": "Script execution blocks other server work, making bounded computation important."
+        },
+        {
+          "id": "valkey-lua-3",
+          "summary": "Scripts should declare accessed keys and parameterize inputs; script cache/loading behavior matters for clients."
+        }
+      ]
+    },
+    {
+      "id": "valkey-pubsub",
+      "url": "https://valkey.io/topics/pubsub/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "b4f5fd2f85609aa3f8669684c21d3bc966d40571d3247cb2403318c49a34dc6d",
+      "markdown_sha256": "4876566724f06a2bbaf6c790783ee08e876cb8abd8d4e44c438bfe51e9b43925",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "valkey-pubsub-1",
+          "summary": "Pub/Sub has at-most-once delivery and offline subscribers can miss messages."
+        },
+        {
+          "id": "valkey-pubsub-2",
+          "summary": "Subscriptions do not constitute retained durable work; applications needing eventual effects need another recovery authority."
+        }
+      ]
+    },
+    {
+      "id": "valkey-streams",
+      "url": "https://valkey.io/topics/streams-intro/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "699546d4c511cd0532c10e7b0fcc795e444ec18462877ab39c063c75bcfbf4cf",
+      "markdown_sha256": "9e864fef6a3486a4443c1dce2d7123a6ba267c7cbc9d45f9a025ff255b232a06",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "valkey-streams-1",
+          "summary": "Streams retain ordered entries with explicit trimming and consumption choices."
+        },
+        {
+          "id": "valkey-streams-2",
+          "summary": "Consumer groups expose pending deliveries; XACK marks processing acknowledgement."
+        },
+        {
+          "id": "valkey-streams-3",
+          "summary": "Abandoned pending work requires explicit claim/reclaim behavior rather than reading only new messages."
+        },
+        {
+          "id": "valkey-streams-4",
+          "summary": "Redelivery and claim races do not establish exactly-once external processing."
+        },
+        {
+          "id": "valkey-streams-5",
+          "summary": "Trimming can remove payloads needed by pending consumers, so retention and recovery coverage must be coordinated."
+        }
+      ]
+    },
+    {
+      "id": "valkey-memory",
+      "url": "https://valkey.io/topics/lru-cache/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "c19023e32d3096a66adf53445740a506050cfee49653069c8a50d0d6318f7815",
+      "markdown_sha256": "334de5c645821566ccf386451295c4531ddc7fef1467f3cbfc3f2b0087db8a36",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "valkey-memory-1",
+          "summary": "maxmemory eviction accounting excludes replication/AOF buffer memory."
+        },
+        {
+          "id": "valkey-memory-2",
+          "summary": "noeviction rejects writes that need more memory; it is not protection from every deletion, expiry or OOM."
+        },
+        {
+          "id": "valkey-memory-3",
+          "summary": "Cache eviction and authoritative-record retention have different correctness requirements."
+        },
+        {
+          "id": "valkey-memory-4",
+          "summary": "LRU/LFU implementations are approximate; policy choice should follow observed access patterns."
+        }
+      ]
+    },
+    {
+      "id": "valkey-benchmark",
+      "url": "https://valkey.io/topics/benchmark/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "683a1909d1c4a22cba258fd3a03bff28da261ed85d533dab1cb4ab2507b2dabf",
+      "markdown_sha256": "5fdf32a64d07ef357bedc7cfa77cca96253b3665445e3471a72bda85fdbd2b55",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "valkey-benchmark-1",
+          "summary": "Synchronous loops may primarily measure network and client latency."
+        },
+        {
+          "id": "valkey-benchmark-2",
+          "summary": "Connections, concurrency and realistic pipeline length change what a benchmark measures."
+        },
+        {
+          "id": "valkey-benchmark-3",
+          "summary": "Compare equivalent persistence/fsync requirements when comparing to transactional stores."
+        },
+        {
+          "id": "valkey-benchmark-4",
+          "summary": "Network, dataset, payloads, client limits and workload distribution constrain transferable results."
+        }
+      ]
+    },
+    {
+      "id": "redis-licenses",
+      "url": "https://redis.io/legal/licenses/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "eb46a03a4ec53dd5905b76634be068484763aef4eb593ce54d70cf7db085609f",
+      "markdown_sha256": "60a7b07f8f4b1a493a947b9df4e6b4680f4f1c81333773a5966aeacdf53498a0",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "redis-licenses-1",
+          "summary": "Redis 7.2 and earlier retain BSD-3-Clause."
+        },
+        {
+          "id": "redis-licenses-2",
+          "summary": "Redis 7.4 introduced RSALv2/SSPLv1; Redis 8 added an AGPLv3 option."
+        },
+        {
+          "id": "redis-licenses-3",
+          "summary": "An OSI-approved copyleft option is distinct from a permissive BSD license and from governance trust."
+        }
+      ]
+    },
+    {
+      "id": "redis-agpl",
+      "url": "https://redis.io/blog/agplv3/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "41e93e304b055296dcd91f5714e75185d71201e3fc505bf68c45f8c432733b09",
+      "markdown_sha256": "1e1935e403b82e3ca12a9e06f4512add87a14368303258683c0911e3a2d72fbb",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "redis-agpl-1",
+          "summary": "Redis added AGPLv3 with Redis 8 in May 2025."
+        },
+        {
+          "id": "redis-agpl-2",
+          "summary": "Redis leadership explicitly acknowledges its 2024 relicensing damaged community relations."
+        },
+        {
+          "id": "redis-agpl-3",
+          "summary": "The announcement is the vendor's own account, not evidence that all trust concerns disappeared or a neutral performance benchmark."
+        }
+      ],
+      "source_interest": "Project/vendor-hosted account; no independent benchmark or population inference."
+    },
+    {
+      "id": "lf-launch",
+      "url": "https://www.linuxfoundation.org/press/linux-foundation-launches-open-source-valkey-community",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "255c4a719844b8c5535749c4e7c51a7bf05f4b76edc5a6d9ad4ae7786827f677",
+      "markdown_sha256": "fce4cbbe774572174e3e15f0346295d8b776b37b065732a881cfba5da792fbb5",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "lf-launch-1",
+          "summary": "The Linux Foundation announced Valkey in March 2024 after Redis relicensing."
+        },
+        {
+          "id": "lf-launch-2",
+          "summary": "Valkey continued from Redis 7.2.4 under BSD-3-Clause with community and corporate participation."
+        },
+        {
+          "id": "lf-launch-3",
+          "summary": "Foundation participation supports the governance-history claim, not a guarantee against every possible future project decision."
+        }
+      ]
+    },
+    {
+      "id": "google-agpl",
+      "url": "https://opensource.google/documentation/reference/using/agpl-policy",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "7757e0771f5f940e8d1dfc3420e9a38f3d71448918f2fa9a05beb9937fc30790",
+      "markdown_sha256": "5eb0922c0a877159e77000e21107056c4bbf4c9382bc323f5a9ef86fb4c7cf5b",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "google-agpl-1",
+          "summary": "Google publishes a broad internal AGPL restriction, demonstrating one organization's policy friction."
+        },
+        {
+          "id": "google-agpl-2",
+          "summary": "Its policy and risk characterization are not universal legal interpretations or a survey of business preferences."
+        }
+      ]
+    },
+    {
+      "id": "gnu-agpl",
+      "url": "https://www.gnu.org/licenses/why-affero-gpl.html",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "2bdc89c95033d36c87186399df32f853074c06c31df38b1bb440ada01b478039",
+      "markdown_sha256": "f15d54c13bbde9af18a4c02a7ff1c8f39e89cce32b08b8fcbae221cf0669d907",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "gnu-agpl-1",
+          "summary": "GNU advocates AGPL to preserve access to modified server program source for remote users."
+        },
+        {
+          "id": "gnu-agpl-2",
+          "summary": "This countervailing rationale demonstrates that copyleft and permissive-license preferences serve different values."
+        },
+        {
+          "id": "gnu-agpl-3",
+          "summary": "Do not infer that all users agree with either GNU's rationale or Google's policy."
+        }
+      ]
+    },
+    {
+      "id": "fedora-replacement",
+      "url": "https://fedoraproject.org/wiki/Changes/Replace_Redis_With_Valkey",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "c890c4c806484863ca6a2fbb3524002932b15953896e5104748aa001d120a40b",
+      "markdown_sha256": "7acca4ced9ede6974f9890a353e3c0a03eef276c22fe28143a415d5f6555b550",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "fedora-replacement-1",
+          "summary": "Fedora recorded a Redis-to-Valkey replacement change in response to the earlier source-available relicensing."
+        },
+        {
+          "id": "fedora-replacement-2",
+          "summary": "It is a named open-source distribution decision from before the AGPL addition, not proof of post-AGPL population sentiment."
+        }
+      ]
+    },
+    {
+      "id": "valkey-search",
+      "url": "https://valkey.io/blog/introducing-valkey-search/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "7e8c2a6ef7cd522fb0e5fd6e6622202227c7c3a9729edacab0fc5ea5c4318cb3",
+      "markdown_sha256": "226307053741dff9788e113d28f77738282f4920910e582a98035f9c66a27f4f",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "valkey-search-1",
+          "summary": "Valkey-search provides native vector search as a BSD-licensed module with specific version prerequisites."
+        },
+        {
+          "id": "valkey-search-2",
+          "summary": "Its RediSearch compatibility is explicitly a subset; vector API similarity does not prove every full-text/search feature."
+        },
+        {
+          "id": "valkey-search-3",
+          "summary": "Index attributes, filtering and HNSW tuning require data-dependent recall/latency/memory qualification."
+        },
+        {
+          "id": "valkey-search-4",
+          "summary": "Hash versus JSON indexing and update/delete/recovery lifecycle require feature-specific verification."
+        }
+      ],
+      "source_interest": "Project/vendor-hosted account; no independent benchmark or population inference."
+    },
+    {
+      "id": "valkey-zrange",
+      "url": "https://valkey.io/commands/zrange/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "419cde6ca2c1d7cbfa27fd03faea796b4dd101f33875f38b89ee068785d7035a",
+      "markdown_sha256": "c8f3bb3f60900badb07b217c858d1e591f8f60312679113cc4f186ceaf5fba27",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "valkey-zrange-1",
+          "summary": "Sorted-set range cost includes result size; bounded top-k avoids implying constant-time unbounded fetches."
+        },
+        {
+          "id": "valkey-zrange-2",
+          "summary": "Ordering, range mode and returned values are part of application semantics."
+        }
+      ]
+    },
+    {
+      "id": "valkey-hset",
+      "url": "https://valkey.io/commands/hset/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "e3c1e834e45a7efe822706b65b24b582c238ad344cf2636e70f2fb53aeb18ccc",
+      "markdown_sha256": "b10e74716083f8d4421d9c688d2a807932ea16209058bc2b2c1e4a8fd2ec19d5",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "valkey-hset-1",
+          "summary": "HSET field updates are atomic command operations, while complexity scales with the number of fields."
+        },
+        {
+          "id": "valkey-hset-2",
+          "summary": "Field operations alone do not prove multi-object invariants."
+        }
+      ]
+    },
+    {
+      "id": "valkey-incr",
+      "url": "https://raw.githubusercontent.com/valkey-io/valkey-doc/main/commands/incr.md",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "e092dd0cab108b8c200bc777c3a025648233b07ace3eeeacf8682323a0a6b17f",
+      "markdown_sha256": "0d65ee776b618e3fc5d4c12228122f4e44d8178503979ae13ac3d7590d3447e3",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "valkey-incr-1",
+          "summary": "INCR provides a native single-counter update instead of racing GET/add/SET."
+        },
+        {
+          "id": "valkey-incr-2",
+          "summary": "Integer/type constraints must be handled at the application boundary."
+        }
+      ],
+      "reason": "Rendered command page was blocked twice; official documentation repository source retrieved successfully."
+    },
+    {
+      "id": "valkey-history-current",
+      "url": "https://valkey.io/topics/history/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "5c0363b241e4d697ced91bfabe8c219a65eb71dde20199a48c28f94cad036fee",
+      "markdown_sha256": "3a4a1585cb72347263512bba505c8bf73da92a61bb637a27edb98a6182dc46e2",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "valkey-history-current-1",
+          "summary": "Valkey describes its lineage from Redis and the history of BSD commitments followed by relicensing."
+        },
+        {
+          "id": "valkey-history-current-2",
+          "summary": "Valkey launched under Linux Foundation governance after the 2024 change."
+        },
+        {
+          "id": "valkey-history-current-3",
+          "summary": "This is project-authored history and should not be treated as a population survey."
+        }
+      ]
+    },
+    {
+      "id": "harbor-valkey",
+      "url": "https://valkey.io/blog/harbor-chose-valkey/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "1e56f7fe43902194a90f79086e5bc55b6dc2aaebc13bd0d5999bc8db2b48fbc2",
+      "markdown_sha256": "2eae191c9683512ad06b64b3f4883ecf163c146ae03a1f315fc416324bab01db",
+      "status": "retained",
+      "evidence_class": "primary documented semantics or attributed organizational statement",
+      "claims": [
+        {
+          "id": "harbor-valkey-1",
+          "summary": "A July 2026 Valkey-hosted community account reports Harbor's move and cites BSD licensing and governance alignment."
+        },
+        {
+          "id": "harbor-valkey-2",
+          "summary": "The report links Harbor's own issue, PR and release; it supports a named post-AGPL open-source choice, not community-wide preference prevalence."
+        },
+        {
+          "id": "harbor-valkey-3",
+          "summary": "Its performance and deployment instructions are not incorporated as verified catalog runbooks or benchmark results."
+        }
+      ],
+      "source_interest": "Project/vendor-hosted account; no independent benchmark or population inference."
+    },
+    {
+      "id": "valkey-incr-page",
+      "url": "https://valkey.io/commands/incr/",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "c286ed122545dcd2961b0f8cf8304817485dcc19f13eabac97a3b6f15df0179b",
+      "retry_response_sha256": "c286ed122545dcd2961b0f8cf8304817485dcc19f13eabac97a3b6f15df0179b",
+      "markdown_sha256": null,
+      "status": "excluded",
+      "evidence_class": "failed retrieval",
+      "claims": [],
+      "reason": "Both rendered-page attempts returned a CAPTCHA barrier; replaced by successful official valkey-doc source retrieval. No CAPTCHA was solved."
+    },
+    {
+      "id": "harbor-issue",
+      "url": "https://github.com/goharbor/harbor/issues/22935",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "05f58ab4405609ff1ec422396b8f87f1e4aaaa6606f22fde2ba7113ccaf09257",
+      "markdown_sha256": "ea5d122422a88a7868ee1e139b406937087b4bc785adece9aa00b1ccea61cc15",
+      "status": "retained",
+      "evidence_class": "primary project decision record",
+      "claims": [
+        {
+          "id": "harbor-issue-1",
+          "summary": "Harbor's March 2026 issue states that repeated Redis licensing changes created risk and proposes Valkey's more friendly license."
+        },
+        {
+          "id": "harbor-issue-2",
+          "summary": "The issue also requires smooth migration, so a licensing preference does not waive compatibility work."
+        }
+      ]
+    },
+    {
+      "id": "harbor-pr",
+      "url": "https://github.com/goharbor/harbor/pull/23157",
+      "accessed": "2026-11-03",
+      "retrieval": "GroktoCrawl scrape",
+      "response_sha256": "b2821b8c7d2b1c3e22d3fec212775b3a6015cb69c1eb891ebede18db29f59574",
+      "markdown_sha256": "eefde4f92699bc58748ece117d22fa4b2998e55e6209ad915ebd910f455a48d7",
+      "status": "retained",
+      "evidence_class": "primary project decision record",
+      "claims": [
+        {
+          "id": "harbor-pr-1",
+          "summary": "Harbor's own PR records the cache-backend replacement and links the licensing-risk issue."
+        },
+        {
+          "id": "harbor-pr-2",
+          "summary": "The PR was merged on April 28, 2026; this establishes a concrete post-AGPL project decision, not community-wide sentiment or a benchmark."
+        }
+      ]
+    }
+  ]
+}

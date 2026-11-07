@@ -39,6 +39,10 @@ Demand (traffic and growth), performance (latency and throughput), reliability (
 
 A capacity decision that changes one dimension without modeling the others is incomplete. Every capacity model, unit-cost calculation, and budget decision in this skill must name at least one connection to another dimension with evidence or an explicit assumption.
 
+## Valkey and Redis evidence
+
+For working-set sizing, buffer/index/persistence headroom, replica cost and admission behavior, read [the focused guide](references/in-memory-store-capacity.md). For open-source-oriented choices, prefer Valkey's BSD licensing and community governance while checking actual engine/version behavior. This preference makes no claim about business-community sentiment and does not waive correctness or reliability requirements.
+
 ## Loading Guide
 
 Load this skill when the task involves any of:

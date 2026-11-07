@@ -1,142 +1,35 @@
-# Content Strategy SEO Reference
+# Content strategy for search
 
-Content strategy SEO ensures that what you write positions you to be discovered for the queries your audience actually searches for.
+Use with `references/content-and-entity-architecture.md`. Organize useful answers around audience tasks and evidence, not keyword/page quotas. Topic clusters and pillar pages are optional navigation patterns, not requirements or proven algorithmic shortcuts.
 
-## Topic Clusters & Pillar Pages
+## Research and prioritization
 
-The modern SEO content architecture replaces the old model of writing individual articles about individual keywords. Instead, content is organized into **topic clusters** centered on **pillar pages**.
+1. Define the audience, actual offering, search surface, outcome and current content inventory.
+2. Use existing query/page data and observed SERPs to identify questions and intent: informational, navigational, commercial or transactional. Record query, locale, date and result format. Search suggestions and paid keyword tools are discovery signals, not authoritative proof of demand.
+3. Compare competing answers for missing evidence, usability, freshness and useful formats. Length and a top-ten position do not prove quality or an easily won opportunity.
+4. Map coherent question clusters to canonical destinations. Merge redundant variants and identify original evidence the organization can supply. For geographic content use `references/local-and-national-search.md`.
+5. Prioritize with explicit assumptions: business relevance, unmet user need, evidence availability, expected effort, maintenance burden, competition and measurable outcome. Volume estimates are uncertain; do not apply an unexplained volume × difficulty formula or equate high volume with profitable demand.
 
-### How It Works
+## Structure and linking
 
-- **Pillar page:** A comprehensive, long-form guide to a broad topic (e.g., "The Complete Guide to AI Agent Memory Systems"). It covers the topic broadly and links out to cluster content.
-- **Cluster content:** Specific articles that dive deep into sub-topics (e.g., "What is a Vector Database?", "How RAG Works", "GraphRAG vs Vector Search"). Each cluster article links BACK to the pillar page.
-- **Internal linking:** Cluster → pillar (always). Pillar → cluster (when relevant).
+A broad overview may link to deeper answers where readers benefit; specific pages can link back where context is useful. Avoid mandatory pillar-first publication, fixed link quotas or endless expansion to adjacent subjects. Use descriptive links, accessible headings, relevant illustrations and accurate tables. Concise answers belong near their questions, with support and qualifications immediately available. Preserve distinctive expertise and natural prose.
 
-### Why It Works
+## Search features are provider decisions
 
-- **Topical authority:** A group of pages all linking to each other around a common topic signals deep expertise to search engines
-- **SERP dominance:** Instead of competing for one keyword, you compete for an entire topic area
-- **User experience:** Readers naturally flow from intro content (pillar) to deep dives (clusters)
+- Featured snippets: use the format that answers the question well (paragraph, list, table). Google specifies no exact minimum length; 40–50 words is not a universal requirement. No special markup forces a featured snippet.
+- People Also Ask: answer real related questions when useful, not a separate page or H2 for every query permutation.
+- Knowledge surfaces: consistent truthful entity identity helps interpretation; markup or a Wikipedia page does not guarantee a panel. Do not manufacture third-party coverage.
+- FAQ/HowTo: useful visible questions and procedures remain valuable, but do not pitch obsolete Google rich-result features. See `references/structured-data.md` for dated feature status and `references/schema-markup.md` for implementation.
 
-### Applying to Platform-specific implementation notes
+## Refresh and measurement
 
-**example.com — Example clusters:**
-- Pillar: "AI Agent Memory Systems"
-- Clusters: "Vector Databases for Agent Memory," "Knowledge Graphs vs Vector Search," "a content inventory Thought-Graph Architecture," "What is GraphRAG?"
+Publish at a pace supported by evidence and review capacity. Refresh when facts, products, regulations, service coverage or user needs change; assign a freshness owner and trigger. Annual refresh and a fixed monthly article count are not generic SEO requirements. Query coverage, relevant referrals and citations can be observations consistent with expertise; they do not establish a universal “topical authority” score or causality.
 
-**example.com — Example clusters:**
-- Pillar: "Enterprise AI Agent Deployment"
-- Clusters: "RAG at Scale: Lessons from Production," "AI Agent Orchestration," "Security Considerations for Enterprise AI," "Cost Optimization for LLM Inference"
+Produce a ranked opportunity list with rationale, required evidence, owner and verification; only create a dated editorial plan when requested or grounded in agreed commitments. Route brand voice and article drafting to their owner skills. Separate implementation completion from indexing, ranking, useful traffic and business results.
 
-## Keyword Research
+## Sources
 
-### Process
-1. **Identify seed keywords** — the 3-5 core terms that define your site's domain
-2. **Expand via SERP analysis** — search each seed keyword and analyze the "People also ask" box, related searches at page bottom, and the top-ranking pages' headlines
-3. **Identify question-based queries** — "how does X work", "what is Y", "why Z matters" — these are excellent for featured snippet opportunities
-4. **Analyze search intent** — is the query informational (learning), navigational (finding a specific site), commercial (comparing options), or transactional (buying)? Match your content type to intent.
-5. **Assess competition** — are the top 10 results thin blog posts or deep authoritative guides? If the top results are weak, there's an opportunity.
-
-### Keyword Mapping
-
-Map each article to 1 primary keyword and 2-5 secondary/related keywords:
-
-```
-Article: "The Artifact Pyramid: Progressive Disclosure for Agent Outputs"
-Primary:  "artifact pyramid"
-Secondary: "progressive disclosure AI", "multi-agent output structure", 
-           "agent collaboration format", "research output pyramid"
-```
-
-### Tools
-- Google Search Console (what queries your site already ranks for)
-- Google "People also ask" / related searches (free, authoritative)
-- AnswerThePublic (question-based query discovery)
-- Ahrefs / Semrush (paid — comprehensive keyword data)
-
-## SERP Feature Targeting
-
-Target specific SERP features by structuring content appropriately:
-
-| SERP Feature | Best for | Content Structure |
-|-------------|----------|-------------------|
-| **Featured Snippet (Paragraph)** | "What is X" questions | Direct answer in first paragraph after H2. 40-50 words. |
-| **Featured Snippet (List)** | "Steps to X", "Types of X" | Numbered or bulleted list in the content. |
-| **Featured Snippet (Table)** | Comparisons, specifications | HTML table with clear headers and data. |
-| **FAQ Rich Result** | Multiple related questions | FAQPage schema with 2+ Q&A pairs visible in content. |
-| **HowTo Rich Result** | Tutorials, guides | HowTo schema with numbered steps. |
-| **People Also Ask** | Question-based queries | Address each question in its own H2 section. |
-| **Knowledge Panel** | Brand/organization queries | Organization schema, Wikipedia entry, verified social profiles. |
-
-## Content Gap Analysis
-
-### Process
-1. **Identify your target keywords** (the terms you WANT to rank for)
-2. **Check your current rankings** (do you already have content for these?)
-3. **Analyze top 10 results** for each keyword:
-   - What content format are they using? (listicle, guide, video, tool)
-   - How long is the content?
-   - What angle do they take?
-   - What's missing from their coverage?
-4. **Identify gaps:** Topics where your site has no content, or where your content is weaker than competitors'
-5. **Prioritize:** Volume × difficulty × relevance — focus on high-volume gaps that you can credibly fill
-
-### Gap Types
-- **Missing topic:** No content exists on your site for a search-worthy topic
-- **Thin content:** Content exists but is significantly weaker than competitors'
-- **Outdated content:** Content exists but is no longer accurate or current
-- **Format gap:** Competitors rank with a format you haven't used (e.g., video, interactive tool, data study)
-
-## Topical Authority
-
-Topical authority is built over time by publishing a breadth and depth of content on a subject. It's the most defensible SEO strategy because it can't be replicated quickly.
-
-### Building Topical Authority
-1. **Publish the pillar page first** — broad, comprehensive, definitive
-2. **Publish cluster content regularly** — 2-3 sub-topic articles per month
-3. **Interlink systematically** — every cluster article links to the pillar; the pillar links to clusters
-4. **Refresh content** — update pillar pages annually, cluster content as needed
-5. **Expand scope** — once you've covered the core topic, expand to adjacent topics
-
-### Signals of Topical Authority
-- Your content ranks for multiple related keywords
-- Your content appears in "People also ask" for the topic
-- Other sites link to your content as a reference
-- Your content is cited in academic or industry publications
-
-## Platform-specific implementation notes — SEO Opportunity Assessment
-
-| Site | Domain Authority | Primary Keyword Focus | Largest Gap |
-|------|-----------------|----------------------|-------------|
-| example.com | Low (newer personal blog) | AI philosophy, neurodiversity, engineering | Few internal links between related posts; no topic cluster structure |
-| example.com | Low (newer enterprise AI blog) | Enterprise AI strategy, agentic AI | Very new — needs pillar pages and cluster strategy from the start |
-| example.org | Very low (community site) | Mesh networking, MeshCore, RDUMesh | Local SEO for Raleigh/Durham; community resource queries |
-| example.net | Minimal | Southeast mesh networking | Mostly informational — just needs proper on-page SEO |
-
-### Recommended Actions by Site
-
-**example.com:**
-- Implement topic clusters retroactively (group existing posts into 3-4 clusters with pillar pages)
-- Ensure every post links to 2-3 other posts
-- Add FAQPage schema to posts that answer multiple questions
-- Optimize for "People also ask" by structuring content around questions
-
-**example.com:**
-- Plan pillar pages first before creating more isolated content
-- Target question-based keywords for featured snippet opportunities
-- Implement TechArticle schema on all technical posts
-- Focus on long-tail, low-competition keywords in the short term
-
-**example.org:**
-- Local SEO: "mesh network Raleigh," "MeshCore North Carolina"
-- Community-Q&A content for FAQ rich results
-- Event pages for meetup/community gathering SEO
-
-## Content Calendar
-
-SEO content strategy produces a **ranked list** of content opportunities, not a dated calendar. Editorial schedules vary; prioritize by evidence rather than a fixed calendar. Prioritize by:
-
-1. **Search volume × relevance** — How many searches × how well it fits the site
-2. **Competition gap** — How much better can we be than the current top results?
-3. **Ease of creation** — Does the research already exist in the vault or is it a new domain?
-4. **Pillar dependency** — Should this be created before or after the pillar page?
+Reviewed 2026-11-06; recheck provider-sensitive guidance:
+- [Google people-first content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content)
+- [Google featured snippets](https://developers.google.com/search/docs/appearance/featured-snippets)
+- [Google Search documentation updates](https://developers.google.com/search/updates)

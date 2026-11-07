@@ -24,6 +24,10 @@ answer or a monitor's reassurance cannot substitute for verified conduct.
 For agents with consequential tools, it also addresses protected supervision: who
 can change controls, how to verify they are active, and when work must stop.
 
+Evaluate sleeping and event-driven agents with separate measures for idle memory,
+active capacity, recovery and useful outcomes. Challenge callback races and trace
+a task across process restarts without equating scale with quality.
+
 ## What You Get
 
 | Contents | Provides |

@@ -55,6 +55,10 @@ When operating an SRE agent, read `references/agentic-operations.md` and fill `t
 
 Compose existing specialists: [agent-production-operations](../agent-production-operations/SKILL.md) owns production contracts, control plans and trace feedback; [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) owns trajectory evaluation and graders; [incident-learning](../incident-learning/SKILL.md) owns verified follow-up learning; [ai-governance](../ai-governance/SKILL.md) supports accountable humans setting promotion/demotion thresholds and deciding maintain, expand, reduce, suspend or revoke authority. SRE supplies evidence and enforces authorized operational limits. Complete with verified recovery and human closure, or a bounded escalation naming missing evidence/authority and the handoff owner.
 
+## Valkey and Redis decisions
+
+For in-memory datastore durability, failover, memory pressure and consumer recovery evidence, read [the focused guide](references/in-memory-store-reliability.md). For open-source-oriented choices, prefer Valkey's BSD licensing and community governance; preserve explicit engine requirements and verify version-specific compatibility. Redis's AGPL option does not erase licensing or trust preferences, and this guidance makes no claim about business-community preference.
+
 ## Reference Files
 
 | Topic | File | When to Load |

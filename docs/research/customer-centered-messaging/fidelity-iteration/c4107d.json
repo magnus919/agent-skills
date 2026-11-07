@@ -1,0 +1,49 @@
+{
+  "response_id": "c4107d",
+  "task_id": "collection-inventory",
+  "arm": "candidate-v2",
+  "phase": "held-out",
+  "requested_model": "google/gemini-3.8-flash",
+  "returned_model": "google/gemini-3.8-flash",
+  "provider": null,
+  "completion_id": "gen-1793999701-T9PvVQNk594bWONYwTTR",
+  "receipt": {
+    "response_id": "c4107d",
+    "task_id": "collection-inventory",
+    "phase": "held-out",
+    "arm": "candidate-v2",
+    "seed": 2026110612,
+    "started_at": "2026-11-06T21:15:01.576342+00:00",
+    "reserved_usd": 0.3834798,
+    "request_sha256": "1d5ce6826a828b21de0babc7448bc8a433460cfd962d42d7f115512149b6eff1",
+    "status": "complete",
+    "finish_reason": "stop",
+    "completed_at": "2026-11-06T21:15:22.262569+00:00",
+    "elapsed_seconds": 20.686,
+    "reported_cost_usd": 0.023170125,
+    "catalog_estimate_usd": 0.023170125
+  },
+  "usage": {
+    "prompt_tokens": 18520,
+    "completion_tokens": 1913,
+    "total_tokens": 20433,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 557,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    },
+    "cost": 0.023170125,
+    "cost_details": {
+      "source": "openrouter_list",
+      "floor_applied": false,
+      "rate_source": "openrouter_catalog"
+    }
+  },
+  "response": "# Shelf Map: Customer Message Brief & Channel Copy\n\n**Brand/Service:** Shelf Map  \n**Audience:** Small independent museums in Pinehaven  \n**Voice:** Thoughtful, plain, professional  \n**Approval / Evidence State:** Untested draft based strictly on supplied service inputs. No customer interviews, conversion metrics, or historical performance data are claimed.\n\n---\n\n## 1. Homepage Opening\n\n### Primary Headline\n**A photographic inventory linked directly to your museum’s shelves**\n\n### Supporting Line\nShelf Map matches photographs of your objects to your existing shelf identifiers and provides a written list of unmatched items, giving your Pinehaven museum a clear visual record without juggling paper registers and detached image folders.\n\n---\n\n## 2. Sample Inventory Page Caption\n\n**Sample Inventory Page**  \n*This sample shows how photographs connect to supplied shelf identifiers alongside a written list of items that could not be matched during the visit. It demonstrates the format of the deliverable; it does not include object valuation, authentication, or condition assessments.*\n\n---\n\n## 3. Next-Action Expectations and Steps\n\n### Call to Action\n**Request a site-assessment visit**\n\n### What Happens Next\nSubmitting a request does not book an assessment date or commit your museum to a project. We review local scheduling and confirm our current capacity and visit dates with you afterward. \n\n### Prerequisites and Path to Value\n1. **Request an initial site assessment**  \n   Submit your museum’s location in Pinehaven and collection details. We confirm visit availability and scheduling.\n2. **Complete the on-site assessment**  \n   An initial site-assessment fee applies. To complete the assessment, your team must provide access to the collection areas and your existing shelf labels.\n3. **Review project scope and proposal**  \n   Following the assessment, you receive a proposal detailing the scope for a full inventory project. You decide whether to commission the separate project; the assessment does not automatically start or schedule full inventory work.\n4. **Receive your photographic inventory**  \n   If approved, we photograph objects across designated shelves, link the images to your supplied shelf identifiers, and deliver the final photographic records alongside a written list of unmatched items.\n\n*(Note for project owner: Assessment fee amount, payment timing, refund terms, transport arrangements, and turnaround times remain open decisions to be defined before contract execution.)*\n\n---\n\n## 4. Objection Handling\n\n### “Am I agreeing to the full inventory project?”\n\n**No.** Requesting a visit begins only the initial site assessment, which carries its own assessment fee. \n\nThe site assessment allows us to examine your space, collection access, and shelf labeling so we can define the scope of work. Once the assessment is complete, your board or staff can review the scope and decide whether to approve a separate inventory project. An assessment visit does not obligate you to proceed with full cataloging.\n\n---\n\n## 5. Museum-Association Directory Listing\n\n**Shelf Map**  \n*Photographic inventory for small independent museums in Pinehaven.*  \nWe link object photographs to your museum’s existing shelf identifiers and provide a clear written list of unmatched items, helping staff replace disconnected paper lists and image folders with an orderly visual location record. Work begins with a standalone site-assessment visit (assessment fee applies; collection access and shelf labels required) before you decide whether to commission a full inventory project. Contact us to request an assessment visit; capacity and dates are confirmed upon inquiry.\n\n---\n\n## 6. Revision & Fact-Check Record\n\n### Diagnosis of Old Copy\n* **Supplied Old Copy:** *“Museum-grade certainty before you spend a cent. Accredited experts protect every object. Book instantly.”*\n* **Defects Identified:**\n  1. *“Before you spend a cent”* directly contradicts the business model; an initial site-assessment fee is mandatory before any project decision is made.\n  2. *“Accredited experts protect every object”* introduces unsupported claims of professional accreditation, preservation, physical protection, and handling techniques. Accreditation and preservation services are unevidenced unknowns, not established capabilities.\n  3. *“Book instantly”* misrepresents the intake process; capacity and dates are subject to later confirmation, not immediate automated booking.\n  4. *“Museum-grade certainty”* is ungrounded marketing hyperbole that obscures the tangible deliverable (linked shelf photos and an unmatched items list).\n\n### Final-Copy Fact Audit\n\n| Location / Draft Expression | Fact / Unknown / Proposal State | Audit Decision & Final Wording | Open Owner Question |\n|---|---|---|---|\n| Headline / Opening Offer | **Supplied Fact:** Photographs linked to shelf IDs + list of unmatched items for Pinehaven museums. | **Kept:** Explicitly names Pinehaven, shelf identifiers, and the unmatched items list. | None. |\n| Pricing / Cost: “Before you spend a cent” | **Supplied Fact / Limit:** An initial site-assessment fee applies before the project decision. | **Replaced:** “An initial site-assessment fee applies.” Removed all claims of free consultation. | Fee amount, due date, refundability, and whether fee credits toward project. |\n| Credentials & Scope: “Accredited experts protect every object” | **Unknown:** Accreditation, conservation, valuation, and preservation are unknown (not documented). | **Removed:** Omitted all claims of accreditation, valuation, or conservation without claiming absence. | Confirm whether staff hold specific handling credentials if needed. |\n| Scheduling / Action: “Book instantly” | **Supplied Fact:** Request visit first; capacity and dates confirmed afterward. | **Replaced:** “Request a site-assessment visit. Date and capacity confirmed afterward.” | Confirm standard turnaround and scheduling windows. |\n| Customer Prerequisite | **Supplied Fact:** Museum must provide collection access and existing shelf labels. | **Kept:** Stated plainly in the onboarding steps and association blurb. | Verify if specific shelf label formats are required. |\n\n---\n\n## 7. Next Owners & Open Decisions\n\n* **Brand / Marketing Owner:** Review directory copy and tone against local heritage-sector standards.\n* **Operations / Commercial Owner:** Define the assessment fee schedule (amount, invoice terms, and whether any portion applies as credit toward an approved inventory contract), standard turnaround estimates, and insurance/handling policies.\n* **UX / Web Design:** Map the visit request form to ensure it captures collection address, shelf label readiness, and contact details without implying instant calendar booking."
+}

@@ -1,0 +1,210 @@
+{
+  "reviewer_kind": "model_teacher",
+  "reviewer": "authoring assistant",
+  "reviewer_model": "not exposed by host",
+  "rubric_revision": "plan.md five-criterion roster; reused unchanged in phase2-plan.md",
+  "blind": false,
+  "independent_human_adjudication": false,
+  "reviewed_at": "2026-11-06T21:23:56.336048+00:00",
+  "interpretation": "Provisional author judgments against supplied fiction; no calibrated score or release approval. No further tuning after this phase.",
+  "responses": [
+    {
+      "response_id": "39443b",
+      "response_sha256": "1bd1a2a366a1a9da7af2eceeb15c62c2957106b34923ff61766e0cc6376fc24a",
+      "task_id": "heritage-layout",
+      "arm": "baseline",
+      "criteria": [
+        {
+          "criterion": "material_factual_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Caption makes unknown print specifications depend on final printing scope without supplied support."
+        },
+        {
+          "criterion": "uncertainty_fidelity",
+          "suggested_state": "met",
+          "evidence": "Certifications/durability remain unknown rather than categorically absent."
+        },
+        {
+          "criterion": "commitment_consistency",
+          "suggested_state": "not_met",
+          "evidence": "Says requesting a review books an appointment and promises fee-term confirmation stages."
+        },
+        {
+          "criterion": "deliverable_completeness",
+          "suggested_state": "met",
+          "evidence": "All requested expression types exist."
+        },
+        {
+          "criterion": "useful_specificity",
+          "suggested_state": "met",
+          "evidence": "Map-layout PDF, images/captions and written review are explicit."
+        }
+      ]
+    },
+    {
+      "response_id": "23fc48",
+      "response_sha256": "7072c64195992cdf0377efecb530531a7550a99b8c5dc32e9c340fae2b36f99d",
+      "task_id": "heritage-layout",
+      "arm": "candidate-v2",
+      "criteria": [
+        {
+          "criterion": "material_factual_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Print specifications are said to be determined separately without supplied process support."
+        },
+        {
+          "criterion": "uncertainty_fidelity",
+          "suggested_state": "met",
+          "evidence": "Unknown certifications are not denied."
+        },
+        {
+          "criterion": "commitment_consistency",
+          "suggested_state": "not_met",
+          "evidence": "Asserts request does not initiate billing despite unknown payment timing."
+        },
+        {
+          "criterion": "deliverable_completeness",
+          "suggested_state": "met",
+          "evidence": "All requested expression types exist."
+        },
+        {
+          "criterion": "useful_specificity",
+          "suggested_state": "met",
+          "evidence": "Print-ready PDF and written review remain visible."
+        }
+      ]
+    },
+    {
+      "response_id": "b54ff0",
+      "response_sha256": "e114351e0c4d06ee9fdc82999e633ef664830fc4df816635edfb0bf37d632908",
+      "task_id": "heritage-layout",
+      "arm": "candidate-v3",
+      "criteria": [
+        {
+          "criterion": "material_factual_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Final caption still says unknown specifications are determined separately; audit wrongly calls that neutral."
+        },
+        {
+          "criterion": "uncertainty_fidelity",
+          "suggested_state": "met",
+          "evidence": "Does not categorically deny unknown certification or durability."
+        },
+        {
+          "criterion": "commitment_consistency",
+          "suggested_state": "met",
+          "evidence": "Request does not book a slot or print order; fee notice does not invent a payment date."
+        },
+        {
+          "criterion": "deliverable_completeness",
+          "suggested_state": "met",
+          "evidence": "All requested artifact types plus new-claim plan exist."
+        },
+        {
+          "criterion": "useful_specificity",
+          "suggested_state": "met",
+          "evidence": "Audience and layout-review mechanism remain clear."
+        }
+      ]
+    },
+    {
+      "response_id": "405ac8",
+      "response_sha256": "0291f215f67b4baa394096e985d724a2e0698833331cdab647487e620810343b",
+      "task_id": "building-ticket-summary",
+      "arm": "baseline",
+      "criteria": [
+        {
+          "criterion": "material_factual_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Resident pitch denies accounts, signatures and validation without supplied evidence of absence."
+        },
+        {
+          "criterion": "uncertainty_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Unknown capabilities become negative facts."
+        },
+        {
+          "criterion": "commitment_consistency",
+          "suggested_state": "not_met",
+          "evidence": "Scheduling/contact terms are promised upon booking despite unprovided resolution process."
+        },
+        {
+          "criterion": "deliverable_completeness",
+          "suggested_state": "met",
+          "evidence": "All requested artifacts exist."
+        },
+        {
+          "criterion": "useful_specificity",
+          "suggested_state": "met",
+          "evidence": "CSV import, building/status and export date remain visible."
+        }
+      ]
+    },
+    {
+      "response_id": "18b695",
+      "response_sha256": "2956ce37a84d103e565d555f3a3bea8f2baa08b3f64118f90d6827ef741c2c97",
+      "task_id": "building-ticket-summary",
+      "arm": "candidate-v2",
+      "criteria": [
+        {
+          "criterion": "material_factual_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Invents setup duration being confirmed during onboarding planning."
+        },
+        {
+          "criterion": "uncertainty_fidelity",
+          "suggested_state": "met",
+          "evidence": "Capability unknowns largely remain open; caption describes sample scope, without a categorical product-wide denial."
+        },
+        {
+          "criterion": "commitment_consistency",
+          "suggested_state": "not_met",
+          "evidence": "Scheduling terms confirmed upon contact and setup-duration confirmation stage are not supplied."
+        },
+        {
+          "criterion": "deliverable_completeness",
+          "suggested_state": "met",
+          "evidence": "Requested artifacts and revision record exist."
+        },
+        {
+          "criterion": "useful_specificity",
+          "suggested_state": "met",
+          "evidence": "Summary mechanism remains specific."
+        }
+      ]
+    },
+    {
+      "response_id": "ce4256",
+      "response_sha256": "73459a07a8686ccc1f9c95b9576f71021ca2fe0323d369ae11577c6e9584ccf3",
+      "task_id": "building-ticket-summary",
+      "arm": "candidate-v3",
+      "criteria": [
+        {
+          "criterion": "material_factual_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Claim plan rejects negative access/timestamp claims, but final pitch footnote asserts unknown absences."
+        },
+        {
+          "criterion": "uncertainty_fidelity",
+          "suggested_state": "not_met",
+          "evidence": "Final footnote denies access, timestamps and certification despite unknown-state plan."
+        },
+        {
+          "criterion": "commitment_consistency",
+          "suggested_state": "not_met",
+          "evidence": "Action says scheduling/response terms will be confirmed upon inquiry, an unprovided resolution stage."
+        },
+        {
+          "criterion": "deliverable_completeness",
+          "suggested_state": "met",
+          "evidence": "All requested artifacts plus a new-claim plan exist."
+        },
+        {
+          "criterion": "useful_specificity",
+          "suggested_state": "met",
+          "evidence": "Supplied import/display/summary mechanism remains clear."
+        }
+      ]
+    }
+  ]
+}

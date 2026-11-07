@@ -73,6 +73,26 @@
         "The response covers third-party script and request budgets",
         "The response commits budgets as config and compares every change against the same baseline"
       ]
+    },
+    {
+      "id": "reuse-approved-dashboard-components",
+      "prompt": "Build a second dashboard from approved mockup v4. Our library has DataTable and FilterBar, but a fresh AI generation produced a new table and different spacing. We also need long account names, keyboard sorting, loading and error states. Give the implementation and validation approach.",
+      "expected_output": "Reuse canonical components and tokens, identify actual requirement gaps, and compare rendered behavior with v4 without claiming tests have run.",
+      "assertions": [
+        "Reuses the existing DataTable and FilterBar unless a concrete contract mismatch justifies an exception.",
+        "Plans rendered comparison against mockup v4 at relevant widths and content density.",
+        "Includes keyboard sorting and loading/error states in verification."
+      ]
+    },
+    {
+      "id": "cheaper-model-design-continuity",
+      "prompt": "We have an approved UI reference and want a local model to extend it instead of the larger model. Can we assume it will be cheaper and visually equivalent? Outline a bounded comparison without running either model.",
+      "expected_output": "Compare the same scoped brief and reference against the same checks, include rework cost, and keep results explicitly unmeasured.",
+      "assertions": [
+        "Uses the same brief and approved reference revision for the proposed comparison.",
+        "Includes review or rework effort when discussing total cost.",
+        "Does not claim measured equivalence or savings without a run."
+      ]
     }
   ]
 }

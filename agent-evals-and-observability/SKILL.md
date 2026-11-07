@@ -55,6 +55,7 @@ Stop when the supported decision, evidence gaps, residual risks, and responsible
 
 | Need | Load |
 |---|---|
+| Idle-agent capacity claims, event interleavings, callback recovery or hibernation traces | [event-runtime-evaluation](references/event-runtime-evaluation.md) |
 | Compare task-relevant discovery, external artifacts, delegated consumption, or fresh-session recurrence | [references/agent-interface-enrichment.md](references/agent-interface-enrichment.md) |
 | Validate a lesson candidate before promotion and check recurrence | [references/lesson-validation.md](references/lesson-validation.md) |
 | Choose evaluation evidence and contracts | [references/evaluation-design.md](references/evaluation-design.md) |

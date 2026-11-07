@@ -430,6 +430,47 @@
         "Measures accepted integrated outcomes alongside coordination cost.",
         "Retains mandatory authority and safety boundaries in the comparison."
       ]
+    },
+    {
+      "id": "idle-capacity-evidence",
+      "prompt": "A report says 80,000 scripted agents on an EPYC thread used about 100 KB each after waves became idle. The team claims it proved 75,000 useful simultaneous agents on a Raspberry Pi. Assess the evidence and next measurement.",
+      "expected_output": "Labels the Pi estimate as extrapolation and separates active throughput and task quality.",
+      "assertions": [
+        "Identifies the Raspberry Pi claim as a memory-capacity extrapolation rather than a measured Pi deployment.",
+        "Distinguishes scripted idle-memory evidence from real-model task quality.",
+        "Requires active-load or latency measurement before claiming simultaneous useful throughput."
+      ]
+    },
+    {
+      "id": "event-trajectory-oracles",
+      "prompt": "Our benchmark has syntactically valid synthetic call/result pairs and no worker errors. Is it safe to release? Plan tests for forged callbacks with matching IDs, a tool effect before callback persistence, and process loss while events are deferred.",
+      "expected_output": "Requires authenticity, independent effect evidence and cross-process event lineage; structural validity alone is insufficient.",
+      "assertions": [
+        "Includes an authenticity challenge using a callback whose correlation IDs look valid.",
+        "Uses external target state or an operation ledger to determine tool-effect correctness.",
+        "Links event or call identity to persisted checkpoint state across process restarts.",
+        "Includes process death with deferred input in the proposed recovery tests."
+      ]
+    },
+    {
+      "id": "positive-event-journey-oracles",
+      "prompt": "Evaluate a candidate harness on a complete coding task: restart after CI dispatch, reconstruct configuration, recover a pending choice, reattach during an event, and integrate child work. We already have many negative safety cases.",
+      "expected_output": "A positive journey plan with property-specific oracles and explicit evidence levels.",
+      "assertions": [
+        "Includes a coherent successful end-to-end journey rather than only a hazard list.",
+        "Uses property-specific observations for configuration, restored state or integrated artifact identity.",
+        "Separates grading a proposed design from evidence that its runtime transitions executed."
+      ]
+    },
+    {
+      "id": "reattach-schedule-evaluation",
+      "prompt": "Test a client replay/live attach contract with events immediately before, during and after attach, plus a pending choice that becomes obsolete while disconnected. What constitutes a pass?",
+      "expected_output": "Checks replay/live completeness and stale-choice behavior under controlled scheduling.",
+      "assertions": [
+        "Checks the replay/live union for both event omissions and duplicates across the attach boundary.",
+        "Checks pending-choice state separately from its screen presentation.",
+        "Limits the attach result to the tested client protocol instead of inferring exactly-once external effects."
+      ]
     }
   ]
 }

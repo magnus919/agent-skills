@@ -1,8 +1,14 @@
-# AEO structured data
+# Structured data semantics and eligibility
 
 ## Principle
 
 Schema.org describes content; it does not guarantee inclusion, ranking, or citation. Add JSON-LD only when the page visibly and materially satisfies the chosen type. Visible content is the source of truth. Provider rich-result support changes over time, so do not treat older FAQ-focused guidance or a schema type's existence as evidence of current Google eligibility.
+
+## Google feature status (reviewed 2026-11-06)
+
+Google’s documentation changelog records that FAQ rich results stopped appearing May 7, 2026, with related documentation removed June 15. HowTo rich results were deprecated in September 2023. FAQPage and HowTo remain Schema.org vocabulary, but adding them is not a current Google rich-result tactic. Other providers may differ; verify the actual surface and date. Do not revive older “health/government FAQ eligibility,” minimum-question counts or display-count claims as current guidance.
+
+Sources: [Google documentation updates](https://developers.google.com/search/updates) and [Google HowTo/FAQ changes](https://developers.google.com/search/blog/2023/08/howto-faq-changes). Recheck before a feature-dependent implementation.
 
 ## Type selection
 

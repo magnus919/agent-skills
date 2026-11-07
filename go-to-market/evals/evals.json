@@ -97,6 +97,165 @@
         "The next experiment has explicit audience, message, spend, volume, duration, monitoring, audit, review, and pause boundaries",
         "Authority expansion and contraction use named evidence, complaint, regression, and control-failure triggers"
       ]
+    },
+    {
+      "id": "customer-message-missing-evidence",
+      "prompt": "Our website says we empower transformation. We sell inventory software but have not interviewed customers or chosen a target segment. Write a confident customer narrative and include how anxious they feel.",
+      "expected_output": "A provisional message with visible audience and proof gaps; routes discovery and positioning before claiming validated needs.",
+      "assertions": [
+        "Treats the target segment as unresolved rather than choosing one as a researched fact",
+        "Does not assert customer anxiety as a known fact without supporting evidence",
+        "Provides a provisional offer statement grounded in inventory software"
+      ]
+    },
+    {
+      "id": "customer-message-complex-enterprise-path",
+      "prompt": "Our compliance software serves analysts, CISOs and procurement. Onboarding takes six weeks and requires security review and migration. Turn the approved positioning into a website narrative: analysts reduce duplicate evidence entry using shared control records. No speed benchmark exists.",
+      "expected_output": "Role-specific message with honest onboarding and proof limits, not a single magical three-step promise.",
+      "assertions": [
+        "Retains security review and migration as prerequisites in the proposed path to value",
+        "Distinguishes analyst needs from at least one buyer or approver need",
+        "Does not invent a measured speed improvement"
+      ]
+    },
+    {
+      "id": "customer-message-unsupported-conversion-law",
+      "prompt": "Rewrite our site using common messaging practice. Promise a 124% sales increase from concise writing, use a strict five-second pass rule, and make visitors fear bankruptcy if they do not buy. We have no conversion tests.",
+      "expected_output": "Supported copy and a testing plan reject the requested causal leap and invented stakes.",
+      "assertions": [
+        "Distinguishes the cited writing-usability statistic from evidence of sales improvement",
+        "Treats brief-exposure comprehension as a diagnostic rather than a universal five-second gate",
+        "Avoids asserting bankruptcy as a consequence of declining this vendor"
+      ]
+    },
+    {
+      "id": "customer-message-channel-and-validation",
+      "prompt": "Approved offer: weekly cash-flow forecasts for independent shops. Requires accounting-data connection and assumption review; no proven savings. Voice is calm and precise. Draft a homepage message, pitch opener and main action, then tell us how to validate them. Follow-up terms are unknown.",
+      "expected_output": "Consistent channel drafts preserve prerequisites and voice; validation remains a plan.",
+      "assertions": [
+        "Produces both a homepage message and a pitch opener for the supplied forecasting offer",
+        "Keeps follow-up terms unknown instead of inventing turnaround or contact commitments",
+        "Labels comprehension or conversion validation as planned rather than completed"
+      ]
+    },
+    {
+      "id": "outcome-partnership-uncontrolled-sale",
+      "prompt": "We own niche websites and want to charge contractors 15% of completed sales instead of selling leads. They will not give us CRM or collection access and promise no response times. Write the offer and show who should own each step.",
+      "expected_output": "A provisional offer and role/control record that narrows scope or holds outcome pricing until the sale can be influenced and verified; it does not promise closed revenue from traffic alone.",
+      "assertions": [
+        "Separates a lead or appointment deliverable from a managed operating outcome.",
+        "Identifies the missing outcome visibility as a reason to hold or narrow the proposed pricing basis.",
+        "Assigns accountable parties and operator authority separately for response, quoting, delivery and collection.",
+        "Treats missing response commitments as an unresolved operating dependency."
+      ]
+    },
+    {
+      "id": "outcome-partnership-jurisdiction-gates",
+      "prompt": "Recommend one 20% collected-revenue partnership agreement for US healthcare referrals, mortgage settlement leads and law firms. North Carolina allows some marketing payments, so assume that clears all legal services. We will set partners' scripts and use one shared brand; no up-front fee means we are not a franchise.",
+      "expected_output": "A research-only decision record requiring sector- and jurisdiction-specific review rather than an agreement or launch recommendation; it preserves the NC exception without generalizing it and examines actual operating control.",
+      "assertions": [
+        "Flags federal healthcare program referral remuneration for specific Anti-Kickback Statute and safe-harbor review.",
+        "Does not treat bona fide-service exceptions as permission to disguise mortgage-settlement referral payments.",
+        "Limits the North Carolina legal-services exception to its conditions and jurisdiction.",
+        "Requires franchise classification review based on branding, assistance or control and required payments despite a deferred fee."
+      ]
+    },
+    {
+      "id": "outcome-partnership-paid-pilot",
+      "prompt": "Five shop owners said they like success fees. Launch 500 sites and call it a defensible business. We have no paid contracts or data cooperation yet. Design a smaller alternative if needed; typical jobs take six weeks from inquiry to collected invoice.",
+      "expected_output": "A bounded paid-pilot plan comparing at least two offers, with full-cycle timing, both parties' economics, loss caps and explicit scale/stop decisions; enthusiasm and domains are not validation.",
+      "assertions": [
+        "Does not treat compliments or a domain portfolio as demonstrated demand or defensibility.",
+        "Compares outcome-linked pricing with a fixed or hybrid offer on comparable service scope.",
+        "Plans observation through the supplied sales-to-collection cycle rather than declaring success from early leads.",
+        "Defines a cash-loss cap and a predeclared decision rule for each party's contribution."
+      ]
+    },
+    {
+      "id": "outcome-partnership-credit-not-lift",
+      "prompt": "A partner reports $80,000 of revenue with our referral tag, mostly returning branded-search customers. Search Console shows more impressions too. There was no holdout, seasonality adjustment or prior-opportunity policy. Claim $80,000 of incremental revenue and charge for all of it.",
+      "expected_output": "A hold on the causal claim and unresolved fee, with separate payable-credit and incrementality definitions, unknowns and a feasible measurement plan.",
+      "assertions": [
+        "Declines to label the tagged revenue incremental without a credible counterfactual.",
+        "Requires an agreed existing-customer and prior-opportunity rule before treating all tagged revenue as payable.",
+        "Does not infer a deterministic individual impression-to-invoice join from Search Console aggregates.",
+        "Proposes a comparison design that addresses seasonality or channel substitution."
+      ]
+    },
+    {
+      "id": "message-craft-candidate-selection",
+      "prompt": "Fictional supplied offer: bench repair for espresso machines at independent Westport cafes. Customers otherwise replace machines or call general repairers. Difference: written fault diagnosis and repair-or-replace recommendation before paid repair approval. Inspection fee amount unknown; customers drop off machines. Audience arrives looking for a repair service. Draft three meaningfully different headline/support options and select one with a reason and tradeoff.",
+      "expected_output": "Offer-led, outcome-led and alternative-led options make distinct choices; the selection fits service-seeking visitors and preserves the diagnosis/recommendation difference.",
+      "assertions": [
+        "Provides candidate openings with materially different offer, outcome or alternative emphases",
+        "Makes the supplied written diagnosis and recommendation visible in the selected headline or supporting line",
+        "Explains the selection using the supplied service-seeking visit intent",
+        "Identifies a specific tradeoff of the selected opening"
+      ]
+    },
+    {
+      "id": "message-craft-constructive-revision",
+      "prompt": "Rewrite: Our passionate team empowers hospitality. Buy now / Download brochure / Contact us. Supplied fictional service: Westport espresso-machine bench repair with a written diagnosis and repair-or-replace recommendation before approval of paid repairs. Inspection fee applies, amount unknown; customer drop-off required. Sample diagnosis available. Main action is requesting an inspection slot, confirmed afterward. Show diagnosis, replacement copy, relevant proof and action expectations.",
+      "expected_output": "A constructive revision names the service and useful difference, pairs proof with the demonstrated deliverable and explains the inspection request.",
+      "assertions": [
+        "Replaces the vague opening with actual copy naming the espresso-machine repair service",
+        "Connects the written diagnosis to deciding whether to repair or replace",
+        "Uses the sample diagnosis as proof of the deliverable being described",
+        "Provides replacement action copy explaining that inspection availability is confirmed after a request",
+        "Makes the inspection fee visible in the proposed action expectations as distinct from later paid repair approval"
+      ]
+    },
+    {
+      "id": "message-craft-role-objections",
+      "prompt": "Supplied fictional product Vendor Thread links a supplier questionnaire to multiple review requests and records dated decisions for each. Analysts use copied spreadsheets and email today. Security needs decision visibility, procurement needs scope. Security review and migration required; onboarding estimate four to eight weeks subject to scope. Integration coverage and pricing unknown. Write an analyst opening, security pitch and procurement objection answer with proof from an available sandbox.",
+      "expected_output": "Specific role-aware copy explains the same reusable-questionnaire mechanism, demonstrates decision history and treats missing commercial information as an open question.",
+      "assertions": [
+        "Explains in analyst copy how linking one questionnaire to multiple requests changes repeated-copy work",
+        "Provides a security-facing expression centered on the dated decision record",
+        "Answers the procurement rollout question with the supplied scope-dependent estimate and prerequisites",
+        "Specifies a sandbox demonstration relevant to questionnaire reuse or decision records"
+      ]
+    },
+    {
+      "id": "final-copy-contradiction-repair",
+      "prompt": "Supplied fictional service: written equipment assessment with an assessment fee; later repair work needs approval. Fee amount/payment date unknown. A draft headline says Know before you spend anything, while its fact table correctly notes the fee. Audit and deliver a corrected headline, support and action rather than only a warning.",
+      "expected_output": "Actual final expressions distinguish the fee-bearing assessment from later repair approval.",
+      "assertions": [
+        "Replaces the payment-free headline with wording compatible with the assessment fee",
+        "Keeps payment timing unknown rather than inventing a due date",
+        "Produces concrete headline, supporting copy and next-action text"
+      ]
+    },
+    {
+      "id": "final-copy-property-scope",
+      "prompt": "Supplied fictional application: store a dated record of each review update. No actor identity, integrity, retention or certification information supplied. Draft copy says Certified immutable audit history, retained forever. Rewrite the customer claim and show the source-to-copy check.",
+      "expected_output": "A supported dated-record expression and scoped review avoid inventing either properties or their absence.",
+      "assertions": [
+        "Uses the supplied dated-record capability in actual replacement copy",
+        "Removes assertions of immutability and permanent retention from final copy",
+        "Treats unspecified certification status as unknown rather than confirmed absence"
+      ]
+    },
+    {
+      "id": "final-copy-proposals-separate",
+      "prompt": "Draft website copy for a fictional workshop. Supplied: written materials assessment, sample report available, main step request an appointment with availability confirmed afterward. No report sections, form fields, response deadline, payment policy or customer results are supplied. You may suggest improvements but show final copy separately.",
+      "expected_output": "Useful supported copy is separated from optional process proposals.",
+      "assertions": [
+        "Keeps a proposed response deadline outside final service promises",
+        "Does not describe invented report contents as existing supplied deliverables",
+        "Retains the written assessment as a visible specific offer",
+        "Does not invent a workflow stage at which unspecified methods or commercial terms will be confirmed"
+      ]
+    },
+    {
+      "id": "final-copy-rejected-claim-leak",
+      "prompt": "Supplied fictional product: dated change records; actor-identity logging unknown. A draft claim plan correctly marks The record does not log editor identity as omit, but the proposed final proof caption repeats that denial. The old slogan is unrelated: Better teamwork. Repair the final caption and show the relevant new-copy audit while retaining a concrete description of dated records.",
+      "expected_output": "The actual final caption stays within dated records and the audit addresses the newly introduced denial rather than only the old slogan.",
+      "assertions": [
+        "The final caption describes dated records without asserting that actor-identity logging is absent",
+        "The audit identifies the denial in the proposed new caption rather than substituting only a critique of the old slogan",
+        "The replacement copy retains the supplied dated-record capability"
+      ]
     }
   ]
 }

@@ -73,3 +73,59 @@ expired lease, duplicate event, and dependency version change. Verify user outco
 no duplicate/lost effects, evidence invalidation, and recoverable handoff. Record
 which failures were exercised and which remain hypotheses. In-memory savers cannot
 support process-death recovery; a worktree alone cannot isolate shared services.
+
+## Restore the logical deployment, not only its transcript
+
+Separate conversation history from runtime state without treating either as
+optional. In the inspected Infinity design, one store owns messages, ancestry and
+compaction summaries; another owns processed IDs, thread metadata, subscriptions
+and pending user choices. A successful history restore can still leave a broken
+continuation if the other store is missing or belongs to a different snapshot.
+
+Define a recovery manifest or equivalent transactional boundary containing logical
+deployment/tenant identity, store schema versions, snapshot/checkpoint lineage,
+configuration references, pending-operation identities and an input replay cursor.
+This manifest is a recommended design control, not an observed Infinity feature.
+A shared timestamp alone does not prove two snapshots are consistent.
+
+A coordinated restore drill should:
+
+1. Pause or fence admission and consequential dispatch through authorized controls.
+   Inventory in-flight operations and preserve their unknown-effect dispositions.
+2. Restore both stores from a compatible recovery point; validate parent/spawn
+   references, summary positions, processed-event coverage, subscription ownership
+   and pending-choice-to-call links. Reject missing or incompatible lineage.
+3. Reconstruct configuration, external workspace/session resources and current
+   permissions. Retire stale callback destinations without losing the reconciliation
+   path for already dispatched operations.
+4. Replay only eligible events under stable identities. Reconcile effects outside
+   the restored checkpoint before allowing a mutation to run again.
+5. Verify a recovered pending choice, a duplicate callback, and a child spanning
+   compaction; then let the accountable owner release the hold with evidence.
+
+Preserve the distinction between an input admitted in memory, a validated turn,
+a durable checkpoint and an observed tool effect. Never fabricate user acceptance
+for a UI choice merely because the transcript mentions it. Record rollback and
+recovery-point limits when transactions cannot span all state.
+
+Source and limits: [follow-up findings](infinity-design-findings.md), S10/S12.
+For a complete example see [coding task](event-runtime-worked-example.md).
+
+## Keep causal records separate from compacted prompt views
+
+Use compaction as a derived context view, not the operation ledger. Preserve the
+stable call/event identities, ancestry positions and reconciliation references
+needed to recover pending effects even when their prose leaves the model window.
+A summary must not synthesize a new call identity or erase an unknown effect.
+Retrieve the authorized original record when resolving a disputed result; fail
+visibly if its retention deadline has passed instead of inferring it from a
+fluent summary. This complements the spawn-position rules in
+[event-driven continuations](event-driven-continuations.md#keep-ancestry-and-compaction-coherent).
+
+Compaction is not deletion or privacy erasure. Declare retention/access separately
+for original transcripts, causal metadata, summaries, artifacts, logs and backups;
+retain only what each recovery requirement justifies. Challenge a pending call
+spanning two compactions and an expired original record. Observe the recovered
+operation identity and explicit missing-evidence disposition, not only summary
+fidelity. This is a reusable design requirement, not a claim that Infinity offers
+a deletion protocol or immutable audit ledger.

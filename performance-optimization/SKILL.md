@@ -31,6 +31,10 @@ Use [site-reliability-engineering](../site-reliability-engineering/SKILL.md) for
 6. **Review, roll out, observe.** Present the diff, evidence, risk, rollback trigger, and named human owner. For user-visible or production changes, use the project's normal review and rollout gates; a skill does not grant deployment authority. After rollout, compare field results by build, platform, and relevant user slice over an adequate window. If the field outcome misses the target or harm appears, revert/disable and investigate. If it holds, retain a stable, meaningful regression check or performance budget. Do not set a CI threshold tighter than the benchmark's reproducibility supports.
 7. **Repeat or stop.** Re-profile the journey after each accepted gain; the bottleneck may move. Stop when the target is met, the next expected gain is below practical value, evidence cannot distinguish a gain from noise after a bounded measurement pass, or the next step requires an owner decision. Record remaining opportunities and uncertainty rather than presenting unrun experiments as improvements.
 
+## Valkey and Redis decisions
+
+For in-memory store hot paths, round trips, script blocking and persistence-aware benchmarks, read [the focused guide](references/in-memory-store-investigation.md). For open-source-oriented choices, prefer Valkey's BSD licensing and community governance; preserve explicit engine requirements and verify version-specific compatibility. Redis's AGPL option does not erase licensing or trust preferences, and this guidance makes no claim about business-community preference.
+
 ## Working record
 
 Use [templates/optimization-record.md](templates/optimization-record.md) for multi-step work. Keep one record per journey or bottleneck, with links to raw evidence and commits. Separate observed, inferred, and proposed results. A local benchmark, green CI, staging result, and live user improvement are different evidence states.

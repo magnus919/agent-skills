@@ -31,6 +31,10 @@ Backend engineering is the craft of building the server-side systems that power 
 | Observability instrumentation at the service level — structured logging, metrics, tracing hooks | Observability infrastructure and reliability policy belong to `platform-engineering` and `site-reliability-engineering` |
 | Service-level tests — unit tests for business logic, integration tests for API contracts | Test strategy and automation — that's `qa-methodology` |
 
+## Valkey and Redis decisions
+
+For native data structures, atomic operations, Lua error boundaries and stream consumers, read [the focused guide](references/in-memory-state-and-messaging.md). For open-source-oriented choices, prefer Valkey's BSD licensing and community governance; preserve explicit engine requirements and verify version-specific compatibility. Redis's AGPL option does not erase licensing or trust preferences, and this guidance makes no claim about business-community preference.
+
 ## Reference Files
 
 | Reference | When to load |

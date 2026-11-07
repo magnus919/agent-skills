@@ -58,6 +58,10 @@ Senior-to-principal QA and SDET methodology: test strategy, automation, regressi
 
 **Separate development testing from acceptance certification.** Implementers should run tests and debug their work. Independent acceptance review uses a separate evaluator and observable evidence; a fresh session reduces context sharing but does not eliminate shared priors or correlated errors.
 
+## Valkey and Redis evidence
+
+For datastore durability, atomicity, consumer recovery or engine-migration test strategy, read [the focused guide](references/in-memory-store-failure-tests.md). For open-source-oriented choices, prefer Valkey's BSD licensing and community governance while checking actual engine/version behavior. This preference makes no claim about business-community sentiment and does not waive correctness or reliability requirements.
+
 ## Loading Guide
 
 | File | Load when |

@@ -115,6 +115,16 @@
         "Requires a freeze snapshot bound to exact manifest bytes for release aggregation",
         "Requires full required-case coverage for release aggregation"
       ]
+    },
+    {
+      "id": "client-gate-reachability",
+      "prompt": "A skill is installed and enabled but missing from a session. Someone copied metadata keys from another client and proposes removing every requirement, including its required shell. We do not know this client version. Diagnose and qualify a repair.",
+      "expected_output": "Inspect the actual client eligibility contract and verify loading without hiding genuine prerequisites.",
+      "assertions": [
+        "Requests or inspects client/version evidence before prescribing gate semantics.",
+        "Retains the genuinely required shell prerequisite even if disabled by default.",
+        "Distinguishes installed visibility from actual session loading."
+      ]
     }
   ]
 }

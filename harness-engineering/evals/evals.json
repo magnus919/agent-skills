@@ -623,6 +623,185 @@
         "Exercises the route after compaction rather than treating a present map as proof of discovery.",
         "Checks actual component suitability before deciding to reuse or replace it."
       ]
+    },
+    {
+      "id": "event-continuation-boundary",
+      "prompt": "Our coding agent waits six hours for CI. Would Infinity-style suspension help? Design the runtime boundary, including spawn_thread as a fast inline tool, and explain whether all slices contain exactly one completion.",
+      "expected_output": "An explicit continuation and asynchronous callback design with bounded synchronous exceptions.",
+      "assertions": [
+        "Identifies durable pending-operation and configuration state needed in addition to conversation text.",
+        "Distinguishes transport acknowledgement from the eventual tool outcome.",
+        "Allows synchronous loop-back to use multiple completions within a slice.",
+        "Defines a bound on synchronous loop-back execution."
+      ]
+    },
+    {
+      "id": "event-commit-crash-window",
+      "prompt": "We append history, then write processed IDs to another store, then POST a payment tool. We call this exactly once because inputs are deduplicated. Review failures after each boundary.",
+      "expected_output": "Rejects the exactly-once inference and specifies effect-aware recovery without claiming Infinity implements an outbox.",
+      "assertions": [
+        "Identifies the crash window between history append and separate processed-ID persistence.",
+        "Identifies the crash window between durable intent and external dispatch.",
+        "Requires external-effect reconciliation or effect idempotency before replaying an unknown payment outcome."
+      ]
+    },
+    {
+      "id": "event-routing-and-deferral",
+      "prompt": "A subscription already returned Subscribed. It later emits 500 alerts while a build is pending. We will append all alerts as more results to that original call and call every child context empty. Is this valid? Our defer queue is in memory.",
+      "expected_output": "Preserves conversation structure, distinguishes inherited context, and exposes deferred-event loss.",
+      "assertions": [
+        "Rejects appending multiple ordinary results to the already answered subscription call.",
+        "Distinguishes a child inheriting history at spawn from an explicitly empty or fresh context.",
+        "Identifies loss of in-memory deferred events on process death.",
+        "Bounds event child fan-out or its shared execution budget."
+      ]
+    },
+    {
+      "id": "event-cancel-compaction",
+      "prompt": "A child spawned at history position 40. The parent compacted through 80, changed requirements, and cancelled the child tool. A late success callback arrives. What state and checks allow safe continuation?",
+      "expected_output": "Treats child context and late effects as versioned recovery concerns.",
+      "assertions": [
+        "Binds child reconstruction to its spawn position when choosing compacted history.",
+        "Requires a revision check before accepting the child report against changed requirements.",
+        "Distinguishes cancellation acknowledgement from evidence that external effects stopped."
+      ]
+    },
+    {
+      "id": "engine-seam-positive-design",
+      "prompt": "Design a coding service with an existing durable FIFO queue, per-conversation scheduling and a UI. We need custom stores and a model adapter, but the normal prepare/complete/commit/dispatch policy is fine. Choose the runtime seams and identify what the application owns.",
+      "expected_output": "A coherent platform-step design reusing the engine and naming its extension owners.",
+      "assertions": [
+        "Selects platform-driven step execution because the existing platform owns queue scheduling.",
+        "Assigns conversation persistence and runtime metadata to explicitly identified store responsibilities.",
+        "Assigns per-conversation serialization and delivery acknowledgement policy to the platform adapter.",
+        "Explains that replacing the low-level pipeline transfers commit and dispatch ordering responsibility to the application."
+      ]
+    },
+    {
+      "id": "restartable-thread-configuration",
+      "prompt": "A service launches tools and prompts from in-memory objects, then restarts with durable history. Children have generated IDs. Model selection can change while fast synchronous tools loop. Design configuration reconstruction and binding, including missing configuration. The replacement model has a smaller context window and no image-input support.",
+      "expected_output": "A restartable configuration source with explicit identity mapping and binding boundaries.",
+      "assertions": [
+        "Persists reconstructable configuration inputs rather than relying only on launch-time objects.",
+        "Uses explicit root or leaf ownership records to derive child configuration.",
+        "Defines refresh or invalidation for tools and prompts cached by an active thread.",
+        "Distinguishes model resolution before the completion pipeline from reuse during synchronous loop-back.",
+        "Holds or uses an explicitly approved compatible fallback when required configuration or model selection is unavailable.",
+        "Revalidates context or multimodal-input compatibility when the resolved model capabilities change."
+      ]
+    },
+    {
+      "id": "provider-recovery-positive-design",
+      "prompt": "Design provider recovery for throttling, a dropped stream, fatal credentials, one oversized new tool result, and a mixed input batch whose new user constraint cannot fit. The core has no initiation/stall timeout.",
+      "expected_output": "Typed recovery preserving intent and incomplete-output boundaries.",
+      "assertions": [
+        "Maps typed failure classes to different recovery actions rather than parsing error prose.",
+        "Names an owner for request-initiation or stream-stall timeout policy.",
+        "Stops visibly when new user instructions cannot be retained instead of silently continuing on older intent.",
+        "Keeps partial streamed tool proposals from authorizing dispatch before they are accepted and committed.",
+        "Provides an explicit omitted-evidence or retrieval disposition for the oversized tool result."
+      ]
+    },
+    {
+      "id": "client-reattach-positive-design",
+      "prompt": "A user detaches during CI. A persisted choice is pending when they reconnect, and an event arrives between snapshot capture and live subscriber registration. Design attach and stale-choice behavior without starting a new coding task.",
+      "expected_output": "A gap-free replay/live boundary and persistent choice recovery.",
+      "assertions": [
+        "Closes the snapshot-to-live registration gap through serialization or an equivalent cursor protocol.",
+        "Reconstructs unresolved choices from persisted state on reconnect.",
+        "Rejects responses to a choice that became obsolete after interruption or revision change.",
+        "Separates client detachment from task cancellation or duplicate task launch."
+      ]
+    },
+    {
+      "id": "coordinated-store-restore",
+      "prompt": "Design recovery after restoring chat history from checkpoint A but runtime metadata from unrelated checkpoint B. We have a pending subscription, a choice, and a tool that may have written after A. What evidence permits resume?",
+      "expected_output": "A coordinated restore hold and effect-aware reconstruction.",
+      "assertions": [
+        "Requires compatible recovery lineage for conversation and runtime-state stores.",
+        "Includes deduplication state, subscription ownership or pending choices in restore validation.",
+        "Holds consequential dispatch on unresolved snapshot mismatch.",
+        "Reconciles external effects newer than the restored checkpoint before replaying mutations."
+      ]
+    },
+    {
+      "id": "mcp-session-lifetime-design",
+      "prompt": "An MCP tool creates an in-memory handle in call A and consumes it in call B. We are moving from a long-lived local proxy to a fresh-per-invocation serverless proxy. Choose and validate a compatible design.",
+      "expected_output": "Session-lifetime decision with an explicit cross-call restart probe.",
+      "assertions": [
+        "Identifies that a fresh per-invocation session may lose the handle required by call B.",
+        "Selects a session-preserving adapter or explicit durable-state redesign with stated tradeoffs.",
+        "Proposes a probe spanning handle creation, use and adapter restart."
+      ]
+    },
+    {
+      "id": "workspace-lineage-integration",
+      "prompt": "A parent advanced after a child branched. The child closed without integration; its changes are still needed. Design integration/cleanup for a tool called squash_sandbox whose Git backend merges and jj backend squashes.",
+      "expected_output": "Revision-bound integration retaining recoverable child work and verifying the combined candidate.",
+      "assertions": [
+        "Distinguishes context ancestry from repository-base and accepted-artifact lineage.",
+        "Preserves recoverable child work before cleanup or integration.",
+        "Treats Git merge and Jujutsu squash as different backend history semantics.",
+        "Requires verification on the combined candidate after integration or conflict resolution."
+      ]
+    },
+    {
+      "id": "tool-service-caller-scope",
+      "prompt": "Our local agent tool service binds all interfaces on a random port. Requests contain a thread ID and expose read/edit/run tools. Can we treat the port and ID as authentication? Design the smallest caller boundary and its acceptance checks.",
+      "expected_output": "A bounded listener plus authenticated and scoped dispatch, with negative effect checks.",
+      "assertions": [
+        "Rejects random ports or thread IDs as sufficient caller authentication.",
+        "Requires authorization binding the authenticated caller to the requested workspace or resource.",
+        "Requires expiry or revocation checks for reused service sessions.",
+        "Proposes checking that unauthenticated or wrong-scope requests cause no mutation or process launch and disclose no protected synthetic data in observable output.",
+        "Includes a successful authorized call as a control for denial checks."
+      ]
+    },
+    {
+      "id": "mixed-tool-containment",
+      "prompt": "Our shell runs in a sandbox, but read_file, edit_file and create_file run inside the host HTTP server using a workspace plus supplied path. We call all tools sandboxed. What must our runtime contract and readiness checks change?",
+      "expected_output": "Per-path enforcement evidence rather than inherited sandbox guarantees.",
+      "assertions": [
+        "Distinguishes native host file handlers from sandboxed command execution.",
+        "Requires filesystem containment checks on each native file route.",
+        "Includes absolute, parent-relative and symlink paths in proposed negative tests.",
+        "Treats filesystem read access and network egress as distinct guarantees.",
+        "Requires observed effects or sink evidence before claiming a tested boundary."
+      ]
+    },
+    {
+      "id": "project-config-activation-trust",
+      "prompt": "Opening a checkout automatically loads its project integration config and launches declared commands with our daemon environment. The JSON schema validates and a user approved this repo last month. A new commit changes argv and the endpoint. How should startup and reconnect work?",
+      "expected_output": "Parse without activation, check effective launch scope and revalidate changed capabilities.",
+      "assertions": [
+        "Treats project process configuration as executable input despite schema validity.",
+        "Requires authorization before launching untrusted project-defined commands.",
+        "Binds trust to the effective launch configuration rather than repository name alone.",
+        "Requires rechecking changed launch capabilities instead of reusing stale trust.",
+        "Proposes observing no process before authorization and expected activation afterward."
+      ]
+    },
+    {
+      "id": "compacted-view-causal-record",
+      "prompt": "A tool call is still unresolved after two conversation compactions. We want to replace original messages and the operation ledger with the newest summary, and call compaction privacy deletion. What should we preserve and test?",
+      "expected_output": "A derived prompt view with stable recovery identities and explicit retention boundaries.",
+      "assertions": [
+        "Keeps operation identity and unresolved-effect reconciliation independent of summary prose.",
+        "Rejects compaction alone as deletion of originals or other retained copies.",
+        "Defines an explicit missing-evidence disposition when an original record has expired.",
+        "Proposes checking recovered pending-operation identity across two compactions."
+      ]
+    },
+    {
+      "id": "display-progress-result-boundary",
+      "prompt": "A tool streams progress to the web client, including a line saying done, but its final result is stored later. The client disconnects first. Should the harness settle the call from that screen text and omit it from the next model turn?",
+      "expected_output": "Separate UI progress, durable result and invocation settlement contracts.",
+      "assertions": [
+        "Distinguishes display progress from an agent-facing final result.",
+        "Requires settlement according to the result contract rather than a progress message saying done.",
+        "Preserves recoverable final-result delivery despite client disconnect.",
+        "Applies access or redaction controls to display-only output."
+      ]
     }
   ]
 }

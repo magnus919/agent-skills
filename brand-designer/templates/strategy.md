@@ -23,6 +23,26 @@ description: >-
 **Positioning Statement (one sentence):**
 > For {{target audience}}, {{brand}} is the {{market category}} that {{differentiator}}.
 
+## Customer Message Foundation
+
+**Message brief / revision / owner:** {{Location, version, responsible owner}}
+
+**Approval scope and date:** {{Draft or approved; what was approved and by whom}}
+
+**Evidence state:** {{Source support, comprehension testing and measured outcomes are separate}}
+
+| Decision | Approved message or open question | Evidence / state |
+|----------|-----------------------------------|------------------|
+| Customer goal and current alternative | {{}} | {{Observed / supplied / hypothesis / unknown; source}} |
+| Practical obstacle | {{}} | {{}} |
+| Relevant feelings or values, if supported | {{}} | {{}} |
+| Help and proof of capability | {{}} | {{}} |
+| Path to value and prerequisites | {{}} | {{}} |
+| Outcome and claim limits | {{}} | {{}} |
+| Next action and actual consequence | {{}} | {{}} |
+
+**Unresolved decisions / next owner:** {{}}
+
 ## Brand Personality
 
 Rate your brand on each axis (1-5):

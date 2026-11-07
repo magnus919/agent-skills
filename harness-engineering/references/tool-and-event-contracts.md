@@ -35,6 +35,10 @@ For brokered login, browser cookies, or worker session handoff, read
 [credential/session authority](credential-session-authority.md). Authentication,
 session custody, and action approval need separate grants.
 
+For local tool listeners, host-side file handlers or project-configured process
+launch, load [tool-service boundaries](tool-service-boundaries.md). Verify each
+execution path rather than inheriting a shell sandbox claim.
+
 ## Per-call concurrency and side effects
 
 Declare resource keys and conflict classes. Two writes to distinct files may be
@@ -76,3 +80,98 @@ Primary sources:
 Use them for mechanism-specific implementation and recheck the installed version.
 Use [templates/tool-contract.json](../templates/tool-contract.json) and
 [templates/event-contract.md](../templates/event-contract.md).
+
+## Provider adapters and recovery
+
+A model provider is an adapter boundary, not just an API key and model name.
+Keep backend flags, provider-scoped model identities, context/output/image limits,
+stream conversion and failure classification with the provider. Keep task budgets,
+authority and the decision to continue with the runtime. Explicitly assign request
+initiation and stream-stall timeout ownership: a nonblocking tool loop does not
+make a stalled model request bounded. Avoid competing watchdogs that turn a slow
+but valid response into repeated billable work.
+
+| Provider observation | Runtime response | Evidence / boundary |
+|---|---|---|
+| Transient connection or stream failure | Bounded retry under the same task budget | Discard or separately mark incomplete output; never dispatch a partial tool proposal |
+| Throttling | Backoff within deadline and shared quota | Distinguish rate pressure from invalid configuration |
+| Context overflow | Diagnose committed history versus new input before shrinking | Preserve user intent and call/result structure; do not replay tool effects to recover missing text |
+| Fatal credentials/model/request error | Stop or explicit approved fallback | Do not retry the same invalid request indefinitely |
+| Capability mismatch | Transform only through an explicit compatible path or hold | An image placeholder preserves syntax, not the image's evidence |
+
+Use typed error classes instead of parsing provider prose to decide recovery.
+Record whether output is tentative, accepted into a turn, or durably committed.
+A displayed stream fragment is not necessarily a replayable completion.
+
+For context overflow, challenge a single oversized new tool result separately
+from new user instructions or ambiguous mixed input. A placeholder may settle the
+former without claiming its omitted evidence was seen; provide a retrieval path
+when the task still needs it. If the latest user constraint cannot be retained,
+stop visibly and obtain a smaller/recoverable input rather than silently act on
+older instructions. Committed-history overflow may require compaction before
+retry; replacing fresh input cannot solve every case. These are design rules;
+the inspected Infinity implementation has narrower recovery paths and an explicit
+remaining committed-history limitation. See [source findings](infinity-design-findings.md).
+
+## Reattach clients without a replay-to-live gap
+
+Treat client detachment, worker idleness, stopping an agent, and closing a task as
+different lifecycle events. Choose background behavior explicitly; reconnecting
+must not create a second execution of the same task.
+
+For an active conversation, serialize snapshot capture and subscriber installation
+with event emission, or use a cursor/sequence protocol that demonstrably closes
+the equivalent gap. Register in the same serialized operation as rendering the
+snapshot; taking a snapshot now and subscribing in a later task can lose events.
+Resolve attach only after installation. Test one event immediately before, during
+and after attach: each belongs in replay or subsequent live delivery, exactly once
+within that attach protocol. This narrow UI guarantee says nothing about exactly-once
+tool effects or delivery across every disconnect.
+
+Persist pending choices before publishing them as actionable UI state; include
+unresolved choices in reconnect snapshots. Persist dismissal/settlement before
+removing them from the display. Bind responses to the current pending call, task
+revision and authority; do not accept an obsolete choice after interruption.
+Observers used for display/telemetry should remain fast and must not be mistaken
+for an authorization gate. Export only approved visible content; internal or
+hidden reasoning in a runtime snapshot is not permission to expose it.
+
+Route interaction/review decisions to
+[product-design-and-ux](../../product-design-and-ux/SKILL.md), returning the
+reconnect and choice contracts to the runtime owner. Source: Infinity's
+[observer contract](https://github.com/hydro-project/infinity/blob/1abc6fcff1f186124f924b56aa92c3a3684c90c5/docs/docs/infinity-runtime/agent-systems/observers.md)
+and corresponding pinned driver/thread paths in [findings](infinity-design-findings.md).
+
+## Choose a bridge by session lifetime
+
+| Tool behavior | Suitable adapter choice | Acceptance probe |
+|---|---|---|
+| Independent calls reconstruct state from explicit durable identity | Per-invocation bridge | A second call in a new process sees the intended durable state |
+| Tool relies on in-memory MCP/session state across calls | Session-preserving bridge or redesign to externalize state | Create state in call A; read/use it in call B, then repeat after bridge restart |
+| Mixed catalog with unknown state assumptions | Classify each tool before migrating | Record which calls need affinity, OAuth/session recovery and retained compute |
+
+Infinity documents a long-lived local MCP proxy and fresh per-invocation Lambda
+sessions. A tool that creates a temporary in-memory handle in A and consumes it
+in B is a counterexample to transparent migration. Session-preserving bridges
+retain process/connection cost and still need crash recovery. Externalizing state
+requires access control, lifetime and reconciliation contracts; an MCP session ID
+alone cannot recreate a vanished subprocess. Do not treat “MCP compatible” as a
+session-equivalence or scale-to-zero guarantee. Source: pinned
+[MCP compatibility](https://github.com/hydro-project/infinity/blob/1abc6fcff1f186124f924b56aa92c3a3684c90c5/docs/docs/rap/about/mcp-compatibility.md).
+
+## Separate display progress from agent-facing results
+
+Declare whether each payload updates a client display, enters model context, or
+settles an invocation. Streaming progress can be display-only; route a bounded,
+structured final result with evidence/artifact references to the agent when it
+needs to continue. A displayed success must not settle a pending call unless the
+result contract was satisfied. Conversely, losing a client must not discard the
+agent's durable result. Preserve invocation and event identities across both
+views, with explicit partial/final status and reconnect/retrieval behavior.
+
+Apply access and redaction rules to both routes; display-only does not mean
+public or safe. Challenge an early progress message saying “done,” an oversized
+output with a recoverable artifact, and client disconnect before the final result.
+Check conversation settlement and observed effects separately from screen output.
+This extends the existing observer/reattach contract; it adds no new authority to
+observers or tool text.

@@ -246,6 +246,17 @@
         "The plan checks optimizer paging against the all-state-in-VRAM requirement rather than assuming QLoRA guarantees residency.",
         "The plan requires a representative model-specific pilot before claiming the 16 GB target is feasible."
       ]
+    },
+    {
+      "id": "weight-edit-methodology-routing",
+      "prompt": "Use Unsloth to reproduce the weight-space programming blog. Is its direct weight-editing recipe GPU-validated by this skill? Can the exported patch skip regression evaluation?",
+      "expected_output": "Route methodology and distinguish compatibility/export verification from task quality.",
+      "assertions": [
+        "Routes direct weight-edit methodology to ml-engineering",
+        "Does not claim the research establishes a validated Unsloth editing recipe",
+        "Requires edited-checkpoint compatibility evidence before reusing export checks",
+        "Requires target-runtime task and regression evaluation after export"
+      ]
     }
   ]
 }

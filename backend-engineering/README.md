@@ -6,10 +6,13 @@ Backend engineering methodology — API implementation patterns (REST, gRPC, Gra
 
 Your agent gains structured patterns for API design, service architecture, database access, error handling, and integration — instead of improvising each time. Fillable templates turn service designs and error contracts into reviewable records, and the bundled N+1 query spotter catches a whole class of database performance bugs during review.
 
+Implement Valkey/Redis state operations and stream consumers with explicit atomicity, partial-failure and acknowledgement boundaries.
+
 ## What You Get
 
 | Directory | Purpose |
 |-----------|---------|
+| `references/in-memory-state-and-messaging.md` | Implement Valkey/Redis state operations and stream consumers with explicit atomicity, partial-failure and acknowledgement boundaries. |
 | `SKILL.md` | Core methodology, trigger conditions, reference index |
 | `references/` | Deep-dive reference files loaded on demand |
 | `templates/` | Fillable records: service design, event flow/coexistence, and error-handling taxonomy |

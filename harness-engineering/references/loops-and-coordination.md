@@ -130,3 +130,28 @@ Use the loop and graph templates to walk success, failing check, unknown evidenc
 denied action, exhausted budget, lost worker, duplicate event, partial effect,
 and resume. Do not ship a design that only walks the happy path. Follow the host's
 actual delegation/scheduling authorization; this reference grants neither.
+
+## Integrate workspace descendants explicitly
+
+Conversation ancestry, workspace ancestry and accepted artifact lineage are three
+separate graphs. Bind a child to both its context spawn point and repository base
+revision; neither implies the other. Integrate the reviewed child candidate into
+the current parent candidate, then verify the combined result at its new revision.
+A clean source-control operation alone is not acceptance.
+
+Infinity Code illustrates the pattern with per-thread workspaces and an explicit
+`squash_sandbox` action. The inspected Jujutsu helper squashes from a child and
+then deletes its bookmark; the Git helper uses an ordinary merge and best-effort
+branch deletion despite the common tool name. Do not promise identical history
+or conflict behavior from that name. Preserve a recovery reference/diff and child
+revision before integration or cleanup. Stop on an unresolved integration error;
+challenge content conflicts, parent advancement and a child finishing after its
+contract changed. Cleanup must not erase unintegrated work.
+
+A close-thread acknowledgement does not prove asynchronous workspace cleanup
+finished. Upstream tests include preserving a child's changes after close without
+squash, and forgetting a stale Jujutsu workspace. These were inspected, not run.
+Use actual backend receipts to establish integration/cleanup in a deployment.
+Workspaces isolate checkout changes; security isolation remains a separate
+executor policy. See [follow-up findings](infinity-design-findings.md), S13, and
+[worked task](event-runtime-worked-example.md) for lineage and conflict drills.

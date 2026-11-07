@@ -20,6 +20,8 @@ After installing this skill, your agent can define a complete measurement system
 | [`templates/outcome-review.md`](templates/outcome-review.md) | Template for a recurring product outcome review: metric tree health, countermetric checks, decision log, and metric deprecation/retirement decisions. |
 | [`evals/evals.json`](evals/evals.json) | Output-quality evaluation cases covering new features, internal products, public services, conflicting metrics, and unmeasurable-North-Star rejection. |
 
+Multi-site portfolio contracts distinguish aggregate search visibility, measured activity and partner outcomes, with explicit source coverage, privacy, reconciliation and rollout acceptance.
+
 ## Quick Start
 
 Load the skill when your task involves defining product metrics, designing tracking, or auditing instrumentation. The agent will follow the working method in `SKILL.md`:

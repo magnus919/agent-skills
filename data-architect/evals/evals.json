@@ -166,6 +166,37 @@
         "Includes maintainability and the cost of introducing another platform",
         "States a condition that would change the recommendation"
       ]
+    },
+    {
+      "id": "valkey-open-source-preference",
+      "prompt": "We prefer permissive open source and community governance. A reviewer says Redis 8 has AGPL now, so our preference for Valkey is irrational. Recommend a direction and explain the license/trust history without claiming what businesses prefer.",
+      "expected_output": "Prefer Valkey for the stated values, preserve current Redis licensing facts, and separate preference from workload evidence.",
+      "assertions": [
+        "Recommends Valkey for the supplied permissive-license and community-governance preference.",
+        "States that Redis 8 offers an AGPLv3 option while distinguishing it from permissive BSD licensing.",
+        "Treats continuing vendor-trust concerns as a distinct selection factor after the AGPL addition.",
+        "Avoids inferring a business-community preference from the supplied open-source preference."
+      ]
+    },
+    {
+      "id": "in-memory-zero-loss-primary",
+      "prompt": "Our financial ledger must lose zero acknowledged writes after primary failure. The proposal is Valkey with AOF every second and automatic failover. The video says persistence makes it fully durable. Is that enough?",
+      "expected_output": "Reject an unsupported zero-loss guarantee and identify the required failure-boundary evidence.",
+      "assertions": [
+        "Identifies the fsync-policy loss exposure rather than equating AOF configuration with zero loss.",
+        "Identifies asynchronous failover as a separate acknowledged-write loss risk.",
+        "Requires representative failure and invariant evidence before accepting the zero-loss requirement."
+      ]
+    },
+    {
+      "id": "redis-newer-files-valkey-migration",
+      "prompt": "We run Redis 7.4 with JSON/search features. Can we copy its RDB into Valkey this weekend because RESP clients are compatible? Keep our Valkey/BSD preference, but give an actionable architecture decision.",
+      "expected_output": "Preserve the preference while rejecting assumed file/feature parity and requiring a supported migration and rollback plan.",
+      "assertions": [
+        "Rejects assuming Redis 7.4 data files can be loaded directly into Valkey.",
+        "Requires checking JSON/search features against the exact candidate versions.",
+        "Requires reconciliation and a rollback plan that accounts for target-side writes."
+      ]
     }
   ]
 }

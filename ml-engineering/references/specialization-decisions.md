@@ -231,3 +231,7 @@ lineage link or final task roster is unresolved, even when average quality impro
 After merge/quantization, repeat independent task scoring in the target runtime.
 Finish with a sourced decision, measured comparison and limitations; training and
 serving execution route to `unsloth`, `llama-cpp` and `vllm`.
+
+For a measured failure potentially amenable to direct tensor repair, use
+`references/weight-space-programming.md`. Treat editing as a bounded experimental
+alternative with its own feedback budget, not as an established training replacement.

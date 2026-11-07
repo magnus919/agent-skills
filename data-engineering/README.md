@@ -6,10 +6,13 @@ Data engineering methodology — database operations (vector, relational, graph,
 
 Your agent gets operational patterns for production data systems — real SQL, dbt models, backup commands, and migration strategies instead of textbook theory.
 
+Plan Valkey/Redis pipelines and vector indexes with version-aware compatibility, retention and source-to-sink reconciliation.
+
 ## What You Get
 
 | Directory | Purpose |
 |-----------|---------|
+| `references/in-memory-pipelines-and-indexes.md` | Plan Valkey/Redis pipelines and vector indexes with version-aware compatibility, retention and source-to-sink reconciliation. |
 | `SKILL.md` | Core methodology, trigger conditions, reference index |
 | `references/` | Database operations, analytical SQL, pipelines, quality, migrations, recovery, and AI transformation boundaries |
 | `templates/ai-stage-contract.md` | Pilot, version, retry, budget and publication evidence for an AI stage |

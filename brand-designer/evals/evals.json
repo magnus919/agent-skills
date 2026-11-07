@@ -51,6 +51,108 @@
         "Links concrete artifacts to validation evidence",
         "States unresolved risks and reproducible next steps"
       ]
+    },
+    {
+      "id": "rough-brief-to-style-guide",
+      "prompt": "I need a visual identity for a neighborhood repair service. I can explain the feeling but cannot name fonts. I like the spaciousness of a reference but its pale text is hard to read. Start small; I am not asking for a full design system.",
+      "expected_output": "An example-led scoped style guide explores specific properties and readability without requiring jargon or claiming a palette is a complete design system.",
+      "assertions": [
+        "Offers concrete visual directions or examples rather than requiring a full technical questionnaire first.",
+        "Preserves the spacing preference while addressing the pale-text concern separately.",
+        "Distinguishes the proposed style guide from a complete component-and-behavior design system."
+      ]
+    },
+    {
+      "id": "approved-mockup-vector-boundary",
+      "prompt": "Our owner approved the layout of a social mockup, not its draft logo. We now need a scalable editable logo and more social assets. Can we make the mockup the permanent brand standard and wrap its PNG in SVG?",
+      "expected_output": "Preserve layout-only approval, keep logo exploration open, require actual vector deliverable evidence and bounded reuse.",
+      "assertions": [
+        "Does not promote layout-only approval to a permanent whole-brand standard.",
+        "States that embedding a PNG in SVG does not produce editable vector geometry.",
+        "Keeps the draft logo unapproved until the owner decides."
+      ]
+    },
+    {
+      "id": "customer-message-voice-fidelity",
+      "prompt": "Turn this approved message into strategy and voice guidelines: weekly cash-flow forecasts for independent shops, with accounting-data connection and assumption review. No proven savings. Voice: precise, calm, practical. Brief v3 owned by Maya, approved for website drafts only.",
+      "expected_output": "Traceable brand documentation preserves the approved promise and scope.",
+      "assertions": [
+        "Records brief v3 and its website-draft-only approval scope",
+        "Retains the accounting-data and assumption-review prerequisites",
+        "Preserves the absence of proven savings in the claim guidance"
+      ]
+    },
+    {
+      "id": "customer-message-approval-is-not-proof",
+      "prompt": "Our founder approved a 40% cost-savings pillar but there is no supporting evidence. Create voice guidelines in our understated voice; do not launch anything.",
+      "expected_output": "Flags the unsupported claim while documenting supported draft material and the review owner.",
+      "assertions": [
+        "Separates founder approval from factual support for the savings claim",
+        "Proposes supported wording without a quantified savings promise",
+        "Returns the unsupported promise to the message or positioning owner for resolution"
+      ]
+    },
+    {
+      "id": "customer-message-imagery-and-task-boundary",
+      "prompt": "We have an approved message and a serious technical voice. Design imagery direction and an error-message example for our forecasting service. Use an AI-generated happy shop owner as proof that customers succeed. The error is an expired accounting connection; reconnecting restores access.",
+      "expected_output": "Illustrative imagery and task-focused error copy preserve the boundary between communication and proof.",
+      "assertions": [
+        "Labels generated customer imagery as illustration rather than customer-outcome evidence",
+        "Provides error copy that explains reconnecting the expired accounting connection",
+        "Keeps the error-copy example consistent with a serious technical voice"
+      ]
+    },
+    {
+      "id": "customer-message-role-conflict",
+      "prompt": "Our approved brand slogan is Brilliantly simple. Analysts want fewer repeated entries, security wants controls, procurement wants predictable terms. Marketing now wants guaranteed instant compliance for everyone. Document how to handle this in brand guidelines without redesigning the product.",
+      "expected_output": "Preserves the approved slogan record, proposes clear supporting copy and routes incompatible promises to GTM.",
+      "assertions": [
+        "Preserves the approved slogan record while proposing a clearer supporting line",
+        "Does not adopt guaranteed instant compliance as an approved brand promise",
+        "Routes conflicting audience promises to go-to-market rather than resolving them through visual design"
+      ]
+    },
+    {
+      "id": "message-craft-service-channel-adaptation",
+      "prompt": "Approved fictional brief: Westport espresso-machine bench repair for independent cafes; written fault diagnosis and repair-or-replace recommendation before paid repair approval. Inspection fee applies, amount unknown; customer drop-off required. Request an inspection slot, availability confirmed afterward. Voice: candid, neighborly, practical. Produce a homepage opening, service card and action caption; explain wording choices and one misleading near miss.",
+      "expected_output": "Concrete channel adaptations retain offer, distinction and request consequence while using candid practical language.",
+      "assertions": [
+        "Provides actual copy for the homepage, service card and action caption",
+        "Preserves the written diagnosis and repair-or-replace recommendation in the homepage or service-card copy",
+        "Explains a concrete wording choice using the supplied candid or practical voice",
+        "Explains how its misleading near miss changes the actual service commitment"
+      ]
+    },
+    {
+      "id": "message-craft-compressed-enterprise-copy",
+      "prompt": "Approved fictional Vendor Thread brief: one supplier questionnaire links to multiple internal review requests, with dated decisions per request. Precise restrained voice. Onboarding estimate four to eight weeks subject to scope, with security review and migration. No compliance guarantee. Make an analyst headline, security-review pitch and a short brand-card expression. Show preserved semantic anchors and explain any omitted timing detail.",
+      "expected_output": "Useful compact copy retains differentiating mechanism; role variants remain consistent and omissions do not convert estimates to guarantees.",
+      "assertions": [
+        "Keeps questionnaire reuse across multiple requests explicit in the brand-card expression",
+        "Makes the security-review pitch relevant to dated decision visibility",
+        "Explains why timing is omitted from a compact expression or retains the estimate qualification if timing is included",
+        "Maps at least one actual wording choice to a semantic anchor from the supplied brief"
+      ]
+    },
+    {
+      "id": "final-copy-unknown-is-not-absence",
+      "prompt": "Adapt a supplied message for a serious technical brand: dated review records, manual CSV import. Integration, independent verification and certification information are not supplied. The proposed card says We are uncertified and have no integrations. Produce a corrected card and an audit note.",
+      "expected_output": "A useful card keeps the supplied capabilities while preserving unknowns outside final claims.",
+      "assertions": [
+        "Produces a brand-card expression retaining dated records or manual CSV import",
+        "Replaces categorical certification-absence language with an unknown-state note",
+        "Does not turn unspecified integration coverage into an assertion of no integrations"
+      ]
+    },
+    {
+      "id": "final-copy-cross-channel-fidelity",
+      "prompt": "Approved fictional message: a paid collection assessment before approval of a separate cataloging project. Fee amount, payment timing and refunds unknown. Adapt it into a headline and action caption. Voice: thoughtful and plain. Current slogan: Free certainty before commitment. Audit the actual expressions and replace any conflicting slogan.",
+      "expected_output": "Thoughtful concrete copy preserves the paid assessment and later-project distinction.",
+      "assertions": [
+        "Supplies a replacement headline compatible with a paid assessment",
+        "Keeps the assessment and later cataloging project as distinct commitments",
+        "Leaves refund terms unknown rather than creating a favorable policy"
+      ]
     }
   ]
 }

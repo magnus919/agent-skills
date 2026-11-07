@@ -1,0 +1,85 @@
+{
+  "retrieved_at": "2026-11-06T21:10:26.091998+00:00",
+  "source": "https://inference-api.nousresearch.com/v1/models",
+  "model": {
+    "id": "google/gemini-3.8-flash",
+    "canonical_slug": "google/gemini-3.8-flash-20260902",
+    "hugging_face_id": null,
+    "name": "Google: Gemini 3.8 Flash",
+    "created": 1788362056,
+    "description": "Gemini 3.8 Flash is Google's most intelligent Flash model with significant gains from 3.7 Flash across software engineering, agentic tasks, and multi-step reasoning.",
+    "context_length": 1048576,
+    "architecture": {
+      "modality": "text+image+file+audio+video->text",
+      "input_modalities": [
+        "text",
+        "image",
+        "video",
+        "file",
+        "audio"
+      ],
+      "output_modalities": [
+        "text"
+      ],
+      "tokenizer": "Gemini",
+      "instruct_type": null
+    },
+    "pricing": {
+      "prompt": "0.0000008250",
+      "completion": "0.0000041250",
+      "image": "0.0000008250",
+      "audio": "0.0000008250",
+      "input_audio_cache": "0.0000000825",
+      "web_search": "0.0140000000",
+      "internal_reasoning": "0.000004125",
+      "input_cache_read": "0.0000000825",
+      "input_cache_write": "0.0000000417"
+    },
+    "top_provider": {
+      "context_length": 1048576,
+      "max_completion_tokens": 65536,
+      "is_moderated": false
+    },
+    "per_request_limits": null,
+    "supported_parameters": [
+      "include_reasoning",
+      "max_tokens",
+      "reasoning",
+      "reasoning_effort",
+      "response_format",
+      "seed",
+      "stop",
+      "structured_outputs",
+      "temperature",
+      "tool_choice",
+      "tools",
+      "top_p"
+    ],
+    "default_parameters": {},
+    "supported_voices": null,
+    "knowledge_cutoff": null,
+    "expiration_date": null,
+    "links": {
+      "details": "/api/v1/models/google/gemini-3.8-flash-20260902/endpoints"
+    },
+    "endpoints": [
+      "/api/v1/chat/completions",
+      "/api/v1/completions",
+      "/api/v1/messages",
+      "/api/v1/responses"
+    ],
+    "reasoning": {
+      "mandatory": true,
+      "default_enabled": true,
+      "supported_efforts": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "default_effort": "medium"
+    },
+    "aliases": [
+      "google/gemini-3.8-flash-20260902"
+    ]
+  }
+}
