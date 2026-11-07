@@ -20,6 +20,8 @@ It also helps evaluate local, national and multi-site portfolios: whether anothe
 | `scripts/test_aeo_scripts.py` | Offline regression tests for the scripts |
 | `evals/evals.json` | Output-quality evaluation cases |
 
+Domain architecture decisions, renewal-first economics and search-portfolio collection boundaries are covered in the conditional references and domain decision template.
+
 ## Quick Start
 
 ```bash

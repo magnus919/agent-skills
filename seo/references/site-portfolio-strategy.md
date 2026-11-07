@@ -35,6 +35,8 @@ Use `templates/rollout-review.md` to decide expand, repair, consolidate, retire 
 
 Specify a shared property registry and metric definitions before a central dashboard. Keep search impressions/clicks, observed visits, outbound provider handoffs, accepted leads, completed jobs and collected revenue as separate stages. Record source system, property ID, date/time zone, attribution window, sampling/consent loss and join coverage. An outbound link click is not a sale. Downstream outcomes require an authorized partner-side event or reconciliation agreement; absent access means unknown, not zero or inferred conversion. Do not put personal data in referral URLs or join identifiers without appropriate permissions. Route instrumentation and dashboard implementation to the owning measurement/tool skills; the pilot must disclose missing coverage and comparability rather than imply a complete cross-property funnel.
 
+For architecture cost control read `references/domain-architecture-economics.md`; for search collection read `references/search-portfolio-collection.md`. Use `product-analytics-and-measurement` for the cross-source portfolio contract instead of duplicating its event and privacy methodology here.
+
 ## Sources
 
 Reviewed 2026-11-06; refresh before decisions:

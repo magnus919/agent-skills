@@ -73,6 +73,8 @@ Reject claims such as “FAQ schema guarantees citations,” “short paragraphs
 | Content strategy, topic clusters, keywords, gaps, SERP features | `references/content-strategy-seo.md` |
 | Service geography, Maps eligibility, local/national intent | `references/local-and-national-search.md` |
 | Domain/section decisions, portfolio overlaps, economics and scale gates | `references/site-portfolio-strategy.md` |
+| Registration cost control, subdomains versus domains, quotas and pilot ADR | `references/domain-architecture-economics.md` and `templates/domain-decision-record.md` |
+| Cross-property Search Console collection, completeness and bulk export limits | `references/search-portfolio-collection.md` |
 | Programmatic content, truth checks, QA and lead-flow acceptance | `references/scaled-content-quality.md` |
 | Practitioner microsite workflow and evidence limits | `references/microsite-evidence.md` |
 | Source URLs, access dates, authority tiers, and refresh notes | `references/source-index.md` |
