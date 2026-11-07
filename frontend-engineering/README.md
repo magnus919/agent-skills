@@ -6,6 +6,10 @@ Frontend engineering methodology — component architecture, state management, A
 
 Your agent applies proven component architecture, state management, and performance patterns instead of reinventing frontend structure each time. Fillable templates capture component/state design and performance budgets as reviewable records, and the bundled bundle-budget checker enforces performance budgets in CI.
 
+Design-continuity guidance keeps approved components and visual decisions intact
+across AI-assisted changes, with rendered checks for drift and explicit handling
+of new requirements.
+
 ## What You Get
 
 | Directory | Purpose |

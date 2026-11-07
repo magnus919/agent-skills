@@ -36,6 +36,7 @@ Load this skill when the task involves any of:
 | Audit or QA instrumentation quality | `SKILL.md` + `templates/instrumentation-qa-checklist.md` |
 | Build product funnels, path analysis, or cohort definitions | `SKILL.md` + `references/metric-tree.md` |
 | Set up a dashboard contract or measurement governance | `SKILL.md` + `templates/outcome-review.md` |
+| Define a multi-site or partner-outcome measurement contract | `SKILL.md` + `references/portfolio-measurement.md` + `templates/portfolio-measurement-contract.md` |
 | Resolve conflicting metric definitions across teams | `SKILL.md` + `references/discovery-brief.md` (ownership boundaries) |
 | Design a privacy-aware measurement strategy | `SKILL.md` |
 

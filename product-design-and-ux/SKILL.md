@@ -27,6 +27,15 @@ Confirm the approved scope, outcome, users or roles, evidence links, constraints
 - Need to design an AI-assisted, generated, predictive, recommendatory, or tool-using interaction? Read [AI interaction and uncertainty](references/ai-interaction-and-uncertainty.md) and use [the AI interaction contract](templates/ai-interaction-contract.md) alongside the general contract. Route model evaluation and observability design to [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md), governance to [ai-governance](../ai-governance/SKILL.md), runtime authority to [agent-production-operations](../agent-production-operations/SKILL.md), product measurement to [product-analytics-and-measurement](../product-analytics-and-measurement/SKILL.md), accessibility to [web-accessibility](../web-accessibility/SKILL.md), and cost/value decisions to [ai-operating-economics](../ai-operating-economics/SKILL.md).
 - Need a person to delegate to an agent they use outside the product, then inspect or resume the work across apps? Read [external agent interactions](references/external-agent-interactions.md) and fill [the external agent handoff](templates/external-agent-handoff.md) alongside the AI interaction and task-flow contracts. Do not assume the product hosts that agent or can see its private conversation.
 
+## Collaborative exploration
+
+When collaborating on a flow or mockup, interpreting visual feedback, or extending
+approved work, read [collaborative design decisions](references/collaborative-design-decisions.md).
+Ask stage-appropriate questions, use concrete alternatives and editable artifacts,
+and preserve scoped decisions with [the design decision record](templates/design-decision-record.md).
+Route visual identity to [brand-designer](../brand-designer/SKILL.md) and component
+implementation to [frontend-engineering](../frontend-engineering/SKILL.md).
+
 ## Workflow
 
 1. Trace each outcome and design decision to evidence with `templates/outcomes-to-design.md`. Optional personas or jobs must change a decision and cite evidence; do not create decorative demographics.

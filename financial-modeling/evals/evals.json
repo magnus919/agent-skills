@@ -67,6 +67,39 @@
         "The analysis tests slower collections, delayed revenue, and higher spend as sensitivity cases",
         "The analysis treats runway bands as management heuristics that depend on financing access and execution time"
       ]
+    },
+    {
+      "id": "outcome-fee-two-sided-downside",
+      "prompt": "Model this synthetic cohort: 100 inquiries, 40% qualify, 50% of qualified close, 90% of closed jobs pay in full, $2,000 eligible cash per paid job. Fee 15%; operator costs $4,500. Client delivery contribution before fee is 35% of eligible cash. Compare close rate 35% and client margin 15% with other inputs unchanged. Is the 15% fee a proven market rate?",
+      "expected_output": "Correct base/downside calculations for both parties, labeled synthetic and attributed rather than causal; 15% is an assumption, not market evidence.",
+      "assertions": [
+        "Computes base eligible cash $36,000, fee $5,400 and operator contribution $900.",
+        "Computes the 35% close-rate downside operator contribution as negative $720.",
+        "Computes client contribution after fee as $7,200 at 35% margin and zero at 15% margin in the base-volume cases.",
+        "Labels the fee rate as a synthetic assumption rather than a validated market benchmark."
+      ]
+    },
+    {
+      "id": "outcome-fee-refund-after-payout",
+      "prompt": "Prepare a USD fee close: 15% of eligible settled cash, no taxes or exclusions or reserves. A $2,000 order is booked, deposit D1 settles $500, D1 is replayed, balance P2 settles $1,500, we pay the operator $300, then refund R1 returns $400 of P2. Show cash and fee movements, payable balance and treatment of the replay.",
+      "expected_output": "An auditable ledger with zero fee at booking, idempotent deposit handling, net eligible cash $1,600, earned fee $240 and a $60 overpayment that remains visible for agreed refund/offset.",
+      "assertions": [
+        "Does not accrue a collected-cash fee merely from booking the order.",
+        "Counts the repeated D1 event only once.",
+        "Computes eligible net cash $1,600 and earned fee $240 after the refund.",
+        "Preserves the $60 overpayment for contract-defined return or offset rather than erasing it."
+      ]
+    },
+    {
+      "id": "outcome-fee-hybrid-cash-gap",
+      "prompt": "We describe a $2,000 monthly floor plus 15% of $20,000 eligible cash but do not say whether the floor is additive, a minimum fee or an advance. We spend $4,500 now and receive no operator payment for 90 days; available cash is $3,000. The partner export is missing. Tell us the exact fee and whether we can scale.",
+      "expected_output": "An explicit unresolved hybrid formula, illustrative alternatives and cash shortfall; no invented payable or scale decision from a missing export.",
+      "assertions": [
+        "Distinguishes an additive retainer from a minimum total fee or recoupable advance before fixing the payable.",
+        "Identifies the immediate $1,500 funding shortfall before the delayed fee receipt.",
+        "Treats the missing partner export as unknown evidence rather than a settled zero or invented payment.",
+        "Withholds a scale recommendation while the formula, cash funding or source evidence is unresolved."
+      ]
     }
   ]
 }

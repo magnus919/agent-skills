@@ -4,7 +4,8 @@ description: >-
   Audit and improve website discoverability across traditional search, answer
   engines, and generative search. Use for technical SEO, on-page content,
   structured data, question and entity architecture, AI citations, crawler
-  controls, agent-readable content, and reproducible visibility measurement.
+  controls, agent-readable content, local/national site portfolios, scaled-content
+  quality, and reproducible visibility measurement.
   Do not use for only copy-editing, writing, CMS operations, or generic AI
   marketing claims without a defined search surface and verification plan.
 license: MIT
@@ -27,6 +28,12 @@ A full-spectrum search visibility skill. It treats traditional SEO, Answer Engin
 5. **Implement only supported controls.** Fix crawlability, indexability, metadata, internal links, page experience, textual content, structured-data parity, sitemaps, freshness, and provider-specific crawler or preview controls. Optional files such as `llms.txt` or Markdown representations are provider-scoped proposals, not universal requirements.
 6. **Measure at the correct boundary.** Freeze prompts and versions, capture exact answers and citations, score citation correctness, and use provider-native reports where available. Separate implementation evidence from observed visibility and causal claims.
 7. **Verify and learn.** Recheck the rendered/public boundary, validate structured data, inspect search-console or provider evidence, and run bounded one-variable experiments. Do not declare success from HTTP 200, parseable JSON-LD, a single answer, or a third-party score.
+
+## Action boundary
+
+Confirm the target, scope, and rollback path before acting. Read-only discovery may proceed without confirmation. Research does not authorize domain purchases, profile creation, publication, deployments, submissions, provider outreach or lead-data transfers. Preserve existing user edits and use the owning tool skill for authorized mutations.
+
+For local/national or coordinated-site work, start with verified business footprint and distinct user needs, compare one-site and multi-site architectures, and require a bounded pilot before expansion. Site counts, valid schema and generated pages are not evidence of commercial success.
 
 ## Terminology and boundaries
 
@@ -64,6 +71,12 @@ Reject claims such as “FAQ schema guarantees citations,” “short paragraphs
 | Prompt sets, citation logs, metrics, experiments, and confounders | `references/measurement-and-experimentation.md` |
 | Ghost metadata and injection | `references/ghost-metadata.md` |
 | Content strategy, topic clusters, keywords, gaps, SERP features | `references/content-strategy-seo.md` |
+| Service geography, Maps eligibility, local/national intent | `references/local-and-national-search.md` |
+| Domain/section decisions, portfolio overlaps, economics and scale gates | `references/site-portfolio-strategy.md` |
+| Registration cost control, subdomains versus domains, quotas and pilot ADR | `references/domain-architecture-economics.md` and `templates/domain-decision-record.md` |
+| Cross-property Search Console collection, completeness and bulk export limits | `references/search-portfolio-collection.md` |
+| Programmatic content, truth checks, QA and lead-flow acceptance | `references/scaled-content-quality.md` |
+| Practitioner microsite workflow and evidence limits | `references/microsite-evidence.md` |
 | Source URLs, access dates, authority tiers, and refresh notes | `references/source-index.md` |
 
 ## Scripts and templates
@@ -76,7 +89,7 @@ python3 scripts/build_prompt_matrix.py <topics.json> --output prompt-matrix.json
 python3 -m pytest scripts/test_aeo_scripts.py
 ```
 
-The scripts are read-only and use the Python standard library. They inspect source HTML; they do not execute JavaScript, call an LLM, publish, submit URLs, or change crawler policy. Templates cover implementation plans, question clusters, citation observations, optional `llms.txt`, and crawler-policy decisions.
+The scripts are read-only and use the Python standard library. They inspect source HTML; they do not execute JavaScript, call an LLM, publish, submit URLs, or change crawler policy. Templates cover implementation plans, question clusters, citation observations, optional `llms.txt`, and crawler-policy decisions. For portfolios use `templates/search-portfolio-plan.md`, `templates/location-evidence-register.md`, `templates/intent-ownership-map.md`, and `templates/rollout-review.md`.
 
 ## Audit output
 
@@ -90,6 +103,12 @@ Use `assets/audit-report-template.md` and distinguish:
 ## When not to use
 
 Do not use this skill alone for only mechanical copy-editing, ordinary article writing, CMS administration, or a generic request to “rank better” without a defined target, evidence boundary, or measurable outcome. Route those to the relevant writing, copy-editing, CMS, or product skill.
+
+## Ownership and completion
+
+SEO owns intent, architecture, search eligibility and provider-scoped measurement. Route market/partner/channel decisions to `go-to-market`, unit costs to `capacity-and-cost-engineering`, user journeys to `product-design-and-ux`, identity to `brand-designer`, implementation to `frontend-engineering` or the relevant CMS/tool skill, tracking contracts to `product-analytics-and-measurement`, and causal inference to `data-scientist`.
+
+Complete when the requested audit or plan has sourced findings, explicit unknowns, owners and bounded verification; for authorized implementation, record actual final-boundary checks. Hold publication on unsupported business claims, missing fulfillment or untested lead routing. Stop scale-up when distinct utility, maintenance capacity or commercial evidence is missing; propose repair or consolidation rather than manufacturing progress.
 
 ## Portability
 

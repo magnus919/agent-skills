@@ -1,0 +1,72 @@
+[
+  {
+    "response_id": "2faad8",
+    "task_id": "textile-assessment",
+    "phase": "development",
+    "arm": "baseline",
+    "seed": 2026110610
+  },
+  {
+    "response_id": "ea8321",
+    "task_id": "textile-assessment",
+    "phase": "development",
+    "arm": "candidate-v1",
+    "seed": 2026110610
+  },
+  {
+    "response_id": "c1ec34",
+    "task_id": "volunteer-roster",
+    "phase": "development",
+    "arm": "candidate-v1",
+    "seed": 2026110611
+  },
+  {
+    "response_id": "ad301b",
+    "task_id": "volunteer-roster",
+    "phase": "development",
+    "arm": "baseline",
+    "seed": 2026110611
+  },
+  {
+    "response_id": "35879c",
+    "task_id": "collection-inventory",
+    "phase": "held-out",
+    "arm": "baseline",
+    "seed": 2026110612
+  },
+  {
+    "response_id": "c4107d",
+    "task_id": "collection-inventory",
+    "phase": "held-out",
+    "arm": "candidate-v2",
+    "seed": 2026110612
+  },
+  {
+    "response_id": "b5b785",
+    "task_id": "greenhouse-readings",
+    "phase": "held-out",
+    "arm": "candidate-v2",
+    "seed": 2026110613
+  },
+  {
+    "response_id": "9b4adc",
+    "task_id": "greenhouse-readings",
+    "phase": "held-out",
+    "arm": "baseline",
+    "seed": 2026110613
+  },
+  {
+    "response_id": "e40bdf",
+    "task_id": "textile-assessment",
+    "phase": "development-rerun",
+    "arm": "candidate-v2",
+    "seed": 2026110610
+  },
+  {
+    "response_id": "01ebcb",
+    "task_id": "volunteer-roster",
+    "phase": "development-rerun",
+    "arm": "candidate-v2",
+    "seed": 2026110611
+  }
+]

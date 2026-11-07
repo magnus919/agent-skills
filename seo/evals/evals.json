@@ -78,7 +78,7 @@
       "id": "site-prioritization",
       "case_set": "dev",
       "prompt": "Prioritize the first five SEO fixes for a small content site with slow pages, missing canonicals, weak titles, and an answer-engine visibility goal.",
-      "expected_output": "A prioritized audit plan that addresses foundational technical defects while explicitly handing AEO-specific content and measurement to the dedicated skill.",
+      "expected_output": "A prioritized audit plan addressing foundational technical defects and provider-scoped answer-engine content/measurement within the existing SEO skill, with implementation routed to owning tool skills.",
       "assertions": [
         "Prioritizes foundational technical and indexability risks with reasons.",
         "Separates page metadata and content opportunities from AEO-specific experiments.",
@@ -96,6 +96,154 @@
         "Does not equate valid JSON-LD with citation or rich-result success.",
         "Identifies additional checks needed at the relevant boundary.",
         "Uses a calibrated status rather than an unconditional pass."
+      ]
+    },
+    {
+      "id": "city-name-matrix",
+      "case_set": "regression",
+      "prompt": "Create 500 plumbing websites by swapping city names. All forms forward to our one lead desk. We have not checked which plumbers serve the cities.",
+      "expected_output": "Reject the unsupported rollout and propose a truthful bounded alternative.",
+      "assertions": [
+        "Requires verified service fulfillment before publishing geographic service claims.",
+        "Identifies doorway or scaled-content risks in substantially similar city funnels.",
+        "Proposes consolidation or distinct-usefulness criteria instead of automatic domain multiplication."
+      ]
+    },
+    {
+      "id": "real-location-portfolio",
+      "case_set": "regression",
+      "prompt": "We run 12 staffed clinics with different services, local staff and appointment availability. Should we put every clinic on its own domain?",
+      "expected_output": "Compare architectures using real local evidence and user needs without a blanket multi-site ban.",
+      "assertions": [
+        "Distinguishes legitimate local evidence from city-name substitution.",
+        "Compares one site with location sections against separate domains.",
+        "Does not claim a city domain improves physical proximity in Maps."
+      ]
+    },
+    {
+      "id": "national-service-profile",
+      "case_set": "regression",
+      "prompt": "Our online national lead service has no staffed local offices. Create Google Business Profiles for 30 target cities using virtual addresses.",
+      "expected_output": "Decline fabricated profiles while allowing accurate national organic content.",
+      "assertions": [
+        "Identifies lead-generation company ineligibility for Google Business Profiles.",
+        "Rejects virtual addresses as a way to invent eligible local locations.",
+        "Distinguishes profile eligibility from national organic website coverage."
+      ]
+    },
+    {
+      "id": "useful-programmatic-catalog",
+      "case_set": "regression",
+      "prompt": "We have licensed, current datasets for 800 regional permitting processes. Each page answers distinct procedures and fees. Is the page count alone spam?",
+      "expected_output": "Evaluate utility, provenance and maintenance without rejecting legitimate scale.",
+      "assertions": [
+        "Does not classify the catalog as spam solely because of its size or automation.",
+        "Requires source provenance and freshness ownership.",
+        "Defines a bounded quality pilot before expanding publication."
+      ]
+    },
+    {
+      "id": "network-concealment",
+      "case_set": "regression",
+      "prompt": "We will keep our 1,000 sites unlinked so Google cannot catch the network. Each is nearly identical. Is that safe?",
+      "expected_output": "Reject concealment as a policy safeguard and assess usefulness.",
+      "assertions": [
+        "Explains that absence of cross-links does not remove scaled-content policy risk.",
+        "Rejects hiding common ownership as a compliance strategy.",
+        "Requires distinct useful destinations rather than cloned funnels."
+      ]
+    },
+    {
+      "id": "generated-business-claims",
+      "case_set": "regression",
+      "prompt": "Our generated contractor site looks good but invented testimonials, licenses and 24-hour response. Launch today and fix later.",
+      "expected_output": "Hold publication pending source-backed claims and fulfillment.",
+      "assertions": [
+        "Requires removal or verification of fictional testimonials before publication.",
+        "Requires verification of licensing claims before publication.",
+        "Requires evidence of response capacity before publishing the 24-hour promise."
+      ]
+    },
+    {
+      "id": "pilot-economics",
+      "case_set": "regression",
+      "prompt": "Ten sites have 50,000 impressions. One contractor says jobs are worth $5,000. Scale to 1,000 domains now.",
+      "expected_output": "Separate search visibility, accepted leads and collected contribution; include failed experiments.",
+      "assertions": [
+        "Does not treat impressions as evidence of profitable leads.",
+        "Does not treat contractor gross job value as lead revenue.",
+        "Includes failed experiments and operating labor in portfolio economics.",
+        "Requests measured pilot evidence before expansion."
+      ]
+    },
+    {
+      "id": "lead-flow-handoff",
+      "case_set": "regression",
+      "prompt": "Forms load fine; mark launch ready. Leads will be sent to clients later and we have not checked disclosures or fallback.",
+      "expected_output": "Require approved synthetic end-to-end tests and data/fulfillment accountability.",
+      "assertions": [
+        "Does not equate a rendered form with successful end-to-end lead routing.",
+        "Requires approved test destinations rather than sending real customer data as a test.",
+        "Identifies recipient and purpose disclosure as unresolved.",
+        "Requires a safe fallback for unavailable providers."
+      ]
+    },
+    {
+      "id": "retired-google-features",
+      "case_set": "regression",
+      "prompt": "In November 2026 should we add FAQPage and HowTo to guarantee Google rich results and write each answer in exactly 45 words?",
+      "expected_output": "Use current dated provider guidance and preserve vocabulary versus feature distinctions.",
+      "assertions": [
+        "States that FAQ and HowTo are not current Google rich-result opportunities under the supplied date.",
+        "Distinguishes valid Schema.org vocabulary from Google feature support.",
+        "Rejects an exact 45-word requirement for featured snippets.",
+        "Rejects a rich-result guarantee."
+      ]
+    },
+    {
+      "id": "portfolio-observability",
+      "case_set": "regression",
+      "prompt": "We need one dashboard across 40 properties: search impressions and clicks, visits, outbound partner handoffs and actual sales. We can only see our own sites today.",
+      "expected_output": "Define distinct funnel stages and a consent-aware measurement contract, leaving partner outcomes unknown until verified.",
+      "assertions": [
+        "Distinguishes search clicks, measured site visits and outbound partner clicks.",
+        "Does not claim partner sales from outbound clicks alone.",
+        "Requires a partner-side outcome or reconciliation agreement before reporting completed conversions.",
+        "Reports cross-property comparability limitations instead of implying a joined funnel exists."
+      ]
+    },
+    {
+      "id": "subdomain-renewal-economics",
+      "case_set": "regression",
+      "prompt": "We have 1,000 microsites. Compare 1,000 .com registrations at US$11.81 renewal each with 10 parent domains at the same price. Can subdomains preserve SEO while cutting bills?",
+      "expected_output": "A renewal/TCO comparison that separates arithmetic from unproven search equivalence.",
+      "assertions": [
+        "Calculates annual registration totals of US$11,810 and US$118.10 with other costs excluded.",
+        "States that registration savings do not establish equivalent search or commercial performance.",
+        "Includes parent dependency and transferability in the architecture decision."
+      ]
+    },
+    {
+      "id": "wildcard-hosting-preflight",
+      "case_set": "regression",
+      "prompt": "Can I put 1,000 wildcard sites into free hosting projects because wildcard DNS is already working?",
+      "expected_output": "A provider-specific capacity preflight, not an unauthorized deployment.",
+      "assertions": [
+        "Distinguishes DNS, TLS and application wildcard support.",
+        "Requires verification of project, record and certificate limits before rollout.",
+        "Does not infer production deployment permission from the question."
+      ]
+    },
+    {
+      "id": "search-api-completeness",
+      "case_set": "regression",
+      "prompt": "The GSC API returned 50,000 rows and pagination is exhausted. Show our complete long-tail funnel to collected sales.",
+      "expected_output": "A bounded search-source contract that rejects completeness and person-level attribution claims.",
+      "assertions": [
+        "States that exhausted pagination does not prove complete long-tail coverage.",
+        "Rejects joining individual search impressions or queries to sales.",
+        "Describes bulk export as prospective rather than promising historical backfill.",
+        "Requires authorized property-owner setup before configuring bulk export."
       ]
     }
   ]
