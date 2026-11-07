@@ -489,7 +489,7 @@
         "./financial-modeling"
       ],
       "strict": false,
-      "description": "Build and review assumptions-led financial models, unit economics, pricing, fundraising scenarios, and SaaS operating metrics. Use when calculating CAC, LTV, payback, runway, ARR, churn, NDR, Rule of 40, or sales efficiency; when modeling revenue, costs, cash flow, pricing, cap tables, or financing. Do not use this skill for unrelated requests; route to the nearest named specialist."
+      "description": "Build and review assumptions-led financial models, unit economics, pricing, fundraising scenarios, and SaaS operating metrics. Use when calculating CAC, LTV, payback, runway, ARR, churn, NDR, Rule of 40, or sales efficiency; when modeling revenue, costs, cash flow, outcome-linked partnerships, revenue-share fees, pricing, cap tables, or financing. Do not use this skill for unrelated requests; route to the nearest named specialist."
     },
     {
       "name": "fireflies",
@@ -597,7 +597,7 @@
         "./go-to-market"
       ],
       "strict": false,
-      "description": "Plan and evaluate go-to-market strategy using positioning, acquisition, growth economics, market-entry, competitive-response, and governed agent-assisted acquisition experiments. Use for ICP, customer-centered messaging, website narrative, channel, CAC/LTV, beachhead, or automated-GTM strategy decisions. Do not use for campaign execution, CRM mutations, legal interpretation, product strategy, or visual brand design."
+      "description": "Plan and evaluate go-to-market strategy using positioning, acquisition, growth economics, market-entry, competitive-response, and governed agent-assisted acquisition experiments. Use for ICP, customer-centered messaging, website narrative, outcome-linked operating partnerships, channel, CAC/LTV, beachhead, or automated-GTM strategy decisions. Do not use for campaign execution, CRM mutations, legal interpretation, product strategy, or visual brand design."
     },
     {
       "name": "grafana",

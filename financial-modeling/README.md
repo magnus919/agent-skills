@@ -8,6 +8,8 @@ Business decisions often depend on numbers that look precise but rest on hidden 
 
 It covers the questions teams repeatedly face: whether acquisition pays back, what a price change could do to retention, how long cash may last under different cases, and how to prepare a financing model or cap-table discussion. The material emphasizes traceable calculations and context rather than universal scorecards.
 
+For revenue-share or outcome-linked services, it also tests whether both parties retain contribution, separates earned fees from cash received, and traces deposits, refunds and payout delays.
+
 It is an analytical aid, not financial, investment, tax, accounting, or legal advice. Use qualified professionals where those disciplines are required.
 
 ## What You Get
@@ -20,6 +22,7 @@ It is an analytical aid, not financial, investment, tax, accounting, or legal ad
 | `references/pricing-strategy.md` | Pricing models, packaging, price-change tests, and trade-off analysis. |
 | `references/fundraising.md` | Valuation methods, cap tables, term-sheet concepts, and fundraising preparation. |
 | `references/saas-metrics.md` | ARR, retention, efficiency metrics, period alignment, and metric limitations. |
+| `references/outcome-partnership-economics.md` | Two-sided contribution, fee definitions, reversal ledger and working-capital scenarios. |
 | `references/source-index.md` | Source provenance, review date, and authoritative reference links. |
 | `templates/` | Fillable records: unit-economics record, pricing decision record, fundraising scenario, and model sanity checklist. |
 | `scripts/` | `saas-metrics.py` — computes ARR, monthly and annualized logo churn, NDR, and Rule of 40 from stated inputs. |
@@ -52,6 +55,7 @@ Add `--json` for machine-readable output, pass `--churn-pct 2.1` instead of cust
 
 - Build or review a financial model, forecast, budget, scenario, or runway analysis.
 - Calculate CAC, LTV, payback, contribution margin, ARR, churn, NDR, Rule of 40, Magic Number, or burn multiple.
+- Compare outcome-linked, fixed and hybrid fees with cash reconciliation for both partners.
 - Evaluate a pricing change, packaging model, fundraising scenario, cap table, valuation method, or term-sheet concept.
 
 ## Requirements
