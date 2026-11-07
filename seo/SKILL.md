@@ -29,6 +29,12 @@ A full-spectrum search visibility skill. It treats traditional SEO, Answer Engin
 6. **Measure at the correct boundary.** Freeze prompts and versions, capture exact answers and citations, score citation correctness, and use provider-native reports where available. Separate implementation evidence from observed visibility and causal claims.
 7. **Verify and learn.** Recheck the rendered/public boundary, validate structured data, inspect search-console or provider evidence, and run bounded one-variable experiments. Do not declare success from HTTP 200, parseable JSON-LD, a single answer, or a third-party score.
 
+## Business GEO workflow
+
+When a business wants accurate AI descriptions or qualified recommendations, first separate **identity accuracy**, **unbranded discovery** and **recommendation fit**. A pasted-page comprehension check is not a search test. Audit current offers and public contradictions; map real customer questions to commercially relevant topics and defensible original evidence; assess existing content before expanding it; then consider suitable independent distribution. Use a bounded pilot with explicit access, consent, publication and rollback gates.
+
+Use `research-methodology` for source-to-claim closure when a video, vendor study or disputed statistic drives a decision. Treat retrieval tools, including Grok discovery or Crawl4AI extraction when available, as evidence-gathering aids rather than authorities. Preserve source URLs, accessed dates, extraction limits and contradictions; never substitute a generated summary for the cited study's actual methods.
+
 ## Action boundary
 
 Confirm the target, scope, and rollback path before acting. Read-only discovery may proceed without confirmation. Research does not authorize domain purchases, profile creation, publication, deployments, submissions, provider outreach or lead-data transfers. Preserve existing user edits and use the owning tool skill for authorized mutations.
@@ -77,6 +83,11 @@ Reject claims such as “FAQ schema guarantees citations,” “short paragraphs
 | Cross-property Search Console collection, completeness and bulk export limits | `references/search-portfolio-collection.md` |
 | Programmatic content, truth checks, QA and lead-flow acceptance | `references/scaled-content-quality.md` |
 | Practitioner microsite workflow and evidence limits | `references/microsite-evidence.md` |
+| Business misdescription, stale biographies, service clarity, offer hubs | `references/business-identity-and-offers.md` and `templates/business-identity-audit.md` |
+| Commercial topic selection, original proof, case-study consent | `references/commercial-topics-and-original-evidence.md` and `templates/topic-proof-map.md` |
+| Updating, consolidating, archiving or retiring old content safely | `references/content-retirement-and-consolidation.md` and `templates/content-disposition-register.md` |
+| Earned versus owned/shared/paid distribution and venue selection | `references/earned-distribution-and-citation-fit.md` and `templates/citation-opportunity-matrix.md` |
+| Video-derived GEO claims, statistic scope and contradictory evidence | `references/geo-practitioner-evidence.md` |
 | Source URLs, access dates, authority tiers, and refresh notes | `references/source-index.md` |
 
 ## Scripts and templates

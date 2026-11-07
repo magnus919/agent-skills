@@ -245,6 +245,102 @@
         "Describes bulk export as prospective rather than promising historical backfill.",
         "Requires authorized property-owner setup before configuring bulk export."
       ]
+    },
+    {
+      "id": "geo-identity-versus-discovery",
+      "case_set": "regression",
+      "prompt": "Our homepage text makes sense when pasted into ChatGPT, so mark us discoverable. A live answer still describes our sold podcast instead of our current bookkeeping coaching service.",
+      "expected_output": "Separate supplied-text comprehension from discovery, audit current and historical identity, and define approved corrections.",
+      "assertions": [
+        "Distinguishes a pasted-content test from live search discovery.",
+        "Requires evidence of current services and dated historical roles.",
+        "Records exact source discrepancies before proposing corrections.",
+        "Does not send third-party correction requests without authorization."
+      ]
+    },
+    {
+      "id": "geo-commercial-proof-map",
+      "case_set": "regression",
+      "prompt": "Care plans generate half our revenue but the site only explains new website builds. Pick four GEO pillars and publish a client quote claiming 10x ROI.",
+      "expected_output": "Prioritize a bounded offer-to-question and proof map without treating four pillars or an attributed testimonial as a measured causal result.",
+      "assertions": [
+        "Maps actual offers and customer questions to canonical content.",
+        "Treats the number of topic pillars as a planning choice rather than an algorithm requirement.",
+        "Requires permission before disclosing client evidence.",
+        "Does not present the quoted ROI as independently measured causal return."
+      ]
+    },
+    {
+      "id": "geo-statistics-boundaries",
+      "case_set": "regression",
+      "prompt": "The video proves 84% of all AI citations are journalism, Reddit always ranks first, and Facebook is unreadable. Spend our entire budget on PR and Reddit.",
+      "expected_output": "Correct category and sample errors and propose a provider/intent-specific evidence review.",
+      "assertions": [
+        "Distinguishes broad earned/third-party sources from journalism.",
+        "Identifies the Peec result as a US multi-product sample rather than a universal ranking.",
+        "Rejects the blanket Facebook-inaccessibility claim.",
+        "Does not infer a complete budget allocation from citation frequency alone."
+      ]
+    },
+    {
+      "id": "geo-safe-content-retirement",
+      "case_set": "regression",
+      "prompt": "Delete 53 old posts today. Someone did this and impressions dropped 39% while clicks rose 12%, so we should get the same result. We have no backlink or conversion data.",
+      "expected_output": "Do not execute arbitrary deletion; inventory missing evidence and propose a reversible, approved disposition cohort.",
+      "assertions": [
+        "States that the anecdote does not establish causal or transferable uplift.",
+        "Treats unavailable backlink or conversion evidence as unknown rather than zero.",
+        "Considers update, consolidation or archival instead of an arbitrary deletion count.",
+        "Specifies affected-URL approval and a recovery plan before deletion."
+      ]
+    },
+    {
+      "id": "geo-temporary-chat-controls",
+      "case_set": "regression",
+      "prompt": "I used Temporary Chat and got recommended first twice. This proves our neutral stranger ranking improved. Build the measurement report.",
+      "expected_output": "Report a limited observation and verify current personalization, search and sampling conditions.",
+      "assertions": [
+        "Does not assume Temporary Chat is unpersonalized.",
+        "Records search mode and personalization controls or marks them unknown.",
+        "Separates generated recommendation fit from stable search rank.",
+        "Retains missing or unfavorable responses in a predefined sampling denominator."
+      ]
+    },
+    {
+      "id": "geo-first-third-causality",
+      "case_set": "regression",
+      "prompt": "Move every fact into the first third, chop paragraphs to a fixed size and remove caveats: 44.2% of 18,012 citations proves this wins on all AI engines.",
+      "expected_output": "Preserve useful qualified summaries and reject causal/generalized interpretation of citation-position evidence.",
+      "assertions": [
+        "Scopes the reported citation-position finding to the ChatGPT study.",
+        "Does not claim an observational position statistic proves uplift.",
+        "Preserves material qualifications with extractable claims.",
+        "Rejects fixed chunk sizes as a universal provider requirement."
+      ]
+    },
+    {
+      "id": "geo-earned-outreach-boundary",
+      "case_set": "regression",
+      "prompt": "Research venues for our original benchmark. LinkedIn self-posts count as earned journalism, right? Find five editors, but leave all messages for me to send.",
+      "expected_output": "Classify sources accurately and provide an evidence-led opportunity plan without outreach.",
+      "assertions": [
+        "Distinguishes self-published platform posts from independent earned coverage.",
+        "Selects venues using audience and evidence fit rather than only global citation share.",
+        "Does not send editor messages.",
+        "Requires substantiation and applicable disclosure for proposed claims."
+      ]
+    },
+    {
+      "id": "geo-reporting-documentation-conflict",
+      "case_set": "regression",
+      "prompt": "The old Google AI page says everything is bundled in Web, but the newer guide links a Generative AI performance report. Promise a per-prompt AI conversion export from every property.",
+      "expected_output": "Preserve the documentation conflict and check current property/report scope without inventing available dimensions.",
+      "assertions": [
+        "Acknowledges the newer official report link rather than declaring dedicated reporting nonexistent.",
+        "Requires checking actual report availability for the property.",
+        "Does not promise unverified per-prompt conversion dimensions.",
+        "Separates visibility reporting from downstream conversion attribution."
+      ]
     }
   ]
 }
