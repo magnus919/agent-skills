@@ -1,0 +1,49 @@
+{
+  "response_id": "e40bdf",
+  "task_id": "textile-assessment",
+  "arm": "candidate-v2",
+  "phase": "development-rerun",
+  "requested_model": "google/gemini-3.8-flash",
+  "returned_model": "google/gemini-3.8-flash",
+  "provider": null,
+  "completion_id": "gen-1793999578-nTbltXtmoyUKl8mhvSho",
+  "receipt": {
+    "response_id": "e40bdf",
+    "task_id": "textile-assessment",
+    "phase": "development-rerun",
+    "arm": "candidate-v2",
+    "seed": 2026110610,
+    "started_at": "2026-11-06T21:12:58.410350+00:00",
+    "reserved_usd": 0.3837075,
+    "request_sha256": "29d3337877404ef72c37492127441160b6bb53c18530d714a4087db1190055ca",
+    "status": "complete",
+    "finish_reason": "stop",
+    "completed_at": "2026-11-06T21:13:16.621221+00:00",
+    "elapsed_seconds": 18.21,
+    "reported_cost_usd": 0.021935925,
+    "catalog_estimate_usd": 0.021935925
+  },
+  "usage": {
+    "prompt_tokens": 18534,
+    "completion_tokens": 1611,
+    "total_tokens": 20145,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 591,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    },
+    "cost": 0.021935925,
+    "cost_details": {
+      "source": "openrouter_list",
+      "floor_applied": false,
+      "rate_source": "openrouter_catalog"
+    }
+  },
+  "response": "# Loom Review: Customer Message Revision\n\n**Context:** Fictional supplied brief for independent clothing designers in Harborside.  \n**Voice:** Calm, direct, practical.  \n**Evidence State:** Untested draft based on supplied constraints; not validated by customer research or commercial testing.\n\n---\n\n## 1. Homepage Opening\n\n### Headline\n**Review fabric condition before you approve a pattern project**\n\n### Supporting Line\nLoom Review provides independent clothing designers in Harborside with a written fabric-condition assessment and a proceed-or-reconsider recommendation for their fabric samples.\n\n---\n\n## 2. Proof Caption\n\n*(Accompanying an excerpt or preview of the example document)*\n\n> **Sample written assessment**  \n> An example of the written assessment and recommendation delivered for a submitted fabric sample. Detailed assessment criteria and testing methods vary by fabric and remain subject to confirmation.\n\n---\n\n## 3. Path and Main Action\n\n### How It Works\n1. **Request an appointment:** Submit your appointment request to review your fabric samples. Studio availability is confirmed after you submit.\n2. **Send your samples:** Mail or deliver your fabric samples directly to our Harborside studio. (Studio pickup is not available.)\n3. **Receive your assessment:** Review your written fabric-condition assessment and recommendation before deciding whether to commission a pattern project.\n\n### Main Action\n*Button label:* **Request a sample-assessment appointment**\n\n*Direct expectation note:*  \n> An assessment fee applies to sample reviews. Submitting this request does not confirm a booking; our studio will follow up to confirm appointment availability. Assessment fee amount, payment timing, and terms are confirmed prior to booking.\n\n---\n\n## 4. Objection Answer\n\n**Question:** *Do I have to commission a pattern project first?*\n\n**Answer:**  \nNo. Loom Review assesses your fabric samples before you commit to a pattern project. You send your samples to our Harborside studio, pay a sample-assessment fee, and receive a written condition assessment with a clear proceed-or-reconsider recommendation. You can then make an informed decision before approving subsequent pattern work.\n\n---\n\n## 5. Short Service Card\n\n### Card Copy\n**Fabric Sample Assessment**  \n*For Harborside independent clothing designers*\n\nA standalone written assessment of your fabric samples with a proceed-or-reconsider recommendation. Send your yardage or swatches to our studio before approving a pattern project.\n\n- Written fabric-condition assessment\n- Proceed-or-reconsider recommendation\n- Assessment fee applies; studio collection is not provided\n\n*Button label:* **Request assessment appointment**\n\n---\n\n## 6. Compact Before / After Audit Record\n\n| Element | Legacy Copy | Defect / Unsupported Claim | Revised Copy | Supported Source / Decision |\n| :--- | :--- | :--- | :--- | :--- |\n| **Headline & Value Prop** | *\"Choose with certainty before paying anything.\"* | Contradicts supplied terms: a sample-assessment fee applies. \"Certainty\" overstates an assessment recommendation. | **\"Review fabric condition before you approve a pattern project\"** | Accurately reflects timing: review happens before committing to a pattern project, without falsely claiming the initial review is free. |\n| **Laboratory Credential & Outcome** | *\"Our certified laboratory guarantees perfect garments.\"* | Certification status is unknown (unsupplied). Guarantees of garment outcomes are unsupported; service only provides condition assessment and a recommendation. | **\"Loom Review provides ... a written fabric-condition assessment and a proceed-or-reconsider recommendation...\"** | Relies strictly on the supplied differentiator and deliverable; omits unevidenced lab certifications and garment perfection guarantees. |\n| **Call to Action & Timeline** | *\"Start now.\"* | Implies instant self-service or immediate commencement. | **\"Request a sample-assessment appointment\"** *(with note: availability confirmed afterward)* | Clarifies the exact next step: appointment request followed by availability confirmation. No unevidenced response turnaround promised. |\n| **Logistics & Fee Disclosure** | *(Omitted in legacy copy)* | Conceals that designers must send samples themselves and that a sample assessment carries a separate fee. | **Explicit path notes: designers send samples to the studio; sample-assessment fee applies.** | Preserves transparent prerequisites and separates the sample review fee from later pattern project spend. |\n\n---\n\n## Open Decisions for Owner\n\n1. **Commercial Terms:** Define the sample-assessment fee amount, invoicing/payment schedule, refund policy, and whether the fee is credited toward later pattern work.\n2. **Follow-up SLA:** Define the studio's inquiry confirmation window (e.g., business hours or response timeline).\n3. **Assessment Methodology:** Determine whether specific testing criteria, report sections, or laboratory standards can be substantiated for inclusion in future proof points."
+}

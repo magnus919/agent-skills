@@ -1,0 +1,49 @@
+{
+  "response_id": "23fc48",
+  "task_id": "heritage-layout",
+  "arm": "candidate-v2",
+  "phase": "phase2",
+  "requested_model": "google/gemini-3.8-flash",
+  "returned_model": "google/gemini-3.8-flash",
+  "provider": null,
+  "completion_id": "gen-1793999931-dQYIAj1tug1j2W1NvpV4",
+  "receipt": {
+    "response_id": "23fc48",
+    "task_id": "heritage-layout",
+    "phase": "phase2",
+    "arm": "candidate-v2",
+    "seed": 2026110620,
+    "started_at": "2026-11-06T21:18:50.795200+00:00",
+    "reserved_usd": 0.383163,
+    "request_sha256": "06225cffe0eece1aeb15f413df48059e896bfaf55df283080ad82afb4b2bde98",
+    "status": "complete",
+    "finish_reason": "stop",
+    "completed_at": "2026-11-06T21:19:10.307192+00:00",
+    "elapsed_seconds": 19.512,
+    "reported_cost_usd": 0.026470125,
+    "catalog_estimate_usd": 0.026470125
+  },
+  "usage": {
+    "prompt_tokens": 18525,
+    "completion_tokens": 2712,
+    "total_tokens": 21237,
+    "prompt_tokens_details": {
+      "cached_tokens": 0,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 1773,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    },
+    "cost": 0.026470125,
+    "cost_details": {
+      "source": "openrouter_list",
+      "floor_applied": false,
+      "rate_source": "openrouter_catalog"
+    }
+  },
+  "response": "### 1. Homepage Opening\n\n**Headline:**  \nPrint-ready map layouts for Seabrook’s independent heritage groups\n\n**Supporting Line:**  \nWe turn your supplied images and captions into a print-ready map PDF, accompanied by a written layout review before you approve a separate print order.\n\n---\n\n### 2. Sample-Page Caption\n\n> *[Sample Layout Preview]*  \n> **Caption:** An illustrative map-layout page showing image placement, caption styling, and typographic hierarchy. Demonstrates layout output format; paper, ink, and print production specifications are determined separately.\n\n---\n\n### 3. Action Expectations and Path to Value\n\n**Primary Action Label:**  \n`Request a layout-review appointment`\n\n**What Happens After Clicking:**  \nSubmitting a request sends your details to our team. We will review our schedule and follow up to confirm appointment availability. Submitting a request does not book an instant calendar slot, does not initiate billing, and does not place a print order. \n\n**Path to Value:**\n\n1. **Request an appointment:** Submit your group’s project details. We will contact you to confirm appointment availability.\n2. **Supply your materials:** Provide your group’s images and captions to be assembled into a print-ready PDF layout.\n3. **Receive your written layout review:** Examine the completed layout PDF alongside our written review (layout review fee applies).\n4. **Decide on printing:** Use the finalized PDF with your chosen printer, or evaluate and approve a separate print order.\n\n---\n\n### 4. Objection & Clarity: “Am I ordering the full print run?”\n\n> **Question: Am I ordering the full print run?**  \n> **Answer:** No. Requesting an appointment and receiving a written layout review does not order or commit you to a print run. The layout review is an independent step with its own fee, designed to check your print-ready map PDF before any press commitment. You review and approve a separate print order only if and when you decide to proceed with printing.\n\n---\n\n### 5. Heritage-Association Directory Listing\n\n```markdown\n┌────────────────────────────────────────────────────────────────────────┐\n│ Map Edition                                                            │\n│ Layout services for Seabrook heritage groups                           │\n│                                                                        │\n│ We compile your local history images and captions into a clean,       │\n│ print-ready map PDF. Every project includes a written layout review    │\n│ to examine layout choices before you commit to a separate print order. │\n│ Layout review fee applies; availability confirmed upon request.        │\n│                                                                        │\n│ [ Request a layout-review appointment ]                                │\n└────────────────────────────────────────────────────────────────────────┘\n```\n\n---\n\n### 6. Concise Revision Record & Fact Audit\n\n| Original Copy Element | Defect Diagnosis | Replacement Copy | Evidentiary Basis & Decision | Open Owner Decisions |\n| :--- | :--- | :--- | :--- | :--- |\n| **“Free certainty before you print.”** | Contradicts **F4** (the layout review has a fee) and makes an unbounded claim of “certainty.” | “...accompanied by a written layout review before you approve a separate print order.” *(Explicit note: review fee applies)* | Aligns with **F3** and **F4**. Clarifies that review precedes any print commitment while acknowledging the review is a paid service. | Layout review fee amount, payment schedule (advance vs. invoice), and whether review fees credit toward print orders. |\n| **“Certified archival quality that lasts a century.”** | Unsubstantiated claims. Under **F5**, certification status, archival durability, and materials are unknown. | Removed durability and certification assertions; restricted copy strictly to the delivered “print-ready map PDF.” | Complies with **F5**. Avoids making unverified durability claims while not falsely asserting that the work is uncertified. | Printing partner specs, paper/ink options, and whether formal archival certifications are offered. |\n| **“Book instantly.”** | Inaccurate commitment. Contradicts **F6** (appointment is requested, then availability is confirmed; no immediate booking or turnaround SLA). | Button: **“Request a layout-review appointment”**<br>Context: “...we will follow up to confirm appointment availability.” | Accurately describes the interaction stage per **F6**. Prevents misaligned customer expectations regarding calendar access and response times. | Standard expected response timeframe to confirm appointment requests. |"
+}

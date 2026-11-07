@@ -1,0 +1,38 @@
+{
+  "prior_total_cost_usd": 0.1055236,
+  "extraction_only": true,
+  "records": [
+    {
+      "response_id": "173ce1",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "request_sha256": "d457cad39b68a2a0e9d94f3d538189c7d9fd8c43775ded8880f7724a7bfbb32b",
+      "excerpt": "Know what’s wrong before you spend a dime",
+      "usage_cost": 0.0020662,
+      "source_record": "prior comparison 2026-11-06; full original artifacts retained in user-visible messaging-comparison report"
+    },
+    {
+      "response_id": "586101",
+      "model": "qwen/qwen3-30b-a3b-instruct-2507",
+      "request_sha256": "7ef72d969a59ee106073a54dd12355a94d4ac4a7339c2b256b4b8c57e9c30e27",
+      "excerpt": "users report faster review cycles",
+      "usage_cost": 0.0021444,
+      "source_record": "prior comparison 2026-11-06; full original artifacts retained in user-visible messaging-comparison report"
+    },
+    {
+      "response_id": "d1c1bd",
+      "model": "google/gemini-3.8-flash",
+      "request_sha256": "ee570151dfa298c2d5742c48fa78ecf0e29a2bfea6ded5b0d72eaad24d895c4f",
+      "excerpt": "immutable, dated decision record",
+      "usage_cost": 0.018984075,
+      "source_record": "prior comparison 2026-11-06; full original artifacts retained in user-visible messaging-comparison report"
+    },
+    {
+      "response_id": "e23dce",
+      "model": "google/gemini-3.8-flash",
+      "request_sha256": "bff5dbc4858be1504998d2a2b6b6c57e31a452af5bd06b062f96df30962a7e60",
+      "excerpt": "tamper-evident decision record",
+      "usage_cost": 0.0270501,
+      "source_record": "prior comparison 2026-11-06; full original artifacts retained in user-visible messaging-comparison report"
+    }
+  ]
+}

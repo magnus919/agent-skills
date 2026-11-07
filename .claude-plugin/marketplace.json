@@ -174,7 +174,7 @@
         "./brand-designer"
       ],
       "strict": false,
-      "description": "Create comprehensive brand identity documentation for any brand. Guides you through documenting strategy, visual identity (logo, color, typography, imagery), voice and tone, application guidelines, governance, and asset inventory. Produces markdown specs, compiled brand books, and brand-compliant images via reference-image-aware generation. Use when you need to capture a brand's identity in structured, durable form — for vault storage, agency handoff, or press kit distribution. Do not use this skill for unrelated requests; route to the nearest named specialist."
+      "description": "Create comprehensive brand identity documentation for any brand. Guides you through documenting strategy, visual identity (logo, color, typography, imagery), voice and tone, customer-centered messaging handoffs, application guidelines, governance, and asset inventory. Produces markdown specs, compiled brand books, and brand-compliant images via reference-image-aware generation. Use when you need to capture a brand's identity in structured, durable form — for vault storage, agency handoff, or press kit distribution. Do not use for market positioning decisions or conversion experiments; use go-to-market. Route interaction behavior to product-design-and-ux."
     },
     {
       "name": "c4-diagramming",
@@ -489,7 +489,7 @@
         "./financial-modeling"
       ],
       "strict": false,
-      "description": "Build and review assumptions-led financial models, unit economics, pricing, fundraising scenarios, and SaaS operating metrics. Use when calculating CAC, LTV, payback, runway, ARR, churn, NDR, Rule of 40, or sales efficiency; when modeling revenue, costs, cash flow, pricing, cap tables, or financing. Do not use this skill for unrelated requests; route to the nearest named specialist."
+      "description": "Build and review assumptions-led financial models, unit economics, pricing, fundraising scenarios, and SaaS operating metrics. Use when calculating CAC, LTV, payback, runway, ARR, churn, NDR, Rule of 40, or sales efficiency; when modeling revenue, costs, cash flow, outcome-linked partnerships, revenue-share fees, pricing, cap tables, or financing. Do not use this skill for unrelated requests; route to the nearest named specialist."
     },
     {
       "name": "fireflies",
@@ -597,7 +597,7 @@
         "./go-to-market"
       ],
       "strict": false,
-      "description": "Plan and evaluate go-to-market strategy using positioning, acquisition, growth economics, market-entry, competitive-response, and governed agent-assisted acquisition experiments. Use for ICP, messaging, channel, CAC/LTV, beachhead, or automated-GTM strategy decisions. Do not use for campaign execution, CRM mutations, legal interpretation, product strategy, or visual brand design."
+      "description": "Plan and evaluate go-to-market strategy using positioning, acquisition, growth economics, market-entry, competitive-response, and governed agent-assisted acquisition experiments. Use for ICP, customer-centered messaging, website narrative, outcome-linked operating partnerships, channel, CAC/LTV, beachhead, or automated-GTM strategy decisions. Do not use for campaign execution, CRM mutations, legal interpretation, product strategy, or visual brand design."
     },
     {
       "name": "grafana",
@@ -1272,7 +1272,7 @@
         "./seo"
       ],
       "strict": false,
-      "description": "Audit and improve website discoverability across traditional search, answer engines, and generative search. Use for technical SEO, on-page content, structured data, question and entity architecture, AI citations, crawler controls, agent-readable content, and reproducible visibility measurement. Do not use for only copy-editing, writing, CMS operations, or generic AI marketing claims without a defined search surface and verification plan."
+      "description": "Audit and improve website discoverability across traditional search, answer engines, and generative search. Use for technical SEO, on-page content, structured data, question and entity architecture, AI citations, crawler controls, agent-readable content, local/national site portfolios, scaled-content quality, and reproducible visibility measurement. Do not use for only copy-editing, writing, CMS operations, or generic AI marketing claims without a defined search surface and verification plan."
     },
     {
       "name": "site-reliability-engineering",

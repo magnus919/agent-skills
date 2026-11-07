@@ -1,0 +1,44 @@
+[
+  {
+    "response_id": "39443b",
+    "task_id": "heritage-layout",
+    "phase": "phase2",
+    "arm": "baseline",
+    "seed": 2026110620
+  },
+  {
+    "response_id": "b54ff0",
+    "task_id": "heritage-layout",
+    "phase": "phase2",
+    "arm": "candidate-v3",
+    "seed": 2026110620
+  },
+  {
+    "response_id": "23fc48",
+    "task_id": "heritage-layout",
+    "phase": "phase2",
+    "arm": "candidate-v2",
+    "seed": 2026110620
+  },
+  {
+    "response_id": "18b695",
+    "task_id": "building-ticket-summary",
+    "phase": "phase2",
+    "arm": "candidate-v2",
+    "seed": 2026110621
+  },
+  {
+    "response_id": "ce4256",
+    "task_id": "building-ticket-summary",
+    "phase": "phase2",
+    "arm": "candidate-v3",
+    "seed": 2026110621
+  },
+  {
+    "response_id": "405ac8",
+    "task_id": "building-ticket-summary",
+    "phase": "phase2",
+    "arm": "baseline",
+    "seed": 2026110621
+  }
+]
