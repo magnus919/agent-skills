@@ -20,6 +20,15 @@ Resolve unknown customer needs through `product-discovery`. Resolve alternatives
 8. **Translate to the channel.** For a landing page, propose an offer/benefit opening, relevant proof, intelligible offer groups, process and action expectations. Order sections around the visitor's decision; no universal wireframe is established by this research. Give UX the expected action, resulting state, information needs and unresolved constraints.
 9. **Test before claiming improvement.** Ask representative people to explain the offer, audience, value, evidence and next step in their own words. Record selection, prompts, observations and errors. A brief exposure can diagnose confusion; a fixed five-second threshold is not a universal pass rule. If running an authorized experiment, predefine the comparison, outcome, guardrails and stopping rule. Track qualified demand and subsequent outcomes as well as clicks.
 
+## Drafting and revision depth
+
+For the practical writing loop, use `references/message-drafting-and-revision.md`:
+map capability to changed activity and supported outcome, draft materially different
+openings, choose using audience/intent/evidence, and revise the actual weak passages.
+For complete service and enterprise applications, read
+`references/messaging-worked-examples.md`. Examples are fictional demonstrations,
+not evidence that a particular line will outperform alternatives.
+
 ## Completion artifact
 
 Produce a `templates/customer-message-brief.md` with input evidence, a draft, claim/proof mapping, action expectations, channel handoff and an explicit validation state. Stop when the reviewable draft and unresolved questions are documented. Publication and claims of improved performance require their own evidence.

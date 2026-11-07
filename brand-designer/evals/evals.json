@@ -111,6 +111,48 @@
         "Does not adopt guaranteed instant compliance as an approved brand promise",
         "Routes conflicting audience promises to go-to-market rather than resolving them through visual design"
       ]
+    },
+    {
+      "id": "message-craft-service-channel-adaptation",
+      "prompt": "Approved fictional brief: Westport espresso-machine bench repair for independent cafes; written fault diagnosis and repair-or-replace recommendation before paid repair approval. Inspection fee applies, amount unknown; customer drop-off required. Request an inspection slot, availability confirmed afterward. Voice: candid, neighborly, practical. Produce a homepage opening, service card and action caption; explain wording choices and one misleading near miss.",
+      "expected_output": "Concrete channel adaptations retain offer, distinction and request consequence while using candid practical language.",
+      "assertions": [
+        "Provides actual copy for the homepage, service card and action caption",
+        "Preserves the written diagnosis and repair-or-replace recommendation in the homepage or service-card copy",
+        "Explains a concrete wording choice using the supplied candid or practical voice",
+        "Explains how its misleading near miss changes the actual service commitment"
+      ]
+    },
+    {
+      "id": "message-craft-compressed-enterprise-copy",
+      "prompt": "Approved fictional Vendor Thread brief: one supplier questionnaire links to multiple internal review requests, with dated decisions per request. Precise restrained voice. Onboarding estimate four to eight weeks subject to scope, with security review and migration. No compliance guarantee. Make an analyst headline, security-review pitch and a short brand-card expression. Show preserved semantic anchors and explain any omitted timing detail.",
+      "expected_output": "Useful compact copy retains differentiating mechanism; role variants remain consistent and omissions do not convert estimates to guarantees.",
+      "assertions": [
+        "Keeps questionnaire reuse across multiple requests explicit in the brand-card expression",
+        "Makes the security-review pitch relevant to dated decision visibility",
+        "Explains why timing is omitted from a compact expression or retains the estimate qualification if timing is included",
+        "Maps at least one actual wording choice to a semantic anchor from the supplied brief"
+      ]
+    },
+    {
+      "id": "final-copy-unknown-is-not-absence",
+      "prompt": "Adapt a supplied message for a serious technical brand: dated review records, manual CSV import. Integration, independent verification and certification information are not supplied. The proposed card says We are uncertified and have no integrations. Produce a corrected card and an audit note.",
+      "expected_output": "A useful card keeps the supplied capabilities while preserving unknowns outside final claims.",
+      "assertions": [
+        "Produces a brand-card expression retaining dated records or manual CSV import",
+        "Replaces categorical certification-absence language with an unknown-state note",
+        "Does not turn unspecified integration coverage into an assertion of no integrations"
+      ]
+    },
+    {
+      "id": "final-copy-cross-channel-fidelity",
+      "prompt": "Approved fictional message: a paid collection assessment before approval of a separate cataloging project. Fee amount, payment timing and refunds unknown. Adapt it into a headline and action caption. Voice: thoughtful and plain. Current slogan: Free certainty before commitment. Audit the actual expressions and replace any conflicting slogan.",
+      "expected_output": "Thoughtful concrete copy preserves the paid assessment and later-project distinction.",
+      "assertions": [
+        "Supplies a replacement headline compatible with a paid assessment",
+        "Keeps the assessment and later cataloging project as distinct commitments",
+        "Leaves refund terms unknown rather than creating a favorable policy"
+      ]
     }
   ]
 }

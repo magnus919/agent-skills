@@ -16,3 +16,8 @@ Research date: 2026-11-06. Status: research retained; integration implemented fo
 The feature uses neutral terminology; source attribution remains in the research provenance. No proprietary worksheet, book chapter, or course is reproduced.
 
 Implementation review: [eval challenge examples](eval-author-review.md), [trigger probes and iteration record](integration-review.md).
+
+Second-pass craft enrichment: [review and task-exercise evidence](craft-review.md),
+[assertion challenges](craft-eval-author-review.md), and [fixed exercise inputs](task-runs/tasks.json).
+
+Final-copy fidelity iteration: [experiment, negative findings, guidance and budget](fidelity-iteration/report.md).

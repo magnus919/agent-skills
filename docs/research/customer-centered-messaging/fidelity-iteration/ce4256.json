@@ -1,0 +1,49 @@
+{
+  "response_id": "ce4256",
+  "task_id": "building-ticket-summary",
+  "arm": "candidate-v3",
+  "phase": "phase2",
+  "requested_model": "google/gemini-3.8-flash",
+  "returned_model": "google/gemini-3.8-flash",
+  "provider": null,
+  "completion_id": "gen-1793999972-q3SD1j94HbH8TP9ULFCn",
+  "receipt": {
+    "response_id": "ce4256",
+    "task_id": "building-ticket-summary",
+    "phase": "phase2",
+    "arm": "candidate-v3",
+    "seed": 2026110621,
+    "started_at": "2026-11-06T21:19:32.312421+00:00",
+    "reserved_usd": 0.3918255,
+    "request_sha256": "ef1260461ea35bf5cf89b47d3ba9c0b51279e359f3517d038b2a743c638cac0a",
+    "status": "complete",
+    "finish_reason": "stop",
+    "completed_at": "2026-11-06T21:19:56.562579+00:00",
+    "elapsed_seconds": 24.25,
+    "reported_cost_usd": 0.0115344075,
+    "catalog_estimate_usd": 0.023675025
+  },
+  "usage": {
+    "prompt_tokens": 19037,
+    "completion_tokens": 1932,
+    "total_tokens": 20969,
+    "prompt_tokens_details": {
+      "cached_tokens": 16351,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 586,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    },
+    "cost": 0.0115344075,
+    "cost_details": {
+      "source": "openrouter_list",
+      "floor_applied": false,
+      "rate_source": "openrouter_catalog"
+    }
+  },
+  "response": "### Claim Plan Before Final Copy\n\n| Proposed NEW Customer-Facing Claim | Literal Supplied Support and State | Disposition Before Rendering |\n|---|---|---|\n| “Import CSV repair tickets to view building and current ticket status, and export a dated summary.” | F2: imports CSV tickets, displays building/current status. F3: exports summary with building, current status, export date. (Supplied fact) | Keep. Plain description of core software capability and mechanism. |\n| “Move repair tracking out of scattered email threads and separate spreadsheets.” | F1: coordinators currently use email threads and separate spreadsheets. (Supplied fact) | Keep. Accurately addresses current alternative. |\n| “Request a summary walkthrough using a sample dataset.” | F5: sample dataset available for walkthrough. F6: next step is requesting a walkthrough. (Supplied fact) | Keep. Accurately describes the evaluation step. |\n| “Scheduling confirmed within 24 hours; setup takes two weeks.” | Scheduling terms and setup duration not supplied. (Unknown) | Omit. Scheduling and setup duration remain unstated. |\n| “Resident representatives can review an exported summary showing building, ticket status, and export date.” | F3: summary contains building, current status, export date. F4: resident representatives want to understand summary. (Supplied fact) | Keep. Explains what the deliverable shows without implying portal access. |\n| “Residents log into their own accounts to see live updates.” | Resident accounts, sharing permissions, and instant visibility not supplied. (Unknown) | Omit. Do not assert live resident accounts or direct portal access. |\n| “The summary does not log editor identity or completion times.” | Identity history and completion timestamps not supplied. (Unknown, not confirmed absence) | Omit denial. State strictly what is exported (status, building, export date); do not assert absence of features. |\n| “Production use requires agreeing import fields and identifying file submitters.” | F6: production use requires agreeing import fields and identifying who submits files. (Supplied fact) | Keep. Accurately reflects operational prerequisites. |\n\n---\n\n### Homepage Messaging\n\n#### Headline & Supporting Line\n**Track repair tickets in one place and export dated status summaries**  \nImport CSV ticket files to review building and repair status in a consolidated view, replacing email threads and separate spreadsheets with an exportable summary dated at generation.\n\n#### Sample-Summary Caption\n*Sample export generated from test data.* The summary shows each building, current repair ticket status, and the date the export was produced. (Shown for evaluation; actual fields depend on agreed CSV import formatting.)\n\n---\n\n### Next Action & Path to Production\n\n#### Primary Call to Action\n**Request a summary walkthrough**  \nReview the software using a sample dataset to see how CSV ticket imports generate building status overviews and dated summary exports. *(Scheduling and response terms will be confirmed upon inquiry.)*\n\n#### Path from Evaluation to Production\n1. **Walkthrough:** Evaluate the ticket display and exported summary against your reporting needs using sample data.\n2. **Field alignment:** Agree on the required CSV import fields and ticket status categories for your properties.\n3. **Operational roles:** Identify which property coordinators will submit CSV files.\n4. **Active reporting:** Import scheduled CSV files to track current status and export dated summaries for stakeholders. *(Setup duration depends on organizational scope and coordination.)*\n\n---\n\n### Resident-Representative Pitch\n\n> “Repair Window provides property coordinators with a clear, exportable summary of current repair tickets by building. When coordinators share this export with resident representatives, it provides a dated record showing the status of reported tickets across each property at the time of export. It gives representatives a structured, readable view of where repair tickets stand without relying on fragmented email updates.”\n\n*(Note: The exported summary reflects current ticket status as of the export date. It does not provide direct account access, individual completion timestamps, or independent certification.)*\n\n---\n\n### Brand Card: Repair Window\n\n```text\n================================================================================\nREPAIR WINDOW — BRAND CARD\n================================================================================\nCategory:         Property Operations & Repair Status Reporting\nAudience:         Property coordinators managing multi-building repair tracking;\n                  resident representatives seeking clear status visibility.\nVoice Attributes: Exact, Plain, Professional.\n\nCore Offer:\nSoftware that imports CSV repair tickets, displays consolidated building and\nticket status, and exports dated summaries for operational review.\n\nMeaningful Difference:\nReplaces disjointed email threads and disparate spreadsheets with a standardized\nCSV import workflow and dated status reporting.\n\nProof Asset:\nSample dataset walkthrough illustrating import fields, status views, and export output.\n\nOperational Prerequisites:\nProduction deployment requires establishing standard CSV import fields and\ndesignating authorized file submitters.\n================================================================================\n```\n\n---\n\n### Before / After Revision Record\n\n| Original Passage | Diagnosis | Replacement Copy | Evidentiary Basis |\n|---|---|---|---|\n| *“A certified immutable record proving every repair was completed.”* | **Overstatement of capabilities and certification.** Claims legal/technical properties (certified, immutable, completion proof) not in evidence. F3 only supports building, current ticket status, and summary export date. F4 notes certification, immutability, signatures, and completion timestamps are unknown. | *“An exportable summary showing current repair ticket status and building information, dated on the day of export.”* | F2, F3: Reflects actual data fields (building, current status, export date). Does not assert immutability, certification, or completion timestamps. |\n| *“Residents see everything instantly.”* | **Unsupported access model and latency claim.** Implies real-time resident accounts and unrestricted visibility. F4 notes resident accounts and sharing permissions are unevidenced. F3/F4 only establish that resident representatives want to understand the exported summary. | *“Enables property coordinators to share a structured status summary with resident representatives.”* | F3, F4: Acknowledges the audience's informational need while confining visibility to the exported summary deliverable rather than direct software access. |\n\n---\n\n### Open Owner Decisions\n1. **Follow-up SLA:** Confirm scheduling response workflow and timeframe for walkthrough requests.\n2. **Onboarding Timeline:** Determine typical implementation duration for field mapping and submitter assignment.\n3. **Resident Distribution Mechanism:** Clarify how coordinators are expected to deliver or present exported summaries to resident representatives."
+}

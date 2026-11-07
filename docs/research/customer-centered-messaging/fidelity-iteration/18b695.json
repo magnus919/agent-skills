@@ -1,0 +1,49 @@
+{
+  "response_id": "18b695",
+  "task_id": "building-ticket-summary",
+  "arm": "candidate-v2",
+  "phase": "phase2",
+  "requested_model": "google/gemini-3.8-flash",
+  "returned_model": "google/gemini-3.8-flash",
+  "provider": null,
+  "completion_id": "gen-1793999951-OM0IPUfQLQWHpsZM5asC",
+  "receipt": {
+    "response_id": "18b695",
+    "task_id": "building-ticket-summary",
+    "phase": "phase2",
+    "arm": "candidate-v2",
+    "seed": 2026110621,
+    "started_at": "2026-11-06T21:19:10.312148+00:00",
+    "reserved_usd": 0.3832686,
+    "request_sha256": "29dd77a11b0b8542492588394be37f1b613e8aafc5792031366db0e4b25d3f03",
+    "status": "complete",
+    "finish_reason": "stop",
+    "completed_at": "2026-11-06T21:19:32.308068+00:00",
+    "elapsed_seconds": 21.995,
+    "reported_cost_usd": 0.011851125,
+    "catalog_estimate_usd": 0.023991
+  },
+  "usage": {
+    "prompt_tokens": 18515,
+    "completion_tokens": 2113,
+    "total_tokens": 20628,
+    "prompt_tokens_details": {
+      "cached_tokens": 16350,
+      "cache_write_tokens": 0,
+      "audio_tokens": 0,
+      "video_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 674,
+      "image_tokens": 0,
+      "audio_tokens": 0
+    },
+    "cost": 0.011851125,
+    "cost_details": {
+      "source": "openrouter_list",
+      "floor_applied": false,
+      "rate_source": "openrouter_catalog"
+    }
+  },
+  "response": "# Repair Window: Customer Message Brief & Brand Artifacts\n\n**Context:** Fictional messaging and brand documentation based strictly on supplied facts F1–F6.  \n**Evidence State:** Untested draft based on supplied product capabilities.  \n**Voice Attributes:** Exact, plain, professional.  \n\n---\n\n## 1. Homepage Opening\n\n### Headline\n**Track repair tickets across buildings from a single imported view.**\n\n### Supporting Line\nRepair Window imports CSV tickets to display building and current status, replacing scattered email threads and separate spreadsheets with an exportable summary.\n\n---\n\n## 2. Sample-Summary Caption\n\n**Sample Exported Summary**  \n*This sample shows an exported summary containing building name, current ticket status, and the date of export, generated from an illustrative CSV dataset. It demonstrates the exported fields; it does not represent individual repair completion timestamps or verified contractor sign-offs.*\n\n---\n\n## 3. Next-Action Expectations & Path to Production\n\n### Primary Action Label\n**Request a summary walkthrough**\n\n### Action Expectations\nSubmit your details to request a walkthrough using a sample dataset. Scheduling terms, confirmation windows, and follow-up timelines are confirmed upon contact. Requesting a walkthrough demonstrates software output using sample data; it does not configure live imports or initiate production use.\n\n### Path from Evaluation to Production\n1. **Sample Walkthrough:** Review the display and summary export using a preloaded sample dataset.\n2. **Import Field Mapping:** Agree on required CSV import fields and ticket status definitions with your team.\n3. **Operational Assignment:** Identify who within your organization will submit CSV files.\n4. **Production Deployment:** Begin importing building ticket CSVs and generating dated status summaries. *(Setup duration and onboarding schedule depend on organizational scope and are confirmed during onboarding planning).*\n\n---\n\n## 4. Resident-Representative Pitch\n\n> “Repair Window allows property coordinators to generate an exported summary showing each building, current repair ticket status, and the date the export was produced. Resident representatives can review these structured status exports instead of navigating raw spreadsheets or email chains. The export reflects current ticket status at the date of export; individual completion histories and verification terms remain questions for coordinator review.”\n\n---\n\n## 5. Brand Card\n\n```markdown\n# Brand Card: Repair Window\n\n## Overview\n- Category: Property repair ticket aggregation and summary software.\n- Primary Audience: Property coordinators managing repairs across multiple properties.\n- Secondary Audience: Resident representatives reviewing building repair status summaries.\n- Core Offer: Import CSV repair tickets, view status by building, and export dated summaries.\n\n## Core Positioning\nFor property coordinators relying on separate spreadsheets and email threads, \nRepair Window provides a centralized display of building repair statuses and \ndated summary exports derived directly from imported CSV files.\n\n## Tone & Style\n- Exact: State concrete software inputs and outputs without exaggeration.\n- Plain: Use direct operational language; avoid tech jargon or ungrounded guarantees.\n- Professional: Respectful, measured, and matter-of-fact.\n\n## Messaging Anchors & Boundaries\n- Capabilities Evidenced: CSV import, building display, current ticket status, dated summary export.\n- Bound Limits: Export date reflects generation time, not individual task completion timestamps.\n- Explicit Unknowns: Resident direct-access accounts, sharing permissions, actor-identity audit logging, retention limits, third-party certification, and quantified labor savings are unknown. Do not assert presence or absence.\n```\n\n---\n\n## 6. Concrete Before/After Revision Record\n\n| Asset | Before (Old Copy) | Diagnostic Defect | After (Revised Copy) | Evidentiary Basis |\n|---|---|---|---|---|\n| **Homepage Headline / Proof** | *“A certified immutable record proving every repair was completed.”* | Claims independent certification, cryptographic/tamper-evident immutability, and verified physical repair completion—none of which are supplied. | **“Import CSV tickets and export dated status summaries by building.”** | F2 & F3: Software imports CSVs, displays building and status, and exports a dated summary. Certification and immutability are unknown. |\n| **Resident Visibility Claim** | *“Residents see everything instantly.”* | Implies direct resident accounts, real-time sync, and exhaustive visibility into work logs. | **“Generate clear, dated status summaries that can be shared with resident representatives.”** | F3 & F4: Export contains building, status, and export date. Direct accounts, permissions, and actor logs are unknown. |\n| **Action Commitment** | *“Get started in minutes—guaranteed complete audit compliance.”* | Invents a setup duration (“minutes”) and claims legal/regulatory compliance outcomes. | **“Request a summary walkthrough to inspect the export format using sample data.”** | F5 & F6: Sample dataset exists for walkthroughs; setup duration and compliance certifications are unknown. |\n\n---\n\n## 7. Final-Copy Fact Check & Audit\n\n| Location / Exact Expression | Supplied Input & Status | Editorial Decision & Boundary | Open Owner Decision |\n|---|---|---|---|---|\n| **Headline:** *“Track repair tickets across buildings from a single imported view.”* | F1 & F2: Replaces separate spreadsheets/threads by importing CSVs. (Fact) | Kept. Describes actual software function without claiming automated resolution. | None. |\n| **Export Caption:** *“…shows an exported summary containing building name, current ticket status, and the date of export…”* | F3: Export contains building, current status, export date. (Fact) | Kept. Matches F3 scope exactly. Clarified that individual completion timestamps are not depicted. | Confirm whether additional report metadata will be added. |\n| **Production Path:** *“…agreeing on required CSV import fields and identifying who submits files…”* | F6: Required prerequisites for production use. (Fact) | Kept as explicit operational requirements before deployment. | What file formatting validation rules apply to incoming CSVs? |\n| **Production Timeline:** *“Setup duration… confirmed during onboarding planning.”* | F6: Setup duration not supplied. (Unknown) | Expressed as an open scope decision; avoided inventing setup hours or days. | Establish standard onboarding timeline once measured. |\n| **Walkthrough Action:** *“Scheduling terms… confirmed upon contact.”* | F6: Request walkthrough supplied; scheduling terms unknown. (Unknown) | Omitted promised response turnaround (e.g., “within 24 hours”) to prevent false commitments. | Define standard walkthrough scheduling SLA. |\n| **Audit Capabilities:** *(Omitted)* | F4: Certification, retention terms, actor history, and immutability are unknown. | Kept unknown. Avoided claiming the system is “uncertified” or “lacks audit logs”; simply made no affirmative claim. | Confirm security, logging, and certification status with engineering/legal. |"
+}

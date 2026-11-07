@@ -137,6 +137,81 @@
         "Keeps follow-up terms unknown instead of inventing turnaround or contact commitments",
         "Labels comprehension or conversion validation as planned rather than completed"
       ]
+    },
+    {
+      "id": "message-craft-candidate-selection",
+      "prompt": "Fictional supplied offer: bench repair for espresso machines at independent Westport cafes. Customers otherwise replace machines or call general repairers. Difference: written fault diagnosis and repair-or-replace recommendation before paid repair approval. Inspection fee amount unknown; customers drop off machines. Audience arrives looking for a repair service. Draft three meaningfully different headline/support options and select one with a reason and tradeoff.",
+      "expected_output": "Offer-led, outcome-led and alternative-led options make distinct choices; the selection fits service-seeking visitors and preserves the diagnosis/recommendation difference.",
+      "assertions": [
+        "Provides candidate openings with materially different offer, outcome or alternative emphases",
+        "Makes the supplied written diagnosis and recommendation visible in the selected headline or supporting line",
+        "Explains the selection using the supplied service-seeking visit intent",
+        "Identifies a specific tradeoff of the selected opening"
+      ]
+    },
+    {
+      "id": "message-craft-constructive-revision",
+      "prompt": "Rewrite: Our passionate team empowers hospitality. Buy now / Download brochure / Contact us. Supplied fictional service: Westport espresso-machine bench repair with a written diagnosis and repair-or-replace recommendation before approval of paid repairs. Inspection fee applies, amount unknown; customer drop-off required. Sample diagnosis available. Main action is requesting an inspection slot, confirmed afterward. Show diagnosis, replacement copy, relevant proof and action expectations.",
+      "expected_output": "A constructive revision names the service and useful difference, pairs proof with the demonstrated deliverable and explains the inspection request.",
+      "assertions": [
+        "Replaces the vague opening with actual copy naming the espresso-machine repair service",
+        "Connects the written diagnosis to deciding whether to repair or replace",
+        "Uses the sample diagnosis as proof of the deliverable being described",
+        "Provides replacement action copy explaining that inspection availability is confirmed after a request",
+        "Makes the inspection fee visible in the proposed action expectations as distinct from later paid repair approval"
+      ]
+    },
+    {
+      "id": "message-craft-role-objections",
+      "prompt": "Supplied fictional product Vendor Thread links a supplier questionnaire to multiple review requests and records dated decisions for each. Analysts use copied spreadsheets and email today. Security needs decision visibility, procurement needs scope. Security review and migration required; onboarding estimate four to eight weeks subject to scope. Integration coverage and pricing unknown. Write an analyst opening, security pitch and procurement objection answer with proof from an available sandbox.",
+      "expected_output": "Specific role-aware copy explains the same reusable-questionnaire mechanism, demonstrates decision history and treats missing commercial information as an open question.",
+      "assertions": [
+        "Explains in analyst copy how linking one questionnaire to multiple requests changes repeated-copy work",
+        "Provides a security-facing expression centered on the dated decision record",
+        "Answers the procurement rollout question with the supplied scope-dependent estimate and prerequisites",
+        "Specifies a sandbox demonstration relevant to questionnaire reuse or decision records"
+      ]
+    },
+    {
+      "id": "final-copy-contradiction-repair",
+      "prompt": "Supplied fictional service: written equipment assessment with an assessment fee; later repair work needs approval. Fee amount/payment date unknown. A draft headline says Know before you spend anything, while its fact table correctly notes the fee. Audit and deliver a corrected headline, support and action rather than only a warning.",
+      "expected_output": "Actual final expressions distinguish the fee-bearing assessment from later repair approval.",
+      "assertions": [
+        "Replaces the payment-free headline with wording compatible with the assessment fee",
+        "Keeps payment timing unknown rather than inventing a due date",
+        "Produces concrete headline, supporting copy and next-action text"
+      ]
+    },
+    {
+      "id": "final-copy-property-scope",
+      "prompt": "Supplied fictional application: store a dated record of each review update. No actor identity, integrity, retention or certification information supplied. Draft copy says Certified immutable audit history, retained forever. Rewrite the customer claim and show the source-to-copy check.",
+      "expected_output": "A supported dated-record expression and scoped review avoid inventing either properties or their absence.",
+      "assertions": [
+        "Uses the supplied dated-record capability in actual replacement copy",
+        "Removes assertions of immutability and permanent retention from final copy",
+        "Treats unspecified certification status as unknown rather than confirmed absence"
+      ]
+    },
+    {
+      "id": "final-copy-proposals-separate",
+      "prompt": "Draft website copy for a fictional workshop. Supplied: written materials assessment, sample report available, main step request an appointment with availability confirmed afterward. No report sections, form fields, response deadline, payment policy or customer results are supplied. You may suggest improvements but show final copy separately.",
+      "expected_output": "Useful supported copy is separated from optional process proposals.",
+      "assertions": [
+        "Keeps a proposed response deadline outside final service promises",
+        "Does not describe invented report contents as existing supplied deliverables",
+        "Retains the written assessment as a visible specific offer",
+        "Does not invent a workflow stage at which unspecified methods or commercial terms will be confirmed"
+      ]
+    },
+    {
+      "id": "final-copy-rejected-claim-leak",
+      "prompt": "Supplied fictional product: dated change records; actor-identity logging unknown. A draft claim plan correctly marks The record does not log editor identity as omit, but the proposed final proof caption repeats that denial. The old slogan is unrelated: Better teamwork. Repair the final caption and show the relevant new-copy audit while retaining a concrete description of dated records.",
+      "expected_output": "The actual final caption stays within dated records and the audit addresses the newly introduced denial rather than only the old slogan.",
+      "assertions": [
+        "The final caption describes dated records without asserting that actor-identity logging is absent",
+        "The audit identifies the denial in the proposed new caption rather than substituting only a critique of the old slogan",
+        "The replacement copy retains the supplied dated-record capability"
+      ]
     }
   ]
 }

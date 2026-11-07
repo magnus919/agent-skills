@@ -6,7 +6,7 @@ CMO methodology — positioning and messaging frameworks (April Dunford's positi
 
 Your agent reasons about positioning, acquisition channels, and growth economics with real frameworks and numbers instead of generic marketing advice. It can also turn an ICP and message hypothesis into a bounded, measurable agent-assisted acquisition experiment without treating automation as permission to contact people.
 
-It also helps turn a confusing website offer into a clear customer message, with a realistic path to value, an explicit next step, and evidence behind consequential claims. The resulting brief can feed brand voice guidelines and website design.
+It also helps turn a confusing website offer into a clear customer message, with a realistic path to value, an explicit next step, and evidence behind consequential claims. The resulting brief can feed brand voice guidelines and website design. Complete service and enterprise examples show how to choose between message candidates and revise weak copy. The final-copy checklist covers service promises and claim scope; it does not certify model-generated copy.
 
 The experiment workflow separates research, drafting, sending, optimization, and reply handling into distinct authority levels. It ties expansion to downstream evidence, preserves explicit stop controls, and keeps campaign operation and legal decisions with their proper owners.
 
