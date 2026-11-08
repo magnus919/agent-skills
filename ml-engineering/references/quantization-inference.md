@@ -30,7 +30,7 @@
 
 ## 1. Quantization Fundamentals
 
-**Quantization** reduces the numerical precision of model weights (and optionally activations / KV cache) from full-precision (FP32, BF16) to lower-bit representations (INT8, INT4, FP8, NF4). This shrinks memory footprint, reduces memory bandwidth pressure, and accelerates inference — especially on bandwidth-bound decode steps.
+**Quantization** reduces the numerical precision of model weights (and optionally activations / KV cache) from full-precision (FP32, BF16) to lower-bit representations (INT8, INT4, FP8, NF4). This shrinks memory footprint, reduces memory bandwidth pressure, and can accelerate inference — especially on bandwidth-bound decode steps.
 
 ### Key concepts
 
@@ -47,7 +47,7 @@
 ### Why quantize LLMs?
 
 - **Memory:** Nominal weights for 70 billion parameters occupy ~140 GB at FP16 or ~35 GB at INT4, before metadata and other tensors. Deployment fit also requires the cache, buffers and overhead budget below.
-- **Throughput:** Lower-precision weights reduce memory bandwidth consumption, which is the primary bottleneck for autoregressive token generation (memory-bound, not compute-bound).
+- **Throughput:** Lower-precision weights can reduce weight-memory traffic and improve bandwidth-bound decode, often at low batch sizes. Speedups depend on batch size, context, kernels, and hardware; measure prefill and decode under the target concurrency.
 - **Cost:** Enables deployment on cheaper/consumer hardware (RTX 4090, Apple Silicon unified memory, CPU-only).
 
 ---
