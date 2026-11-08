@@ -50,7 +50,7 @@ Also inspect host memory and accelerator state with native OS/vendor tools. Reco
 | Install, build, choose CPU/Metal/CUDA/HIP/Vulkan/SYCL, Docker, or prove backend use | [installation and backends](references/installation-and-backends.md) |
 | Acquire, convert, inspect, license-check, quantize, or fit a GGUF model | [models, GGUF, and memory](references/models-gguf-and-memory.md) |
 | Run `llama-cli`, expose `llama-server`, call compatible APIs, use templates, structured output, embeddings, reranking, or tools | [inference and serving](references/inference-and-serving.md) |
-| Tune threads, batches, context, cache, offload, concurrency, or multi-GPU and compare results | [performance and benchmarking](references/performance-and-benchmarking.md) |
+| Tune threads, batches, context, cache, offload, concurrent server workloads, or multi-GPU and compare results | [performance and benchmarking](references/performance-and-benchmarking.md) |
 | Diagnose load, backend, OOM, speed, context, template, output, or API failures | [troubleshooting](references/troubleshooting.md) |
 | Check the evidence, research date, upstream revision, or refresh rule behind a claim | [source index](references/source-index.md) |
 
@@ -95,7 +95,7 @@ Bind to `127.0.0.1` for the first launch. Wait for `/health` to report ready, qu
 
 ### 5. Tune one dimension at a time
 
-Preserve a baseline before changing context size, generation and batch threads, logical or physical batch size, GPU layers, KV cache type/offload, Flash Attention, parallel slots, or multi-GPU split. Use `llama-bench` for prompt-processing and token-generation comparisons, and an end-to-end client or server benchmark for TTFT and request latency. Record each comparison in [the benchmark template](templates/benchmark-comparison.md).
+Preserve a baseline before changing context size, generation and batch threads, logical or physical batch size, GPU layers, KV cache type/offload, Flash Attention, parallel slots, or multi-GPU split. Use `llama-bench` for prompt-processing and token-generation comparisons, and an end-to-end client or server benchmark for TTFT and request latency. Record each comparison in [the benchmark template](templates/benchmark-comparison.md). For server capacity, read the server benchmark section of [performance and benchmarking](references/performance-and-benchmarking.md): use a configurable 1, 2, 4, 8, 10 sweep (higher when relevant), representative contexts, fixed quality criteria, and predeclared safety stops. Distinguish agents, outstanding requests, running slots, and observed inference overlap; skipped higher cells remain unknown. The offline completion helper is not concurrent-server proof.
 
 ## Hard boundaries
 

@@ -1,8 +1,10 @@
 # vLLM Model Configuration: Quantization, Tensor Parallelism, KV Cache
 
-> **Last Updated:** 2026-08-03
+> **Last Updated:** 2026-11-08 (context/KV distinction and GGUF caveats)
 > Sources: https://docs.vllm.ai/en/latest/configuration/engine_args/ and
-> https://docs.vllm.ai/en/latest/features/quantization/index.html
+> https://docs.vllm.ai/en/latest/features/quantization/index.html,
+> https://docs.vllm.ai/en/v0.26.0/configuration/engine_args/, and
+> https://docs.vllm.ai/en/latest/features/quantization/gguf/
 
 ## Model identity and context
 
@@ -13,8 +15,11 @@
 - `--max-model-len` bounds prompt + output per request and accepts human-readable
   values (`32k` = 32,000; `32K` = 32,768). Unset, it derives from the model
   config. `-1`/`auto` picks the largest length that fits GPU memory, capped by
-  the model's trained context. This flag is the dominant driver of KV cache size:
-  halving it roughly doubles the concurrent sequences a GPU can hold.
+  the model's supported context on that release. This is a request/admission
+  bound, not the allocated KV pool size. Actual resident prompt and generated
+  lengths consume KV blocks; halving only the configured bound at unchanged
+  actual lengths does not automatically free half the memory or double capacity.
+  A stricter bound may reject workloads rather than make them faster.
 - `--dtype` selects weight/activation precision (`auto`, `bfloat16`, `float16`,
   `float32`, `half`). `auto` uses FP16 for FP32/FP16 models and BF16 for BF16
   models; some quantized formats are recommended at a specific dtype (for
@@ -42,6 +47,19 @@
   assume a method that worked on one version works on the next; the source
   index records the refresh date.
 
+### GGUF is a separate compatibility experiment
+
+The official GGUF page describes support as experimental and under-optimized,
+with possible incompatibilities with other features. Current docs require the
+out-of-tree `vllm-gguf-plugin` and recommend explicitly selecting the base-model
+tokenizer to avoid GGUF tokenizer-conversion problems. Older releases may use
+a different integration path: pin and check both engine and plugin versions,
+model architecture, quant type, tokenizer revision, and required features.
+Do not infer serving performance from file size or assume GGUF is equivalent
+to a native supported checkpoint. Test feature correctness and task quality
+alongside the matched benchmark before choosing it. See `llama-cpp` for that
+engine's GGUF operations, not as proof of vLLM compatibility.
+
 ## Tensor, pipeline, and data parallelism
 
 - `--tensor-parallel-size N` (`-tp`) shards each layer's weights and attention
@@ -62,14 +80,21 @@
 
 ## Memory budgeting
 
-- `--gpu-memory-utilization` (default 0.92) caps the fraction of GPU memory the
+- `--gpu-memory-utilization` (0.92 in v0.26.0; inspect the installed config)
+  caps the fraction of GPU memory the
   model executor may use — weights plus KV cache plus activation buffers. It is
   per-instance and does not account for other processes on the GPU.
 - Weights dominate first: a bf16 70B needs ~140 GB before any KV cache, so it
   needs two 80 GB GPUs (TP=2) or quantization. Only after weights fit does the
-  KV cache decide concurrency: the engine logs `GPU KV cache size: N tokens`
-  and `Maximum concurrency for M tokens per request: K`; record both.
-- `--cpu-offload-gb` moves weights/KV to CPU per GPU (a virtual memory increase
+  KV cache constrain resident requests: the engine logs `GPU KV cache size: N tokens`
+  and `Maximum concurrency for M tokens per request: K`; record both along with
+  the assumed length. This estimate does not include queueing/latency SLOs.
+- The allocated pool follows memory profiling and its budget; v0.26.0 supports
+  `--kv-cache-memory-bytes` as an explicit per-GPU pool budget that overrides
+  memory-utilization-based KV sizing. Separate allocated bytes/blocks from
+  live occupancy and cached reusable blocks. Attention layout, KV dtype,
+  sharing, and actual token lengths affect residency. Re-profile any change.
+- `--cpu-offload-gb` moves model weights to CPU per GPU (a virtual memory increase
   at the cost of PCIe-bound performance) — a stopgap for fitting a model, not a
   performance feature.
 - `--load-format` (auto, safetensors, npcache, bitsandbytes, sharded_state, ...)

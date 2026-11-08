@@ -2,7 +2,7 @@
 
 > **Purpose:** Engineering methodology reference for production ML serving. Covers quantization approaches, calibration strategies, quality assessment, mixed precision, KV cache optimization, and inference serving architectures.
 >
-> **Last updated:** 2025-06-05
+> **Serving methodology reviewed:** 2026-11-08. Quantization background is not a current compatibility matrix; verify the pinned implementation before use.
 
 ---
 
@@ -23,11 +23,6 @@
 6. [KV Cache Quantization](#6-kv-cache-quantization)
 7. [Quantization Workflow](#7-quantization-workflow)
 8. [Inference Serving Architecture](#8-inference-serving-architecture)
-   - 8.1 vLLM
-   - 8.2 llama.cpp Server
-   - 8.3 Text Generation Inference (TGI)
-   - 8.4 Triton Inference Server
-   - 8.5 Serving Framework Comparison Table
 9. [Production Considerations](#9-production-considerations)
 10. [References & Further Reading](#10-references--further-reading)
 
@@ -35,7 +30,7 @@
 
 ## 1. Quantization Fundamentals
 
-**Quantization** reduces the numerical precision of model weights (and optionally activations / KV cache) from full-precision (FP32, BF16) to lower-bit representations (INT8, INT4, FP8, NF4). This shrinks memory footprint, reduces memory bandwidth pressure, and accelerates inference — especially on bandwidth-bound decode steps.
+**Quantization** reduces the numerical precision of model weights (and optionally activations / KV cache) from full-precision (FP32, BF16) to lower-bit representations (INT8, INT4, FP8, NF4). This shrinks memory footprint, reduces memory bandwidth pressure, and can accelerate inference — especially on bandwidth-bound decode steps.
 
 ### Key concepts
 
@@ -51,8 +46,8 @@
 
 ### Why quantize LLMs?
 
-- **Memory:** A 70B model at FP16 requires ~140 GB VRAM. At INT4, ~35 GB — fitting on a single H100/A100-80GB.
-- **Throughput:** Lower-precision weights reduce memory bandwidth consumption, which is the primary bottleneck for autoregressive token generation (memory-bound, not compute-bound).
+- **Memory:** Nominal weights for 70 billion parameters occupy ~140 GB at FP16 or ~35 GB at INT4, before metadata and other tensors. Deployment fit also requires the cache, buffers and overhead budget below.
+- **Throughput:** Lower-precision weights can reduce weight-memory traffic and improve bandwidth-bound decode, often at low batch sizes. Speedups depend on batch size, context, kernels, and hardware; measure prefill and decode under the target concurrency.
 - **Cost:** Enables deployment on cheaper/consumer hardware (RTX 4090, Apple Silicon unified memory, CPU-only).
 
 ---
@@ -65,7 +60,7 @@
 **Ecosystem:** llama.cpp, Ollama, LM Studio  
 **Bit widths:** Q2_K through Q8_0, plus Q4_K_M, Q5_K_M, Q6_K, etc.
 
-GGUF (GPT-Generated Unified Format) is the successor to GGML. It packages a model's weights, tokenizer, and metadata into a single file. The quantization variants use a **k-quant** scheme that assigns different bit widths to different layers based on their importance:
+GGUF is a model container format used by ggml-based runtimes, not an executable program or a synonym for every quantization method. It stores tensor data and metadata, including tokenizer information; models may also be split across files. Some variants use **k-quant** mixed tensor precision:
 
 - **Q4_K_M** — recommended sweet spot. Mixture of 4-bit and 6-bit quantization across layers. ~4.5 bits/weight effective.
 - **Q5_K_M** — higher quality, ~5.5 bits/weight effective.
@@ -79,9 +74,9 @@ GGUF (GPT-Generated Unified Format) is the successor to GGML. It packages a mode
 - Supports a wide range of architectures (Llama, Mistral, Falcon, Gemma, etc.).
 - **Imatrix** (importance matrix) quantization: weights are quantized with per-layer importance scores, improving quality at a given bit rate.
 
-**Strengths:** Universal format, best CPU/edge support, large pre-quantized Hub ecosystem (TheBloke, etc.), excellent for local/offline use.
+**Strengths:** A common distribution format for local/offline inference with llama.cpp across CPU and supported GPU backends.
 
-**Weaknesses:** Not natively supported by HuggingFace `transformers` or vLLM (though vLLM added GGUF support in 2025). GPU performance trails AWQ/GPTQ on NVIDIA hardware.
+**Compatibility:** Check the exact loader, model architecture and version. The [current vLLM GGUF documentation](https://docs.vllm.ai/en/latest/features/quantization/gguf/) describes experimental, under-optimized support through an out-of-tree plugin. This is not proof that every older vLLM version lacks GGUF, nor a universal speed ranking against AWQ/GPTQ. See the [source record](local-serving-sources.md).
 
 ---
 
@@ -169,10 +164,10 @@ EXL2 is the quantization format for ExLlamaV2, a high-throughput inference engin
 
 **Key features:**
 - Fine-grained per-layer bit allocation for optimal quality/size tradeoffs.
-- Very fast GPU inference — ExLlamaV2 kernels are among the fastest for single-batch inference.
+- GPU kernels intended for local inference; measure single-request and concurrent performance on the target workload.
 - Less widely supported than GGUF/GPTQ/AWQ but excellent for local GPU use.
 
-**Strengths:** Fastest local GPU inference for many models, flexible per-layer bit allocation.
+**Strengths:** Flexible per-layer bit allocation and a local-GPU-oriented runtime; speed requires matched measurement.
 
 **Weaknesses:** Smaller ecosystem, primarily desktop/local use. Not widely supported in production serving frameworks.
 
@@ -200,10 +195,10 @@ HQQ (Half-Quadratic Quantization) uses a half-quadratic splitting approach to co
 | **File format** | Single .gguf | HF safetensors | HF safetensors | HF safetensors | Custom | HF safetensors |
 | **Calibration data req.** | No* | Yes (128 seq) | Yes (128 seq) | No | Yes | No |
 | **Quantize speed** | Fast** | Slow (hrs) | Fast (min) | Instant (load) | Moderate | Very fast |
-| **GPU inference speed** | Moderate | Fast (Marlin) | Very fast (Marlin) | Slow | Very fast | Moderate |
-| **CPU inference** | Native | No | No | No | No | No |
-| **Apple Silicon** | Native (MLX) | Via MLX | Via MLX | No | No | Possible |
-| **Serving support** | vLLM, llama.cpp | vLLM, TGI | vLLM, TGI, TRT-LLM | Limited | ExLlamaV2 | Limited |
+| **GPU inference speed** | Measure pinned backend | Measure pinned kernel | Measure pinned kernel | Measure pinned kernel | Measure pinned kernel | Measure pinned kernel |
+| **CPU inference** | llama.cpp CPU | Verify runtime | Verify runtime | Verify runtime | Verify runtime | Verify runtime |
+| **Apple Silicon** | llama.cpp Metal | Verify conversion/runtime | Verify conversion/runtime | Verify runtime | Verify runtime | Verify runtime |
+| **Serving support** | llama.cpp; vLLM version/plugin dependent | vLLM, TGI | vLLM, TGI, TRT-LLM | Limited | ExLlamaV2 | Limited |
 | **Fine-tuning support** | No | No | No | Yes (QLoRA) | No | Possible |
 | **Ecosystem maturity** | Very high | High | High | Very high | Moderate | Low |
 | **Typical PPL increase (7B)** | +0.15 | +0.10 | +0.10 | +0.20 | +0.10 | +0.12 |
@@ -287,7 +282,7 @@ Not all tasks degrade equally:
 | BnB INT4 | 60.80% | 52.73% | 8.633 |
 | HQQ INT3 | 62.26% | 51.23% | 8.872 |
 
-> **Key takeaway:** AWQ = GPTQ > HQQ > NF4 > BnB INT4 at 4-bit. At 8-bit, all methods are essentially lossless. Differential sensitivity across tasks means eval should always be task-specific.
+> **Scope:** These are historical, secondary-source measurements for one checkpoint and task mix, not a universal quality or serving-speed ordering. Retain their provenance and validate a candidate on the actual task; small average differences do not establish equivalence or protect critical subsets.
 
 ### Recommended evaluation framework
 
@@ -355,7 +350,7 @@ Layer 14: Q5_K
 - Sensitive layers (e.g., embedding, lm_head, early/late transformer layers) get higher precision.
 - Reduces average bit width without sacrificing critical layers.
 
-#### 5.5 FP16 weights + INT8 KV cache
+#### 5.5 High-precision weights + lower-precision KV cache
 
 ```
 Weights: FP16
@@ -363,21 +358,17 @@ KV Cache: INT8/FP8
 Compute: FP16/BF16
 ```
 
-- KV cache is the memory bottleneck for long contexts.
-- Quantizing only the KV cache (not weights) saves 50-75% of KV cache memory.
-- Supported by vLLM and TensorRT-LLM.
+- KV cache can dominate memory for long contexts or many resident sequences.
+- Reducing element width from 16 to 8 bits halves raw cache payload before metadata/alignment; it does not halve total memory.
+- Cache dtype and kernel support are engine/model/version-specific; verify them independently of weight precision. See section 6.
 
-### Precision selection decision tree
+### Precision selection
 
-```
-Is model size > GPU VRAM?
-├── YES → Can we tolerate quality loss?
-│   ├── YES → INT4 weight quantization (AWQ/GPTQ) + optional KV cache quant
-│   └── NO  → FP8 weight quant (if H100) or BF16 with tensor parallelism
-└── NO  → Is latency critical?
-    ├── YES → INT4 weights + FP16 activations (Marlin kernel)
-    └── NO  → BF16 baseline is fine
-```
+Budget the whole serving process, not only model weights. Compare supported
+precision candidates under the same task/context/latency requirements; a smaller
+representation does not guarantee faster kernels or unchanged quality. Choose
+only from measured candidates meeting all registered guardrails, or retain the
+baseline and report insufficient evidence.
 
 ---
 
@@ -385,40 +376,58 @@ Is model size > GPU VRAM?
 
 ### The KV cache problem
 
-During autoregressive generation, each transformer layer computes Key (K) and Value (V) tensors that are cached for all previous tokens. For a batch of size `b`, `n_layers` layers, `n_heads` attention heads, sequence length `s`, and dimension `d_per_head`:
+For ordinary decoder self-attention with equal-sized K and V, estimate the
+logical cache payload using **KV heads**, not query heads:
 
+```text
+KV bytes = 2 × batch_size × n_layers × n_kv_heads × head_dim × cached_tokens × bytes_per_element
 ```
-KV cache size = 2 × b × n_layers × n_heads × s × d_per_head × precision_bytes
+
+Here `batch_size` counts simultaneously resident sequences, including separate
+samples/beams where applicable. `cached_tokens` includes retained prompt and
+generated tokens; for unequal sequence lengths sum their token counts instead of
+multiplying one length by the batch. This is payload arithmetic, not an allocated
+memory or supported-context guarantee.
+
+**Worked example:** one sequence, Llama 3 70B-style GQA dimensions (80 layers,
+8 KV heads, head dimension 128), 32K = 32,768 cached tokens, FP16 = 2 bytes:
+
+```text
+2 × 1 × 80 × 8 × 128 × 32768 × 2 = 10,737,418,240 bytes
+                                     = 10 GiB ≈ 10.74 GB
 ```
 
-At FP16, a 32K-token sequence with Llama 3 70B (80 layers, 8 KV heads, d=128) requires ~320 GB for the KV cache alone. Quantizing to INT8 halves this; to INT4 quarters it.
+The former 320 GB result was incorrect. With equal independent sequences and no
+sharing, batch 8 needs **80 GiB** and batch 10 **100 GiB** of KV payload alone.
+GB means 10^9 bytes; GiB means 2^30 bytes. Original Llama 3 70B's configured context
+is 8,192 tokens: the 32K calculation illustrates memory scaling, **not** permission
+to extend its supported context. Validate the actual checkpoint and any context
+extension separately. At 8,192 tokens the same one-sequence cache is 2.5 GiB.
 
-### Attention architecture impact
+### Architecture and allocation limits
 
-| Architecture | KV Cache per token (FP16) | Notes |
-|---|---|---|
-| **MHA** (Multi-Head Attention) | 2 × n_layers × n_heads × d | Largest cache. Every layer has full key/value for all heads. |
-| **MQA** (Multi-Query Attention) | 2 × n_layers × 1 × d | One KV head shared across all query heads. 8-32x smaller than MHA. |
-| **GQA** (Grouped-Query Attention) | 2 × n_layers × n_kv_heads × d | Middle ground. Llama 2/3 uses 8 KV heads for 32+ query heads. |
-| **MLA** (Multi-Head Latent Attention) | 2 × n_layers × d_latent | DeepSeek's approach. Compresses KV into a low-rank latent space. ~2-4x smaller than GQA. |
+| Architecture / feature | What changes |
+|---|---|
+| MHA | KV heads equal query heads; read the model config rather than assuming eight. |
+| MQA | One KV head per attention layer; cache size scales with that head, not query count. |
+| GQA | Use the checkpoint's KV head count, which need not equal the query head count. |
+| MLA / unequal K and V dimensions | Derive stored latent and positional components from the implementation; the simple GQA formula is not applicable unchanged. |
+| Hybrid recurrent / sliding-window models | Account per layer for attention windows and recurrent state; do not multiply all layers by a full-context GQA cache. |
+| Prefix sharing, paged allocation, sharding | Sharing can reduce duplicate payload; block rounding, retained prefixes, replication and metadata change allocation. Verify per-device placement and measured peaks. |
 
-### KV cache quantization methods
+### KV precision is a separate experiment
 
-| Method | Bit Width | Strategy |
-|---|---|---|
-| **KVTuner** | INT4/INT8 | Sensitivity-aware per-layer mixed-precision. Key layers get 8-bit, others 4-bit. |
-| **KVQuant** | INT4/FP8 | Per-channel + per-token quantization with non-uniform grids. Targets 10M+ context. |
-| **FP8 KV cache** (H100 native) | FP8 | Uses H100 FP8 tensor cores. Minimal quality loss. |
-| **INT8 KV cache** (vLLM) | INT8 | Per-tensor symmetric quantization. Standard vLLM feature. |
-| **INT4 KV cache** (experimental) | INT4 | Per-channel asymmetric. Quality loss noticeable at very long contexts. |
+Halving element width halves raw KV payload, not total process memory. Scale
+metadata, alignment, supported attention kernels and quality matter. Verify the
+[versioned KV cache support](https://docs.vllm.ai/en/latest/features/quantization/quantized_kvcache/)
+for the engine, hardware and model before proposing FP8/INT8/INT4. Do not call
+FP8 lossless, assume FP8 requires only one GPU generation, or infer INT8 support
+from an FP8 flag. Evaluate long-context recall, reasoning and task quality at the
+same retained context and output budget before accepting reduced KV precision.
 
-### Production guidelines
-
-1. **Start with GQA/MLA architecture** — architecture-level KV cache reduction is more impactful than quantization.
-2. **FP8 KV cache on H100** — essentially lossless, 2x memory reduction. Enable in vLLM with `--kv-cache-dtype fp8`.
-3. **INT8 KV cache** — good tradeoff for A100/H100. Minimal quality impact for contexts under 32K tokens.
-4. **INT4 KV cache** — quality impact grows with sequence length. Evaluate carefully for long-context applications.
-5. **Layer-wise KV quantization** — tools like KVTuner offer better quality at same average bit width by allocating higher precision to critical layers.
+See [local serving selection](local-serving-selection.md) for the full memory
+budget and bounded workload comparison; provenance is in
+[local serving sources](local-serving-sources.md).
 
 ---
 
@@ -444,20 +453,11 @@ Use the comparison table (Section 2.7) to choose based on:
 
 ### Step 3: Quantize
 
-```bash
-# GGUF (via llama.cpp)
-python3 convert.py --outtype f16 --model ./model --outpath model-f16.gguf
-./llama-quantize model-f16.gguf model-q4km.gguf Q4_K_M
-
-# GPTQ (via AutoGPTQ)
-python3 -m auto_gptq --model ./model --quantize --bits 4 --group-size 128 --dataset c4
-
-# AWQ (via AutoAWQ)
-python3 -m awq.quantize --model_path ./model --quant_path ./awq-model --calib-data wikitext
-
-# BnB NF4 (via transformers — on-the-fly)
-# Simply load with BitsAndBytesConfig
-```
+Record the calibration corpus (or why the method needs none), quantizer version,
+configuration and exported artifact hash. Use the [llama-cpp](../../llama-cpp/SKILL.md)
+conversion runbook for GGUF and the [vllm](../../vllm/SKILL.md) skill for supported
+serving formats. Do not copy historical conversion commands without checking the
+installed quantizer; this reference owns selection and evaluation, not a tool CLI.
 
 ### Step 4: Evaluate Quality
 
@@ -468,19 +468,18 @@ python3 -m awq.quantize --model_path ./model --quant_path ./awq-model --calib-da
 
 ### Step 5: Benchmark Performance
 
-- Measure tokens/second at batch size 1 (latency-sensitive).
-- Measure throughput at max batch size (throughput-sensitive).
-- Record peak VRAM usage.
-- Compare to baseline and to alternative quantization methods.
+- Follow the [workload-first serving comparison](local-serving-selection.md): separate single-stream decode, aggregate throughput and accepted tasks/hour.
+- Use a configurable concurrency sweep starting with 1, 2, 4, 8 and 10, extending when relevant and safe; ten is not a hard limit.
+- Preserve matched context, output/reasoning settings, quality, failures, memory peaks and bounded stop criteria.
 
 ### Step 6: Select the Winner
 
 | Criteria | Decision |
 |---|---|
-| Quality within threshold, best throughput | Choose that method |
+| All registered quality, latency, reliability and memory guardrails met | Choose the candidate best meeting the workload objective |
 | Quality outside threshold | Try higher-precision variant (Q4_K_M → Q5_K_M; g128 → g64) |
 | All methods fail threshold | Consider FP16 with tensor parallelism, or switch to a different architecture |
-| Throughput insufficient | Consider FP8 (if H100) or lower-precision quant with faster kernel |
+| Throughput insufficient | Compare supported precision/kernel candidates on the target workload; do not assume lower precision wins |
 
 ### Step 7: Production Deployment
 
@@ -493,295 +492,26 @@ python3 -m awq.quantize --model_path ./model --quant_path ./awq-model --calib-da
 
 ## 8. Inference Serving Architecture
 
-### 8.1 vLLM
+Choose an engine from the workload and supported model/backend, not a universal
+throughput table. Start with [local serving selection](local-serving-selection.md)
+and its [study template](../templates/local-serving-study.md).
 
-**Developed by:** UC Berkeley (Kwatra, Stoica)  
-**Language:** Python/C++/CUDA  
-**GitHub:** github.com/vllm-project/vllm  
-**License:** Apache 2.0
-
-vLLM is the most widely adopted open-source LLM serving framework, known for its combination of throughput and flexibility.
-
-#### Core innovations
-
-**PagedAttention**
-- Inspired by OS virtual memory paging.
-- KV cache is divided into fixed-size **blocks** (typically 16 or 32 tokens each).
-- Blocks are stored in a non-contiguous page table, eliminating fragmentation.
-- Enables near-zero memory waste vs. the 60-80% waste in traditional pre-allocated KV cache.
-- Allows memory sharing across sequences for techniques like beam search and parallel sampling.
-
-**Continuous Batching**
-- Also called **in-flight batching** or **iteration-level batching**.
-- Traditional servers wait for all sequences in a batch to finish before starting a new batch.
-- Continuous batching adds/removes sequences from the batch **after every iteration** (every decoding step).
-- Dramatically improves GPU utilization, especially when sequences have variable lengths.
-- vLLM achieves up to **24x higher throughput** than HuggingFace Transformers on the same hardware.
-
-**Chunked Prefill**
-- Splits long prefill (prompt processing) into smaller chunks that can interleave with decode steps.
-- Prevents long prompts from blocking decode-only sequences.
-- Reduces time-to-first-token (TTFT) variability.
-
-**Speculative Decoding**
-- Uses a small draft model to propose multiple tokens, verified by the target model in one forward pass.
-- 1.5-2.5x latency improvement on latency-sensitive workloads.
-
-#### Key features
-
-| Feature | Status | Notes |
+| Candidate | Reason to investigate | Evidence needed before choosing |
 |---|---|---|
-| AWQ quantization | ✅ Native | Marlin kernel support |
-| GPTQ quantization | ✅ Native | Marlin kernel support |
-| GGUF quantization | ✅ Added 2025 | Via llama.cpp backend |
-| FP8 (H100) | ✅ Native | Requires H100 |
-| KV cache INT8/FP8 | ✅ Native | `--kv-cache-dtype` flag |
-| Tensor parallelism | ✅ | Across GPU nodes |
-| Pipeline parallelism | ✅ | Limited |
-| Prefix caching | ✅ | Automatic KV cache reuse |
-| OpenAI-compatible API | ✅ | Drop-in replacement |
-| Multi-LoRA serving | ✅ | Efficient LoRA adapter switching |
-| Guided decoding | ✅ | JSON schema, grammar |
-| Disaggregated prefill/decode | ✅ | 2025 feature |
+| llama.cpp | GGUF, CPU/GPU offload, Metal and local deployments | Actual backend, context allocation and concurrency results; it is not restricted to four or fewer users. |
+| vLLM | GPU serving with continuous batching and configurable scheduling | Pinned model/kernel support, memory headroom, preemption and task-level tail latency. |
+| SGLang | Another candidate for GPU serving, request scheduling and prefix reuse | Pinned compatibility and matched workload measurements; no separate SGLang runbook is provided here. |
+| TGI | Existing Hugging Face serving integration | Current maintenance/support status and compatibility with the required checkpoint and platform. |
+| Triton with an LLM backend | Existing multi-model deployment requirements | Name and pin the actual backend; Triton is not one universal LLM execution engine or a guaranteed throughput winner. |
 
-#### Typical deployment
+Continuous batching, chunked prefill, prefix reuse and speculative decoding are
+hypotheses to measure under the chosen workload. Prefix caching saves repeated
+prefill work, not generation of new tokens; benchmark cold and warm conditions
+separately. Speculation can incur draft-model memory and verification overhead.
 
-```bash
-# Start vLLM server
-python3 -m vllm.entrypoints.openai.api_server \
-    --model /path/to/model \
-    --quantization awq \
-    --dtype auto \
-    --max-model-len 8192 \
-    --gpu-memory-utilization 0.90 \
-    --tensor-parallel-size 2 \
-    --enable-prefix-caching
-```
-
-#### When to choose vLLM
-
-- **High-throughput production serving** (chatbots, API endpoints).
-- **Multi-model or multi-LoRA setups**.
-- **OpenAI-compatible API needed**.
-- **Heterogeneous GPU setups** (supports various NVIDIA GPUs, AMD ROCm).
-- **Need for speculative decoding or prefix caching**.
-
----
-
-### 8.2 llama.cpp Server
-
-**Developed by:** Georgi Gerganov & community  
-**Language:** C/C++  
-**GitHub:** github.com/ggml-org/llama.cpp  
-**License:** MIT
-
-llama.cpp is a C/C++ inference engine focused on local/edge deployment with minimal dependencies. The `llama-server` component provides an HTTP API.
-
-#### Architecture
-
-- **No external dependencies** — pure C/C++ implementation with BLAS-optimized matrix operations.
-- **ggml backend** — custom tensor library supporting CPU, CUDA, Metal, Vulkan, SYCL, and more.
-- **Pure CPU inference** — unique among major serving frameworks. Can run 7B models at 10-20 tok/s on modern CPUs with AVX2.
-- **GPU offloading** — `--n-gpu-layers N` offloads N transformer layers to GPU. The rest runs on CPU.
-- **Quantization-native** — designed from the ground up for GGUF quantized models.
-
-#### Key features
-
-| Feature | Status | Notes |
-|---|---|---|
-| GGUF quantization | ✅ Native | Full k-quant suite |
-| AWQ/GPTQ | ❌ Not native | Via conversions |
-| CPU inference | ✅ Best-in-class | AVX2, AVX-512, NEON |
-| GPU offloading | ✅ | CUDA, Metal, Vulkan |
-| Batch inference | ✅ | Server mode with continuous batching |
-| KV cache reuse | ✅ | Automatic |
-| OpenAI-compatible API | ✅ | Built into `llama-server` |
-| Grammar sampling | ✅ | GBNF grammar engine |
-| Embedding endpoint | ✅ | Via `/v1/embeddings` |
-| Vision (multimodal) | ✅ | Llava, etc. |
-| Structured output | ✅ | JSON schema mode |
-
-#### Typical deployment
-
-```bash
-./llama-server \
-    --model /path/to/model.gguf \
-    --host 0.0.0.0 \
-    --port 8080 \
-    --n-gpu-layers 32 \
-    --threads $(nproc) \
-    --ctx-size 8192 \
-    --rope-scaling yarn \
-    --cache-type-k q8_0 \
-    --cache-type-v q8_0
-```
-
-#### When to choose llama.cpp
-
-- **CPU-only or hybrid CPU/GPU deployments**.
-- **Apple Silicon** (Metal backend is excellent).
-- **Local/edge inference** (privacy-sensitive, offline).
-- **Single-user or low-concurrency serving**.
-- **Experimentation** (fastest iteration for trying different quant levels).
-- **No dependency on Python or CUDA toolkit**.
-
----
-
-### 8.3 Text Generation Inference (TGI)
-
-**Developed by:** Hugging Face  
-**Language:** Rust/Python  
-**GitHub:** github.com/huggingface/text-generation-inference  
-**License:** Apache 2.0
-
-TGI is Hugging Face's production-grade inference server, used to power HuggingChat and the Hugging Face Inference API.
-
-#### Architecture
-
-- **Rust core** for HTTP routing and request management (high concurrency, low overhead).
-- **Python/CUDA backend** for model execution.
-- **Flash Attention 2** integration for efficient attention computation.
-- **PagedAttention** added in v2.x (also called "Paged Attention in TGI").
-- **Continuous batching** similar to vLLM.
-- **Safetensors** and `transformers` integration — loads models directly from Hugging Face Hub.
-
-#### Key features
-
-| Feature | Status | Notes |
-|---|---|---|
-| AWQ quantization | ✅ | Via optimum |
-| GPTQ quantization | ✅ | Via optimum |
-| FP8 quantization | ✅ | H100 support |
-| Bitsandbytes | ✅ | Via transformers |
-| Tensor parallelism | ✅ | |
-| Flash Attention 2 | ✅ | Default |
-| PagedAttention (v2.x) | ✅ | Added after vLLM |
-| Watermarking | ✅ | SynthID-Text |
-| Message API | ✅ | Native chat templates |
-| Streaming | ✅ | Server-Sent Events |
-| Speculative decoding | ✅ | |
-
-#### Typical deployment
-
-```bash
-docker run --gpus all \
-    -p 8080:80 \
-    -v /path/to/models:/data \
-    ghcr.io/huggingface/text-generation-inference:latest \
-    --model-id /data/model \
-    --max-total-tokens 8192 \
-    --quantize awq \
-    --num-shard 2
-```
-
-#### When to choose TGI
-
-- **Deep HuggingFace ecosystem integration** (Hub, optimum, tokenizers).
-- **Production serving with AWS Inferentia** (TGI has native Inferentia2 support).
-- **Message-based chat APIs** (native chat template handling).
-- **When watermarking or model-level guardrails are needed**.
-
----
-
-### 8.4 Triton Inference Server
-
-**Developed by:** NVIDIA  
-**Language:** C++/CUDA (backend), Python (frontend)  
-**GitHub:** github.com/triton-inference-server/server  
-**License:** BSD-3-Clause
-
-Triton is NVIDIA's production inference server. It is model-framework-agnostic and designed for enterprise-grade deployments.
-
-#### Architecture
-
-- **Multi-framework backend:** Supports TensorRT, TensorRT-LLM, PyTorch, ONNX Runtime, vLLM, Python, and custom backends.
-- **Concurrent model serving:** Multiple models (and multiple versions of the same model) served from a single instance.
-- **Ensemble scheduler:** Chain multiple models together without custom code (e.g., embedding → re-rank → LLM).
-- **Dynamic batching:** Client-side and server-side batching with configurable timeouts.
-- **GPU/CPU/accelerator support:** Concurrent serving across heterogeneous hardware.
-- **Prometheus metrics:** Native monitoring endpoint.
-
-#### TensorRT-LLM backend
-
-The TensorRT-LLM backend is the primary LLM serving path within Triton:
-
-1. **Model optimization phase:** Convert model to TensorRT engine (FP16, INT8, INT4, FP8).
-2. **Graph optimizations:** Kernel fusion, layer fusion, attention optimization.
-3. **In-flight batching:** Equivalent to continuous batching.
-4. **PagedAttention:** Adopted from vLLM's approach.
-5. **Multi-node tensor parallelism:** Up to hundreds of GPUs.
-
-#### Key features
-
-| Feature | Status | Notes |
-|---|---|---|
-| Multi-framework | ✅ | Not just LLMs |
-| TensorRT-LLM backend | ✅ | Highest throughput on H100 |
-| INT4/FP8/INT8 quantization | ✅ | Through TensorRT |
-| PagedAttention | ✅ | Via TensorRT-LLM |
-| In-flight batching | ✅ | |
-| Dynamic batching | ✅ | Server-side |
-| Ensemble inference | ✅ | Pipeline multiple models |
-| Concurrent model versions | ✅ | A/B test, gradual rollout |
-| Model repository | ✅ | Pull models at startup |
-| Prometheus monitoring | ✅ | |
-| Custom metrics | ✅ | |
-| Decoupled API | ✅ | Streaming responses |
-| Request prioritization | ✅ | QoS support |
-
-#### Typical deployment
-
-```yaml
-# Model repository structure
-model_repository/
-  ensemble_model/
-    1/
-      model.py (ensemble definition)
-  tensorrt_llm/
-    1/
-      config.pbtxt
-      model.engine
-  embedding_model/
-    1/
-      config.pbtxt
-      model.plan
-```
-
-```bash
-docker run --gpus all --shm-size=4g \
-    -p 8000:8000 -p 8001:8001 -p 8002:8002 \
-    -v /path/to/model_repo:/models \
-    nvcr.io/nvidia/tritonserver:24.12-trtllm-python-py3 \
-    tritonserver --model-repository=/models
-```
-
-#### When to choose Triton
-
-- **Enterprise production serving** (SLOs, multi-model, heterogeneous hardware).
-- **Multi-model pipelines** (embed → re-rank → generate).
-- **Multi-framework environments** (mixing TensorRT, PyTorch, ONNX).
-- **High-performance LLM serving on H100/H200 clusters** (TensorRT-LLM path).
-- **Need for request prioritization, A/B testing, multi-version serving**.
-- **Kubernate-native deployments** (Triton has first-class K8s support).
-
----
-
-### 8.5 Serving Framework Comparison
-
-| Property | vLLM | llama.cpp Server | TGI | Triton + TRT-LLM |
-|---|---|---|---|---|
-| **Language** | Python/C++/CUDA | C/C++ | Rust/Python/CUDA | C++/CUDA |
-| **Primary hardware** | NVIDIA GPU (+ AMD, Intel) | CPU, Apple, any GPU | NVIDIA GPU | NVIDIA GPU |
-| **Best quantization** | AWQ, GPTQ, FP8 | GGUF (all k-quants) | AWQ, GPTQ, FP8 | INT4/FP8 via TRT |
-| **Throughput (7B)** | Very high | Moderate | High | Highest (on H100) |
-| **Latency (single request)** | Low | Low | Low | Very low |
-| **CPU-only support** | No | Yes (best) | No | No |
-| **Apple Silicon** | No | Yes (Metal) | No | No |
-| **Multi-model serving** | Limited | No (one model) | No (one model) | Yes (full) |
-| **Ensemble pipelines** | No | No | No | Yes |
-| **OpenAI API compat** | ✅ Native | ✅ Built-in | ✅ Native | Requires NIM |
-| **Ecosystem** | OSS community | OSS community | HuggingFace | NVIDIA |
-| **License** | Apache 2.0 | MIT | Apache 2.0 | BSD-3 |
+Use the [llama-cpp](../../llama-cpp/SKILL.md) and [vllm](../../vllm/SKILL.md)
+tool skills for operational commands. This methodology intentionally replaces
+stale launch snippets, absolute feature matrices and unqualified engine rankings.
 
 ---
 
@@ -802,6 +532,10 @@ docker run --gpus all --shm-size=4g \
 
 ### Monitoring
 
+The numbers below are illustrative starting points, not universal release gates.
+Register workload-specific limits before comparing candidates; cache occupancy
+alone does not establish useful throughput or safe memory headroom.
+
 | Metric | What to Watch | Alert Threshold |
 |---|---|---|
 | **p50/p99 TTFT** | Time to first token | +30% from baseline |
@@ -813,56 +547,43 @@ docker run --gpus all --shm-size=4g \
 | **Perplexity (eval)** | Quality drift | +0.5 from baseline |
 | **Generation quality** | LLM-as-judge or human eval | Periodic |
 
-### Hardware selection guide
+### Hardware and memory budget
 
-| Deployment | Recommended Hardware | Recommended Setup |
-|---|---|---|
-| **Single user, local** | RTX 4090 (24 GB) | 7-13B, Q4_K_M GGUF, llama.cpp |
-| **Low concurrency API** | A100-40GB or RTX 6000 | 7-13B, AWQ, vLLM |
-| **Mid-scale production** | A100-80GB (x2-4) | 70B, AWQ/GPTQ, vLLM, TP=2-4 |
-| **High-scale production** | H100-80GB (x8+) | 70B-405B, FP8/INT4, TRT-LLM, TP=8 |
-| **Edge / CPU-only** | Modern x86 with AVX-512 | 7B, Q4_K_M, llama.cpp |
-| **Apple Silicon** | M2 Ultra / M4 Ultra | 7-13B, GGUF, llama.cpp Metal |
-| **Cost-sensitive** | L4 (24 GB) | 7-13B, AWQ, vLLM |
+Choose hardware only after the required model, context distribution, quality,
+latency and actual simultaneous inference load are known. A parameter count or
+short-prompt demo does not establish capacity for long-context agents.
 
-### Memory budget calculation
-
-For a model with `P` parameters, quantized to `B` bits/weight:
-
-```
-Model weights:   P × B / 8 bytes
-KV cache:        2 × n_layers × n_kv_heads × head_dim × max_seq_len × 2 (FP16) bytes
-Activations:     ~20% of model weights (rough estimate)
-Overhead:        CUDA context, framework, ~1-2 GB
+```text
+Peak resident memory = loaded weights + active/retained KV or recurrent state
+                     + activations and workspace + graph/batching buffers
+                     + runtime/allocator/device overhead + safety headroom
 ```
 
-Example — Llama 3 70B, AWQ INT4, seq_len 8192, batch_size 1:
-```
-Weights:   70B × 0.5 = ~35 GB
-KV cache:  2 × 80 × 8 × 128 × 8192 × 2 = ~2.7 GB
-Activations + overhead: ~8 GB
-Total:     ~46 GB → fits on a single A100-80GB or H100
-```
+For 70 billion parameters at nominal 4 bits, weights alone are approximately
+35 GB = 32.60 GiB **before** quantization metadata, unquantized tensors and loader
+allocations. Add the per-sequence cache estimate from section 6, then measure the
+remaining terms on each device. A one-sequence 8K GQA cache contributes 2.5 GiB;
+a ten-sequence 32K cache contributes 100 GiB without sharing. Neither arithmetic
+sum proves the model loads or meets an SLO. Do not use fixed percentages of
+weight size or a universal 1–2 GB allowance for activations/overhead.
 
-### Cold start / warm-up
+Report reserved versus used device memory, host/unified memory, peak prefill and
+decode usage, swap/offload and background workloads. On unified memory systems,
+account for OS and application pressure rather than treating RAM as dedicated VRAM.
 
-- Quantized models may produce garbage tokens for the first few inference steps (cold-start artifacts).
-- Always run a warm-up prompt (e.g., "Hello") before production traffic.
-- For serverless deployments, keep a warm standby or use model repository pre-loading.
+### Cold start and throughput/latency tradeoffs
 
-### Throughput vs. latency tradeoffs
-
-| Configuration | TTFT | TPOT | Throughput | Use Case |
-|---|---|---|---|---|
-| Batch size 1 | Lowest | Moderate | Lowest | Real-time chat |
-| Max batch, parallel | Higher | Higher | Highest | Offline batch |
-| Chunked prefill | Moderate | Moderate | High | Mixed workloads |
-| Speculative decoding | Low | Low | Moderate | Latency-sensitive |
+Record load/compile time and warm-up separately from steady state. Warm-up is not
+a remedy for invalid outputs: investigate output corruption before admitting
+traffic. Measure TTFT, per-token latency and completed-task time across the sweep;
+bigger batches, chunked prefill and speculation do not guarantee lower tail latency.
+Use the [study record](../templates/local-serving-study.md) to keep cold/warm
+prefix states, failures and saturation stops visible.
 
 ### Security considerations
 
-- **GGUF models are executable files** — only load from trusted sources. A malicious GGUF can execute arbitrary code.
-- **Safetensors** (used by AWQ/GPTQ) are safer but not invulnerable.
+- **GGUF is tensor/metadata data, not an executable file format.** Malformed inputs can still exploit parser/runtime vulnerabilities; use trusted artifacts, maintained loaders and isolation.
+- Safetensors likewise does not make a whole model repository, loader or remote-code dependency safe. Review executable code separately; do not enable remote code merely because weights use a data-only container.
 - Validate model provenance:
   - Check SHA256 hashes against published values.
   - Only load from trusted registries (HuggingFace verified orgs, internal registry).
@@ -874,6 +595,8 @@ Total:     ~46 GB → fits on a single A100-80GB or H100
 ---
 
 ## 10. References & Further Reading
+
+For the reviewed serving claims and their limits, use the [primary-source record](local-serving-sources.md). The historical reading below is background, not a compatibility or capacity guarantee.
 
 ### Foundational papers
 

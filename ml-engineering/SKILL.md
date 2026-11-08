@@ -50,6 +50,8 @@ Machine learning engineering is the bridge between model research and production
 | `references/fine-tuning.md` | Setting up a LoRA/QLoRA/ full fine-tuning run — data prep, hyperparameters, validation strategy |
 | `references/evaluation.md` | Evaluating a model — benchmark selection, custom eval sets, regression tracking, comparison methodology |
 | `references/evaluation-and-lineage.md` | Metric/configuration decisions, repeated stochastic comparisons, end-to-end lineage, temporal feature parity, drift response, and adaptation/serving tradeoffs |
+| `references/local-serving-selection.md` | Workload-first engine selection, actual inference overlap, concurrency sweeps beyond ten, task throughput and bounded stop criteria |
+| `references/local-serving-sources.md` | Primary serving documentation, version boundaries and limits of benchmark/video claims |
 | `references/quantization-inference.md` | Quantizing a model and serving it — GGUF/GPTQ/AWQ/bitsandbytes comparison, calibration data strategies, KV cache quantization, vLLM/llama.cpp/TGI/Triton architecture, production considerations |
 | `references/training-infrastructure.md` | Selecting and provisioning training infrastructure — GPU selection, VRAM budgeting, multi-GPU strategies (DDP/FSDP/DeepSpeed), cloud vs on-prem, storage, monitoring |
 
@@ -66,6 +68,7 @@ Machine learning engineering is the bridge between model research and production
 | `templates/weight-edit-study.md` | Preregistering a targeted weight repair, exact patch lineage, controls and rollback |
 | `templates/training-run-record.md` | Recording a training or fine-tuning run — model and data versions, full config, environment, eval results — so it can be reproduced |
 | `templates/eval-regression-table.md` | Tracking model quality across runs and triaging a regression — one row per eval case or capability subset |
+| `templates/local-serving-study.md` | Freezing a serving comparison, memory budget, load sweep, task acceptance and source/measurement evidence |
 | `templates/quantization-decision-record.md` | Recording a quantization decision — baseline, candidates compared, quality threshold, and rollback path |
 | `templates/model-lineage-record.md` | Linking data/features, code/configuration, runs, artifacts, evaluations, registry state, and deployed serving versions |
 | `templates/drift-response-record.md` | Recording drift signals, thresholds, diagnosis, retrain/rollback decisions, and post-action evidence |
@@ -82,7 +85,7 @@ Machine learning engineering is the bridge between model research and production
 
 ## Evals
 
-`evals/evals.json` — output-quality eval manifest for this skill: fine-tuning plan review, eval-set design, quantization decision, deployment plan, regression triage, and training-run reproducibility.
+`evals/evals.json` — output-quality eval manifest for this skill: fine-tuning plan review, eval-set design, quantization decision, deployment plan, regression triage, training-run reproducibility, and workload-first serving comparisons. Serving rubric changes and synthetic challenge examples are in `evals/local-serving-challenges.md`.
 
 ## Specialization decision boundary
 
@@ -103,6 +106,20 @@ evaluation to [agent-evals-and-observability](../agent-evals-and-observability/S
 For tabular foundation-model choice, read `references/tabular-foundations.md`;
 for named TabPFN setup/context/inference/fine-tuning, use
 [tabpfn](../tabpfn/SKILL.md).
+
+## Local serving decision boundary
+
+Select a compatible stack against the actual workload; do not infer capacity from
+single-stream tok/s, nominal model size or an idle agent roster. Distinguish
+aggregate generation throughput from accepted tasks/hour and measure actual
+inference overlap. Start with a configurable 1, 2, 4, 8, 10 concurrency ladder and
+extend beyond ten when useful within registered memory, quality, latency and time
+limits. Preserve matched context/output/reasoning settings and all errors/retries.
+Use `references/local-serving-selection.md` and `templates/local-serving-study.md`.
+SGLang is a candidate, not a new tool skill. Keep task/trajectory grading in
+[agent-evals-and-observability](../agent-evals-and-observability/SKILL.md); reuse
+`compare_task_runs.py` only for its matched single-attempt receipt contract.
+Finish with measured operating limits or a plan explicitly marked not run.
 
 ## Core Principles
 

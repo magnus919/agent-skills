@@ -28,7 +28,12 @@ the chosen variant is safe for the workloads it serves.
 | `[fill: e.g. GPTQ 4-bit]` | `[fill: ...]` | `[fill: ...]` | `[fill: ...]` | `[fill: ...]` | `[fill: ...]` | `[fill: ...]` |
 
 All candidates measured on the same eval set version and the same hardware under
-production-like concurrency.
+production-like concurrency. Record format-specific calibration requirements rather
+than pretending calibration-free methods use the same procedure. For serving
+comparisons, attach the [local serving study](local-serving-study.md): it separates
+single-stream and aggregate rates, accepted tasks/hour, actual inference overlap,
+context/output/reasoning settings, memory components and a configurable concurrency
+sweep starting at 1, 2, 4, 8, 10 and extending when useful. Retain errors and retries.
 
 ## Quality Threshold
 

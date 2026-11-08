@@ -17,6 +17,8 @@ unit: the previous record plus the previous pinned image is the rollback path.
 - Model repository and revision: _[fill: repo/name@commit or tag]_
 - Served model name(s): _[fill: names clients must use in /v1 requests]_
 - Tokenizer / chat template override: _[fill: path or "from model card"]_
+- GGUF integration (if used): _[fill: engine/plugin versions, base tokenizer
+  revision, and compatibility/quality test evidence; experimental support]_
 - Config file or command source: _[fill: path to the recorded vllm serve args]_
 
 ## Model and engine configuration
@@ -26,8 +28,10 @@ unit: the previous record plus the previous pinned image is the rollback path.
 - Tensor parallel size: _[fill: 1 / N GPUs in node]_
 - Pipeline parallel size: _[fill: 1 / number of nodes]_
 - Data / expert parallel size (if used): _[fill: 1 / ...]_
-- Max model length: _[fill: prompt + output bound, e.g. 32768]_
-- GPU memory utilization: _[fill: 0.0-1.0, default 0.92]_
+- Max model length: _[fill: prompt + output admission bound, not actual KV use]_
+- Actual context / output distributions: _[fill: representative workload]_
+- GPU memory utilization: _[fill: resolved value; v0.26.0 default 0.92]_
+- Explicit KV cache memory bytes (if used): _[fill: per-GPU pool budget]_
 - KV cache dtype: _[fill: auto / fp8 / ...]_
 - CPU offload GB (if used): _[fill: 0 or GiB per GPU]_
 
@@ -35,8 +39,8 @@ unit: the previous record plus the previous pinned image is the rollback path.
 
 - Max sequences per iteration: _[fill: --max-num-seqs value or default]_
 - Max batched tokens per iteration: _[fill: --max-num-batched-tokens value]_
-- Chunked prefill: _[fill: enabled / disabled / default]_
-- Prefix caching: _[fill: enabled / disabled]_
+- Chunked prefill: _[fill: resolved enabled / disabled and verification source]_
+- Prefix caching: _[fill: resolved enabled / disabled and verification source]_
 - Performance mode: _[fill: balanced / interactivity / throughput]_
 
 ## Environment and access
@@ -53,6 +57,10 @@ unit: the previous record plus the previous pinned image is the rollback path.
 - [ ] `/v1/models` lists the served model name
 - [ ] A representative request returns generated tokens
 - [ ] Startup log records memory profiling and GPU KV cache size: _[fill: tokens]_
+- [ ] Startup concurrency estimate and assumed request length recorded:
+  _[fill: memory estimate only; link measured SLO sweep separately]_
+- [ ] Allocated KV pool distinguished from actual occupied/reusable blocks
+- [ ] Installed help and resolved startup config checked for dynamic defaults
 - [ ] `/metrics` shows expected `vllm:gpu_cache_usage_perc` baseline: _[fill: value]_
 
 ## Changes from the previous record
