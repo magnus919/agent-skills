@@ -70,3 +70,25 @@ July research claims. Read `references/bounded-batch.md` from the skill root for
 source links, exact compatibility boundaries and evidence. The current upstream
 CLI/completion documentation was also inspected; live `master` links remain
 volatile. Device/help success is discovery, not model-execution evidence.
+
+
+## Focused server benchmark refresh, 2026-11-08
+
+Reviewed upstream commit
+[`7d7f0287530bc8981690f361d8c1627dbae1c99a`](https://github.com/ggml-org/llama.cpp/commit/7d7f0287530bc8981690f361d8c1627dbae1c99a)
+for the server-benchmark addition only. This does not refresh the older backend,
+model, or multi-GPU claims above and does not establish local runtime results.
+
+| Primary source at this commit | Verified boundary |
+|---|---|
+| [Server README](https://github.com/ggml-org/llama.cpp/blob/7d7f0287530bc8981690f361d8c1627dbae1c99a/tools/server/README.md) | Server slots and continuous batching; version-sensitive context/KV controls; `/slots` observations; `/metrics` processing/deferred requests and average busy slots per decode; prompt-cache reuse skips the common prefix when possible |
+| [Server benchmark README](https://github.com/ggml-org/llama.cpp/blob/7d7f0287530bc8981690f361d8c1627dbae1c99a/tools/server/bench/README.md) | k6 concurrent virtual users; whitespace input tokenizer caveat; usage-based counters and `total_tokens / request duration` trend; stop/length finish metrics |
+| [llama-bench README](https://github.com/ggml-org/llama.cpp/blob/7d7f0287530bc8981690f361d8c1627dbae1c99a/tools/llama-bench/README.md) | Separate pp/tg/pg and context-depth tests; repetitions and variance; tokenization and sampling excluded |
+
+The configurable 1/2/4/8/10+ sweep, short/normal/long cohorts, accepted-task
+accounting, explicit overlap evidence, and stop/unknown rules are this skill's
+measurement procedure, not upstream hardware capacity guarantees. No new launch
+flags or universal defaults are prescribed. Verify installed help, startup
+configuration, endpoint enablement, and route-specific response fields before
+using the documented observations. The source review ran no inference, server,
+or load generator.

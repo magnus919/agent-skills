@@ -22,7 +22,7 @@ compatibility: >-
 metadata:
   source: https://docs.vllm.ai/en/latest/
   source_index: references/00-source-index.md
-  research_checked: "2026-08-03"
+  research_checked: "2026-11-08"
 ---
 
 # vLLM Inference Serving
@@ -31,7 +31,7 @@ Use this skill to operate **vLLM** as a production inference server: deploy it w
 
 ## Operating contract
 
-1. **Record the deployment before tuning it.** Capture the vLLM version or image digest, model and revision, quantization, parallelism, `max-model-len`, KV cache settings, batching limits, GPU inventory, and workload. The [serving config template](templates/serving-config.md) exists for exactly this.
+1. **Record the deployment before tuning it.** Capture the vLLM version or image digest, model and revision, quantization, parallelism, `max-model-len`, KV cache settings, batching limits, GPU inventory, and workload. Inspect the installed release's help and resolved startup configuration, not just supplied flags: V1 enables chunked prefill where supported, and prefix caching may already be on; model/backend exceptions matter. The [serving config template](templates/serving-config.md) exists for exactly this.
 2. **Confirm the target, scope, and rollback path before acting.** Read-only discovery (health probes, `/metrics`, `nvidia-smi`) may proceed without confirmation. Mutations — restarting a server, changing serving args, scaling replicas, upgrading the image — require an explicit human directive naming the deployment.
 3. **A server that responds is not a server that serves.** `/health` returning 200 proves liveness, not that the model loaded or that inference works. Verify at the delivery boundary: `/v1/models` reports the served model and a representative request returns generated tokens.
 4. **Benchmark before and after every change.** vLLM flags, defaults, and behavior change between releases; an unmeasured tuning change is a guess. Compare only matched conditions (version, model, GPU, context, batch, workload) and record the evidence in the [benchmark run record](templates/benchmark-run-record.md).
@@ -67,10 +67,11 @@ Exit codes: 0 all checks passed, 1 issues found or a fatal error, 2 usage error,
 ## Model configuration
 
 - **Model identity**: `--model` is the HF repo or local path; `--revision` pins the exact weights. `--served-model-name` sets the name clients must use in `/v1` requests and in the `model` field of responses. `--trust-remote-code` is required for some model repos and should be reviewed before use.
-- **Context length**: `--max-model-len` bounds prompt plus output per request. Unset, it derives from the model config; `-1`/`auto` picks the largest length that fits GPU memory. It is the single biggest driver of KV cache size.
+- **Context length**: `--max-model-len` bounds prompt plus output per request. Unset, it derives from the model config; `-1`/`auto` selects a length subject to memory/model limits on supporting releases. Distinguish this admission limit from the allocated KV pool and actual resident token lengths. Halving the configured limit does not automatically halve memory or double useful concurrency when actual token lengths stay fixed.
 - **Quantization-aware serving**: pass `--quantization` (or `-q`) only when the model weights require it (GPTQ/AWQ/GGUF checkpoints load their scheme from config). Weight types and activation dtypes must match what the kernels support; a quantized model served at the wrong dtype fails to load or silently degrades. Hardware support varies by method (see [references/02-model-configuration.md](references/02-model-configuration.md)).
+- **GGUF caveat**: upstream calls vLLM GGUF support experimental, under-optimized, and potentially incompatible with other features. Current docs use the out-of-tree `vllm-gguf-plugin` and recommend the base-model tokenizer. Verify the installed version/plugin path; a smaller checkpoint is not evidence of faster serving or feature parity.
 - **Tensor parallelism**: `--tensor-parallel-size N` shards one model across N GPUs in the same node; `--pipeline-parallel-size` splits layers across nodes. TP requires NVLink/fast interconnect and equal per-GPU memory; startup logs the memory profiling result, which is the evidence that the model fits.
-- **KV cache**: `--gpu-memory-utilization` (default 0.92) caps the fraction of GPU memory the model plus KV cache may use. `--kv-cache-dtype fp8` shrinks the cache for long contexts on supported GPUs. The engine logs `GPU KV cache size: N tokens` and the implied max concurrency — record both; they tell you how many concurrent requests of a given length the box can hold.
+- **KV cache**: memory budgeting (`--gpu-memory-utilization`, or an explicit KV pool size on supporting releases) and startup profiling determine the allocated pool. `--kv-cache-dtype fp8` can shrink per-token storage on supported configurations. Record the startup token capacity and concurrency estimate with its assumed request length. This is a memory estimate, not measured SLO capacity or a universal client-concurrency ceiling.
 
 ## OpenAI-compatible API surface
 
@@ -83,19 +84,21 @@ Exit codes: 0 all checks passed, 1 issues found or a fatal error, 2 usage error,
 - **Online serving benchmark**: run `vllm bench serve` against a live server with a representative dataset (ShareGPT, a local `custom` JSONL, or your own prompts) and fixed `--num-prompts`, `--request-rate`, and `--max-concurrency`. It reports request throughput (req/s), output token throughput (tok/s), total token throughput, and TTFT/TPOT/ITL percentiles.
 - **Offline throughput**: `vllm bench throughput` measures raw engine throughput without the HTTP path; use it for engine-only comparisons, not end-to-end user latency.
 - **Comparable evidence**: the benchmark run record template freezes version, model, quantization, parallelism, context, batching, GPU, dataset, and load pattern. Never compare numbers across different conditions as if one variable changed. TTFT is a latency metric; token throughput is a throughput metric — an optimization that helps one can hurt the other.
+- **Capacity sweep**: use configurable levels **1, 2, 4, 8, 10** as a starting plan, extending beyond ten when safe and useful. Stop at predefined memory, latency, error, thermal, or budget constraints. Measure requested/in-flight, queued, and running inference separately from active agents. Keep per-request tails, actual token distributions, failures/retries, and task outcomes; accepted tasks/hour needs linked task-level evaluation, not just HTTP success.
+- **Cache controls**: compare cold/warm cache states and shared/non-shared prefixes under matched conditions. Prefix reuse saves prefill work; do not interpret its TTFT gain as faster decoding. See [references/04-benchmarking.md](references/04-benchmarking.md) for the full sweep protocol.
 - For production capacity testing, vLLM's docs recommend the separate GuideLLM framework; this skill's scope is the bundled `vllm bench` tools.
 
 ## Continuous batching tuning
 
 - vLLM batches continuously by default: the scheduler admits sequences as capacity frees up, mixing prefill and decode. `--max-num-seqs` caps sequences per iteration, `--max-num-batched-tokens` caps tokens per iteration, and `--enable-chunked-prefill` lets prefill share an iteration with decode.
-- Start from defaults and change one knob at a time against the frozen benchmark: raising `--max-num-seqs` raises throughput at the cost of per-request latency and KV cache pressure; lowering it improves latency stability at the cost of utilization.
+- Inspect resolved defaults, then change one knob at a time against the frozen benchmark: raising `--max-num-seqs` may improve batching but can increase latency and KV pressure; a benefit is a hypothesis to test, not a guarantee.
 - `--enable-prefix-caching` reuses KV blocks across requests with shared prefixes (chat system prompts, RAG contexts); the hit rate is visible in `/metrics` and in the benchmark's input token accounting. `--performance-mode` trades between `interactivity` (latency) and `throughput` at the kernel level.
 
 ## GPU operation
 
 - Verify GPUs with `nvidia-smi` (or `rocm-smi` on AMD): device list, memory, utilization, temperature, and ECC errors before and after changes. `CUDA_VISIBLE_DEVICES` selects which GPUs a `vllm serve` process sees; tensor parallel ranks map to the visible devices in order.
-- Watch `/metrics` for `vllm:gpu_cache_usage_perc` (KV cache pressure), `vllm:num_requests_running`/`waiting`, and `vllm:generation_tokens_total`. A cache-usage signal near 1.0 with requests waiting means the deployment is at capacity — scale out or reduce `max-model-len`/concurrency rather than overcommitting.
-- OOM during startup usually means the model + KV cache did not fit: lower `--gpu-memory-utilization` does not help if weights alone exceed memory — reduce `--max-model-len`, switch quantization, or add GPUs. OOM mid-run means KV cache pressure: shrink context, concurrency, or batch limits.
+- Watch the installed release's cache-usage, running/waiting, preemption, and token metrics. High occupancy plus waiting requests suggests pressure; correlate it with preemptions and latency rather than declaring capacity from occupancy alone. Bound concurrency or actual token demand when needed; changing a context cap only helps demand if it changes admitted work.
+- Diagnose OOM from its phase and allocation evidence: weights, activations, graph capture, KV pool, and competing processes all matter. Reducing a request limit alone is not a guaranteed memory fix. Verify a scoped change on scratch before applying it to production.
 
 ## Upgrade and rollback
 
@@ -121,7 +124,7 @@ Exit codes: 0 all checks passed, 1 issues found or a fatal error, 2 usage error,
 - `tests/test_vllm_health.py`: deterministic tests against a local stub HTTP server, including the read-only contract.
 - `templates/serving-config.md` and `templates/benchmark-run-record.md`: fillable records that make deployments reproducible and benchmark evidence comparable.
 - `references/`: seven dated, source-indexed references covering the operational topics above.
-- `evals/evals.json`: six output-quality evaluation cases for agent runs.
+- `evals/evals.json`: output-quality cases for agent runs; `evals/serving-evidence-challenges.md` records rubric changes and challenge examples, not runtime evidence.
 
 ## Verification boundary
 

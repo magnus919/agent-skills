@@ -1,6 +1,6 @@
 # vLLM GPU Operation, Upgrade, and Rollback
 
-> **Last Updated:** 2026-08-03
+> **Last Updated:** 2026-11-08 (memory-pressure interpretation)
 > Sources: https://docs.vllm.ai/en/latest/configuration/engine_args/,
 > https://docs.vllm.ai/en/latest/deployment/docker/,
 > https://github.com/vllm-project/vllm/releases
@@ -21,14 +21,16 @@
 - **Observability**: `/metrics` exposes `vllm:gpu_cache_usage_perc` (KV cache
   pressure), `vllm:num_requests_running`, `vllm:num_requests_waiting`, and
   token counters. Prometheus scraping of `/metrics` is the standard wiring;
-  alert on cache usage near 1.0 with requests waiting (capacity), repeated OOM,
-  and probe failures.
-- **OOM at startup** usually means weights + KV cache do not fit: reduce
-  `--max-model-len`, switch to a quantized checkpoint, add GPUs, or (as a
-  stopgap) `--cpu-offload-gb`. Lowering `--gpu-memory-utilization` does not
-  help if the weights alone exceed memory.
-- **OOM mid-run** means KV cache pressure at peak concurrency: shorten context,
-  lower `--max-num-seqs`, or scale out replicas.
+  correlate cache usage and waiting with preemption, actual lengths, and SLO
+  tails. Inspect emitted metric names for the installed version. Occupancy
+  alone is not evidence of measured capacity.
+- **OOM diagnosis**: identify whether failure occurs loading weights, profiling
+  activations, capturing graphs, allocating KV, or running a particular batch.
+  Check competing processes and per-GPU headroom. Reducing a request-length
+  bound is not a guaranteed way to shrink the allocated pool or resident KV
+  at unchanged actual token lengths. Match a bounded scratch experiment to
+  the allocation that failed; weights that cannot fit may need quantization,
+  additional GPUs, or weight offload. Mid-run OOM is not necessarily KV alone.
 
 ## Upgrade
 
@@ -63,11 +65,11 @@
 
 | Symptom | First evidence to collect | Likely causes and next step |
 |---|---|---|
-| Server crashes at startup (OOM) | Side-by-side startup logs, `nvidia-smi`, image digests | Weights+KV don't fit; changed defaults after upgrade. Reduce `max-model-len`/memory utilization on scratch, or roll back the pinned image |
+| Server crashes at startup (OOM) | Allocation phase, side-by-side logs, `nvidia-smi`, image digests | Compare weights, activation/graph and KV budgets plus competing load; validate a targeted scratch change or roll back |
 | `/health` 200 but requests fail | `/v1/models`, one bounded request | Model not loaded, served-name mismatch, missing chat template; check `/load` and startup log |
 | 404 on `/v1/chat/completions` | `/v1/models`, model type | Pooling/embedding model or missing chat template; see `references/03-openai-api.md` |
-| High p99 latency | TTFT vs TPOT split, cache-usage metrics | Prefill blocking decode → chunked prefill; KV pressure → bound concurrency |
-| Requests waiting, cache ~100% | `vllm:gpu_cache_usage_perc`, waiting gauge | At capacity: scale out or reduce context/concurrency; do not raise batch limits |
+| High p99 latency | TTFT vs TPOT split, resolved defaults, cache/preemption metrics | Tune the already-resolved chunked-prefill budget if contention is shown; bound overlap when pressure is shown |
+| Requests waiting, cache ~100% | Cache usage, waiting/running, preemption, actual lengths and latency | Investigate pressure; use the SLO sweep before scaling or reducing actual demand/concurrency |
 | Container killed at startup | `kubectl get events`, log `KeyboardInterrupt: terminated` | Probe `failureThreshold` too low for model load time; raise it |
 | Slow restart every time | Startup duration, `VLLM_CACHE_ROOT` | Compile cache not persisted; mount `~/.cache/vllm` volume |
 

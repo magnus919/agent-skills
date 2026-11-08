@@ -18,7 +18,11 @@ a saved-logit helper makes the arithmetic inspectable without calling a model.
 
 Experimental weight-editing guidance helps distinguish a targeted repair from an
 unsupported capability claim, with a study record for controls, feedback budgets,
-exact artifact changes and rollback.
+exact artifact changes and rollback. The [local serving guide](references/local-serving-selection.md)
+and [study worksheet](templates/local-serving-study.md) compare single-user response
+speed, aggregate throughput and accepted tasks/hour across realistic contexts and
+concurrency, including eight, ten and larger workloads. A [source record](references/local-serving-sources.md)
+keeps engine/version claims separate from local performance evidence.
 
 ## What You Get
 
@@ -36,7 +40,7 @@ Setting up fine-tuning runs, choosing evaluation metrics or repeated comparisons
 
 ## Requirements
 
-Assumes familiarity with PyTorch/HuggingFace ecosystem. References cover vLLM, llama.cpp, TGI, DeepSpeed, and accelerate. The bundled script needs only Python 3 (standard library).
+Assumes familiarity with PyTorch/HuggingFace ecosystem. References cover vLLM, llama.cpp, SGLang selection, TGI, DeepSpeed, and accelerate. The bundled script needs only Python 3 (standard library).
 
 ## Quick Start
 

@@ -16,7 +16,7 @@ This skill gives your agent a discovery-first operating procedure. It checks the
 | `references/installation-and-backends.md` | Package, release, Docker, source-build, and backend verification workflows |
 | `references/models-gguf-and-memory.md` | Model provenance, GGUF inspection, quantization, context, and capacity planning |
 | `references/inference-and-serving.md` | CLI smoke tests, server readiness, APIs, templates, structured output, embeddings, and reranking |
-| `references/performance-and-benchmarking.md` | Reproducible tuning and matched benchmark comparisons |
+| `references/performance-and-benchmarking.md` | Matched tuning, configurable 1/2/4/8/10+ server sweeps, context/cache tests, and accepted tasks/hour |
 | `references/troubleshooting.md` | Evidence-led diagnosis by symptom |
 | `references/source-index.md` | Dated primary sources and refresh rules |
 | `scripts/llama_batch.py` | Bounded GPU-only completion planner/runner with retained failure logs |

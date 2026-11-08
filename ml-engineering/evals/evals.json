@@ -29,10 +29,10 @@
     {
       "id": "quantization-decision",
       "prompt": "We serve a 70B model and want to cut serving cost by quantizing it. Someone proposed jumping straight to 4-bit weights to double throughput. Walk me through how to decide whether to quantize, what to compare, and how to prove the choice is safe.",
-      "expected_output": "A quantization decision process that measures before it optimizes: establish the baseline quality of the unquantized model on the production eval set first, then treat each candidate (GGUF q4/q5/q8, GPTQ, AWQ, bitsandbytes) as a hypothesis to test against that baseline. Each candidate is evaluated with the same eval set and the same calibration-data strategy, comparing quality deltas per capability as well as VRAM footprint, tokens-per-second, and latency under production concurrency. The decision is recorded with the measured numbers, the hardware and serving engine used, and the quality threshold the model must stay above; if a quantized variant regresses a critical capability, it is rejected or shipped only for the workloads where the regression does not matter. The eval set and the recording keep the decision reproducible and comparable when a new model or engine version lands.",
+      "expected_output": "A quantization decision process that measures before it optimizes: establish the baseline quality of the unquantized model on the production eval set first, then treat each candidate (GGUF q4/q5/q8, GPTQ, AWQ, bitsandbytes) as a hypothesis to test against that baseline. Each candidate is evaluated with the same eval set and documented method-appropriate calibration requirements, comparing quality deltas per capability as well as VRAM footprint, tokens-per-second, and latency under production concurrency. The decision is recorded with the measured numbers, the hardware and serving engine used, and the quality threshold the model must stay above; if a quantized variant regresses a critical capability, it is rejected or shipped only for the workloads where the regression does not matter. The eval set and the recording keep the decision reproducible and comparable when a new model or engine version lands.",
       "assertions": [
         "The process measures the unquantized baseline on the production eval set before quantizing",
-        "The comparison covers GGUF/GPTQ/AWQ/bitsandbytes candidates with the same eval set and calibration strategy",
+        "The comparison covers compatible GGUF/GPTQ/AWQ/bitsandbytes candidates on the same eval set, documenting method-specific calibration requirements or no-calibration methods.",
         "The comparison measures quality deltas per capability plus VRAM, throughput, and latency under production concurrency",
         "The decision is recorded with measured numbers, hardware, serving engine, and an explicit quality threshold",
         "A variant that regresses a critical capability is rejected or limited to workloads where the regression is acceptable"
@@ -350,6 +350,77 @@
         "Stops at the registered budget",
         "Records ineffective candidates and an explicit rejected or inconclusive decision",
         "Does not claim successful optimization without measured improvement"
+      ]
+    },
+    {
+      "id": "local-serving-workload-metrics",
+      "prompt": "We have ten coding agents on one local server. Most wait on tools. Engine A has faster single-stream decode and engine B has more aggregate tok/s, but B retries more and accepts fewer tasks. Design the comparison and explain which measurement decides. Do not run services.",
+      "expected_output": "A workload-first plan separates request speed, shared-window throughput, actual inference overlap and quality-qualified task outcomes without declaring a universal engine winner.",
+      "assertions": [
+        "Distinguishes single-request decode rate from aggregate throughput measured over a shared elapsed window.",
+        "Defines accepted tasks/hour using unique accepted tasks and cohort wall time rather than summed overlapping task latencies.",
+        "Includes retries, queueing and tool waits in the task-throughput measurement window.",
+        "Requires evidence of active inference overlap instead of equating the agent roster with simultaneous requests.",
+        "Retains errors, timeouts and unresolved task outcomes rather than reporting only successful attempts.",
+        "Requires task-quality and critical-failure criteria rather than choosing solely on token rate.",
+        "Does not claim a benchmark ran when the request permits planning only."
+      ]
+    },
+    {
+      "id": "local-serving-concurrency-sweep",
+      "prompt": "Prepare a local serving study for llama.cpp, vLLM and SGLang. The proposed test stops at four requests. We may need twelve or sixteen, with varied prompt lengths and tool waits. Give the sweep, safeguards and stopping decision; no model runs are authorized.",
+      "expected_output": "A configurable sweep reaches eight and ten, can go beyond ten, and stops on registered evidence and budgets rather than a hardcoded capacity claim.",
+      "assertions": [
+        "Includes eight and ten concurrent requests in the initial configurable sweep rather than stopping at four.",
+        "Allows workload-relevant levels beyond ten when resources and safety criteria permit.",
+        "Separates client in-flight requests from observed server inference overlap.",
+        "Tests representative context and output/reasoning budgets rather than only short prompts.",
+        "Defines bounded stops for memory pressure and reliability or latency violations.",
+        "Defines a finite run budget or predeclared saturation criterion instead of escalating indefinitely.",
+        "Records levels not executed after a stop as not run rather than assuming their results.",
+        "Treats SGLang as a candidate requiring compatibility and matched measurements rather than an automatic winner."
+      ]
+    },
+    {
+      "id": "kv-cache-capacity-arithmetic",
+      "prompt": "Our guide says one Llama 3 70B sequence with 80 layers, 8 KV heads, head dimension 128 and 32,768 tokens needs 320 GB of FP16 KV. Correct the arithmetic for one, eight and ten independent resident sequences. Does that prove 32K is supported or that an INT4 model fits a 24 GB card? Can we apply it unchanged to MLA or hybrid recurrent models?",
+      "expected_output": "Correct payload arithmetic, architecture scope, full memory accounting and supported-context limits without turning estimates into deployment proof.",
+      "assertions": [
+        "Computes one-sequence FP16 KV payload as 10 GiB, approximately 10.74 decimal GB, before overhead.",
+        "Computes eight and ten independent equal-length sequence payloads as 80 GiB and 100 GiB respectively.",
+        "Uses KV heads rather than query heads and makes simultaneous sequence count explicit.",
+        "Distinguishes decimal GB from binary GiB.",
+        "Includes loaded weights, cache, activation or workspace buffers and runtime overhead in the deployment memory budget.",
+        "Does not apply the standard equal-shaped K/V formula unchanged to MLA or hybrid recurrent state.",
+        "Separates hypothetical 32K arithmetic from the original Llama 3 checkpoint context limit.",
+        "Does not treat nominal INT4 weight size or cache arithmetic as proof of 24 GB deployment capacity."
+      ]
+    },
+    {
+      "id": "serving-comparison-evidence",
+      "prompt": "A video and HyperQwen short-prompt benchmark suggest a 24 GB card can serve ten long-context agents. One candidate had thinking off, different sampling and warm prefix caching, while the other had thinking on and cold prefixes. We dropped timed-out tasks; compare_task_runs.py exited zero on synthetic receipts. Can we call the faster stack production-ready?",
+      "expected_output": "Hold the deployment claim, preserve source caveats and require matched real task evidence using existing contracts.",
+      "assertions": [
+        "Rejects transferring short-prompt or video throughput claims into ten-agent long-context capacity proof.",
+        "Requires matched reasoning, sampling, retained context and output budgets before attributing an engine performance difference.",
+        "Separates cold/non-shared prefix tests from warm-prefix tests rather than treating cache reuse as a decode speedup.",
+        "Preserves source provenance and disclosed measurement differences rather than presenting author benchmarks as local replication.",
+        "Retains timed-out or missing expected tasks in the evidence record.",
+        "Reuses existing task/trajectory evaluation contracts and limits compare_task_runs.py to matched single-attempt receipt comparisons.",
+        "Does not claim the helper measures overlapping task throughput or proves semantic task acceptance.",
+        "Separates structural or synthetic test success from real runtime quality, capacity and release approval."
+      ]
+    },
+    {
+      "id": "gguf-version-security-boundary",
+      "prompt": "Our guide says GGUF is executable, vLLM cannot use it except via a llama.cpp backend added in 2025, and AWQ is always faster on NVIDIA. Correct this guidance using the current official vLLM GGUF documentation without inventing compatibility for every release.",
+      "expected_output": "A version-scoped container/support/security explanation replaces categorical compatibility and performance claims.",
+      "assertions": [
+        "Describes GGUF as a tensor/metadata container rather than an executable program format.",
+        "Retains parser/runtime and separately loaded code risks rather than declaring model files harmless.",
+        "Reports current official vLLM experimental/under-optimized GGUF support and the out-of-tree plugin path.",
+        "Requires checking the deployed version instead of projecting the current plugin path onto all older releases.",
+        "Rejects a universal AWQ-versus-GGUF speed ranking without matched measurements."
       ]
     }
   ]

@@ -8,6 +8,8 @@ Your agent can run a vLLM deployment instead of guessing. Teams that self-serve 
 
 This skill ships that operating knowledge plus two fillable templates — a serving configuration record (so every deployment is reproducible) and a benchmark run record (so every performance claim is comparable) — and a read-only `vllm-health` probe that checks a running server's health, version, models, load, and metrics over HTTP without changing anything. The references are distilled from the official vLLM documentation with dated sources. Serving strategy and engine-selection methodology deliberately route up to `ml-engineering`; the llama.cpp stack routes to `llama-cpp`; this skill owns the day-to-day operation of vLLM itself.
 
+Capacity testing starts with a configurable 1, 2, 4, 8, 10 concurrency sweep, extends when useful, and stops at declared safety limits. It separates active agents from simultaneous inference, tracks per-request tails and accepted tasks/hour, and tests shared-prefix caching without mistaking prefill savings for faster decoding. Version-aware checks cover resolved V1 defaults, actual KV demand, and the experimental GGUF plugin path.
+
 ## What You Get
 
 | Directory | Purpose |
@@ -18,7 +20,7 @@ This skill ships that operating knowledge plus two fillable templates — a serv
 | `templates/benchmark-run-record.md` | Fillable record that makes throughput/latency evidence comparable across runs |
 | `scripts/vllm-health` | Read-only probe: health, version, models, load, and metrics; stdlib-only, `--json`, `--help` without a server |
 | `tests/` | Deterministic tests against a local stub HTTP server, including the read-only contract |
-| `evals/evals.json` | Six output-quality evaluation cases for agent runs |
+| `evals/` | Output-quality cases plus assertion challenge examples; not performance measurements |
 
 ## Quick Start
 

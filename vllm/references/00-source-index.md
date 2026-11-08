@@ -1,6 +1,6 @@
 # vLLM Operations — Source Index
 
-> **Last Updated:** 2026-08-03
+> **Last Updated:** 2026-11-08 (serving defaults, GGUF, and benchmark evidence)
 
 This index tracks the authoritative upstream sources behind the vLLM operational
 skill and the refresh procedure for keeping it current. vLLM moves fast — flags,
@@ -18,14 +18,44 @@ version-sensitive and re-verify against the installed release.
 | Kubernetes deployment | https://docs.vllm.ai/en/latest/deployment/k8s/ |
 | Online serving (OpenAI-compatible API) | https://docs.vllm.ai/en/latest/serving/online_serving/ |
 | Engine arguments | https://docs.vllm.ai/en/latest/configuration/engine_args/ |
+| Versioned engine arguments | https://docs.vllm.ai/en/v0.26.0/configuration/engine_args/ |
+| Versioned cache defaults | https://docs.vllm.ai/en/v0.26.0/api/vllm/config/cache/ |
+| Versioned engine default resolution | https://docs.vllm.ai/en/v0.26.0/api/vllm/engine/arg_utils/ |
+| V1 optimization and tuning | https://docs.vllm.ai/en/latest/configuration/optimization/ |
+| Automatic prefix caching | https://docs.vllm.ai/en/latest/features/automatic_prefix_caching/ |
+| GGUF support and plugin migration | https://docs.vllm.ai/en/latest/features/quantization/gguf/ |
 | Quantization | https://docs.vllm.ai/en/latest/features/quantization/index.html |
 | Benchmark CLI (`vllm bench`) | https://docs.vllm.ai/en/latest/benchmarking/cli/ |
+| Serving benchmark CLI arguments | https://docs.vllm.ai/en/latest/cli/bench/serve/ |
 | vLLM paper (PagedAttention, SOSP 2023) | https://arxiv.org/abs/2309.06180 |
 | Continuous batching explainer (Anyscale, by Cade Daniel et al.) | https://www.anyscale.com/blog/continuous-batching-llm-inference |
 
-## Version observations (as of this refresh)
+## Serving-evidence refresh (2026-11-08)
 
-- Latest release: **v0.26.0** (published 2026-07-27). Release cadence is roughly
+- V1 optimization docs describe chunked prefill as enabled where supported;
+  v0.26.0 `CacheConfig` declares prefix caching enabled. Engine arguments can
+  be resolved dynamically by model/backend: the versioned EngineArgs keeps
+  hybrid-model prefix caching opt-in and disables both features on RISC-V CPU.
+  Inspect installed CLI help and resolved startup settings before proposing an
+  enablement or changing flags.
+- Current GGUF docs warn of experimental, under-optimized support and feature
+  incompatibilities. They now require the out-of-tree `vllm-gguf-plugin` and
+  recommend the base-model tokenizer. This is a current-doc observation, not a
+  claim that every older release requires that plugin.
+- Versioned engine arguments distinguish `max_model_len` from the KV pool
+  budget, including `kv_cache_memory_bytes`. Startup concurrency estimates are
+  memory-planning inputs, not a measured latency/throughput guarantee.
+- The benchmark CLI documents client concurrency caps and detailed per-request
+  results. This skill's 1, 2, 4, 8, 10 sweep, stop constraints, and accepted-task
+  accounting are an evaluation protocol, not an upstream hardware ranking or
+  a promised capacity. No serving performance was measured in this refresh.
+
+## Earlier version observations (2026-08-03)
+
+These retained observations are historical context, not a complete November
+release audit. Re-check unrelated version/hardware claims before operational use.
+
+- Release recorded at that refresh: **v0.26.0** (published 2026-07-27). Release cadence is roughly
   monthly; docs publish `stable` and `latest` streams plus per-version archives.
 - The official Docker image is `vllm/vllm-openai` on Docker Hub, with
   `vllm/vllm-openai-rocm` (AMD) and `vllm/vllm-openai-xpu` (Intel) variants;
@@ -37,9 +67,9 @@ version-sensitive and re-verify against the installed release.
   variants, replacing the older `benchmark_serving.py`/`benchmark_throughput.py`
   scripts. The docs recommend the external GuideLLM framework for production
   capacity testing.
-- `--prefix-caching` and `--performance-mode` (balanced/interactivity/throughput)
-  are current flags on the `vllm serve` command line; older doc pages may still
-  show earlier spellings.
+- Use `--enable-prefix-caching` as documented for v0.26.0, rather than the
+  previously listed `--prefix-caching`. Check other flags such as
+  `--performance-mode` against installed help.
 - Default `--gpu-memory-utilization` is 0.92 (per instance). `--kv-cache-dtype`
   accepts `auto`, `bfloat16`, `float16`, `fp8` (`fp8_e4m3`), `int8_per_token_head`,
   `nvfp4`, and other hardware-specific values on CUDA 11.8+.

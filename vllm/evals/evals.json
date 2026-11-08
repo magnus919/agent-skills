@@ -5,11 +5,11 @@
     {
       "id": "serving-config-review",
       "prompt": "A team wants to serve a 70B instruct model (bf16) on two A100 80GB GPUs in one node with a 32K context window. Draft the vllm serve command with serving flags, explain the memory and parallelism reasoning, and state what to verify after startup.",
-      "expected_output": "A vllm serve command that pins the model and revision, serves a stable API name, and configures parallelism and memory deliberately: --model <repo> --revision <sha> --served-model-name <api-name> --tensor-parallel-size 2 --max-model-len 32768 --gpu-memory-utilization 0.9 --trust-remote-code only if the model card requires it. The reasoning explains that a 70B bf16 checkpoint needs roughly 140GB of weights, so two 80GB GPUs with tensor parallelism are required (weights plus KV cache plus activations must fit under the per-instance gpu-memory-utilization cap), that --pipeline-parallel-size would only be needed across nodes, that --max-model-len 32K directly sizes the KV cache (larger context means fewer concurrent sequences), and that TP requires NVLink and equal per-GPU memory. Post-startup verification: the startup log shows memory profiling completed and the GPU KV cache size, /v1/models lists the served name, and a representative chat request returns tokens. The record goes into the serving config template so the deployment is reproducible and rollback is a redeploy of the same pinned image and arguments.",
+      "expected_output": "A pinned serving plan with model/revision, stable served name, tensor parallel size 2, a 32768 prompt-plus-output limit, and an explicit memory budget. Roughly 140 GB of bf16 weights makes two 80 GB GPUs a candidate, not proof that 32K requests at the desired overlap fit after runtime overhead. Distinguish the request admission limit from the profiled KV pool and actual resident lengths; do not promise a capacity doubling from halving the configured limit. Verify startup profiling/KV capacity, the served name, and a representative generated response. Record the pinned config as the rollback unit; no deployment is authorized by a request to draft it.",
       "assertions": [
         "The command pins model, revision, served-model-name, tensor-parallel-size 2, max-model-len, and gpu-memory-utilization",
-        "The 70B bf16 weight size (~140GB) is used to justify two A100 80GB GPUs under the memory-utilization cap",
-        "max-model-len is tied to KV cache sizing and concurrent-sequence capacity",
+        "Uses roughly 140 GB of bf16 weights to assess the two-GPU plan without guaranteeing the target workload fits",
+        "Distinguishes the max-model-len admission limit from the allocated KV pool and actual resident token demand",
         "Verification includes startup memory profiling, /v1/models, and a representative chat request",
         "The serving config template is used so the deployment is reproducible and rollback is a pinned-image redeploy"
       ]
@@ -17,12 +17,12 @@
     {
       "id": "quantization-and-parallelism-sizing",
       "prompt": "Our 8B model in bf16 takes 16GB of VRAM and we want to serve 256 concurrent long-context requests. We have a single 80GB H100. Should we quantize, enable tensor parallelism, or both, and what trade-offs should we record before changing anything?",
-      "expected_output": "A sizing analysis that measures before optimizing: establish the baseline with the current bf16 serving config, record the reported GPU KV cache size and max concurrency for the target context, then evaluate options against that baseline. On a single H100, tensor parallelism is not applicable (TP shards across multiple GPUs) so the levers are quantization and KV cache settings: an FP8 or INT4 weight format shrinks weights and frees GPU memory for a larger KV cache, --kv-cache-dtype fp8 shrinks the cache for long contexts on supported hardware, and --max-model-len or --max-num-seqs bound concurrency. The trade-offs are stated explicitly: quantization changes output quality and requires kernels that match the hardware generation, and more KV cache (longer context or higher concurrency) increases gpu-cache-usage until requests wait. The change record freezes version, model, quantization, context, batching, and workload, and verification re-runs the frozen benchmark plus a quality spot-check rather than assuming the quantized model matches bf16 behavior.",
+      "expected_output": "Measure a baseline before choosing memory changes: capture the allocated KV pool and startup estimate with its assumed length, then measure actual input/output distributions, queueing, preemption and latency at increasing request overlap. The requested 256 concurrency is not assumed safe. Tensor parallelism cannot shard across additional GPUs when only one H100 exists. Evaluate compatible weight and KV quantization separately with quality tests and matched runs. max-model-len is a request limit, max-num-seqs is an iteration limit, and neither establishes SLO capacity. Record and verify every proposed change rather than promising capacity from memory arithmetic.",
       "assertions": [
-        "The response measures the baseline (KV cache size, max concurrency) before optimizing",
+        "Requires a measured baseline before claiming the requested concurrency is supportable",
         "Tensor parallelism is correctly deemed not applicable on a single GPU",
         "Quantization (FP8/INT4 weights) and kv-cache-dtype fp8 are evaluated as the memory levers, with quality trade-offs stated",
-        "KV cache pressure is tied to gpu-cache-usage and waiting requests",
+        "Correlates KV occupancy with waiting requests and preemption before diagnosing capacity",
         "Verification re-runs the frozen benchmark and a quality spot-check under matched conditions"
       ]
     },
@@ -41,37 +41,99 @@
     {
       "id": "benchmark-run-review",
       "prompt": "A colleague claims a vLLM upgrade doubled our token throughput: 420 tok/s before, 850 tok/s after. Review their evidence before we roll the upgrade to production.",
-      "expected_output": "A skeptical review of the benchmark evidence: the comparison is only meaningful if every other condition was frozen, so the reviewer asks for or reconstructs the matched conditions — pinned vLLM versions on both sides, identical model and revision, same quantization and dtype, same tensor parallelism, max-model-len, max-num-seqs, max-num-batched-tokens, GPU model and driver, dataset, prompt and output lengths, request rate, and concurrency — and requires the raw benchmark records from vllm bench serve showing request throughput, output token throughput, TTFT/TPOT/ITL percentiles, and variance across repetitions. A throughput doubling without changes to hardware or workload is a red flag for a mismatch (for example comparing different concurrency, a different dataset, or fp8 versus bf16). The reviewer also separates throughput from latency: if the goal is user-facing latency, TPOT and TTFT under realistic load matter more than raw tok/s. The upgrade only ships if the matched benchmark confirms the claim and the run record template was used on both sides.",
+      "expected_output": "Treat 420 versus 850 tok/s as an unproven comparison until matched benchmark records are available. Freeze model/revision, tokenizer/template, precision, hardware, parallelism, request limits, batching, workload lengths, rate/overlap, sampling and cache cohorts; engine version is the declared variable. Ask for raw per-request latency and failures, aggregate throughput, sample sizes and repeated-run variance. Check whether precision, cache warmth, length/truncation or concurrency changed, without assuming a real doubling is impossible. Separate aggregate throughput from per-request TTFT/TPOT and task outcomes. Use the run-record template; rollout requires the agreed SLO and acceptance evidence, not just the larger number.",
       "assertions": [
         "The review demands matched conditions (version, model, quant, parallelism, context, batching, GPU, workload) on both sides",
         "Raw vllm bench serve output with throughput, TTFT/TPOT/ITL percentiles, and variance is required, not a single number",
         "A suspicious doubling is probed for a mismatch in concurrency, dataset, or precision",
         "Throughput and latency (TTFT/TPOT under load) are treated as separate metrics",
-        "The benchmark run record template is required on both sides before the upgrade ships"
+        "The benchmark run record template is required on both sides before the upgrade ships",
+        "Checks cache state and actual output lengths or truncation as possible comparison confounders"
       ]
     },
     {
       "id": "continuous-batching-tuning",
       "prompt": "Our vLLM server reports gpu_cache_usage_perc above 0.95 with requests waiting, and p50 latency is fine but p99 spiked. We already run with default batching settings. What should we change, and what should we measure?",
-      "expected_output": "A one-variable-at-a-time tuning plan anchored on evidence: the cache-usage and waiting-request metrics say the deployment is at KV cache capacity, so the options are to bound concurrency (lower --max-num-seqs to cap sequences per iteration), reduce per-request token demand (lower --max-model-len or cap output tokens), enable or widen chunked prefill (--enable-chunked-prefill with a deliberate --max-num-batched-tokens) so prefill no longer blocks decode, or scale out, rather than raising --max-num-seqs further which would worsen p99. Prefix caching (--enable-prefix-caching) is evaluated if requests share system prompts, since a higher hit rate lowers effective input tokens. Every change is measured with the frozen benchmark plus the /metrics counters (gpu_cache_usage_perc, num_requests_running/waiting) before and after, one change at a time, and p99 is reported with its distribution rather than a single run.",
+      "expected_output": "Investigate pressure before tuning: cache occupancy and waiting warrant correlating preemption, request lengths, TTFT/TPOT tails, running/queued load and scheduler limits. Inspect resolved V1 settings because chunked prefill and prefix caching may already be enabled. Test one targeted change such as concurrency admission, a chunked-prefill token budget, reduced actual prompt/output demand or scale-out. Lowering max-model-len alone does not free KV for unchanged real lengths. Evaluate shared-prefix reuse with cold/warm controls and distinguish prefill savings from decoding. Re-run matched repeated benchmarks with per-request tails and task outcomes, keeping all mutations gated.",
       "assertions": [
-        "The plan ties gpu_cache_usage_perc near 1.0 with waiting requests to KV cache capacity, not to raising max-num-seqs",
-        "Concrete levers are named: max-num-seqs, max-model-len or output cap, chunked prefill with max-num-batched-tokens, or scale-out",
-        "Prefix caching is evaluated for shared-prefix workloads",
-        "Changes are made one at a time with the frozen benchmark and /metrics counters before and after",
-        "p99 is reported with distribution or variance, not a single run"
+        "Correlates high KV occupancy and waiting with preemption or latency evidence before declaring the capacity bottleneck",
+        "Inspects resolved chunked-prefill and prefix-cache settings before recommending enablement",
+        "Proposes a bounded experiment using concurrency, a prefill token budget, actual token demand, or scale-out",
+        "Does not claim lowering max-model-len alone frees KV memory at unchanged actual token lengths",
+        "Evaluates prefix reuse with cache-state controls rather than promising faster decoding",
+        "Changes one variable at a time under matched benchmark conditions",
+        "Requires repeated per-request tail-latency evidence rather than one aggregate or median result"
       ]
     },
     {
       "id": "upgrade-rollback-troubleshooting",
       "prompt": "We upgraded the vllm/vllm-openai image from :v0.25.1 to :v0.26.0 and the server now crashes at startup with a CUDA out of memory error, even though the model did not change. Diagnose and decide: fix forward or roll back?",
-      "expected_output": "A bounded diagnosis that starts with the read-only evidence: confirm the exact image digest on both versions, the serving args, the model revision, and the GPU inventory (nvidia-smi), then compare the startup logs of the failing v0.26.0 run against the v0.25.1 run. OOM at startup after an engine upgrade with the same model points at changed memory defaults or changed flag semantics: vLLM releases change default KV cache allocation, max-model-len derivation, CUDA graph capture, and flag names, so the same config may now reserve more memory; the fix-forward path re-reads the v0.26.0 release notes for changed defaults, lowers gpu-memory-utilization or max-model-len on the scratch instance, validates the model loads and passes the frozen benchmark, and only then redeploys. The rollback path is already cheap because the previous pinned image and serving config were recorded: redeploy vllm/vllm-openai:v0.25.1 with the old args, verify /health, /v1/models, and one representative request, and re-run the benchmark. The response decides rollback first if the team cannot validate forward in the window, and never mutates the production deployment without a human directive naming target, scope, and rollback path.",
+      "expected_output": "A bounded diagnosis that starts with the read-only evidence: confirm the exact image digest on both versions, the serving args, the model revision, and the GPU inventory (nvidia-smi), then compare the startup logs of the failing v0.26.0 run against the v0.25.1 run. OOM at startup after an engine upgrade warrants checking the failing allocation phase, competing load, changed memory defaults and changed flag semantics: vLLM releases change default KV cache allocation, max-model-len derivation, CUDA graph capture, and flag names, so the same config may now reserve more memory; the fix-forward path re-reads the v0.26.0 release notes for changed defaults, tests a targeted memory-budget or execution-setting change on the scratch instance without assuming a smaller request limit shrinks the KV pool, validates the model loads and passes the frozen benchmark, and only then redeploys. The rollback path is already cheap because the previous pinned image and serving config were recorded: redeploy vllm/vllm-openai:v0.25.1 with the old args, verify /health, /v1/models, and one representative request, and re-run the benchmark. The response decides rollback first if the team cannot validate forward in the window, and never mutates the production deployment without a human directive naming target, scope, and rollback path.",
       "assertions": [
         "Diagnosis uses exact image digests, serving args, model revision, nvidia-smi, and side-by-side startup logs",
-        "Changed memory defaults and flag semantics across releases are named as the leading OOM-after-upgrade cause",
+        "Investigates changed memory defaults or flag semantics together with the allocation phase rather than assuming the context limit directly sizes KV memory",
         "The fix-forward path validates on a scratch instance with release notes and the frozen benchmark before redeploying",
         "The rollback path redeploys the pinned previous image plus recorded config and verifies at the delivery boundary",
         "No production mutation happens without a human directive naming target, scope, and rollback path"
+      ]
+    },
+    {
+      "id": "v1-defaults-and-prefix-evidence",
+      "prompt": "Our old vLLM runbook says chunked prefill and prefix caching are off by default. We plan to add both flags and claim faster decoding because warm repeated system prompts reduce TTFT. Review this for V1/v0.26.0 and tell us what evidence is missing; do not change the server.",
+      "expected_output": "Correct the stale defaults with versioned/current official evidence: V1 enables chunked prefill where supported and v0.26.0 CacheConfig enables prefix caching. CacheConfig is not a universal resolved engine default: versioned EngineArgs leaves hybrid-model prefix caching opt-in and has backend exceptions. Inspect the installed engine/model/backend and resolved startup settings rather than assuming either flag changes behavior. Separate TTFT/prefill benefits from TPOT/decode work and propose matched cold/warm, shared/non-shared prefix measurements before a performance claim. No mutation is performed.",
+      "assertions": [
+        "Explains that V1 chunked prefill is enabled where supported rather than generally off",
+        "Identifies the v0.26.0 CacheConfig prefix-caching default without treating it as a universal resolved engine setting",
+        "Requires inspection of the installed release and resolved startup settings before deciding whether enablement changes behavior",
+        "Distinguishes prefix-cache prefill or TTFT savings from direct new-token decoding acceleration",
+        "Proposes matched cold/warm and shared/non-shared prefix cohorts",
+        "Links official versioned or current vLLM documentation supporting the default correction"
+      ]
+    },
+    {
+      "id": "gguf-serving-compatibility",
+      "prompt": "A GGUF checkpoint is smaller than our native checkpoint. Can we treat it as an equally optimized drop-in replacement in vLLM and skip serving benchmarks? We are checking current docs but may deploy an older pinned engine.",
+      "expected_output": "Reject the drop-in/performance assumption. Cite the official GGUF warning that support is experimental, under-optimized and potentially feature-incompatible. Current documentation uses the out-of-tree vllm-gguf-plugin and recommends the base-model tokenizer, but older releases may differ. Pin/check engine/plugin/model compatibility and required API features, then compare quality and matched serving measurements. Do not install or deploy just to answer.",
+      "assertions": [
+        "Describes vLLM GGUF support as experimental and under-optimized",
+        "Warns that GGUF may be incompatible with required serving features",
+        "Identifies the current out-of-tree vllm-gguf-plugin integration path",
+        "Checks the pinned engine version instead of applying the current plugin requirement universally to older releases",
+        "Recommends the matching base-model tokenizer",
+        "Requires measured serving evidence instead of inferring speed or parity from smaller file size",
+        "Requires task-quality validation before treating the GGUF checkpoint as an equivalent replacement"
+      ]
+    },
+    {
+      "id": "measured-agent-serving-capacity",
+      "prompt": "We have ten active coding agents, but the benchmark stopped at four client requests. Startup printed a maximum concurrency of 20 at the configured context length; a colleague wants to set production to 18 and cite aggregate tokens/sec as completed work. Design the next vLLM test without running it.",
+      "expected_output": "Use configurable outstanding-request levels 1, 2, 4, 8, 10, extending if useful and safe, instead of four as a ceiling or 90% of the startup estimate. Declare numeric SLO/error/memory/thermal/budget stop constraints first and leave unsafe higher points untested. Separate active agents and tool waits from requested/client-in-flight, queued and running inference. Freeze actual context/output mix, model/engine/config, hardware, sampling and cache cohorts; repeat runs with per-request latency tails, preemption and memory evidence. Keep errors, timeouts, retries and finish reasons. Report accepted distinct tasks/hour only with a fixed task rubric and linked task-level evaluation; preserve failed/pending tasks and retry/tool-wait time in the measurement boundary.",
+      "assertions": [
+        "Includes eight and ten in a configurable sweep rather than stopping at four",
+        "Allows extending the sweep beyond ten when safe and useful",
+        "Defines explicit stop constraints before escalating load",
+        "Rejects a fixed percentage of startup concurrency as proof of production SLO capacity",
+        "Separates active agents from requested, queued and running inference overlap",
+        "Requires per-request latency tails rather than relying solely on aggregate token throughput",
+        "Retains request errors in the benchmark outcome evidence",
+        "Retains timeouts in the benchmark outcome evidence",
+        "Records retry counts rather than treating every attempt as distinct completed work",
+        "Records finish reasons or truncation so shortened answers are not silently counted as equivalent work",
+        "Defines accepted tasks/hour using distinct tasks and linked task-acceptance evaluation",
+        "Keeps retry and tool-wait time inside the declared end-to-end task measurement boundary",
+        "Matches actual context/output distributions and cache cohorts across compared runs",
+        "Collects preemption and memory evidence during the sweep"
+      ]
+    },
+    {
+      "id": "context-limit-versus-kv-pool",
+      "prompt": "We changed max-model-len from 32768 to 16384. The measured requests still use 4096 prompt tokens plus 1024 generated tokens and the GPU memory budget did not change. Can we say we halved KV memory and doubled concurrency? Explain how to verify.",
+      "expected_output": "No automatic halving/doubling follows. max-model-len controls admission; the profiled/configured KV pool and actual resident token blocks are separate quantities. The unchanged real lengths do not imply lower per-request KV demand. Record pool bytes/tokens, occupancy and sharing, runtime overhead and startup assumptions, then run a matched SLO sweep. Check whether the new cap rejects or truncates other real tasks and report that rather than counting them as a speedup.",
+      "assertions": [
+        "Distinguishes the request admission limit, allocated KV pool and actual resident token demand",
+        "Rejects automatic memory halving or concurrency doubling at unchanged actual token lengths",
+        "Requires memory profiling and a matched workload/SLO measurement before claiming improved capacity",
+        "Checks whether the lower limit rejects or truncates tasks rather than assuming quality is unchanged"
       ]
     }
   ]

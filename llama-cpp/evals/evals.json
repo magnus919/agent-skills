@@ -79,6 +79,56 @@
         "The recipe stops only its owned process group including pipe-holding descendants.",
         "The plan distinguishes device visibility from observed model offload and marks GPU inference not run."
       ]
+    },
+    {
+      "id": "server-concurrency-context-sweep",
+      "prompt": "Prepare, but do not run, a llama-server capacity benchmark for ten independent coding agents, with room to test more if useful. Our old recipe stopped at four requests and used only short prompts. Use representative contexts and keep comparisons fair. If the eight-request long-context cell breaches our declared memory margin, what should the report say about the unrun ten-request cell?",
+      "expected_output": "A configurable server benchmark plan covers 1, 2, 4, 8, 10 and relevant higher load levels across representative contexts, fixes task acceptance and experiment controls, stops safely, and reports unrun cells as unknown rather than inventing capacity or failures.",
+      "assertions": [
+        "Proposes a configurable default client-outstanding-request sweep including 1, 2, 4, 8, and 10 rather than stopping at four.",
+        "Allows higher load levels when the target workload and measured safety headroom justify them rather than treating ten as a ceiling.",
+        "Defines representative short, normal, and long context cohorts using workload token ranges that reserve output capacity.",
+        "Freezes task fixtures and quality acceptance thresholds before comparing load levels.",
+        "Controls server slot/context configuration separately from client load, with a new matched baseline if server configuration changes.",
+        "Predeclares safety stops including memory margin and overload or timeout limits before raising load.",
+        "Records the eight-request memory-margin breach as an observed stopped cell while labeling the unrun ten-request cell unknown, not a measured failure or proven capacity.",
+        "Describes the highest passing tested cell as a bounded result rather than the system maximum."
+      ]
+    },
+    {
+      "id": "server-agent-throughput-accounting",
+      "prompt": "Evaluate this illustrative llama-server report without running anything: ten agents are active; seven await tools; three client requests are outstanding, with two running in server slots and one deferred. We configured ten slots. Over 120 seconds, 20 unique tasks produced 24 request attempts including retries; 18 tasks met the fixed acceptance checks and two timed out. That wall window includes all retry and timeout time. Aggregate generated-token throughput rose from 600 to 720 tokens/s, but p95 TTFT rose from 2 to 9 seconds and the declared limit is 5 seconds. Finish/truncation records are missing. A separate bounded llama-completion smoke passed. Can we claim ten simultaneous inference workloads and accept the new configuration? Calculate accepted tasks/hour.",
+      "expected_output": "The assessment separates agents, tool waits, outstanding requests, running slots and deferred requests; calculates 540 accepted tasks/hour without double-counting retries; rejects the configuration against its latency guardrail and refuses unsupported overlap, finish-quality, or server-capacity claims.",
+      "assertions": [
+        "Distinguishes ten active agents including seven tool waits from three outstanding requests, two running server slots, and one deferred request.",
+        "Does not treat ten configured slots or the provided snapshot as evidence of ten simultaneous inference workloads; requests time-correlated processing evidence for a sustained overlap claim.",
+        "Calculates 540 accepted tasks/hour from 18 unique accepted tasks over 120 wall seconds, counting each accepted task once despite retries.",
+        "Keeps failed-attempt, retry, queue, and timeout time in accepted-task wall-time accounting instead of using only successful request durations.",
+        "Does not infer faster per-request decode from the increase in aggregate generated-token throughput.",
+        "Rejects the candidate against the declared p95 TTFT limit because nine seconds exceeds five seconds.",
+        "Treats missing finish/truncation records as an evidence gap rather than zero truncations or complete serving validation.",
+        "Does not use the bounded offline llama-completion smoke as evidence of concurrent llama-server capacity."
+      ]
+    },
+    {
+      "id": "server-prefix-cache-measurement",
+      "prompt": "Our llama-server benchmark sends identical long system prefixes to eight clients after a warmup and reports a higher token rate. The team says every independent agent will now decode faster. Design the comparison needed to test that claim, without running inference. We have the upstream k6 benchmark and an installed server whose revision has not been checked.",
+      "expected_output": "A source-verified plan separates cold and warm common-prefix tests from diverse-prefix workloads, verifies cache-state evidence, measures prefill and decode separately, and accounts for per-request latency, actual tokens, task quality, failures and memory without treating the stock k6 rate as decode or accepted work.",
+      "assertions": [
+        "Plans cache-cold common-prefix, cache-warm common-prefix with varied suffixes, and diverse-prefix cohorts representative of independent agents.",
+        "Separates model warmup from prompt-cache state and records a verifiable reset or isolation method before labeling a cohort cache-cold.",
+        "Requires observed cache-reuse evidence or marks cache hits unverified rather than inferring hits solely from matching prompt text.",
+        "Explains that prefix reuse can reduce prefill work or TTFT without automatically increasing decode speed.",
+        "Checks the installed version/help and matching upstream server or benchmark documentation before prescribing route-specific cache controls or metric fields.",
+        "Distinguishes the upstream k6 total_tokens/request-duration trend from pure decode speed.",
+        "Uses server usage rather than whitespace estimates for actual token accounting when available.",
+        "Requires per-request TTFT and end-to-end latency distributions.",
+        "Requires aggregate prompt-token and generated-token throughput reported separately from per-request rates.",
+        "Retains the same task-quality acceptance checks across cache cohorts.",
+        "Requires finish-reason and truncation outcomes in the comparison report.",
+        "Requires error and timeout counts in the comparison report.",
+        "Requires peak host/device memory and remaining safety margin in the comparison report."
+      ]
     }
   ]
 }
