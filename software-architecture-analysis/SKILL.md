@@ -126,6 +126,24 @@ After the initial map, load only the references needed by the question:
 
 Treat every claim as **observed**, **inferred**, **reported**, or **unknown**. Cite the artifact, trace, configuration, test, metric, or interview evidence that supports it. Do not turn a missing observation into a defect without labeling the uncertainty.
 
+### Scoped component context maps
+
+When a decision depends on one existing subsystem, create a small, source-grounded
+context map instead of exporting a repository-wide code dump. Load
+`references/component-context-maps.md` and use
+`templates/component-context-contract.md` to record the selected scope, revision,
+public interface, invariants, side effects, dependencies, verification evidence,
+and unknowns. Link claims to paths and symbols, and distinguish observed facts
+from inference or owner-reported behavior. Keep the map proportional to the
+decision; do not infer that an undocumented behavior is absent.
+
+Refresh affected entries when the source revision changes. A changed hash or
+missing symbol signals that the map needs inspection; it does not by itself prove
+that the behavior changed. Route full-system architecture assessment and
+clean-room redesign through the phases below, and route implementation planning
+from an approved design to
+[implementation-planning](../implementation-planning/SKILL.md).
+
 ## Phase 3b: Interface Extraction Pattern (DAO/Provider Contract Design)
 
 When the goal is to extract an **implicit contract** — what operations does this codebase need from its database or storage layer? — follow this variant:

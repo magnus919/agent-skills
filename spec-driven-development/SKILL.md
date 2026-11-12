@@ -12,8 +12,10 @@ description: >-
   failure routing around a pipeline (bmad), or for unvalidated problems
   (product-discovery).
 license: MIT
-compatibility: Tool-agnostic — methodology applies to any AI coding agent. Templates
-  use markdown and Gherkin. Scripts require bash.
+compatibility: >-
+  Tool-agnostic methodology. Templates use Markdown and Gherkin. Existing shell
+  helpers require Bash; the optional review-input manifest requires Python 3.10+.
+
 metadata:
   source: https://github.com/magnus919/agent-skills/spec-driven-development
   spec-version: 1.2.0
@@ -57,6 +59,7 @@ record the equivalent content checks and any missing information explicitly.
 | Factory review lanes | Separating behavioral acceptance from maintainability, or adapting existing planning artifacts | `references/factory-review-lanes.md` |
 | Spec Quality Gates | You've written a SPEC.md and need to validate it before Gate 1 — the 7 gates that separate a good spec from a vague one | `references/spec-quality-gates.md` |
 | Review records and assumptions | Binding verdicts to a candidate, tracking provisional choices, or closing deferred findings | `references/review-records.md` |
+| Independent design review | Reviewing a consequential or uncertain artifact with a separate reader, explicit input scope, and auditable findings | `references/independent-design-review.md` |
 | Phase Gate Methodology | You're running a review gate (any of the 4) and need the decision criteria, verdict format, and escalation path | `references/phase-gate-methodology.md` |
 | Methodology Selection Matrix | You're deciding which spec methodology (BDD, Formal, DbC, OpenAPI, ADRs) fits your context — when each applies and their AI-readiness ratings | `references/methodology-matrix.md` |
 | NFR Encoding for AI Specs | You need to express non-functional requirements (performance, security, observability) in machine-readable format | `references/nfr-encoding.md` |
@@ -97,6 +100,7 @@ Not sure which spec methodology fits your situation? Use this quick reference ta
 |--------|-------------|------|
 | `spec-quality-check.sh` | After writing or editing a SPEC.md — validates all required sections exist (problem statement, scope, ACs, edge cases, NFRs, assumptions) | `scripts/spec-quality-check.sh` |
 | `spec-to-tasks.sh` | After writing a TASK-PLAN.md — validates every spec AC has a covering task reference | `scripts/spec-to-tasks.sh` |
+| `review_input_manifest.py` | Before an independent review — records hashes for the target and explicitly selected context files without copying their contents | `scripts/review_input_manifest.py` |
 
 ## Trigger Conditions
 
@@ -153,14 +157,29 @@ Not every change needs all 4 gates. Choose your mode:
 
 ## Review validity and decisions
 
-Use `templates/REVIEW.md` for candidate/contract identity and executed evidence;
-use the assumptions ledger in `templates/SPEC.md` and carry its IDs into tasks.
+Use `templates/REVIEW.md` for candidate/contract identity, reviewer input boundaries,
+reader reconstruction, reviewer completion status, and executed evidence. For
+consequential or ambiguous design work, read
+`references/independent-design-review.md`: withhold the drafting conversation
+from a separate reviewer where the host can establish that boundary, supply only
+the selected artifact and supporting evidence, and record any isolation limits.
+A hash manifest records which bytes were selected; it does not prove that a
+reviewer read them, remained isolated, or reached a correct verdict.
+
+Use the assumptions ledger in `templates/SPEC.md` and carry its IDs into tasks.
 A relevant change supersedes affected approval/evidence. Consequential unresolved
 choices block dependent effects before merge/release; low-risk reversible choices
 may be batched under existing authority. Stable finding IDs preserve follow-up
 ownership and verified closure without turning every suggestion into a ticket.
-Read `references/review-records.md` at these handoffs. BMad owns backlog/authority
-routing; harness engineering owns runtime state integrity and enforcement.
+Read `references/review-records.md` at these handoffs. For source-grounded context
+about an existing codebase, route to
+[software-architecture-analysis](../software-architecture-analysis/SKILL.md);
+after approval, route cross-team rollout/dependency planning to
+[implementation-planning](../implementation-planning/SKILL.md). Use
+[agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) when
+the task is to design datasets, graders, or agent behavior evidence. BMad owns
+backlog/authority routing; harness engineering owns runtime state integrity and
+enforcement.
 
 ## Gate Recovery & Revision
 

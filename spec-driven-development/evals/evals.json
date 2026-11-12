@@ -135,6 +135,70 @@
         "Separates implementation simplicity from security verification depth.",
         "Calls for filling consequential missing handoff information."
       ]
+    },
+    {
+      "id": "independent-review-reconstructs-intent",
+      "prompt": "Review a draft for a payment retry change. The author says in the chat that retries are disabled for EU, but the design document does not mention regions and says only 'retry transient failures.' A separate reviewer can read the draft, the current payment policy, and the service code, but not the drafting conversation. Produce a review record before implementation.",
+      "expected_output": "The reviewer first reconstructs the documented scope, flags the missing EU boundary as a clarity/requirements gap, distinguishes supplied source evidence from withheld conversation, and does not treat context separation as proof of correctness.",
+      "assertions": [
+        "The review record paraphrases the goal and documented behavior using only the draft and supplied context.",
+        "It identifies that the draft does not state the EU-specific retry boundary.",
+        "It does not use the author's chat-only statement as evidence that the design contains the EU boundary.",
+        "It records the selected supporting files explicitly.",
+        "It records that the drafting conversation was withheld or that its availability is unknown.",
+        "It does not claim review isolation merely because a new agent was invoked.",
+        "It does not claim the separate reviewer is correct merely because a new agent was invoked."
+      ]
+    },
+    {
+      "id": "review-depth-scales-with-risk",
+      "prompt": "A well-understood one-line typo fix has no behavior change. A separate proposal changes authorization rules across three services and includes a data migration. Choose an appropriate design/review depth for each.",
+      "expected_output": "The typo fix uses the lightweight path without a multi-review ceremony. The authorization and migration proposal gets a deeper, source-grounded review of intent, boundaries, compatibility, failure/rollback, and implementation readiness.",
+      "assertions": [
+        "The typo fix is not assigned the full design and multi-review pipeline.",
+        "The authorization migration is assigned a deeper review because it crosses service and data boundaries.",
+        "The migration review checks compatibility.",
+        "The migration review checks rollback behavior.",
+        "The review depth is tied to uncertainty and consequence rather than file count alone."
+      ]
+    },
+    {
+      "id": "reviewer-timeout-is-not-clean",
+      "prompt": "A design review requests three lenses. The clarity reviewer returns a report with two Major findings; the architecture reviewer returns no result after a timeout; the readiness reviewer completes with no findings. What verdict and record should the orchestrator produce?",
+      "expected_output": "The review remains incomplete and cannot pass as clean. The completed reviewers' findings and the timed-out reviewer status are recorded separately; the missing result may be retried within the declared limit.",
+      "assertions": [
+        "The architecture reviewer is recorded as not run rather than as having zero findings.",
+        "The clarity reviewer is recorded as completed.",
+        "The clarity review's Major findings remain visible in the report.",
+        "The readiness reviewer is recorded as completed with no findings.",
+        "The design is not reported as clean or approved while a required reviewer is not run.",
+        "Any retry limit is bounded and recorded rather than repeated indefinitely."
+      ]
+    },
+    {
+      "id": "verbal-context-is-escalated",
+      "prompt": "An independent reviewer flags that a data retention period is missing. The author says the legal team approved 30 days verbally, but no policy or decision record can be read by the reviewer. Resolve the finding.",
+      "expected_output": "The unsupported verbal claim is escalated to the accountable owner for a written decision or evidence. The finding is not silently contested or rewritten as established policy, and dependent approval remains pending.",
+      "assertions": [
+        "The finding is escalated because the claimed approval is absent from reviewer-accessible evidence.",
+        "The 30-day period is not recorded as an approved requirement without verifiable evidence.",
+        "The unresolved retention decision has an owner or explicit next decision step.",
+        "The review does not report approval while the consequential policy decision is unresolved."
+      ]
+    },
+    {
+      "id": "changed-candidate-invalidates-review",
+      "prompt": "A design passed review at content hash A. The author then changes the retry policy and interface contract, producing content hash B, but wants to reuse the old approval because the filename and PR are unchanged. What should happen?",
+      "expected_output": "The old verdict is retained as history but marked superseded for the changed scope. The affected review evidence is rerun on candidate B; unaffected checks may be reused only with a justified scope record.",
+      "assertions": [
+        "The approval for hash A is not applied to changed candidate B.",
+        "The old review remains available as historical evidence.",
+        "The old review is marked superseded for the affected scope.",
+        "The retry-policy change is reviewed against candidate B.",
+        "The interface-contract change is reviewed against candidate B.",
+        "Any reused unaffected evidence is identified with a justification.",
+        "Reused unaffected evidence is not represented as a full re-review of candidate B."
+      ]
     }
   ]
 }
