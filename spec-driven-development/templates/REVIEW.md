@@ -19,6 +19,34 @@ or relevant environment invalidates the affected approval and evidence; retain t
 history and obtain a new verdict. A candidate change cannot inherit an old PASS
 from the same branch, PR, filename, or task label.
 
+## Reviewer input boundary
+
+- **Input manifest:** <path and bundle SHA-256 from `scripts/review_input_manifest.py`, or why unavailable>
+- **Target and review scope:** <artifact, sections, requirements, and relevant source areas>
+- **Selected supporting files/standards:** <explicit paths; do not imply the manifest limits runtime access>
+- **Prior conversation withheld:** yes / no / unknown
+- **Other context that may remain:** <project instructions, configured memory, tool state, or unknown>
+- **Reviewer tools:** read-only / limited write / other — <actual capability>
+- **Isolation evidence and limits:** <what was tested for this host/version; unknown is acceptable>
+- **Review time / round cap:** <predeclared limit and attempts used>
+
+## Reader reconstruction before critique
+
+Have each reviewer state, from the supplied artifact and evidence:
+
+- Intended user outcome and in-scope / out-of-scope behavior
+- Material constraints, decisions, assumptions, and unresolved questions
+- Any requirement or decision the reviewer could not reconstruct
+
+A failed or materially incorrect reconstruction is a clarity finding. It is not
+proof that the proposed design itself is wrong.
+
+## Reviewer completion
+
+| Reviewer / lens | Status (completed / not run) | Candidate and input manifest | Limitations | Finding IDs |
+|---|---|---|---|---|
+| <reviewer> | <status> | <candidate hash / manifest hash> | <scope or runtime limitation> | <IDs or none> |
+
 **Reviewer:** <name>
 **Independence and limitations:** <separate evaluator or disclosed self-review; scope limits>
 **Date:** <date>
@@ -45,7 +73,9 @@ checks; rerun affected checks on the new candidate and issue a current verdict.
 - **Finding ID:** <stable ID, retained across review rounds>
 - **Severity:** BLOCKING / CRITICAL / MINOR / INFO
 - **Location:** <artifact> — <section>
-- **Description:** <what was found>
+- **Claim under review:** <the design claim or requirement>
+- **Evidence available:** <source paths, tests, policy, trace, or missing evidence>
+- **Gap or contradiction:** <what the evidence does or does not support>
 - **Recommendation:** <what should change>
 
 ### Finding 2: <Title>
@@ -54,11 +84,11 @@ checks; rerun affected checks on the new candidate and issue a current verdict.
 
 ## Finding handoffs and closure
 
-| Finding ID | Disposition | Decision owner and rationale | Follow-up task / duplicate-of | Dependencies and blocking boundary | Closure evidence |
+| Finding ID | Disposition (proposed fix / proposed contest / escalated / accepted / deferred / declined / duplicate / resolved) | Decision owner and rationale | Follow-up task / duplicate-of | Dependencies and blocking boundary | Closure evidence |
 |---|---|---|---|---|---|
-| <F-ID> | proposed / accepted / deferred / declined / duplicate / resolved | <authorized orchestrator decision and record> | <existing or newly accepted task when warranted> | <affected tasks and latest safe gate; or none> | <fix candidate + verifying evidence; or rationale/canonical link> |
+| <F-ID> | proposed fix / proposed contest / escalated / accepted / deferred / declined / duplicate / resolved | <reviewer proposal or accountable decision with evidence and rationale> | <existing or newly accepted task when warranted> | <affected tasks and latest safe gate; or none> | <fix candidate + verifying evidence; or rationale/canonical link> |
 
-A recommendation is not backlog authority. The orchestrator may accept, defer,
+A recommendation is not backlog authority. The accountable orchestrator may accept, defer,
 decline, or deduplicate it; do not create a ticket for every suggestion. An
 accepted follow-up needs an owner, acceptance checks, and a receiving-task link.
 Deferral or ticket creation is a handoff, not resolution. Close an accepted

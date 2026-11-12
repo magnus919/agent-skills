@@ -72,6 +72,42 @@
         "It routes interface, data, platform, security, and migration details to neighboring owners where relevant",
         "It states the evidence needed before this skill could assess an existing system"
       ]
+    },
+    {
+      "id": "bounded-subsystem-context-map",
+      "prompt": "An approved change will update one unfamiliar authorization adapter inside a large service. Map the relevant component context from the repository so a separate reviewer can assess the change. Do not produce a repository-wide inventory or infer behavior from absent documentation.",
+      "expected_output": "A decision-scoped context map bound to a source revision, with relevant callers and symbols, observed interface and side effects, evidence classifications, verification paths, explicit unknowns, and the smallest useful follow-up observations.",
+      "assertions": [
+        "The map names one bounded subsystem and the decision it supports.",
+        "The map records an immutable source revision.",
+        "Material claims cite relevant repository paths and symbols, tests, traces, or configuration.",
+        "The map distinguishes observed claims from inferred, reported, and unknown claims.",
+        "It records the relevant interface and its evidenced input/output or error behavior.",
+        "It records relevant invariants and evidence that enforces or fails to establish them.",
+        "It records material side effects.",
+        "It records relevant dependencies.",
+        "It identifies verification evidence for the mapped behavior.",
+        "It identifies an unresolved question and a focused next observation.",
+        "It does not treat missing evidence as proof of a defect.",
+        "It avoids expanding into a repository-wide component inventory."
+      ]
+    },
+    {
+      "id": "documentation-drift-triage",
+      "prompt": "At commit 6c91a2f09b8d7c1e4a6f0c2b3d5e7a9c1b2d4e6f, the design document says the retry limit is four attempts. The implementation configures max_attempts=3, and one unit test expects three calls. Compare the recorded design and source evidence, then state how to handle the difference. Do not directly edit code or documentation.",
+      "expected_output": "A source-bound drift report that cites the design, implementation, and test at the specified revision, identifies the concrete contradiction, separates observed behavior from intended policy, and routes the decision to the accountable owner before either artifact is changed.",
+      "assertions": [
+        "The report records the specified source revision.",
+        "It cites the design document's four-attempt limit.",
+        "It cites implementation evidence for the configured three attempts.",
+        "It cites the test's three-call expectation.",
+        "It treats the test as evidence about the tested case rather than proof of all production behavior.",
+        "It identifies the documented four-attempt limit and implemented three-attempt behavior as a contradiction.",
+        "It separates observed implementation behavior from the intended policy decision.",
+        "It does not treat current code as automatically authoritative.",
+        "It does not automatically change the design or implementation.",
+        "It names an accountable owner or next evidence step before either artifact changes."
+      ]
     }
   ]
 }
