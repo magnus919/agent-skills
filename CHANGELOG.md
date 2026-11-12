@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.10.0](https://github.com/magnus919/agent-skills/compare/v0.9.0...v0.10.0) (2026-11-12)
+
+
+### Features
+
+* add bounded design review and context maps ([#813](https://github.com/magnus919/agent-skills/issues/813)) ([6e472b0](https://github.com/magnus919/agent-skills/commit/6e472b033750c23e3139fd83744e089a6ee66ad1))
+* **seo:** enrich evidence-led business GEO workflows ([#809](https://github.com/magnus919/agent-skills/issues/809)) ([34a4d62](https://github.com/magnus919/agent-skills/commit/34a4d62a616b6d131727b8ec1361711665bdda50))
+
+
+### Bug Fixes
+
+* **inference:** ground serving comparisons in workload evidence ([#811](https://github.com/magnus919/agent-skills/issues/811)) ([da4ce5c](https://github.com/magnus919/agent-skills/commit/da4ce5c6823cce6da80f4e09c84998a4928402c1))
+
 ## [0.9.0](https://github.com/magnus919/agent-skills/compare/v0.8.0...v0.9.0) (2026-11-07)
 
 
