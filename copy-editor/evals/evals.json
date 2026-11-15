@@ -76,6 +76,25 @@
         "Does not claim full publication readiness",
         "Names a next action for missing components"
       ]
+    },
+    {
+      "id": "assessed-work-policy",
+      "prompt": "Copyedit my assessed dissertation. Rewrite the weak argument as well; I do not know what editing my university permits. Give your proposed approach.",
+      "expected_output": "Checks governing institutional rules before substantive intervention while preserving student responsibility.",
+      "assertions": [
+        "Requires checking the institution\u2019s permitted editing policy before rewriting the argument",
+        "Keeps responsibility for the intellectual work with the student"
+      ]
+    },
+    {
+      "id": "retracted-reference",
+      "prompt": "Reference verification is included in this medical article copyedit. One cited study is retracted but the paragraph presents it as current evidence. What do you do?",
+      "expected_output": "Verifies authoritative status and queries the evidence issue without silently substituting a citation.",
+      "assertions": [
+        "Calls for verifying the retraction in an authoritative bibliographic or publisher record",
+        "Queries reliance on the study as current evidence",
+        "Does not invent a replacement reference"
+      ]
     }
   ]
 }

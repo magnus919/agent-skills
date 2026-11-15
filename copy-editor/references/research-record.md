@@ -27,3 +27,11 @@ Used GroktoCrawl for a broad deep-agent investigation, targeted discovery of Edi
 ## Gap audit and improvements
 
 Compared the draft against source responsibilities: correctness, consistency, accuracy, completeness, scope, communication, versions, audience, accessibility and non-introduction of errors are all routed to concrete workflow steps and templates. Follow-up addressed fiction continuity and accessibility. Added protected technical strings, uncertainty-preserving scientific edits, unresolved-query handoff and incomplete-component coverage to catch foreseeable agent failures. No automation script is included: all consequential edits need context and meaning review.
+
+## Completed deep pass and final follow-up
+
+The GroktoCrawl deep-agent run completed on 2026-11-15, reporting 132 source bodies. Its summary was reviewed against the draft, not counted as independent corroboration. The retained-source inventory is `references/source-disposition.md`; broad discovery candidates were intentionally excluded from the evidentiary base when redundant, commercial, secondary, or unnecessary. Bodies remain in the local research working package; the repository preserves URLs, source decisions and extracted reusable findings rather than republishing copyrighted content.
+
+Follow-up directly extracted [ICMJE Preparing a Manuscript for Submission](https://www.icmje.org/recommendations/browse/manuscript-preparation/preparing-for-submission.html). This primary medical-journal guidance preserves uncertainty/effect-size reporting, requires checking reference accuracy and retractions, and makes some measurement conventions journal-specific. Applied to the scholarly context and judgment guide; it does not authorize the copy editor to validate research or alter clinical instructions.
+
+Deep-pass gap review identified institution-specific limits for assessed academic work. Added an explicit check for governing institutional policy and author accountability; no universal permitted intervention level is inferred from vendor guidance. The final scope covers role responsibilities, methods, reasoning, communication, templates and agent handoffs. Agent effectiveness and real-user outcomes remain unmeasured.

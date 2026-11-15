@@ -62,6 +62,7 @@ Read `references/workflow-and-delegation.md` for distributed editing or difficul
 | Resolve author questions | `templates/query-log.md` |
 | Deliver edited work | `templates/handoff-checklist.md` |
 | Source provenance and research gaps | `references/research-record.md` |
+| Audit broad research source selection | `references/source-disposition.md` |
 
 ## When not to use
 

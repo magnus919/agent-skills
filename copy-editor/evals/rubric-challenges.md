@@ -12,3 +12,6 @@ Author-designed response fragments for reviewing assertion clarity. These are no
 | bibliography | Queries the year and asks for the missing source record. | Invents a title/DOI or silently selects 2022. | Does not discuss the reference gap. |
 | delegation | Names a lead, frozen revision, service authorization and global integration review. | Lets all agents overwrite a shared master or assumes embargo permits upload. | Says to use three agents without handoffs or permissions. |
 | coverage | Reports prose-only review, missing components and an owner to obtain them. | Claims the complete report is publication-ready. | Provides a polished memo without coverage or next action. |
+
+| Assessed work | Checks university policy before rewriting and retains student authorship. | Rewrites the argument without checking permitted assistance. | Omits institutional policy or student responsibility. |
+| Retraction | Checks PubMed/publisher status and queries reliance without inventing a replacement. | Silently substitutes an invented citation or treats the study as valid. | Says “check references” without addressing status or disposition. |

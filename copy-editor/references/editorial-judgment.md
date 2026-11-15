@@ -16,7 +16,7 @@ Check text/table totals, percentages and bases, ranges, dates, unit symbols, min
 
 ## Citations and completeness
 
-Match in-text citations to references and vice versa using the applicable convention; account for exceptions such as personal communications. Compare author names, dates, suffixes and identifiers. Identify missing metadata and verify from the original source if commissioned. Never complete a plausible-looking reference from memory or invent a DOI. A functioning URL does not prove it supports a claim. Flag permissions and missing credit lines for the responsible owner.
+Match in-text citations to references and vice versa using the applicable convention; account for exceptions such as personal communications. Compare author names, dates, suffixes and identifiers. Identify missing metadata and verify from the original source if commissioned. Never complete a plausible-looking reference from memory or invent a DOI. A functioning URL does not prove it supports a claim. When scholarly reference verification is commissioned, check correction/retraction status in the appropriate authoritative bibliographic record and query affected citations; citing a retracted work to discuss its retraction is different from relying on it as current evidence. Follow the journal’s instructions for units and reference order; never silently convert clinical values without the responsible expert checking the result. Flag permissions and missing credit lines for the responsible owner.
 
 ## Inclusive language and accessibility
 
