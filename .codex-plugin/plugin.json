@@ -49,6 +49,7 @@
     "./conditional-customer-success",
     "./confluence-cli",
     "./constrained-optimization",
+    "./copy-editor",
     "./crewai",
     "./crm",
     "./crowdsec",
