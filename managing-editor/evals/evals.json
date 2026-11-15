@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "skill_name": "managing-editor",
+  "evals": [
+    {
+      "id": "journal-role-boundaries",
+      "prompt": "We run a small scholarly journal. An author wants to appeal a rejection and our managing editor usually coordinates peer review. Explain who should handle the appeal and give the managing editor a safe next-step workflow.",
+      "expected_output": "A role-aware response that routes the editorial judgment or appeal to the policy-designated editor or committee, while the managing editor coordinates process and records the outcome.",
+      "assertions": [
+        "Does not assume the managing editor has authority to reverse an editorial decision",
+        "Identifies the journal's appeal policy and named decision owner as controlling",
+        "Provides a concrete coordination step for acknowledging, routing, and tracking the appeal"
+      ]
+    },
+    {
+      "id": "deadline-tradeoff",
+      "prompt": "A corporate article is due tomorrow, the legal reviewer has not responded, and the draft contains an unverified performance claim. Give me a managing-editor plan.",
+      "expected_output": "A plan that protects required review and evidence quality, identifies the decision owner, offers scope/date/capacity choices, and documents the decision.",
+      "assertions": [
+        "Does not recommend publishing the unverified claim as established fact",
+        "Names the required legal review and accountable release decision owner as dependencies",
+        "Offers explicit options such as delaying release, removing or qualifying the claim, or changing scope",
+        "Includes a documented owner and next checkpoint"
+      ]
+    },
+    {
+      "id": "bounded-subagent-workflow",
+      "prompt": "Delegate an article package to subagents: research, first draft, fact challenge, and copyedit. The source packet contains an embargoed interview transcript. Provide the task plan and handoffs.",
+      "expected_output": "A staged plan with bounded task packets, minimized sensitive context, independent verification, and human editorial sign-off before release.",
+      "assertions": [
+        "Defines separate deliverables and acceptance criteria for research, drafting, challenge review, and copyediting",
+        "Limits access to the embargoed transcript to authorized tasks and services",
+        "Distinguishes a text-only challenge from a source-based verification review",
+        "Keeps publication approval with a named accountable human"
+      ]
+    },
+    {
+      "id": "magazine-production-plan",
+      "prompt": "Plan a magazine feature for print. A writer, photographer, art director, copyeditor, and printer are involved. List the milestones and what must be checked before handoff to print.",
+      "expected_output": "An ordered production plan that coordinates manuscript, art, rights, editing, proofing, and printer deadlines with explicit owners.",
+      "assertions": [
+        "Assigns owners and dated milestones for editorial and production handoffs",
+        "Includes photo credits, captions, and permissions before production release",
+        "Requires inspection of final proofs against the approved master before print authorization"
+      ]
+    },
+    {
+      "id": "post-publication-error",
+      "prompt": "We discovered a published article misquoted a source and syndicated copies are still circulating. What should the managing editor do?",
+      "expected_output": "A response that preserves the record, verifies the error, routes the decision under policy, corrects transparently, notifies affected channels, and assigns follow-up.",
+      "assertions": [
+        "Calls for checking the quote against the source record before determining the correction",
+        "Calls for following the publication's correction policy and recording the decision owner",
+        "Addresses correction or notification of affected syndicated copies",
+        "Preserves a version or correction history rather than silently changing the article"
+      ]
+    },
+    {
+      "id": "overloaded-content-calendar",
+      "prompt": "Our nonprofit has four people, a volunteer editor, and more requests than we can publish this month. Create a triage and communication approach that does not pretend every request is committed.",
+      "expected_output": "A capacity-aware intake method that prioritizes mission and audience value, makes tradeoffs visible, assigns next actions, and communicates accept/defer/decline decisions.",
+      "assertions": [
+        "Uses explicit capacity and mission-fit criteria without treating a score as automatic approval",
+        "Allows requests to be accepted, clarified, deferred, declined, or escalated",
+        "Makes displaced work and revised dates visible when urgent work is added",
+        "Assigns a next owner and communicates the disposition to requesters"
+      ]
+    }
+  ]
+}
