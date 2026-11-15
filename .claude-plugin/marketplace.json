@@ -285,6 +285,15 @@
       "description": "Define, compare, and audit constrained optimization decisions with explicit variables, units, hard and soft constraints, feasibility, Pareto tradeoffs, and honest solver evidence. Do not use for statistical modeling or ML fitting, which belong to data-scientist or ml-engineering, or for operating a named solver."
     },
     {
+      "name": "copy-editor",
+      "source": "./",
+      "skills": [
+        "./copy-editor"
+      ],
+      "strict": false,
+      "description": "Edit manuscripts, articles, reports, fiction, technical and scholarly text, and digital content for correctness, consistency, clarity, completeness, and faithful meaning. Use for grammar, usage, house style, style sheets, author queries, references, and coordinated copyediting passes. Do not use for developmental rewriting, translation, independent fact-checking, final-layout proofreading alone, or editorial production management."
+    },
+    {
       "name": "crewai",
       "source": "./",
       "skills": [

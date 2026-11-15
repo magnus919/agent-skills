@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "skill_name": "copy-editor",
+  "evals": [
+    {
+      "id": "preserve-scientific-meaning",
+      "prompt": "Copyedit: \u201cThe observational study proves coffee prevents depression.\u201d The study reports an association only. Return an edit and query.",
+      "expected_output": "Preserves evidential limits and queries causal wording.",
+      "assertions": [
+        "Does not present causation as established",
+        "Proposes wording compatible with the supplied association evidence"
+      ]
+    },
+    {
+      "id": "fiction-voice",
+      "prompt": "Light-copyedit dialogue: \u201cI ain\u2019t going,\u201d Jo said. The house sheet preserves dialect. Explain any changes.",
+      "expected_output": "Leaves deliberate dialect intact.",
+      "assertions": [
+        "Preserves the deliberate dialect in dialogue",
+        "Does not impose a structural rewrite under a light brief"
+      ]
+    },
+    {
+      "id": "ambiguous-table",
+      "prompt": "Copyedit: \u201cWe enrolled 47 patients.\u201d Table 1 says total 41. No underlying dataset is available.",
+      "expected_output": "Queries discrepancy without inventing resolution.",
+      "assertions": [
+        "Identifies both conflicting values",
+        "Leaves the correct number unresolved pending an owner decision"
+      ]
+    },
+    {
+      "id": "quote-fidelity",
+      "prompt": "Copyedit a direct quote: \u201cTheir going tomorrow.\u201d The recording is unavailable. Please tidy it.",
+      "expected_output": "Flags uncertainty rather than silently altering source wording.",
+      "assertions": [
+        "Does not silently normalize the direct quotation",
+        "Requests source confirmation or author resolution"
+      ]
+    },
+    {
+      "id": "technical-protection",
+      "prompt": "Copyedit docs containing `UserID`, `--dry-run`, and `https://example.org/API/v2`. Apply typographic punctuation to prose.",
+      "expected_output": "Preserves literal technical strings.",
+      "assertions": [
+        "Preserves case-sensitive UserID",
+        "Keeps the command flag intact",
+        "Keeps the URL intact"
+      ]
+    },
+    {
+      "id": "reference-gap",
+      "prompt": "The manuscript cites Lee 2023, but the reference list has only Lee 2022 without a title. Complete the bibliography.",
+      "expected_output": "Asks for the source and records mismatch.",
+      "assertions": [
+        "Does not invent a title or DOI",
+        "Queries the year mismatch"
+      ]
+    },
+    {
+      "id": "distributed-edit",
+      "prompt": "Plan a three-agent copyedit of an embargoed report with overlapping sections and one house sheet.",
+      "expected_output": "Provides bounded tasks, authorized data use, integration and global checks.",
+      "assertions": [
+        "Requires authorization for sharing embargoed material with services",
+        "Assigns one lead to integrate proposals against a fixed version",
+        "Includes global consistency and section-boundary review"
+      ]
+    },
+    {
+      "id": "handoff-coverage",
+      "prompt": "Only the prose was available; figures, tables and footnotes were missing. Deliver a copyediting memo.",
+      "expected_output": "Accurately limits coverage and assigns missing work.",
+      "assertions": [
+        "Explicitly excludes unavailable components from completed review",
+        "Does not claim full publication readiness",
+        "Names a next action for missing components"
+      ]
+    },
+    {
+      "id": "assessed-work-policy",
+      "prompt": "Copyedit my assessed dissertation. Rewrite the weak argument as well; I do not know what editing my university permits. Give your proposed approach.",
+      "expected_output": "Checks governing institutional rules before substantive intervention while preserving student responsibility.",
+      "assertions": [
+        "Requires checking the institution\u2019s permitted editing policy before rewriting the argument",
+        "Keeps responsibility for the intellectual work with the student"
+      ]
+    },
+    {
+      "id": "retracted-reference",
+      "prompt": "Reference verification is included in this medical article copyedit. One cited study is retracted but the paragraph presents it as current evidence. What do you do?",
+      "expected_output": "Verifies authoritative status and queries the evidence issue without silently substituting a citation.",
+      "assertions": [
+        "Calls for verifying the retraction in an authoritative bibliographic or publisher record",
+        "Queries reliance on the study as current evidence",
+        "Does not invent a replacement reference"
+      ]
+    }
+  ]
+}

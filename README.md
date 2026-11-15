@@ -162,6 +162,10 @@ Atlassian Confluence from the terminal. List spaces, browse pages, view content 
 
 Formulate and evaluate constrained allocation, routing and scheduling decisions with explicit feasibility, objective units, exact or heuristic baselines, repeatable comparisons and honest solver-status evidence.
 
+### [copy-editor](copy-editor/SKILL.md)
+
+Copyedit text for correctness, consistency, clarity and faithful meaning across publishing contexts. Includes intervention judgment, author queries, style sheets, protected technical material, coordinated editing passes and reusable handoff templates.
+
 ### [crewai](crewai/SKILL.md)
 
 An expert-level skill for building **role-based multi-agent teams** with CrewAI. Agents are defined as Roles with Goals and Backstories; crews are composed with sequential or hierarchical workflows.
