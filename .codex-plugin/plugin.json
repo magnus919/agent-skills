@@ -106,6 +106,7 @@
     "./litellm",
     "./llama-cpp",
     "./llamaindex",
+    "./managing-editor",
     "./meetings",
     "./mermaid-diagrams",
     "./meshcore-packet-capture",

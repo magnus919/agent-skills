@@ -1,0 +1,27 @@
+# Assignment brief
+
+- **Working title:**
+- **Owner / contributor:**
+- **Accountable editorial decision owner:**
+- **Deliverable and format:**
+- **Audience and reader need:**
+- **Purpose:**
+- **Editorial question or angle:**
+- **Length / components:**
+- **Due date and time zone:**
+- **Review windows and publication date:**
+- **Required sources, evidence, interviews, or subject expertise:**
+- **Claims, questions, or sensitivities to handle carefully:**
+- **Required attribution, citations, permissions, releases, and accessibility details:**
+- **House style / examples:**
+- **In scope:**
+- **Out of scope:**
+- **Acceptance criteria:**
+  - [ ] Answers the assigned question for the intended audience.
+  - [ ] Consequential claims are supported or clearly marked unresolved.
+  - [ ] Sources, quotes, data, and assets are traceable.
+  - [ ] Required approvals and policy checks are completed and recorded.
+  - [ ] Fits the deliverable and technical requirements.
+- **Handoff format / location:**
+- **Escalate immediately if:**
+- **Questions to resolve before work begins:**
