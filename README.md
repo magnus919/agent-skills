@@ -771,6 +771,10 @@ Design and build honest, resilient waitlist portals for anticipated goods and se
 
 Design, build, and review accessible web interfaces through native semantics, keyboard and focus contracts, error recovery, adaptive UI, assistive-technology testing, and WCAG 2.2-informed evidence without mistaking automated scans for conformance.
 
+### [wonderer-methodology](wonderer-methodology/SKILL.md)
+
+Explore adjacent ideas and overlooked angles without prematurely choosing an answer. Produces bounded maps of distinct leads tethered to a seed, with explicit speculative status, search limits, and a handoff to deeper research. Adapted from hermes-profiles.
+
 ### [woodpecker-ci](woodpecker-ci/SKILL.md)
 Operate self-hosted Woodpecker CI from installation through production troubleshooting. Covers Forgejo/Gitea integration, server and agent setup, Docker and Kubernetes backends, workflow syntax, secrets, plugins, matrices, CLI/local execution, upgrades, security, and incident response.
 

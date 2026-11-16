@@ -1635,6 +1635,15 @@
       "description": "Design, build, and review accessible web interfaces with native semantics, keyboard and focus behavior, forms and recovery, responsive input, motion, assistive-technology testing, and WCAG 2.2-informed evidence. Use for a11y, WCAG, ARIA, screen-reader, keyboard, focus, dialog, form, widget, or accessibility review work across frameworks. Do not use this skill for unrelated requests; route to the nearest named specialist."
     },
     {
+      "name": "wonderer-methodology",
+      "source": "./",
+      "skills": [
+        "./wonderer-methodology"
+      ],
+      "strict": false,
+      "description": "Use lateral exploration to find adjacent ideas, overlooked angles, and research paths when the user wants to expand a topic, ask what they are overlooking, or remain in a divergent ideation phase. Produce tethered leads without prematurely choosing an answer. Do not use for factual lookups, rigorous evidence synthesis, product validation, or implementation planning."
+    },
+    {
       "name": "woodpecker-ci",
       "source": "./",
       "skills": [

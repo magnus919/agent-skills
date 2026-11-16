@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "skill_name": "wonderer-methodology",
+  "evals": [
+    {
+      "id": "solo-business-periphery",
+      "prompt": "Explore the periphery of one-person software businesses built from APIs and automation. What am I overlooking? Keep it divergent, not a business recommendation. Work offline; no searches.",
+      "expected_output": "A bounded offline map of distinct adjacent directions without choosing a business idea.",
+      "assertions": [
+        "The response frames the seed as one-person software businesses built from APIs and automation.",
+        "Each retained lead includes an explicit connection back to the solo-business seed.",
+        "The response labels offline leads as speculative rather than retrieved findings."
+      ]
+    },
+    {
+      "id": "expand-a-question",
+      "prompt": "Expand this question rather than answering it: How might a neighborhood library matter after most reading is digital? Explore at most three angles; do not pick a preferred future. No external search.",
+      "expected_output": "The question becomes a territory with multiple open directions rather than a single answer.",
+      "assertions": [
+        "The response reframes the question as a territory around neighborhood libraries and digital reading.",
+        "The response retains at most three distinct exploration angles.",
+        "The response preserves alternatives without selecting a preferred library future."
+      ]
+    },
+    {
+      "id": "vague-seed",
+      "prompt": "Wonder around technology. I have not chosen any context, people, or problem yet.",
+      "expected_output": "One focused seed clarification before exploration.",
+      "assertions": [
+        "The response asks one focused question to narrow the seed before exploring."
+      ]
+    },
+    {
+      "id": "retrieval-bound",
+      "prompt": "Explore adjacent angles on repair cafes. Select three dimensions and use at most three external search queries. Do not dig deeply into any one lead. If search is unavailable, say so and provide speculative leads.",
+      "expected_output": "A bounded map with honest retrieval status and a stop reason.",
+      "assertions": [
+        "The response states three selected exploration dimensions.",
+        "The response reports retrieval scope within the three-query limit, or discloses unavailable search.",
+        "The response includes a bounded stop reason rather than claiming exhaustive coverage."
+      ]
+    },
+    {
+      "id": "analogy-is-not-proof",
+      "prompt": "Offline, explore the analogy between cockpit attention management and a solo founder operating many automated services. Does that prove cockpit practices prevent founder burnout? Keep the exploratory leads open.",
+      "expected_output": "Tethered speculative leads while rejecting proof by analogy.",
+      "assertions": [
+        "The response explains the shared attention-management structure connecting cockpits to solo service operation.",
+        "The response explicitly rejects the analogy as proof of burnout prevention.",
+        "The response offers an open question for testing where the analogy transfers or fails."
+      ]
+    },
+    {
+      "id": "deduplicate-and-handoff",
+      "prompt": "Seed: continuity of a one-person software business. I have leads named on-call rotation, absence handoff, and a fascinating but unexplained fact about octopus skin. The first two both concern who runs things while I am away. Help clean this map and stop before deeper research.",
+      "expected_output": "Merge redundant leads, discard untethered drift, and preserve a research handoff.",
+      "assertions": [
+        "The response groups the two supplied absence-coverage leads rather than counting them as distinct directions.",
+        "The response excludes the octopus fact unless it supplies an explicit connection to business continuity.",
+        "The response proposes research-methodology for a selected lead without presenting deeper investigation as already completed."
+      ]
+    }
+  ]
+}
