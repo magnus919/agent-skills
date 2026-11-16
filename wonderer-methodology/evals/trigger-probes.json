@@ -1,0 +1,26 @@
+[
+  {
+    "query": "What am I overlooking around one-person API businesses? Keep several paths open.",
+    "should_trigger": true
+  },
+  {
+    "query": "Explore lateral connections around neighborhood libraries without picking an answer.",
+    "should_trigger": true
+  },
+  {
+    "query": "Expand this question into adjacent research directions; do not solve it yet.",
+    "should_trigger": true
+  },
+  {
+    "query": "Verify whether cockpit practices reduce founder burnout using credible studies.",
+    "should_trigger": false
+  },
+  {
+    "query": "Plan delivery of this approved library booking specification.",
+    "should_trigger": false
+  },
+  {
+    "query": "Validate customer demand for my repair-cafe startup.",
+    "should_trigger": false
+  }
+]
