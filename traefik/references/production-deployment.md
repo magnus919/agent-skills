@@ -164,9 +164,9 @@ http:
       rateLimit:
         average: 100
         burst: 200
-        sourceCriterion:
-          ipStrategy:
-            depth: 1
+        # One bucket per client address (the default). Add
+        # sourceCriterion.ipStrategy only behind a trusted proxy, see the
+        # IPAllowList entry in middleware-catalog.md.
 
   routers:
     app:

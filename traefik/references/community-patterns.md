@@ -76,9 +76,10 @@ http:
       rateLimit:
         average: 100
         burst: 50
-        sourceCriterion:
-          ipStrategy:
-            depth: 1          # Use X-Forwarded-For to get real client IP
+        # No sourceCriterion: one bucket per client address. Behind a CDN, add
+        # sourceCriterion.ipStrategy.depth: 1 only together with the entryPoint's
+        # forwardedHeaders.trustedIPs (see "Traefik Behind Cloudflare / CDN" below);
+        # without it every client shares one bucket.
 ```
 
 **Trade-off:** Per-service limits prevent a noisy client from degrading all routes. A single compromised client can still exhaust its own backend's connection pool. Combine with circuit breakers for full protection.
@@ -192,6 +193,8 @@ http:
         maxResponseBodyBytes: 4194304
         memResponseBodyBytes: 1048576
 ```
+
+This buffers responses too, which breaks Server-Sent Events and other streaming responses. See [Buffering](middleware-catalog.md#buffering).
 
 ### Load Balancing Strategies
 

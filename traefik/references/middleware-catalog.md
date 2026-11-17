@@ -194,9 +194,22 @@ http:
           - "10.0.0.0/8"
           - "192.168.0.0/16"
           - "203.0.113.0/24"
+        # No ipStrategy: matches the address of the TCP connection.
+```
+
+`ipStrategy` takes the client address from `X-Forwarded-For` instead. Use it only behind a proxy whose addresses are listed in the entryPoint's `forwardedHeaders.trustedIPs` (see [Traefik Behind Cloudflare / CDN](community-patterns.md#traefik-behind-cloudflare--cdn)). Traefik deletes the `X-Forwarded-*` headers of every other client before middlewares run, so with default entryPoint settings `depth: 1` resolves to an empty address and every request is rejected with 403. With `forwardedHeaders.insecure: true`, the client chooses the address it is matched against.
+
+```yaml
+# Behind a trusted proxy only
+http:
+  middlewares:
+    ip-allowlist-behind-proxy:
+      ipAllowList:
+        sourceRange:
+          - "203.0.113.0/24"
         ipStrategy:
-          depth: 1                     # X-Forwarded-For depth to check
-          excludedIPs: []              # IPs to exclude from X-Forwarded-For chain
+          depth: 1                     # Nth address from the right of X-Forwarded-For
+          # excludedIPs: [...]         # Alternative to depth: skip these proxy addresses
 ```
 
 ### InFlightReq
@@ -208,14 +221,13 @@ http:
   middlewares:
     concurrency-limit:
       inFlightReq:
-        amount: 100                    # Max simultaneous requests
+        amount: 100                    # Max simultaneous requests per source
         sourceCriterion:
-          requestHost: true            # Track by host
-          requestRemoteAddr: true      # Track by remote address
           ipStrategy:
-            depth: 1
-            excludedIPs: []
+            depth: 0                   # 0 = the connection's address: one limit per client
 ```
+
+Without `sourceCriterion`, InFlightReq groups requests by `requestHost`, so all clients of a host share one limit. `sourceCriterion` takes exactly one of `ipStrategy`, `requestHeaderName` or `requestHost`; combining them disables the router (`iPStrategy and RequestHost are mutually exclusive`). There is no `requestRemoteAddr` option: the file provider rejects the field together with the rest of the configuration it appears in, unrelated routers included (`field not found, node: requestRemoteAddr`).
 
 ### RateLimit
 
@@ -229,23 +241,19 @@ http:
         average: 100                   # Average requests per second (REQUIRED)
         burst: 200                     # Burst size (default: average)
         period: 1s                     # Evaluation period (default: 1s)
-        sourceCriterion:
-          requestHost: true
-          requestRemoteAddr: true
-          ipStrategy:
-            depth: 1
-            excludedIPs: []
-        # For Redis-backed distributed rate limiting:
-        # Requires Traefik Enterprise or Hub
+        # sourceCriterion omitted: one bucket per client address.
+        # Same keys as InFlightReq, exactly one of them, e.g.:
+        # sourceCriterion:
+        #   requestHeaderName: X-Api-Key
+        # redis: {...}                 # Share the buckets across Traefik instances (v3.4+)
 ```
 
 ### Distributed RateLimit
 
-Redis-backed rate limiting (requires Traefik Enterprise or Hub).
+Traefik Hub's Redis-backed rate limiter. Traefik Proxy v3.4 and later can share a `rateLimit` across instances through its own `redis` option.
 
 ```yaml
-# Distributed rate limiting is a Traefik Hub/Enterprise feature
-# Not available in Traefik Proxy OSS
+# distributedRateLimit is a Traefik Hub middleware
 http:
   middlewares:
     dist-ratelimit:
@@ -253,8 +261,7 @@ http:
         average: 100
         burst: 200
         period: 1s
-        sourceCriterion:
-          requestRemoteAddr: true
+        # sourceCriterion: same keys as RateLimit (ipStrategy, requestHeaderName or requestHost)
 ```
 
 ### Headers
@@ -393,6 +400,8 @@ http:
         memResponseBodyBytes: 2097152    # 2MB in-memory limit before spilling to disk
         retryExpression: "IsNetworkError() && Attempts() < 3"  # Retry conditions
 ```
+
+Buffering holds the whole response until the backend has finished it, which breaks Server-Sent Events, gRPC streaming and long-poll responses. Traefik v3.8 adds `disableResponseBuffer: true`, which keeps the request-body limit and streams the response ([docs](https://doc.traefik.io/traefik/master/reference/routing-configuration/http/middlewares/buffering/#streaming)). In v3.7.19 and earlier the option cannot be set from the file provider or labels, so keep this middleware off streaming routes.
 
 ### Errors
 
