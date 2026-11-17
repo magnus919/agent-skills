@@ -401,7 +401,20 @@ http:
         retryExpression: "IsNetworkError() && Attempts() < 3"  # Retry conditions
 ```
 
-Buffering holds the whole response until the backend has finished it, which breaks Server-Sent Events, gRPC streaming and long-poll responses. Traefik v3.8 adds `disableResponseBuffer: true`, which keeps the request-body limit and streams the response ([docs](https://doc.traefik.io/traefik/master/reference/routing-configuration/http/middlewares/buffering/#streaming)). In v3.7.19 and earlier the option cannot be set from the file provider or labels, so keep this middleware off streaming routes.
+Buffering holds the whole response until the backend has finished it, which breaks Server-Sent Events, gRPC streaming and long-poll responses. In v3.7.19 and earlier, `disableResponseBuffer` cannot be set from the file provider or labels, so keep this middleware off streaming routes. v3.7.19 loads the key from a file without an error and still buffers the response.
+
+From v3.8.0-rc.1, `disableResponseBuffer: true` streams the response and still enforces `maxRequestBodyBytes` ([docs](https://doc.traefik.io/traefik/master/reference/routing-configuration/http/middlewares/buffering/#streaming)). It cannot be combined with `retryExpression`: Traefik rejects the middleware (`retryExpression cannot be used when disableRequestBuffer or disableResponseBuffer is enabled`) and disables every router that uses it. Give streaming routes a separate middleware without `retryExpression`:
+
+```yaml
+# Traefik v3.8.0-rc.1 and later
+http:
+  middlewares:
+    buf-streaming:
+      buffering:
+        maxRequestBodyBytes: 10485760    # Still enforced
+        memRequestBodyBytes: 2097152
+        disableResponseBuffer: true      # No retryExpression in this middleware
+```
 
 ### Errors
 
