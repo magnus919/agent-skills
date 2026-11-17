@@ -61,6 +61,45 @@
         "Healthcheck routing to healthy-backends-only is covered as a 502 source",
         "Traefik logs are prescribed as the source of the specific dial error"
       ]
+    },
+    {
+      "id": "inflight-per-client-limit",
+      "prompt": "A handful of clients open dozens of slow report-export requests at once against our API, and everyone else starts timing out. Traefik v3 (file provider) is exposed directly on ports 80 and 443, with no CDN or load balancer in front. I want at most 20 simultaneous requests per client IP on the API router. Show the middleware and explain how Traefik decides which requests count against the same limit.",
+      "expected_output": "An inFlightReq middleware with amount 20, keyed on the client's connection address through sourceCriterion.ipStrategy with depth 0 (or an ipStrategy without depth), attached to the API router. The response explains that without a sourceCriterion inFlightReq groups requests by request host, so every client of the API host would share one limit of 20. The sourceCriterion sets only ipStrategy: there is no requestRemoteAddr option, and combining requestHost with ipStrategy disables the router. Because nothing sits in front of Traefik, the limit is not keyed on an X-Forwarded-For position. Verification opens more than 20 concurrent slow requests from one client and checks that the excess receive 429 while a second client is still served.",
+      "assertions": [
+        "Defines an inFlightReq middleware with amount 20",
+        "Keys the limit on the connection's remote address (sourceCriterion.ipStrategy with depth 0 or no depth), not on the request host or an X-Forwarded-For position",
+        "States that inFlightReq without a sourceCriterion groups requests by request host, so all clients of that host share one limit",
+        "The sourceCriterion sets only ipStrategy, with no requestRemoteAddr key and no requestHost alongside it",
+        "Verification sends more than 20 concurrent slow requests from one client, expects 429 for the excess, and checks that another client is still served"
+      ]
+    },
+    {
+      "id": "client-ip-behind-load-balancer",
+      "prompt": "Our Traefik v3 admin router uses ipAllowList with sourceRange 203.0.113.0/24 (our office) and ipStrategy depth: 1. Traefik runs behind a cloud load balancer in 10.0.0.0/16 that appends the client address to X-Forwarded-For. The entryPoint has no forwardedHeaders settings. Every request now gets 403, including from the office. A colleague suggests setting forwardedHeaders.insecure: true on the entryPoint. Why is everything rejected, and what should we change?",
+      "expected_output": "A diagnosis tied to forwarded-header trust: the load balancer's address is not in the entryPoint's forwardedHeaders.trustedIPs, so Traefik removes the X-Forwarded-* headers before middlewares run, ipStrategy depth 1 finds no client address, and ipAllowList rejects every request. The fix adds the load balancer range 10.0.0.0/16 to the entryPoint's forwardedHeaders.trustedIPs and keeps ipStrategy (depth 1, or excludedIPs covering the load balancer range), so the match uses the rightmost X-Forwarded-For entry, which the load balancer appended. The response advises against forwardedHeaders.insecure: true, because it trusts X-Forwarded-For from every source, so a client that reaches the entryPoint without passing through the load balancer chooses the address it is matched against. Verification sends requests through the load balancer from inside and outside the office range and expects 200 and 403, and checks that a client-supplied X-Forwarded-For entry inside the office range does not admit a client from outside it.",
+      "assertions": [
+        "Explains that Traefik removes X-Forwarded-* headers from sources not listed in the entryPoint's forwardedHeaders.trustedIPs, so ipStrategy depth 1 finds no client address and every request is rejected",
+        "Adds the load balancer range 10.0.0.0/16 to the entryPoint's forwardedHeaders.trustedIPs",
+        "Keeps an ipStrategy on the ipAllowList (depth 1, or excludedIPs covering the load balancer range) so the match uses the rightmost X-Forwarded-For entry, which the load balancer appended",
+        "Advises against forwardedHeaders.insecure: true because it lets a client that reaches the entryPoint directly set the address it is matched against",
+        "Verification sends requests through the load balancer from inside and outside 203.0.113.0/24 and expects 200 and 403",
+        "Verification sends a client-supplied X-Forwarded-For entry inside 203.0.113.0/24 from a client outside it and expects 403"
+      ]
+    },
+    {
+      "id": "buffering-streaming-route",
+      "prompt": "We added a buffering middleware to every router in Traefik v3.7 (file provider) to cap uploads at 10 MB. It also sets retryExpression: \"IsNetworkError() && Attempts() < 3\". Since then, the live updates on our dashboard, sent as Server-Sent Events from /events, arrive all at once when the stream closes instead of as they happen. Upgrading to v3.8 is possible if it helps. How do we keep the upload limit without breaking the event stream, on v3.7 and on v3.8?",
+      "expected_output": "A diagnosis that the buffering middleware buffers the response as well as the request, so Traefik holds the SSE events until the backend finishes the response. On v3.7, disableResponseBuffer cannot be set from the file provider or labels (v3.7.19 loads the key without an error and keeps buffering), so the /events path gets a router without the buffering middleware while the upload routes keep it. On v3.8 (from v3.8.0-rc.1), a separate middleware for the streaming route sets disableResponseBuffer: true, keeps maxRequestBodyBytes, which is still enforced, and omits retryExpression, because Traefik rejects retryExpression combined with disableRequestBuffer or disableResponseBuffer and disables every router that uses that middleware. Verification streams /events through Traefik (for example with curl -N) and checks that events arrive as they are sent, and that an upload over 10 MB still receives 413.",
+      "assertions": [
+        "Explains that the buffering middleware also buffers the response, so SSE events are held until the backend finishes the response",
+        "For v3.7, removes the buffering middleware from the /events route (for example with a separate router for that path) and keeps it on the upload routes",
+        "States that on v3.7 disableResponseBuffer cannot be set from the file provider, or that it takes effect only from v3.8",
+        "For v3.8, defines a separate streaming middleware with disableResponseBuffer: true and without retryExpression",
+        "States that combining retryExpression with disableResponseBuffer makes Traefik reject the middleware and disable the routers that use it",
+        "Verification streams /events through Traefik (for example with curl -N) and checks that events arrive as they are sent, not together at the end",
+        "Verification checks that an upload over 10 MB through the streaming middleware still receives 413"
+      ]
     }
   ]
 }
