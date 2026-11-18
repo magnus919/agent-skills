@@ -132,11 +132,11 @@ This procedure is this skill's synthesis — **EXTRAPOLATION** — of the source
 
 ## 6. Routing to sibling skills
 
-- **Multi-agent debate and convergence** → [agent-council](../agent-council/SKILL.md). When you want to *run* structured multi-agent debate, agent-council is the operational tool: its panel debate is a promise exchange (each panelist offers positions, the moderator accepts/assesses, synthesis converges), and its convergence-aware iteration is an evaluation loop over the panel's promises. Use promise theory to *design* the exchange; use agent-council to *execute* it.
-- **Assessment layer** → [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) (also routed from `references/trust-and-verification.md`): verifying promises are kept via evals, traces, and guardrails.
+- **Multi-agent debate and convergence** → [agent-council](../../agent-council/SKILL.md). When you want to *run* structured multi-agent debate, agent-council is the operational tool: its panel debate is a promise exchange (each panelist offers positions, the moderator accepts/assesses, synthesis converges), and its convergence-aware iteration is an evaluation loop over the panel's promises. Use promise theory to *design* the exchange; use agent-council to *execute* it.
+- **Assessment layer** → [agent-evals-and-observability](../../agent-evals-and-observability/SKILL.md) (also routed from `references/trust-and-verification.md`): verifying promises are kept via evals, traces, and guardrails.
 - **Workflow design as promise chains** → [workflow-architect](../../workflow-architect/SKILL.md) (also routed from `references/patterns.md`): designing a workflow is designing a chain of promises.
-- **Promise-keeping evidence** → [artifact-pyramids](../artifact-pyramids/SKILL.md) (also routed from `references/trust-and-verification.md`): structure evidence as summaries → analysis → evidence dossiers.
-- **The skill format itself** → [agent-skills](../agent-skills/SKILL.md); **script conventions** → [cli-builder](../cli-builder/SKILL.md).
+- **Promise-keeping evidence** → [artifact-pyramids](../../artifact-pyramids/SKILL.md) (also routed from `references/trust-and-verification.md`): structure evidence as summaries → analysis → evidence dossiers.
+- **The skill format itself** → [agent-skills](../../agent-skills/SKILL.md); **script conventions** → [cli-builder](../../cli-builder/SKILL.md).
 
 ## 7. Sources
 

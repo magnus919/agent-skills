@@ -7,6 +7,7 @@
       "prompt": "I feel creatively stuck. It is not about any one project — I just want to find my way back to making things. Help me.",
       "expected_output": "A conversational coaching response that explores the block with one substantial question at a time and proposes no structured exercise without permission.",
       "assertions": [
+        "Uses the reachable skills listed in the scope and safety guide when the work shifts outside creative coaching",
         "Asks one substantial question at a time rather than a list of questions.",
         "Reflects what the person said before moving to a new topic.",
         "Asks permission before proposing any named practice or template.",

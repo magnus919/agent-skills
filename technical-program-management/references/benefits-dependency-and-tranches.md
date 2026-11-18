@@ -31,4 +31,4 @@ Review expected versus observed outcomes at the program level. If an output ship
 
 ## Boundaries
 
-Route roadmap sequencing and investment choices to [product-roadmapping-and-portfolio](../product-roadmapping-and-portfolio/SKILL.md); route measurement design to [product-analytics-and-measurement](../product-analytics-and-measurement/SKILL.md); route adoption intervention to [product-adoption](../product-adoption/SKILL.md); route organizational structure to [org-design](../org-design/SKILL.md). This skill owns the cross-component causal map, tranche decision, and handoffs among those specialists.
+Route roadmap sequencing and investment choices to [product-roadmapping-and-portfolio](../../product-roadmapping-and-portfolio/SKILL.md); route measurement design to [product-analytics-and-measurement](../../product-analytics-and-measurement/SKILL.md); route adoption intervention to [product-adoption](../../product-adoption/SKILL.md); route organizational structure to [org-design](../../org-design/SKILL.md). This skill owns the cross-component causal map, tranche decision, and handoffs among those specialists.

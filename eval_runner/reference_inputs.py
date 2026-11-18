@@ -19,6 +19,13 @@ MAX_REFERENCES = 3
 
 def read_source(root: Path, relative: str, limit: int = MAX_FILE_BYTES) -> bytes:
     """Read a bounded regular UTF-8 source without following any symlink."""
+    data = read_binary_source(root, relative, limit)
+    data.decode("utf-8")
+    return data
+
+
+def read_binary_source(root: Path, relative: str, limit: int) -> bytes:
+    """Read a bounded regular file without following any symlink."""
     validate_relative_path(relative)
     if root.is_symlink():
         raise ValueError("reference root must not be a symlink")
@@ -39,9 +46,7 @@ def read_source(root: Path, relative: str, limit: int = MAX_FILE_BYTES) -> bytes
             data.extend(chunk)
             if len(data) > limit:
                 raise ValueError("input source exceeds byte limit")
-        result = bytes(data)
-        result.decode("utf-8")
-        return result
+        return bytes(data)
     finally:
         for fd in reversed(descriptors):
             os.close(fd)

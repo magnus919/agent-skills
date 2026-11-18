@@ -19,6 +19,7 @@
       "prompt": "We just had a major outage: the checkout service is down, the on-call engineer is overwhelmed, and everyone is jumping into the chat with suggestions. I have been told to take over incident command. What do I do in the first ten minutes and how do I run the response?",
       "expected_output": "An incident-command response that establishes structure under pressure: declare the incident, assign roles (incident commander, communications lead, and operations leads for investigation and mitigation) so the commander is not also debugging, and set up a dedicated channel and timeline. The commander's first actions: confirm the blast radius and current status, stabilize with the fastest safe mitigation while investigation continues in parallel, and drive communication with one consistent narrative to stakeholders. The response explains the commander's core discipline: decide who does what, watch the clock, and do not get pulled into individual debugging threads, plus the post-mitigation sequence: verify recovery, declare the incident over, and schedule the postmortem with the timeline captured while fresh.",
       "assertions": [
+        "Can locate the incident cognitive load guidance from the on-call guide's table of contents",
         "Roles are assigned (commander, communications, operations) so the commander is not debugging",
         "The first actions confirm blast radius and stabilize with the fastest safe mitigation",
         "One consistent communications narrative is maintained for stakeholders",

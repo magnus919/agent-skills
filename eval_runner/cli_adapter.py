@@ -16,8 +16,8 @@ Configuration via harness_config:
   timeout_seconds: int  — max wall time (default: 120)
   extra_args: list[str]  — additional CLI arguments
 
-The subprocess receives EVAL_SKILL_DIR for the current trial skill and
-EVAL_OUTPUT_DIR for a fresh output directory.
+The subprocess receives EVAL_SKILL_DIR for the staged skill, EVAL_OUTPUT_DIR
+for its fresh output directory, and EVAL_INPUT_DIR when the case has fixtures.
 The adapter refuses to reuse an existing output directory so stale artifacts cannot
 be attributed to a new trial.
 """
@@ -81,6 +81,10 @@ class CliSubprocessAdapter:
             )
         env["EVAL_SKILL_DIR"] = str(input.skill_path.resolve())
         env["EVAL_OUTPUT_DIR"] = str(input.output_dir.resolve())
+        if input.fixture_dir is None:
+            env.pop("EVAL_INPUT_DIR", None)
+        else:
+            env["EVAL_INPUT_DIR"] = str(input.fixture_dir.resolve())
 
         start = time.monotonic()
         try:

@@ -50,8 +50,8 @@ Product-experimentation owns the **end-to-end experiment workflow** that no othe
 
 | Concern | Route to | Method |
 |---------|----------|--------|
-| Statistical design (power, sample size, estimator) | data-scientist | Markdown link to [../data-scientist/SKILL.md](../data-scientist/SKILL.md) |
-| Rollout mechanics (flags, canary, progressive delivery) | release-engineering | Markdown link to [../release-engineering/SKILL.md](../release-engineering/SKILL.md) |
+| Statistical design (power, sample size, estimator) | data-scientist | Markdown link to [../data-scientist/SKILL.md](../../data-scientist/SKILL.md) |
+| Rollout mechanics (flags, canary, progressive delivery) | release-engineering | Markdown link to [../release-engineering/SKILL.md](../../release-engineering/SKILL.md) |
 | Measurement contracts (event taxonomy, tracking plan) | product-analytics-and-measurement | Prose reference only (skill not yet landed) |
 | Roadmap decision impact | product-roadmapping-and-portfolio | Prose reference only (skill not yet landed) |
 | Adoption evidence | product-adoption | Prose reference only (skill not yet landed) |

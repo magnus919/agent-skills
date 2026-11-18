@@ -43,6 +43,7 @@
       "prompt": "A documentation site renders its product catalog table only after JavaScript loads. Scrape the table (columns: name, version, license) into a structured file without breaking the site's rules.",
       "expected_output": "A headless scraping plan following extract -> validate -> save: launch Chromium headless with an identifying user agent, load the page with wait_until networkidle, scope a locator to the repeating table rows and read cell texts into plain records, validate that every record has name/version/license before saving, and write one bounded JSON artifact with timestamp and source URL. The answer checks robots.txt and terms, adds a delay between pages, caps the scrape with MAX_RECORDS/MAX_PAGES, and refuses to extract personal data or persist auth storage. It routes Cloudflare challenge cases to flaresolverr instead of this skill.",
       "assertions": [
+        "Uses catalog routes that resolve when a task needs a browser tool beyond Playwright's scope",
         "The page is loaded in a headless browser because the table is JavaScript-rendered",
         "Extraction is scoped to the repeating rows and produces structured records, not HTML blobs",
         "Records are validated for required fields before saving",

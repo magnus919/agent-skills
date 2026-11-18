@@ -12,6 +12,7 @@ from pathlib import Path
 from .adapter import HarnessAdapter
 from .cli_adapter import CliSubprocessAdapter
 from .fake_adapter import FakeAdapter
+from .fixtures import capture_fixtures, fixture_hashes, write_fixtures
 from .manifest import build_manifest, write_manifest
 from .models import AdapterInput, EvalCase
 from .path_safety import contained_path
@@ -75,11 +76,14 @@ def run_trial(
     work_dir = contained_path(trial_root, "work", case.id)
     case_output_dir = contained_path(trial_root, "outputs", case.id)
 
+    fixtures = capture_fixtures(skill_path, case.files)
     adapter_input = AdapterInput(
         skill_path=skill_path,
         case=case,
         work_dir=work_dir,
         output_dir=case_output_dir,
+        fixture_dir=write_fixtures(fixtures, contained_path(trial_root, "inputs", case.id)),
+        fixture_hashes=fixture_hashes(fixtures),
         model=model,
         limits={"timeout_seconds": 120, "network_policy": "unspecified"},
     )

@@ -13,6 +13,25 @@ require_relative "validate-references"
 # doc-type names, examples, external-repository paths, or change-ledger
 # removal records.
 class ReferenceFileScanTest < Minitest::Test
+  def test_markdown_link_must_resolve_from_its_reference_directory
+    with_fixture do |root|
+      write_skill_ref(root, "skill/references/handoff.md", <<~MARKDOWN)
+        [Wrong depth](../sibling/SKILL.md)
+        [Working handoff](../../sibling/SKILL.md#intro)
+        [Encoded space](<local%20file.md>)
+        [Remote](https://example.test/guide)
+        ```markdown
+        [Example link](./illustrative.md)
+        ```
+      MARKDOWN
+      write_file(root, "sibling/SKILL.md", "# Intro\n")
+      write_file(root, "skill/references/local file.md", "# Guide\n")
+      assert_equal [
+        "skill/references/handoff.md:1: missing linked resource ../sibling/SKILL.md"
+      ], ReferenceFileScan.markdown_link_errors(root, "skill")
+    end
+  end
+
   def test_clean_resolving_references_pass
     with_fixture do |root|
       write_skill_ref(root, "test-skill/references/overview.md",

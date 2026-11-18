@@ -59,6 +59,8 @@ class AdapterInput:
     env: dict[str, str] = field(default_factory=dict)
     model: str = ""
     harness_config: dict[str, Any] = field(default_factory=dict)
+    fixture_dir: Path | None = None
+    fixture_hashes: dict[str, str] | None = None
 
 
 @dataclass
