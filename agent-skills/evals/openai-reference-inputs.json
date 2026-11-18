@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "cases": {
+    "eval-evidence-boundaries": {
+      "references/repository-evaluations.md": "9ac1c510c9151921e639da4a8289f68957bcd53ff7705fe29c5e2818bd57b1ae"
+    },
+    "release-evidence-pin-and-roster": {
+      "references/repository-evaluations.md": "9ac1c510c9151921e639da4a8289f68957bcd53ff7705fe29c5e2818bd57b1ae"
+    }
+  }
+}

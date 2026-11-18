@@ -248,3 +248,39 @@ def test_exact_json_decision_requires_a_valid_typed_field(assertion, response, v
         "strict-json", [assertion], AdapterOutput(ExitStatus.COMPLETED, response=response)
     )
     assert result.results[0].verdict.value == verdict
+
+
+@pytest.mark.parametrize(
+    ("response_change", "expected_failures"),
+    [
+        ({}, 0),
+        ({"complete": "hold"}, 1),
+        ({"changed_manifest": "eligible"}, 1),
+        ({"omitted_case": "eligible"}, 1),
+        ({"advisory_only": "eligible"}, 1),
+        ({"changed_manifest": None, "omitted_case": None}, 2),
+    ],
+)
+def test_release_evidence_case_catches_missing_or_incorrect_decisions(
+    response_change, expected_failures
+):
+    from eval_runner.grader import grade_output
+    from eval_runner.models import AdapterOutput, ExitStatus
+
+    cases = load_cases(ROOT / "agent-skills/evals/evals.json")
+    case = next(case for case in cases if case.id == "release-evidence-pin-and-roster")
+    response = {
+        "complete": "eligible",
+        "changed_manifest": "hold",
+        "omitted_case": "hold",
+        "advisory_only": "hold",
+    }
+    response.update(response_change)
+    content = json.dumps({key: value for key, value in response.items() if value is not None})
+    result = grade_output(
+        case.id, case.assertions, AdapterOutput(ExitStatus.COMPLETED, response=content)
+    )
+    assert result.fail_count == expected_failures
+    assert result.pass_count == 4 - expected_failures
+    assert result.manual_count == 3
+    assert not result.passed

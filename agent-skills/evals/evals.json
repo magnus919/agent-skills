@@ -117,6 +117,21 @@
       ]
     },
     {
+      "id": "release-evidence-pin-and-roster",
+      "case_set": "regression",
+      "prompt": "Assess four synthetic release aggregation evidence bundles. Treat non-mentioned prerequisites as satisfied. A has complete independent semantic grading for every required case and a complete freeze snapshot whose manifest hash equals the hash of the supplied manifest bytes. B is identical to A except the supplied manifest bytes changed after freezing, with the same case IDs. C has a matching snapshot and manifest hash but lacks a run and semantic judgment for one required case. D has a matching snapshot and a run for every case, but one required case has only an advisory Jev suggestion instead of independent semantic grading. Return one JSON object. Use the keys complete, changed_manifest, omitted_case, and advisory_only. Set each value to eligible or hold for release evidence aggregation. Include a rationale field that explains each decision.",
+      "expected_output": "Marks only the complete bundle eligible for release evidence aggregation. Holds on changed manifest bytes, a missing required case, and a missing semantic judgment. Explains the evidence that would clear the holds.",
+      "assertions": [
+        "response_json_equals:complete=\"eligible\"",
+        "response_json_equals:changed_manifest=\"hold\"",
+        "response_json_equals:omitted_case=\"hold\"",
+        "response_json_equals:advisory_only=\"hold\"",
+        "Explains that unchanged case IDs do not bind a freeze snapshot to changed manifest bytes",
+        "Explains why an absent required case prevents complete roster coverage",
+        "Explains why the advisory suggestion cannot supply the missing semantic grading evidence"
+      ]
+    },
+    {
       "id": "client-gate-reachability",
       "prompt": "A skill is installed and enabled but missing from a session. Someone copied metadata keys from another client and proposes removing every requirement, including its required shell. We do not know this client version. Diagnose and qualify a repair.",
       "expected_output": "Inspect the actual client eligibility contract and verify loading without hiding genuine prerequisites.",
