@@ -141,7 +141,7 @@ docker run --rm -v "$(pwd)/test-site:/site" -w /site \
 | Maintainer signal | "Should be fixed" | "Not obvious" |
 | Code scope | Single package, isolated | Cross-cutting, architectural |
 
-For a worked example with real command output (50+ issues triaged on gohugoio/hugo), see the `hugo-contrib` skill's `references/finding-bugfix-candidates.md`.
+For example, a narrowly scoped Hugo bug with reproducible steps and no open PR is an actionable candidate. An ambiguous issue still awaiting maintainer input requires clarification before implementation.
 
 ### Filtering Idea Lists Against Repo Reality: Ideation-to-Issue Gap Assessment
 

@@ -13,7 +13,7 @@
 3. [SRE Classroom — Workshops That Build Systems Thinking](#3-sre-classroom--workshops)
 4. [SRE Prodcast — The Audio Companion](#4-sre-prodcast)
 5. [SRE Video Gallery — Curated Learning Paths](#5-sre-video-gallery)
-6. [STPA — System Theoretic Process Analysis](#6-stpa-system-theoretic-process-analysis)
+6. [STPA — System Theoretic Process Analysis](#6-stpa--system-theoretic-process-analysis)
 7. [Why Heroism is Bad](#7-why-heroism-is-bad)
 8. [SRE Fundamentals Course](#8-sre-fundamentals-course)
 9. [Measuring Reliability](#9-measuring-reliability)
