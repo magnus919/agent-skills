@@ -1,0 +1,8 @@
+{
+  "command": [
+    "delete-post",
+    "case-post-01"
+  ],
+  "site": "https://example.test",
+  "authorization": "pending"
+}

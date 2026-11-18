@@ -1,0 +1,10 @@
+{
+  "mode": "synthesis",
+  "workflow": "Release checklist",
+  "phase_names": [
+    "Review",
+    "Verify"
+  ],
+  "requested_output": "draft bundle in temporary storage",
+  "registration_authorized": false
+}

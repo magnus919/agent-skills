@@ -1,0 +1,9 @@
+{
+  "command": [
+    "webhook-delete",
+    "--id",
+    "case-webhook-01"
+  ],
+  "authorization": "pending",
+  "podcast": "Fixture Show"
+}
