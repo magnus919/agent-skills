@@ -12,7 +12,7 @@
 2. [Response SLAs](#2-response-slas)
 3. [Workload Caps](#3-workload-caps)
 4. [Balance and Fairness](#4-balance-and-fairness)
-5. [Cognitive Load Management](#5-cognitive-load-management)
+5. [Cognitive Load Management](#5-cognitive-load-management-during-incidents)
 6. [Escalation Paths and Policies](#6-escalation-paths-and-policies)
 7. [Tools and Infrastructure](#7-tools-and-infrastructure)
 8. [Handoff Best Practices](#8-handoff-best-practices)

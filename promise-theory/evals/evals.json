@@ -21,6 +21,7 @@
       "prompt": "Two agents in our report pipeline both assume the other writes the final summary. Neither agent's instructions assign the summary explicitly, and nothing in the pipeline checks whether a summary was produced, so the pipeline hangs and the report is never delivered. Diagnose this coordination failure using promise-theory categories and name the promises involved.",
       "expected_output": "The diagnosis classifies the failure with promise-theory categories: the load-bearing category is missing assessment — no evaluation-loop step verifies that the final-summary promise was kept, so the failure stays invisible until delivery. The contributing category is broken promise body: the summary promise was never precisely assigned, leaving both agents' promise bodies ambiguous about who writes the final-summary promise; failed acceptance compounds it because neither agent ever accepted a clear final-summary promise. The response names the promises involved — the unassigned final-summary promise and both agents' delivery promises — and prescribes the fix: declare the summary as a single promise with one promiser, record an explicit acceptance, and add an assessment step that observes the deliverable.",
       "assertions": [
+        "Uses the reachable Systematic Debugging or Agent Evals guidance if passing the investigation to another skill",
         "response_contains:missing assessment",
         "response_contains:broken promise body",
         "response_contains:failed acceptance",

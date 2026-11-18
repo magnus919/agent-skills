@@ -7,6 +7,7 @@
       "prompt": "Use opensource contributions to handle a realistic primary task. Explain the inputs, ordered workflow, and concrete output.",
       "expected_output": "A opensource contributions response defines the task boundary, identifies required inputs, applies the documented workflow, and produces a concrete output with verification.",
       "assertions": [
+        "Uses the local triage rubric to justify why the selected issue is actionable",
         "Names the opensource contributions task and required inputs",
         "Applies an ordered workflow rather than generic advice",
         "Produces a concrete output and verification step"
