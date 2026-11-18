@@ -33,4 +33,4 @@ If three diagnostic passes produce no new evidence, stop and escalate the missin
 
 ## Boundaries
 
-Route detailed project recovery to [technical-project-management](../technical-project-management/SKILL.md), release evidence to [production-readiness](../production-readiness/SKILL.md), live incidents to [site-reliability-engineering](../site-reliability-engineering/SKILL.md), and organizational design to [org-design](../org-design/SKILL.md). This skill coordinates program-level intervention and assurance inputs across them.
+Route detailed project recovery to [technical-project-management](../../technical-project-management/SKILL.md), release evidence to [production-readiness](../../production-readiness/SKILL.md), live incidents to [site-reliability-engineering](../../site-reliability-engineering/SKILL.md), and organizational design to [org-design](../../org-design/SKILL.md). This skill coordinates program-level intervention and assurance inputs across them.
