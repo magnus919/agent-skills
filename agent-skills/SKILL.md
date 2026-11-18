@@ -215,4 +215,6 @@ The quality checker validates changed descriptions; eval validation checks the r
 
 A valid manifest is not evidence of correct behavior. Report structural validation, actual execution, assertion evidence completeness, semantic verdict, and release evidence separately. Prose assertions remain unresolved `manual_review` in the deterministic grader; Jev suggestions are advisory and do not approve release. Read [repository evaluation requirements](references/repository-evaluations.md) before interpreting eval results.
 
+Release aggregation requires separate semantic grading evidence, a complete freeze snapshot bound to the exact frozen manifest bytes, and evidence for every required case in that manifest. Return HOLD if any of those checks lacks evidence.
+
 Complete when the requested artifact is delivered, applicable checks pass on the final revision, and unresolved behavioral or release evidence is explicitly reported. If a required tool or external dependency is unavailable, stop the affected check and report the limitation; do not substitute a structural pass for the missing evidence.

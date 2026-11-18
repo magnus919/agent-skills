@@ -18,6 +18,8 @@ from eval_runner.sandbox import cleanup_sandbox, stage_paired_sandboxes
 
 ROOT = Path(__file__).resolve().parents[2]
 CASES = [
+    ("agent-skills", "eval-evidence-boundaries", "repository-evaluations.md"),
+    ("agent-skills", "release-evidence-pin-and-roster", "repository-evaluations.md"),
     ("product-design-and-ux", "embedded-loan-recovery", "embedded-business-agent.md"),
     ("pydanticai", "non-chat-proposal", "application-proposals.md"),
     ("spec-driven-development", "policy-translation-fidelity", "executable-business-policy.md"),
