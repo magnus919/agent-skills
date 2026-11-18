@@ -238,7 +238,7 @@ operational test is the essayist's):
   promise-theoretic system uses OPA/Kyverno as the *assessment* layer of
   promises** — "I will not expose telnet" can be verified by evaluating Rego
   against live config — which is exactly the assessment-layer role this skill
-  routes to [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md)
+  routes to [agent-evals-and-observability](../../agent-evals-and-observability/SKILL.md)
   (also routed from [trust-and-verification.md](trust-and-verification.md)).
 
 ### 2.4 Honest exceptions and the residual need for declarations

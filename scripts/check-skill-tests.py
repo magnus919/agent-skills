@@ -39,16 +39,16 @@ RUN_TESTS: list[tuple[str, list[str]]] = [
     # Requires EbookLib (AGPL) and beautifulsoup4 (installed test-only in CI
     # before this script runs); runs 45 assertions in CI. Its epub-edit and
     # epub-convert sub-scripts additionally require epublib (Python 3.13+)
-    # and are skipped on the Python 3.12 runner (documented here, not
-    # surfaced in the suite's summary).
+    # and are counted as skips on this lane. The separate Python 3.13 job
+    # installs epublib and requires the edit and conversion checks.
     ("epub/scripts/test_epub_skill.sh", []),
+    ("tailscale/scripts/test-all.sh", []),
 ]
 
 # Skill-local shell tests documented but not executed in CI; they need
 # network access, credentials, or external tooling.
 MANUAL_TESTS: list[str] = [
     "data-scientist/scripts/test_supervision_protocol.sh",
-    "tailscale/scripts/test-all.sh",
     "tailscale/skills/headscale-derp/scripts/test-derp-latency.sh",
 ]
 

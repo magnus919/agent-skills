@@ -50,5 +50,5 @@ Python 3.8+ with no pip dependencies and a running FlareSolverr instance. Keep t
 
 ## References
 
-- [scripts/flaresolverr-cli](scripts/flaresolverr-cli) - Stdlib-only CLI implementation.
+- [scripts/flaresolverr-cli](scripts/flaresolverr-cli) - Standalone stdlib-only copy of the canonical `flaresolverr/scripts/flaresolverr` entry point. The repository test checks byte-for-byte synchronization.
 - [FlareSolverr](https://github.com/FlareSolverr/FlareSolverr) - Service and API documentation.

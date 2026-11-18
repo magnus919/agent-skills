@@ -71,7 +71,7 @@ jobs:
       - name: Validate eval manifests
         run: python3 scripts/validate-evals.py
       - name: Validate curated case-review register
-        run: python3 scripts/validate-case-checklist.py
+        run: python3 scripts/validate-case-checklist.py --require-test-routing
       - name: Test life-coach capability validation
         run: python3 -m unittest discover -s life-coach/tests -p 'test_*.py'
       - name: Install YouTube thumbnail test dependency
@@ -99,6 +99,10 @@ jobs:
           python3 -m pytest "${core_tests[@]}" -n auto -v --durations=10
       - name: Validate AGENTS.md consistency
         run: python3 scripts/validate-agents-md.py
+      - name: Run additional offline pytest suites
+        run: |
+          mapfile -t extra_tests < <(sed -e '/^[[:space:]]*#/d' -e '/^[[:space:]]*$/d' scripts/additional-test-files.txt)
+          python3 -m pytest -q -o "addopts=-ra --strict-markers --tb=short" "${extra_tests[@]}"
       - name: Run integration tests
         run: python3 -m pytest tests/integration/ -v --durations=10 -o "addopts=-ra --strict-markers --tb=short --durations=10"
       - name: Test changed-skill quality validation
@@ -141,3 +145,22 @@ jobs:
             [ "$pyproject" = "pyproject.toml" ] && continue
             python3 -m pip wheel --no-deps "./$(dirname "$pyproject")" --wheel-dir "$wheel_dir"
           done < <(git ls-files -- ':(glob)**/pyproject.toml')
+
+
+  epub-edit-convert:
+    name: EPUB edit and conversion
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+      - name: Install EPUB integration test dependencies
+        run: python3 -m pip install -r requirements-epub-test.txt 'epublib==0.1.7'
+      - name: Verify real EPUB editing and conversion
+        env:
+          EPUB_TEST_REQUIRE_EPUBLIB: '1'
+        run: bash epub/scripts/test_epub_skill.sh

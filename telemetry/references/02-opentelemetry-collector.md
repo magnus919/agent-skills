@@ -87,5 +87,5 @@ request". The collector supports this by:
 Correlation is only as good as propagation: if the application does not
 propagate context, the collector cannot invent it. Missing trace context in
 logs usually means the SDK side is not wired — that is application-level work
-for [backend-engineering](../backend-engineering/SKILL.md); the collector side
+for [backend-engineering](../../backend-engineering/SKILL.md); the collector side
 of the join is this skill.
