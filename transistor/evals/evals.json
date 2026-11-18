@@ -21,7 +21,9 @@
         "creates the episode as a draft with transistor episode-create including --show, --title, and --audio-url",
         "publishes via transistor episode-publish on the dedicated PATCH /v1/episodes/:id/publish endpoint with episode[status]=published",
         "does not claim episode-create or episode-update can publish the episode",
-        "reads the publish result from data.attributes.status / the JSON output .status"
+        "reads the publish result from data.attributes.status / the JSON output .status",
+        "Uses --dry-run to preview the planned mutation without credentials",
+        "Uses --yes only after explicit approval for the specific write"
       ]
     },
     {

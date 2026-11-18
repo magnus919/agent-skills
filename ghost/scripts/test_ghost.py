@@ -18,6 +18,7 @@ import io
 import json
 import os
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -550,6 +551,42 @@ class HtmlSourceFlagTests(unittest.TestCase):
         self.assertNotIn("source", (call.kwargs.get("params") or {}))
         self.assertNotIn("html", call.kwargs["json"]["pages"][0])
 
+
+
+class WriteConfirmationTests(unittest.TestCase):
+    def test_write_commands_refuse_before_client_creation(self):
+        cli = load_cli()
+        commands = (
+            ("create-post", "--title", "Audit"),
+            ("update-post", "post-id", "--updated-at", "2026-08-26T12:00:00.000Z"),
+            ("delete-post", "post-id"),
+            ("create-page", "--title", "Audit"),
+            ("create-tag", "--name", "Audit"),
+        )
+        for args in commands:
+            with (
+                self.subTest(command=args[0]),
+                patch.object(sys, "argv", [str(SCRIPT), *args]),
+                patch.object(cli, "GhostClient") as client,
+                contextlib.redirect_stderr(io.StringIO()) as stderr,
+                self.assertRaises(SystemExit) as result,
+            ):
+                cli.main()
+            self.assertEqual(result.exception.code, 1)
+            self.assertIn("--yes", stderr.getvalue())
+            client.assert_not_called()
+
+    def test_confirmed_delete_reaches_the_client(self):
+        cli = load_cli()
+        with (
+            patch.object(sys, "argv", [str(SCRIPT), "delete-post", "post-id", "--yes"]),
+            patch.object(cli, "GhostClient") as client,
+            contextlib.redirect_stdout(io.StringIO()),
+        ):
+            client.return_value.dry_run = False
+            client.return_value.delete_post.return_value = None
+            cli.main()
+        client.return_value.delete_post.assert_called_once()
 
 if __name__ == "__main__":
     unittest.main()

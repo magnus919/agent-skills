@@ -8,7 +8,7 @@ When your agent loads this skill, it can **navigate your Confluence documentatio
 
 - **Find pages across spaces** — list, search, and view content
 - **Search with CQL** — complex queries matching Jira-style filtering
-- **Create documentation** — create pages from the terminal
+- **Create documentation** — preview and create pages after explicit confirmation
 - **Retrieve page body content** — extract the full text of any page
 
 ## What You Get
