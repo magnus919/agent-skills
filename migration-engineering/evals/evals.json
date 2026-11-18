@@ -34,6 +34,7 @@
       "prompt": "Plan a migration to move consumers from a REST v1 API to a GraphQL v2 API for an e-commerce product catalog. 200 external partners integrate with v1. The v1 API must remain available for 12 months after v2 launch. No partner should experience a breaking change without at least 6 months notice. Partners who migrate to v2 early should see no degradation.",
       "expected_output": "An expand/contract API migration plan. Expand phase: deploy v2 GraphQL API alongside v1 REST. Compatibility window: 12 months minimum, with consumer migration tracking per partner. Define what 'migrated' means per partner (e.g., zero v1 traffic for 30 consecutive days). Deprecation: announce v1 deprecation at 6 months, with a hard shutdown date at 12 months. Recovery: v1 remains available throughout the window, so rollback at any point means canceling the deprecation notice. V1 removal at 12 months is a potentially irreversible step if v1 cannot be redeployed — plan must address this. Observability: per-partner traffic by API version, migration-completion dashboard, error-rate comparison between v1 and v2.",
       "assertions": [
+        "Routes interface evolution to the reachable API Design and Evolution skill",
         "Describes expand phase: deploy v2 alongside v1 without removing v1.",
         "Defines a compatibility window with an explicit duration (12 months) and consumer migration tracking.",
         "Defines what 'migrated' means per consumer (e.g., zero v1 traffic for N days).",

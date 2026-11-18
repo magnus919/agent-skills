@@ -1,0 +1,15 @@
+{
+  "command": [
+    "create",
+    "--space",
+    "DOCS",
+    "--title",
+    "Launch notes",
+    "--parent",
+    "17",
+    "--body",
+    "<p>Fixture only</p>"
+  ],
+  "authorization": "pending",
+  "server": "https://example.test"
+}

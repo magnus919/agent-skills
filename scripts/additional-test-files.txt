@@ -1,0 +1,5 @@
+# Offline suites tested separately from the repository core coverage target.
+binary-analysis/tests/
+docs/experiments/jev-ranking/test_offline_evidence.py
+infra/agent-skills-ci/test_supervise.py
+scripts/test_validate_frontmatter_audit.py

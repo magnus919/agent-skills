@@ -21,7 +21,7 @@ from email.utils import parsedate_to_datetime
 from typing import Any
 
 from .models import AdapterInput, AdapterOutput, ExitStatus, ToolEvent
-from .reference_inputs import build_context
+from .reference_inputs import MAX_FILE_BYTES, MAX_REFERENCE_BYTES, build_context, read_source
 
 _SAFE_FINISH_REASON = re.compile(r"[A-Za-z0-9_.:-]{1,80}\Z")
 _SAFE_HTTP_ERROR_FIELD_VALUE = re.compile(r"[A-Za-z0-9_.:-]{1,80}\Z")
@@ -178,6 +178,30 @@ class OpenAICompatAdapter:
         """Maximum skill-context size used by the paired preflight."""
         return self._max_skill_chars
 
+    def _user_content(self, input: AdapterInput) -> tuple[str, list[dict[str, Any]]]:
+        content = input.case.prompt
+        fixtures: list[dict[str, Any]] = []
+        if not input.case.files:
+            return content, fixtures
+        if input.fixture_dir is None:
+            raise ValueError("declared fixture bytes are unavailable")
+        remaining = MAX_REFERENCE_BYTES
+        for relative in input.case.files:
+            data = read_source(input.fixture_dir, relative, min(MAX_FILE_BYTES, remaining))
+            remaining -= len(data)
+            digest = hashlib.sha256(data).hexdigest()
+            if (
+                input.fixture_hashes is not None
+                and input.fixture_hashes.get(relative) != digest[:16]
+            ):
+                raise ValueError("fixture bytes changed after capture")
+            fixtures.append({"path": relative, "sha256": digest, "bytes": len(data)})
+            content += (
+                f"\n\n<task_fixture path={json.dumps(relative)}>"
+                f"\n{data.decode('utf-8')}\n</task_fixture>"
+            )
+        return content, fixtures
+
     def _build_input(self, input: AdapterInput) -> tuple[list[dict[str, str]], dict[str, Any]]:
         skill_content, provenance = build_context(
             input.skill_path, input.case.skill_references, self._max_skill_chars
@@ -188,9 +212,12 @@ class OpenAICompatAdapter:
         system_message = (
             f"{NEUTRAL_SYSTEM_WRAPPER}\n\n<skill_context>\n{skill_content or ''}\n</skill_context>"
         )
+        user_content, fixtures = self._user_content(input)
+        if fixtures:
+            provenance["task_fixtures"] = fixtures
         messages: list[dict[str, str]] = [
             {"role": "system", "content": system_message},
-            {"role": "user", "content": input.case.prompt},
+            {"role": "user", "content": user_content},
         ]
         harness_config = input.harness_config
         provenance["comparison"] = harness_config.get("comparison_mode", "skill_vs_no_skill")
@@ -232,7 +259,19 @@ class OpenAICompatAdapter:
         return messages, provenance
 
     def execute(self, input: AdapterInput) -> AdapterOutput:
-        messages, provenance = self._build_input(input)
+        try:
+            messages, provenance = self._build_input(input)
+        except (OSError, ValueError):
+            if not input.case.files:
+                raise
+            return AdapterOutput(
+                exit_status=ExitStatus.ERROR,
+                error=(
+                    "Could not prepare bounded UTF-8 task fixtures or skill context. "
+                    "Use a fixture-capable CLI harness for binary inputs."
+                ),
+                artifact_inventory_complete=False,
+            )
         payload = {
             "model": self._model,
             "messages": messages,

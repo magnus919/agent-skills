@@ -7,6 +7,7 @@
       "prompt": "Use flaresolverr cli to handle a realistic primary task. Explain the inputs, ordered workflow, and concrete output.",
       "expected_output": "A flaresolverr cli response defines the task boundary, identifies required inputs, applies the documented workflow, and produces a concrete output with verification.",
       "assertions": [
+        "Uses the executable bundled inside flaresolverr-cli without requiring a sibling skill directory",
         "Names the flaresolverr cli task and required inputs",
         "Applies an ordered workflow rather than generic advice",
         "Produces a concrete output and verification step"

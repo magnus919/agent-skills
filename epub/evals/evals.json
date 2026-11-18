@@ -7,6 +7,7 @@
       "prompt": "I have a folder of 200 old EPUB2 books and I need them upgraded to EPUB3 with a proper table of contents, plus a report of any that failed to convert cleanly. How do I do this?",
       "expected_output": "Chooses epub-convert for the EPUB2 → EPUB3 upgrade (adds the EPUB3 NAV document, updates namespaces, keeps NCX for compatibility) wrapped in epub-batch for multi-file processing across the glob, e.g. `scripts/epub-batch convert \"books/*.epub\"` or looping epub-convert per file with `--validate --json` to catch failures. Suggests running epub-validate on outputs so failures surface as JSON, and notes epub-repair (--diagnose --json, then auto-fix) as the follow-up for files that fail validation. Follows cli-builder conventions: --json for machine-readable output, errors to stderr, non-interactive.",
       "assertions": [
+        "Reports the conversion as unverified if the required epublib operation was skipped",
         "Selects epub-convert as the EPUB2 to EPUB3 conversion tool.",
         "Uses epub-batch or an equivalent loop for multi-file processing across the folder.",
         "Includes validation of outputs (epub-validate or --validate) to identify failed conversions.",

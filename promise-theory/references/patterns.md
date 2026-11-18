@@ -151,7 +151,7 @@ Each is a renegotiation of the promise set, not a scolding. The breach is record
 - **Calibrate trust deliberately** (pattern 7): the schedule is the operational face of the two-component model.
 - **Designing a whole workflow as a chain of promises?** Route to [workflow-architect](../../workflow-architect/SKILL.md) — its guided workflow discovery and synthesis turn a sequence of phases, branching signals, and handoffs into a structured bundle; promise theory supplies the semantics of each handoff (offer → acceptance → assessment), workflow-architect supplies the workflow-building machinery. **EXTRAPOLATION** — the semantic mapping between the two skills is this skill's synthesis; both the promise model and the workflow-architect process are documented in their own sources.
 
-Also relevant: [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) for the assessment layer that pattern 4's loop calls on, and [artifact-pyramids](../artifact-pyramids/SKILL.md) for structuring the evidence the ledger accumulates.
+Also relevant: [agent-evals-and-observability](../../agent-evals-and-observability/SKILL.md) for the assessment layer that pattern 4's loop calls on, and [artifact-pyramids](../../artifact-pyramids/SKILL.md) for structuring the evidence the ledger accumulates.
 
 ## 9. Sources
 

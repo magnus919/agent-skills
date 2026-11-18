@@ -62,24 +62,7 @@ test_help() {
       fi
     fi
   fi
-  # Check --dry-run if applicable (non-destructive)
-  if [[ "$script" != *ts-install* && "$script" != *deploy-derp* ]]; then
-    if "$script" --dry-run >/dev/null 2>&1; then
-      pass "$name --dry-run"
-    else
-      # Some scripts need env vars for dry-run
-      :
-    fi
-  fi
-  # Check --json output (skipped for scripts that need live server)
-  if [[ "$script" == *validate-policy* || "$script" == *migrate-acls* ]]; then
-    if echo '{}' | "$script" --json --policy /dev/stdin >/dev/null 2>&1; then
-      pass "$name --json"
-    else
-      # Different scripts need different args
-      :
-    fi
-  fi
+
 }
 
 echo "=== Tailscale Skill Bundle — Smoke Tests ==="
@@ -88,7 +71,9 @@ echo ""
 # Root scripts
 echo "--- Root Scripts ---"
 test_help "$SCRIPT_DIR/scripts/tailscale-status-json.sh" "tailscale-status-json"
-test_help "$SCRIPT_DIR/scripts/headscale-health-check.sh" "headscale-health-check" 2>/dev/null || skip "headscale-health-check" "no live server"
+test_help "$SCRIPT_DIR/scripts/headscale-health-check.sh" "headscale-health-check"
+test_help "$SCRIPT_DIR/scripts/headscale-backup.sh" "headscale-backup"
+test_help "$SCRIPT_DIR/scripts/headscale-restore.sh" "headscale-restore"
 
 # Sub-skill SKILL.md files
 echo ""
@@ -112,6 +97,10 @@ for skill_dir in "$SCRIPT_DIR/skills/"*/; do
     continue
   fi
   for script in "$script_dir"/*; do
+    case "$(basename "$script")" in
+      test_*.py) continue ;; # Executed by the skill-local pytest lane.
+      test-*.sh) skip "$(basename "$script")" "live check, manual in CI"; continue ;;
+    esac
     if [[ -f "$script" ]]; then
       test_help "$script" "$skill_name/$(basename "$script")"
     fi

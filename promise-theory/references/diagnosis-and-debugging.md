@@ -170,9 +170,9 @@ Promise theory does not guarantee coordination; it makes the conditions for coor
 
 ## 5. Routing to sibling skills
 
-- **Assessment layer** → [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md). Once you have classified a breach as verification-class, that skill supplies the machinery: task and trajectory contracts, datasets and graders, regression analysis, release gates, incident-to-case learning. Promise theory names *what* to assess; that skill supplies *how*.
-- **Root-cause discipline** → [systematic-debugging](../systematic-debugging/SKILL.md). Promise theory names what to look for in coordination failures; systematic-debugging supplies the generic four-phase root-cause protocol for investigating any technical issue rigorously before fixing. Use the taxonomy here to form the hypothesis, and that discipline to verify it.
-- **Evidence structure** → [artifact-pyramids](../artifact-pyramids/SKILL.md). When a diagnosis produces a body of evidence (traces, ledger entries, eval results), structure it as summaries → analysis → evidence dossiers so the diagnosis is auditable.
+- **Assessment layer** → [agent-evals-and-observability](../../agent-evals-and-observability/SKILL.md). Once you have classified a breach as verification-class, that skill supplies the machinery: task and trajectory contracts, datasets and graders, regression analysis, release gates, incident-to-case learning. Promise theory names *what* to assess; that skill supplies *how*.
+- **Root-cause discipline** → [systematic-debugging](../../systematic-debugging/SKILL.md). Promise theory names what to look for in coordination failures; systematic-debugging supplies the generic four-phase root-cause protocol for investigating any technical issue rigorously before fixing. Use the taxonomy here to form the hypothesis, and that discipline to verify it.
+- **Evidence structure** → [artifact-pyramids](../../artifact-pyramids/SKILL.md). When a diagnosis produces a body of evidence (traces, ledger entries, eval results), structure it as summaries → analysis → evidence dossiers so the diagnosis is auditable.
 - **Recovery** → [patterns.md](patterns.md) for breach→renegotiation (pattern 5) and redundancy (pattern 6); [trust-and-verification.md](trust-and-verification.md) for recalibrating the trust estimate after a breach.
 
 ## 6. Sources

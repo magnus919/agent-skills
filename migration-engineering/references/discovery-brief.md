@@ -187,29 +187,29 @@ triggers the migration plan.
 
 ### What migration-engineering HANDS OFF
 
-1. **API contract design and versioning policy** → [api-design-and-evolution](../api-design-and-evolution/SKILL.md).
+1. **API contract design and versioning policy** → [api-design-and-evolution](../../api-design-and-evolution/SKILL.md).
    Migration engineering cites the API compatibility policy; it does not define it.
 2. **Database DDL, ETL pipeline implementation, backfill script authoring** →
-   [data-engineering](../data-engineering/SKILL.md). Migration engineering
+   [data-engineering](../../data-engineering/SKILL.md). Migration engineering
    defines the backfill strategy; data engineering implements it.
 3. **Infrastructure provisioning, Terraform modules, Helm charts** →
-   [platform-engineering](../platform-engineering/SKILL.md). Migration
+   [platform-engineering](../../platform-engineering/SKILL.md). Migration
    engineering defines the staging sequence; platform engineering provisions it.
 4. **Release pipeline mechanics, canary configuration, feature flag implementation** →
-   [release-engineering](../release-engineering/SKILL.md). Migration engineering
+   [release-engineering](../../release-engineering/SKILL.md). Migration engineering
    defines the migration gates; release engineering implements the promotion pipeline.
 5. **SLO definition, error budget policy, incident response procedure** →
-   [site-reliability-engineering](../site-reliability-engineering/SKILL.md).
+   [site-reliability-engineering](../../site-reliability-engineering/SKILL.md).
    Migration engineering consumes the error budget as a gate; SRE defines it.
 6. **Work breakdown, dependency mapping, critical path, ownership assignment** →
-   [implementation-planning](../implementation-planning/SKILL.md). Migration
+   [implementation-planning](../../implementation-planning/SKILL.md). Migration
    engineering provides the migration-specific content; implementation planning
    structures it into a delivery plan.
 7. **Threat modeling, security review of migration surface** →
-   [secure-software-engineering](../secure-software-engineering/SKILL.md).
+   [secure-software-engineering](../../secure-software-engineering/SKILL.md).
 8. **Retirement decision and customer communication** →
-   [product-lifecycle-learning](../product-lifecycle-learning/SKILL.md). Migration
+   [product-lifecycle-learning](../../product-lifecycle-learning/SKILL.md). Migration
    engineering executes the technical side of a retirement-triggered migration.
 9. **Test strategy and verification gate design** →
-   [qa-methodology](../qa-methodology/SKILL.md) and
-   [verification-methodology](../verification-methodology/SKILL.md).
+   [qa-methodology](../../qa-methodology/SKILL.md) and
+   [verification-methodology](../../verification-methodology/SKILL.md).

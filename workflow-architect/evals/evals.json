@@ -137,6 +137,19 @@
         "The state is stored in a way that survives across turns",
         "A note confirms the interview can resume without losing progress"
       ]
+    },
+    {
+      "id": "bundle-builder-uses-bundled-template",
+      "prompt": "Inspect evals/fixtures/audit-bundle.json and identify which nested entry point and local template you would use to draft the proposed bundle. The operator authorized a draft only.",
+      "expected_output": "Locate the Bundle Builder entry point and resolve the parent template. Describe the draft boundary and leave registration pending.",
+      "assertions": [
+        "Identifies skills/bundle-builder/SKILL.md as the synthesis entry point",
+        "Locates templates/skill-skeleton.md inside the same parent bundle",
+        "Leaves installation and registration pending"
+      ],
+      "files": [
+        "evals/fixtures/audit-bundle.json"
+      ]
     }
   ]
 }

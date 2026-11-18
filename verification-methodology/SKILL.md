@@ -89,7 +89,7 @@ When the parent profile specifies editorial changes during gate recovery, verify
 ### Verdict Rules
 
 - **PASS:** All 12 criteria met. Produce 00-index.md, 01-summary/verdict.md, 02-analysis/per-criteria-results.md.
-- **BLOCK:** Any criterion fails. Produce gap-details.md with specific fix instructions. See `verifier-gate-recovery` skill for remediation patterns.
+- **BLOCK:** Any criterion fails. Produce gap-details.md with specific fix instructions. Use the [verdict template](references/verdict-template.md) to record the failed criterion, observed evidence, and the check to repeat after remediation.
 
 ### Output Structure
 
