@@ -19,6 +19,11 @@ metadata:
 
 Interact with Atlassian Confluence Cloud via the REST API. List spaces, browse pages, view page content with body, search with CQL, and create pages.
 
+## Write confirmation
+
+Confirm the target, scope, and rollback path before acting. Read-only discovery may proceed without confirmation.
+Use the credential-free `--dry-run --json` preview before asking for explicit approval. Only rerun the approved write with `--yes` after confirmation. Irreversible operations require an explicit directive for the exact target.
+
 ## Setup
 
 1. Generate an API token at [id.atlassian.com/manage/api-tokens](https://id.atlassian.com/manage/api-tokens)
@@ -89,9 +94,9 @@ CQL (Confluence Query Language) is Confluence's search syntax. Common patterns:
 ### create — Create a page
 
 ```bash
-confluence-cli create --space DEV --title "My Page"                             # basic
-confluence-cli create --space DEV --title "API Docs" --body "<p>Content</p>"    # with HTML body
-confluence-cli create --space DEV --title "Test" --parent 123456                # as child page
+confluence-cli --yes create --space DEV --title "My Page"                             # basic
+confluence-cli --yes create --space DEV --title "API Docs" --body "<p>Content</p>"    # with HTML body
+confluence-cli --yes create --space DEV --title "Test" --parent 123456                # as child page
 confluence-cli create --space DEV --title "Test" --dry-run                      # preview
 ```
 

@@ -8,7 +8,7 @@ Draft-first keeps half-written work off the public site while still letting you 
 
 ```bash
 # 1. Create the draft
-ghost --json create-post --title "Release notes" \
+ghost --json --yes create-post --title "Release notes" \
   --html "<p>What shipped this week…</p>" > /tmp/draft.json
 
 post_id=$(jq -r '.post.id' /tmp/draft.json)
@@ -17,7 +17,7 @@ post_id=$(jq -r '.post.id' /tmp/draft.json)
 ghost get-post "$post_id" | grep updated_at
 
 # 3. Publish, passing the fresh timestamp
-ghost update-post "$post_id" \
+ghost --yes update-post "$post_id" \
   --status published \
   --updated-at "$(date -u +%Y-%m-%dT%H:%M:%S.000Z)"   # NO — use the value from step 2
 ```
@@ -70,7 +70,7 @@ Note the loop reads `meta.pagination.next` from the CLI's `.page` field rather t
 ## Recipe 4: Publish at a future time (scheduling)
 
 ```bash
-ghost create-post --title "Launch day" \
+ghost --yes create-post --title "Launch day" \
   --html "<p>We're live.</p>" \
   --status scheduled \
   --published-at "2026-09-01T09:00:00.000Z"
@@ -99,7 +99,7 @@ Find tags nobody uses, then create missing ones for a new series:
 ghost tags --limit 200 --json | jq -r '.tags[] | select((.count.posts // 0) == 0) | .slug'
 
 # Create two series tags (idempotency: check existence first, creation duplicates error out)
-ghost create-tag --name "Engineering" --slug engineering --description "Technical posts"
+ghost --yes create-tag --name "Engineering" --slug engineering --description "Technical posts"
 ```
 
 Remember relation semantics when tagging posts programmatically: PUT replaces the tag array wholesale, so send `[...existing_slugs, "engineering"]`, not just the addition.
