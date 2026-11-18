@@ -21,6 +21,7 @@ from typing import Any
 from .adapter import HarnessAdapter
 from .comparison import build_comparison_report, format_comparison_summary, write_comparison_report
 from .evidence_contract import load_evidence_contracts
+from .fixtures import capture_fixtures, fixture_hashes, write_fixtures
 from .grader import grade_output
 from .manifest import build_manifest, write_manifest
 from .models import AdapterInput, EvalCase
@@ -248,6 +249,8 @@ def run_paired_trial(
             compare_references=comparison_policy == "complete_package",
         )
 
+    fixtures = capture_fixtures(skill_path, case.files)
+    hashes = fixture_hashes(fixtures)
     candidate_sandbox, baseline_sandbox = stage_paired_sandboxes(
         skill_path,
         comparison_mode=comparison_mode,
@@ -279,6 +282,8 @@ def run_paired_trial(
             case=candidate_case,
             work_dir=contained_path(trial_root, "work", "candidate", case.id),
             output_dir=candidate_output_dir,
+            fixture_dir=write_fixtures(fixtures, contained_path(trial_root, "inputs", "candidate")),
+            fixture_hashes=hashes,
             model=model,
             permissions={"skill_readonly": True, "grader_visible": False},
             limits=dict(limits),
@@ -309,6 +314,7 @@ def run_paired_trial(
             case=baseline_case,
             work_dir=contained_path(trial_root, "work", "baseline", case.id),
             output_dir=baseline_output_dir,
+            fixture_hashes=hashes,
             model=model,
             permissions={
                 "skill_readonly": baseline_skill_path is not None,
@@ -341,6 +347,9 @@ def run_paired_trial(
         candidate_result = adapter.execute(candidate_input)
         c_finished = datetime.now(timezone.utc)
 
+        baseline_input.fixture_dir = write_fixtures(
+            fixtures, contained_path(trial_root, "inputs", "baseline")
+        )
         b_started = datetime.now(timezone.utc)
         baseline_result = adapter.execute(baseline_input)
         b_finished = datetime.now(timezone.utc)

@@ -67,6 +67,15 @@ Path traversal and symlinks are rejected. CLI harnesses receive the selected
 entry point directory through `EVAL_SKILL_DIR`. API adapters retain their
 separate bounded reference-input contract.
 
+### Fixture-backed evals
+
+Declare task inputs with the case's `files` field and keep the grader and
+expected outcomes out of those inputs. The CLI runner exposes the original
+relative paths beneath `EVAL_INPUT_DIR`. The paired runner captures the bytes
+once and gives each arm its own copy. The text API adapter attaches bounded
+UTF-8 fixtures to the task message with source digests. Use the CLI harness
+for binary fixtures.
+
 ## Skill catalog structure
 
 The catalog is two-layered by design. Keep your change in the layer that matches the job, and prefer beefing up an existing skill over creating a near-duplicate:
