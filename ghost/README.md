@@ -36,7 +36,7 @@ export GHOST_ADMIN_KEY="<RECORD_KEY>"    # Ghost Admin → Integrations → Cust
 
 ghost site                # connectivity check
 ghost posts --status draft
-ghost create-post --title "Hello from the terminal" --html "<p>First!</p>"
+ghost --yes create-post --title "Hello from the terminal" --html "<p>First!</p>"
 ```
 
 Preview any write safely by adding `--dry-run` before the subcommand.

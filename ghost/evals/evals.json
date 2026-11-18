@@ -11,8 +11,8 @@
     {
       "id": "draft-then-publish-pipeline",
       "prompt": "Create a post called Release notes on my Ghost site, then publish it once the content is reviewed.",
-      "expected_output": "Create with ghost create-post --title 'Release notes', then re-read it and run ghost update-post <id> --updated-at <latest> --status published.",
-      "assertions": ["creates as draft first", "update sends latest updated_at", "publishes via status published"]
+      "expected_output": "Preview the draft, obtain confirmation and create it using --yes. Re-read the post after review and preview the publish operation with its current updated_at before obtaining confirmation and publishing with --yes.",
+      "assertions": ["creates as draft first", "update sends latest updated_at", "publishes via status published", "Uses --dry-run before seeking approval", "Uses --yes only after the user approves the specific write"]
     },
     {
       "id": "jwt-auth-gotcha",
