@@ -31,6 +31,7 @@
       "prompt": "I need to review the architecture of a legacy application that will be internet-facing for the first time. It was built for an internal network. What are the highest-priority architectural security questions to answer?",
       "expected_output": "An architecture audit structured around the highest-priority security properties: the response identifies the critical questions — where trust boundaries are and what crosses them (input that was trusted internally but will now be attacker-controlled), how authentication and authorization are enforced and whether they are centralized or scattered, how secrets are stored and rotated, what data the application handles and how it is protected in transit and at rest, how the application is isolated from other systems it shares a network with, and how failures are observed (logging and alerting on security events). The response prioritizes the questions by the risk of moving from internal to internet-facing: any trust assumption that was safe on an internal network is now an exposure, and it explains how each answer maps to a finding or a remediation decision in the audit report.",
       "assertions": [
+        "Can locate the aggregate review checklists from the security architecture audit outline",
         "The audit leads with trust-boundary questions: what was trusted internally that will now be attacker-controlled",
         "Authentication and authorization enforcement points are examined for centralization",
         "Secrets handling, data protection, and network isolation are covered",

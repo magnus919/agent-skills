@@ -1,6 +1,8 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+require "uri"
+
 # Scans references/*.md files for stale prose backtick references to
 # nonexistent files (the #205 RICE-reference class of bug). The link-resolution
 # pass over SKILL.md bodies cannot see these: a backtick token
@@ -88,6 +90,39 @@ module ReferenceFileScan
       end
     end
     errors
+  end
+
+  # Resolve rendered relative links from the reference file's own directory.
+  def markdown_link_errors(root, skill_rel)
+    ref_dir = File.join(root, skill_rel, "references")
+    Dir.glob("#{ref_dir}/**/*.md").sort.flat_map do |ref|
+      fence = nil
+      errors = []
+      File.foreach(ref).with_index(1) do |line, number|
+        if (marker = line[/^ {0,3}(`{3,}|~{3,})/, 1])
+          if fence.nil?
+            fence = marker
+          elsif marker[0] == fence[0] && marker.length >= fence.length && line.strip == marker
+            fence = nil
+          end
+          next
+        end
+        next if fence
+
+        line.scan(/\[[^\]\n]+\]\(\s*(<[^>]+>|[^\s)]+)/).flatten.each do |raw|
+          target = raw.delete_prefix("<").delete_suffix(">")
+          path = target.split(/[?#]/, 2).first.to_s
+          next if path.empty? || path.match?(%r{\A(?:[a-z][a-z0-9+.-]*:|/)}i)
+
+          resolved = File.expand_path(URI::DEFAULT_PARSER.unescape(path), File.dirname(ref))
+          next if file_exists_case_sensitive?(resolved)
+
+          relative = ref.delete_prefix("#{root}/")
+          errors << "#{relative}:#{number}: missing linked resource #{target}"
+        end
+      end
+      errors
+    end
   end
 
   # Returns error strings for reference files under <root>/<skill_rel>/references/

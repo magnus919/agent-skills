@@ -15,7 +15,7 @@
    - [SAML 2.0](#13-saml-20)
    - [API Keys](#14-api-keys)
    - [Mutual TLS (mTLS)](#15-mutual-tls-mtls)
-   - [Authentication Review Checklist](#16-authentication-review-checklist)
+   - [Authentication Review Checklist](#16-authentication-review-checklist-aggregate)
 2. [Session Management](#2-session-management)
    - [Server-Side Sessions](#21-server-side-sessions)
    - [JWT-Based Sessions](#22-jwt-based-sessions)
@@ -35,7 +35,7 @@
    - [License Compatibility Analysis](#53-license-compatibility-analysis)
    - [Supply Chain Attack Patterns](#54-supply-chain-attack-patterns)
    - [SLSA Framework](#55-slsa-framework)
-   - [Dependency Audit Review Checklist](#56-dependency-audit-review-checklist)
+   - [Dependency Audit Review Checklist](#56-dependency-audit-review-checklist-aggregate)
 
 ---
 
