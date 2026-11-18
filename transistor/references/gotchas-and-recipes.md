@@ -22,7 +22,7 @@ corroboration (the flimzy/transistor Go SDK) is cited where noted.
 - **Cause:** POST /episodes and PATCH /episodes/:id never publish; only
   `PATCH /v1/episodes/:id/publish` changes status. (The docs state this on
   both the create and update pages.)
-- **Fix:** `transistor episode-publish --id <EPISODE_ID>`, or the raw call:
+- **Fix:** `transistor --yes episode-publish --id <EPISODE_ID>`, or the raw call:
   `curl .../v1/episodes/<EPISODE_ID>/publish -X PATCH -d "episode[status]=published"`
   with `x-api-key`.
 
@@ -119,15 +119,15 @@ export TRANSISTOR_API_KEY="<API_KEY>"
 transistor shows --json | jq -r '.shows[] | [.id, .title, .slug] | @tsv'
 
 # 2. Local audio? authorize + upload (skippable if you have a URL)
-transistor authorize-upload --filename ep12.mp3 --file ./ep12.mp3 --json | jq -r '.audio_url'
+transistor --yes authorize-upload --filename ep12.mp3 --file ./ep12.mp3 --json | jq -r '.audio_url'
 
 # 3. Create the draft with audio attached
-EP=$(transistor episode-create --show <SHOW_ID> --title "Ep 12" \
+EP=$(transistor --yes episode-create --show <SHOW_ID> --title "Ep 12" \
      --audio-url "$(cat /tmp/audio_url)" --json | jq -r '.id')
 echo "$EP"   # draft id, type string
 
 # 4. Publish when ready
-transistor episode-publish --id "$EP"
+transistor --yes episode-publish --id "$EP"
 
 # 5. Confirm state and the trackable media URL
 transistor episode --id "$EP" --json | jq '{status, media_url, published_at}'
@@ -155,12 +155,12 @@ curl -s "https://api.transistor.fm/v1/episodes/$EP/publish" -X PATCH \
 i=0
 for AUDIO in /media/season3/*.mp3; do
   i=$((i+1))
-  URL=$(transistor authorize-upload --filename "$(basename "$AUDIO")" \
+  URL=$(transistor --yes authorize-upload --filename "$(basename "$AUDIO")" \
         --file "$AUDIO" --json | jq -r '.audio_url')
-  EP=$(transistor episode-create --show <SHOW_ID> \
+  EP=$(transistor --yes episode-create --show <SHOW_ID> \
        --title "S3E$i" --season 3 --number "$i" --audio-url "$URL" \
        --json | jq -r '.id')
-  transistor episode-publish --id "$EP" --status scheduled \
+  transistor --yes episode-publish --id "$EP" --status scheduled \
     --published-at "2026-09-$((7*i)) 09:00:00"
   sleep 1
 done
@@ -194,15 +194,15 @@ transistor episodes --show <SHOW_ID> --status published --per 5 --json \
 
 ```bash
 # Batch import (single call), then verify with a filtered listing
-transistor subscriber-batch --show <SHOW_ID> \
+transistor --yes subscriber-batch --show <SHOW_ID> \
   --email "one@example.com" --email "two@example.com" \
   --skip-welcome-email --json | jq '.subscribers'
 
 transistor subscribers --show <SHOW_ID> --json | jq -r '.meta.totalCount'
 # Revoke someone: by email...
-transistor subscriber-delete --show <SHOW_ID> --email "two@example.com"
+transistor --yes subscriber-delete --show <SHOW_ID> --email "two@example.com"
 # ...or by id
-transistor subscriber-delete --id <SUBSCRIBER_ID>
+transistor --yes subscriber-delete --id <SUBSCRIBER_ID>
 ```
 
 Private subscribers each get personal `feed_url`/`subscribe_url` values —
@@ -211,10 +211,10 @@ never share one subscriber's feed URL; it identifies them.
 ## Recipe: webhook instead of polling
 
 ```bash
-transistor webhook-create --show <SHOW_ID> \
+transistor --yes webhook-create --show <SHOW_ID> \
   --event episode_published --url "https://example.com/hooks/transistor"
 transistor webhooks --show <SHOW_ID> --json | jq '.webhooks'
-transistor webhook-delete --id <WEBHOOK_ID>
+transistor --yes webhook-delete --id <WEBHOOK_ID>
 ```
 
 Events: `episode_created`, `episode_published`, `subscriber_created`,

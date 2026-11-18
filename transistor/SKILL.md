@@ -30,6 +30,11 @@ unwraps them (`--json`) while preserving the raw shapes agents need for jq.
 Write commands are guarded: episode creation is always a draft, and
 publishing goes through its own dedicated endpoint.
 
+## Write confirmation
+
+Confirm the target, scope, and rollback path before acting. Read-only discovery may proceed without confirmation.
+Use the credential-free `--dry-run --json` preview before asking for explicit approval. The `--force` flag only overrides the publish audio check. Only rerun the approved write with `--yes` after confirmation. Irreversible operations require an explicit directive for the exact target.
+
 ## Setup
 
 1. Find your API key on the Transistor dashboard **Account page → API
@@ -90,10 +95,10 @@ relationships. `--limit` works as an alias for `--per` for old scripts.
 ### episode-create / episode-update — drafts and metadata
 
 ```bash
-transistor episode-create --show <SHOW_ID> --title "Ep 12: Roasting" \
+transistor --yes episode-create --show <SHOW_ID> --title "Ep 12: Roasting" \
   --season 2 --number 4 --audio-url "https://uploads.example.com/ep12.mp3"
-transistor episode-update --id <EPISODE_ID> --title "New title"
-transistor episode-update --id <EPISODE_ID> --audio-url "<AUDIO_URL>"   # attach audio
+transistor --yes episode-update --id <EPISODE_ID> --title "New title"
+transistor --yes episode-update --id <EPISODE_ID> --audio-url "<AUDIO_URL>"   # attach audio
 ```
 
 `episode-create` ALWAYS produces a draft (`status: "draft"`,
@@ -103,10 +108,10 @@ metadata or attaches audio and never touches publishing state.
 ### episode-publish — the lifecycle switch
 
 ```bash
-transistor episode-publish --id <EPISODE_ID>                       # publish now
-transistor episode-publish --id <EPISODE_ID> --status scheduled \
+transistor --yes episode-publish --id <EPISODE_ID>                       # publish now
+transistor --yes episode-publish --id <EPISODE_ID> --status scheduled \
   --published-at "2026-09-03 09:00:00"                             # schedule
-transistor episode-publish --id <EPISODE_ID> --status draft        # unpublish
+transistor --yes episode-publish --id <EPISODE_ID> --status draft        # unpublish
 ```
 
 Hits `PATCH /v1/episodes/<EPISODE_ID>/publish` with
@@ -118,8 +123,8 @@ empty (an unplayable item would hit every subscriber's feed); pass
 ### authorize-upload — local audio (max 5GB)
 
 ```bash
-transistor authorize-upload --filename ep12.mp3                 # plan only
-transistor authorize-upload --filename ep12.mp3 --file ./ep12.mp3
+transistor authorize-upload --filename ep12.mp3 --dry-run       # offline preview
+transistor --yes authorize-upload --filename ep12.mp3 --file ./ep12.mp3
 ```
 
 Returns (and, with `--file`, performs) the signed PUT; the printed
@@ -143,18 +148,18 @@ per-day `downloads[]` arrays, not totals; the CLI sums them into
 
 ```bash
 transistor subscribers --show <SHOW_ID> --json
-transistor subscriber-create --show <SHOW_ID> --email "listener@example.com"
-transistor subscriber-batch --show <SHOW_ID> --email "a@example.com" --email "b@example.com"
-transistor subscriber-delete --show <SHOW_ID> --email "a@example.com"   # or --id
+transistor --yes subscriber-create --show <SHOW_ID> --email "listener@example.com"
+transistor --yes subscriber-batch --show <SHOW_ID> --email "a@example.com" --email "b@example.com"
+transistor --yes subscriber-delete --show <SHOW_ID> --email "a@example.com"   # or --id
 ```
 
 ### webhooks — push instead of poll
 
 ```bash
 transistor webhooks --show <SHOW_ID>
-transistor webhook-create --show <SHOW_ID> --event episode_published \
+transistor --yes webhook-create --show <SHOW_ID> --event episode_published \
   --url "https://example.com/hooks/transistor"
-transistor webhook-delete --id <WEBHOOK_ID>
+transistor --yes webhook-delete --id <WEBHOOK_ID>
 ```
 
 Events: `episode_created`, `episode_published`, `subscriber_created`,
@@ -166,7 +171,7 @@ webhooks beat polling for freshness.
 ```bash
 transistor --json shows                        # flags work in any position
 transistor --dry-run episodes --show <SHOW_ID> # request plan, zero network
-transistor --force episode-publish --id <EPISODE_ID>   # skip the audio guard
+transistor --force --yes episode-publish --id <EPISODE_ID>   # skip the audio guard
 transistor --quiet shows                       # suppress non-essential output
 transistor --verbose episodes                  # detailed stderr logging
 ```
@@ -183,10 +188,10 @@ never require credentials.
 ```bash
 export TRANSISTOR_API_KEY="<API_KEY>"
 SHOW=$(transistor shows --json | jq -r '.shows[0].id')          # string id
-AUDIO=$(transistor authorize-upload --filename ep12.mp3 --file ./ep12.mp3 --json | jq -r '.audio_url')
-EP=$(transistor episode-create --show "$SHOW" --title "Ep 12" \
+AUDIO=$(transistor --yes authorize-upload --filename ep12.mp3 --file ./ep12.mp3 --json | jq -r '.audio_url')
+EP=$(transistor --yes episode-create --show "$SHOW" --title "Ep 12" \
      --audio-url "$AUDIO" --json | jq -r '.id')                 # draft id
-transistor episode-publish --id "$EP"                           # dedicated endpoint
+transistor --yes episode-publish --id "$EP"                           # dedicated endpoint
 transistor episode --id "$EP" --json | jq '{status, media_url, published_at}'
 ```
 

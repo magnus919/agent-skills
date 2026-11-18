@@ -28,7 +28,7 @@ from .models import AdapterInput, EvalCase
 from .path_safety import contained_path, validate_case_id
 from .reference_inputs import build_context, validate_references
 from .runner import load_cases
-from .sandbox import cleanup_sandbox, stage_paired_sandboxes
+from .sandbox import cleanup_sandbox, skill_package_root, stage_paired_sandboxes
 
 COMPARISON_MODES = {"skill_vs_no_skill", "pinned_skill_vs_skill"}
 COMPARISON_POLICIES = {"complete_package", "instruction_only"}
@@ -67,7 +67,7 @@ def _verify_snapshot_revision(skill_path: Path, expected_revision: str | None) -
         [
             "git",
             "-C",
-            str(skill_path),
+            str(skill_package_root(skill_path)),
             "status",
             "--porcelain",
             "--untracked-files=all",
