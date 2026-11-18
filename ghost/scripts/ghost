@@ -121,7 +121,7 @@ def emit(human, data):
 
 
 def _preparse_global_flags(argv):
-    GLOBAL_BOOLS = {"--json", "--dry-run", "--quiet", "--verbose"}
+    GLOBAL_BOOLS = {"--json", "--dry-run", "--yes", "--quiet", "--verbose"}
     flags, filtered = {}, [argv[0]]
     i = 1
     while i < len(argv):
@@ -582,6 +582,18 @@ def main():
     if not args.command:
         parser.print_help()
         sys.exit(1)
+
+    write_commands = {
+        "create-post",
+        "update-post",
+        "delete-post",
+        "create-page",
+        "create-tag",
+    }
+    if args.command in write_commands and not (
+        GLOBAL_FLAGS.get("dry_run") or GLOBAL_FLAGS.get("yes")
+    ):
+        die("This command changes external state. Preview with --dry-run or confirm with --yes.")
 
     client = GhostClient(dry_run=GLOBAL_FLAGS.get("dry_run", False))
 
