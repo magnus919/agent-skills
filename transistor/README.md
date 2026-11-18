@@ -44,9 +44,9 @@ transistor shows                         # list your podcasts
 transistor episodes --status draft       # what is not out yet?
 
 # Publish pipeline: create (draft) -> attach audio -> publish
-EP=$(transistor episode-create --show <SHOW_ID> --title "Ep 12" \
+EP=$(transistor --yes episode-create --show <SHOW_ID> --title "Ep 12" \
      --audio-url "https://example.com/ep12.mp3" --json | jq -r '.id')
-transistor episode-publish --id "$EP"
+transistor --yes episode-publish --id "$EP"
 ```
 
 `--help` and `--dry-run` work without an API key; preview any request with
