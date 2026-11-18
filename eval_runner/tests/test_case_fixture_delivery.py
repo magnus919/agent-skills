@@ -59,14 +59,35 @@ def test_fixture_capture_rejects_symlinks(tmp_path):
         capture_fixtures(tmp_path, ["link"])
 
 
-def test_api_adapter_declines_fixture_case_without_sending_a_request(tmp_path, monkeypatch):
+def test_api_adapter_declines_binary_fixture_without_sending_a_request(tmp_path, monkeypatch):
     def unexpected_egress(*args, **kwargs):
         pytest.fail("unexpected API call")
 
     monkeypatch.setattr("urllib.request.urlopen", unexpected_egress)
+    (tmp_path / "input.bin").write_bytes(b"\xff")
     case = EvalCase("fixture-case", "Use a fixture", "", [], ["input.bin"])
     output = OpenAICompatAdapter("https://example.test", "fixture-model").execute(
-        AdapterInput(tmp_path, case, tmp_path / "work", tmp_path / "output")
+        AdapterInput(tmp_path, case, tmp_path / "work", tmp_path / "output", fixture_dir=tmp_path)
     )
     assert output.exit_status == ExitStatus.ERROR
-    assert "cannot deliver case fixtures" in (output.error or "")
+    assert "bounded UTF-8 task fixtures" in (output.error or "")
+
+
+def test_api_adapter_includes_only_declared_text_fixture_in_user_message(tmp_path):
+    (tmp_path / "input.json").write_text('{"fixture": true}')
+    (tmp_path / "rubric.md").write_text("not an input")
+    case = EvalCase("fixture-case", "Use a fixture", "", [], ["input.json"])
+    adapter = OpenAICompatAdapter("https://example.test", "fixture-model")
+    messages, provenance = adapter._build_input(
+        AdapterInput(tmp_path, case, tmp_path / "work", tmp_path / "output", fixture_dir=tmp_path)
+    )
+    assert messages[1]["role"] == "user"
+    assert '{"fixture": true}' in messages[1]["content"]
+    assert "not an input" not in messages[1]["content"]
+    assert provenance["task_fixtures"] == [
+        {
+            "path": "input.json",
+            "sha256": hashlib.sha256(b'{"fixture": true}').hexdigest(),
+            "bytes": 17,
+        }
+    ]

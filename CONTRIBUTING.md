@@ -59,8 +59,9 @@ Paired-eval CI has a five-skill resource cap. Changes anywhere in a skill direct
 Declare task inputs with the case's `files` field and keep the grader and
 expected outcomes out of those inputs. The CLI runner exposes the original
 relative paths beneath `EVAL_INPUT_DIR`. The paired runner captures the bytes
-once and gives each arm its own copy. A text-only API adapter reports a
-fixture case as unsupported before issuing a request.
+once and gives each arm its own copy. The text API adapter attaches bounded
+UTF-8 fixtures to the task message with source digests. Use the CLI harness
+for binary fixtures.
 
 ## Skill catalog structure
 
