@@ -120,6 +120,11 @@ jobs:
         run: python3 system-one/scripts/test_jev_teacher_source.py
       - name: Test complete changed-skill selection
         run: python3 eval_runner/tests/test_selection.py
+      - name: Test eval fixture delivery and CLI authorization boundaries
+        run: >-
+          python3 -m pytest -q --no-cov
+          eval_runner/tests/test_case_fixture_delivery.py
+          eval_runner/tests/test_audit_write_scenarios.py
       - name: Test matched fair-pair inputs and judgment-only evidence
         run: >-
           python3 -m pytest -q --no-cov
