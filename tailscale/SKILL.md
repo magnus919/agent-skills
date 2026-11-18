@@ -83,7 +83,7 @@ These live in `scripts/` at the bundle root and are available to all sub-skills.
 | `scripts/headscale-backup.sh` | Create a checksummed manifest-backed Headscale archive from configured SQLite and recovery paths. Run before upgrades or migrations; `--dry-run` previews without writing. | `scripts/headscale-backup.sh --dry-run --json` |
 | `scripts/headscale-restore.sh` | Validate and restore a supported manifest-backed archive to its recorded destinations. Run it during recovery; always verify node list and policy afterwards. | `scripts/headscale-restore.sh --backup headscale-backup-2026-01-01.tar.gz --dry-run --json` |
 | `scripts/tailscale-status-json.sh` | Structured wrapper around `tailscale status --json` with peer diagnostics. Run it from any client to check connectivity, peers, and relay/direct paths in machine-readable form. | `scripts/tailscale-status-json.sh` |
-| `scripts/test-all.sh` | Smoke test across all bundle scripts (`--help`, syntax, executability) without requiring a running Headscale. Run it after modifying any bundled script; CI runs it via `scripts/check-skill-tests.py`. | `bash scripts/test-all.sh` |
+| `scripts/test-all.sh` | Offline help and syntax smoke for bundle entry points. CI runs it via `scripts/check-skill-tests.py`. The skill-local pytest suite checks root backup and restore previews using temporary fixtures; run relay latency checks manually. | `bash scripts/test-all.sh` |
 
 ## Templates
 

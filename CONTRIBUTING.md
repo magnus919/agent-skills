@@ -54,6 +54,19 @@ Improving this CI integration means changing **our Jev API inputs**, not trainin
 
 Paired-eval CI has a five-skill resource cap. Changes anywhere in a skill directory—including references, templates, assets, and README—make that skill eligible if it has an eval manifest. When a change touches more than five eligible skills, CI fails selection rather than silently evaluating a subset. Split the PR or propose an explicit cap change. The model job freezes the selected case IDs before generation; Jev compares that list with the received reports. Read both the expected-versus-observed case count and the assertion coverage before interpreting a green Jev audit. A missing case report, skipped model job, or missing selection evidence is incomplete coverage even if Jev judged every assertion it saw. None of these counts establishes semantic correctness or release approval.
 
+### Resources in paired evaluations
+
+The runner stages the skill and its standard resource directories. A skill
+that also ships a runtime directory such as a Python package or a worked
+example can declare it in a root-level `runtime-resources.json`. Use a JSON
+array of existing direct directory names. Keep evals, test code, and grading
+data outside the runtime surface.
+
+Bundle entry points and their nested skills retain the on-disk bundle layout.
+Path traversal and symlinks are rejected. CLI harnesses receive the selected
+entry point directory through `EVAL_SKILL_DIR`. API adapters retain their
+separate bounded reference-input contract.
+
 ## Skill catalog structure
 
 The catalog is two-layered by design. Keep your change in the layer that matches the job, and prefer beefing up an existing skill over creating a near-duplicate:
@@ -114,6 +127,10 @@ If a skill includes executable scripts or a package, run its documented checks a
 ### Skill script tests
 
 Every skill that ships executable scripts must name its script tests `scripts/test_*.py`; pytest auto-discovers and runs them in CI for every skill's `scripts/` directory, so Python test files must use the exact `test_*.py` name. Shell-based tests are the exception: register them in `scripts/check-skill-tests.py` as a `run` entry (executed in CI with `bash`) or a `manual` entry (documented only, when the test needs network access, credentials, or external tooling). CI enforces the naming convention: a file under any skill `scripts/` directory whose name matches the test conventions (`test_*.py`, `test*.sh`, `*_test.*`, `*-test.*`, or `.bats`) must be a Python `test_*.py` (auto-run) or be registered in `scripts/check-skill-tests.py`; `python3 scripts/check-skill-tests.py --check` fails otherwise.
+
+Standalone offline pytest suites outside those locations can be listed in
+`scripts/additional-test-files.txt`. The validation workflow executes these
+separately and fails its test routing check for files without a declared route.
 
 ## Deprecating a skill
 

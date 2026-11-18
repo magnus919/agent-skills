@@ -43,11 +43,11 @@ substitute for anything in the boundaries below.
   to qualified professionals (a therapist, clinician, or appropriate care).
   Do not diagnose, and do not coach the clinical content.
 - **General life coaching** (personal goals, transitions, accountability):
-  route to [life-coach](../life-coach/SKILL.md).
+  route to [life-coach](../../life-coach/SKILL.md).
 - **Requirements discovery and stakeholder interviews**: route to
-  [product-discovery](../product-discovery/SKILL.md).
+  [product-discovery](../../product-discovery/SKILL.md).
 - **Discovering how an AI agent could help daily routines**: route to
-  [daily-life-discovery](../daily-life-discovery/SKILL.md).
+  [daily-life-discovery](../../daily-life-discovery/SKILL.md).
 
 ### Override at any point
 

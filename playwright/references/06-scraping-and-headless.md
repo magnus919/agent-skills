@@ -71,7 +71,7 @@ with sync_playwright() as p:
   persistence into committed files.** Storage state (`context.storage_state()`)
   must never be committed (see hard boundaries).
 - **Challenge pages**: Cloudflare/DDoS-GUARD challenges are out of scope here —
-  route to [flaresolverr](../flaresolverr/SKILL.md).
+  route to [flaresolverr](../../flaresolverr/SKILL.md).
 
 ## Related
 
