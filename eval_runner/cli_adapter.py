@@ -16,7 +16,8 @@ Configuration via harness_config:
   timeout_seconds: int  — max wall time (default: 120)
   extra_args: list[str]  — additional CLI arguments
 
-The subprocess receives EVAL_OUTPUT_DIR pointing at a fresh, per-trial directory.
+The subprocess receives EVAL_SKILL_DIR for the current trial skill and
+EVAL_OUTPUT_DIR for a fresh output directory.
 The adapter refuses to reuse an existing output directory so stale artifacts cannot
 be attributed to a new trial.
 """
@@ -78,6 +79,7 @@ class CliSubprocessAdapter:
                 error="refusing to reuse an existing output directory",
                 artifact_inventory_complete=False,
             )
+        env["EVAL_SKILL_DIR"] = str(input.skill_path.resolve())
         env["EVAL_OUTPUT_DIR"] = str(input.output_dir.resolve())
 
         start = time.monotonic()
