@@ -18,6 +18,11 @@ metadata:
 
 Drive a Ghost CMS site's Admin API (v5/v6, `Accept-Version: v6.0`): list posts by status including drafts, create and publish pages and posts, manage tags, and check site info. Drafts, scheduled posts, and published content are all visible here because every call authenticates with a per-request Admin JWT built from your `id:secret` integration key.
 
+## Write confirmation
+
+Confirm the target, scope, and rollback path before acting. Read-only discovery may proceed without confirmation.
+Use the credential-free `--dry-run --json` preview before asking for explicit approval. Only rerun the approved write with `--yes` after confirmation. Irreversible operations require an explicit directive for the exact target.
+
 ## Setup
 
 ```bash
@@ -54,22 +59,22 @@ ghost tags                                    # tags with usage counts
 ### Create and publish
 
 ```bash
-ghost create-post --title "Notes"                              # safe default: draft
-ghost create-post --title "Hello" --html "<p>Hi</p>"
-ghost create-post --title "Launch" --status published --html "<p>We're live</p>"
-ghost create-post --title "Later" --status scheduled \
+ghost --yes create-post --title "Notes"                              # safe default: draft
+ghost --yes create-post --title "Hello" --html "<p>Hi</p>"
+ghost --yes create-post --title "Launch" --status published --html "<p>We're live</p>"
+ghost --yes create-post --title "Later" --status scheduled \
   --published-at "2026-09-01T09:00:00.000Z"                    # future ISO-8601 required together
-ghost create-page --title "About" --html "<p>…</p>" --slug about
-ghost create-tag --name "Engineering" --description "Technical posts"
+ghost --yes create-page --title "About" --html "<p>…</p>" --slug about
+ghost --yes create-tag --name "Engineering" --description "Technical posts"
 ```
 
 ### Edit and remove
 
 ```bash
-ghost update-post POST_ID --title "New title" \
+ghost --yes update-post POST_ID --title "New title" \
   --updated-at "<RECORD_UPDATED_AT>"          # REQUIRED: latest updated_at, re-read first
-ghost update-post POST_ID --status published --updated-at "<RECORD_UPDATED_AT>"
-ghost delete-post POST_ID                     # permanent, 204-style removal
+ghost --yes update-post POST_ID --status published --updated-at "<RECORD_UPDATED_AT>"
+ghost --yes delete-post POST_ID                     # permanent, 204-style removal
 ```
 
 ## Pipeline recipes
@@ -77,10 +82,10 @@ ghost delete-post POST_ID                     # permanent, 204-style removal
 ### Draft now, publish after review
 
 ```bash
-ghost --json create-post --title "Release notes" > /tmp/post.json
+ghost --json --yes create-post --title "Release notes" > /tmp/post.json
 id=$(jq -r '.post.id // .post_id // empty' /tmp/post.json)
 ghost get-post "$id"                          # read fresh updated_at
-ghost update-post "$id" --status published \
+ghost --yes update-post "$id" --status published \
   --updated-at "<exact string from get-post output>"
 ```
 

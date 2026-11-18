@@ -57,7 +57,7 @@ GLOBAL_FLAGS: Dict[str, Any] = {
 
 
 def _preparse_global_flags(argv: List[str]) -> Tuple[Dict[str, Any], List[str]]:
-    GLOBAL_BOOLS = {"--json", "--dry-run", "--force", "--quiet", "--verbose"}
+    GLOBAL_BOOLS = {"--json", "--dry-run", "--yes", "--force", "--quiet", "--verbose"}
     flags: Dict[str, Any] = {}
     filtered: List[str] = [argv[0]]
     i = 1
@@ -409,10 +409,12 @@ def cmd_create(client: ConfluenceClient, args: List[str]) -> None:
     parsed, _ = parser.parse_known_args(args)
 
     if client.dry_run:
-        emit(f"[dry-run] Would create page '{parsed.title}' in space {parsed.space}",
+        emit(f"[dry-run] Would create page '{parsed.title}' in space {parsed.space}\n"
+             f"Parent page: {parsed.parent or '(none)'}\n"
+             f"HTML body:\n{parsed.body}",
              {"dry_run": True, "command": "create",
               "space": parsed.space, "title": parsed.title,
-              "parent_id": parsed.parent})
+              "parent_id": parsed.parent, "body_html": parsed.body})
         return
 
     # Resolve space key to ID
@@ -479,6 +481,11 @@ def main() -> None:
     if not args.command:
         parser.print_help()
         sys.exit(1)
+
+    if args.command == "create" and not (
+        GLOBAL_FLAGS.get("dry_run") or GLOBAL_FLAGS.get("yes")
+    ):
+        die("This command changes external state. Preview with --dry-run or confirm with --yes.")
 
     needs_auth = not GLOBAL_FLAGS.get("dry_run", False)
     if needs_auth and not (ENV_EMAIL and ENV_TOKEN):
