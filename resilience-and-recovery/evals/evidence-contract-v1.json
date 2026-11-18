@@ -3,7 +3,7 @@
   "cases": {
     "restore-timing-with-content-mismatch": {
       "task_inputs": {
-        "prompt_sha256": "bb1cad9c60d2105b2ef89ce9440f786c713b11bbb2391f878169ecd7a83030aa",
+        "prompt_sha256": "41ef71720575ce3034deca95125fd55c030a834f4b2b6a5d88b8ef78d8830d4c",
         "fixture_sha256": {
           "evals/fixtures/audit-restore-drill.json": "04d1383104197da0dca2832f455df5c2bd7e84412bdc028297bd19b1ee6b12f9"
         }

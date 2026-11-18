@@ -3,7 +3,7 @@
   "cases": {
     "cutover-blocked-by-content-parity": {
       "task_inputs": {
-        "prompt_sha256": "8ee159c320720f3b19b268ee7c955f2e43e60de1650046793dae017affecba35",
+        "prompt_sha256": "c824b8c63b9b111d598ce39e41aed87fa2ae960c2ccfabdf6e738cee454640aa",
         "fixture_sha256": {
           "evals/fixtures/audit-migration-parity.json": "0516d6937b345320276392a9830a88caf0199d6632a7c7987d2d5501f37cc7a2"
         }

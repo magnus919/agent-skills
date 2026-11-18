@@ -4,6 +4,12 @@ The cases use synthetic observations. Each evidence contract binds the input
 bytes and an authoritative source. Keep the run revision, case ID, reviewed
 artifact, reviewer identity, and per-assertion provenance with the verdict.
 
+The decision record uses exact JSON field assertions for the case's factual
+observations and decision. The rationale still needs evidence-based review.
+For example, recovery can report a blocked cutover while giving an inadequate
+reason. A correct decision field alone does not establish that a production
+action was performed.
+
 | Case | Satisfying evidence | Contradiction to catch | Missing evidence |
 |---|---|---|---|
 | Recovery integrity | The verdict records the observed RTO pass, fingerprint failure, unverified data loss, and a blocked cutover. | Matching record counts are used to approve cutover despite the mismatched fingerprint. | A HOLD labels the risk without identifying the observed mismatch or unmeasured loss. |

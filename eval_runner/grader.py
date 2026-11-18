@@ -5,6 +5,7 @@ a convention-based format:
 
     response_contains:<substring>
     response_not_contains:<substring>
+    response_json_equals:<field>=<JSON scalar>
     exit_status:<status>
     artifact_exists:<filename>
     environment_state:<key>=<value>
@@ -17,6 +18,8 @@ review and do not affect the pass/fail verdict.
 
 from __future__ import annotations
 
+import json
+import math
 from dataclasses import dataclass, field
 from enum import Enum
 
@@ -79,6 +82,48 @@ class GradeResult:
         return sum(1 for r in self.results if r.verdict == AssertionVerdict.MANUAL_REVIEW)
 
 
+def _unique_json_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
+    result: dict[str, object] = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("duplicate JSON key")
+        result[key] = value
+    return result
+
+
+def _reject_json_constant(value: str) -> None:
+    raise ValueError(f"invalid JSON constant: {value}")
+
+
+def _check_json_field(assertion: str, value: str, response: str | None) -> AssertionResult:
+    key, separator, encoded = value.partition("=")
+    if not key.strip() or not separator:
+        return AssertionResult(assertion, AssertionVerdict.MANUAL_REVIEW, "expected field=JSON")
+    try:
+        expected = json.loads(encoded, parse_constant=_reject_json_constant)
+    except (ValueError, RecursionError):
+        return AssertionResult(assertion, AssertionVerdict.MANUAL_REVIEW, "invalid JSON value")
+    if isinstance(expected, (list, dict)) or (
+        isinstance(expected, float) and not math.isfinite(expected)
+    ):
+        return AssertionResult(assertion, AssertionVerdict.MANUAL_REVIEW, "expected JSON scalar")
+    if response is None:
+        return AssertionResult(assertion, AssertionVerdict.MANUAL_REVIEW, "response missing")
+    try:
+        document = json.loads(
+            response, object_pairs_hook=_unique_json_object, parse_constant=_reject_json_constant
+        )
+    except (ValueError, RecursionError):
+        return AssertionResult(assertion, AssertionVerdict.FAIL, "response is not valid JSON")
+    key = key.strip()
+    if not isinstance(document, dict) or key not in document:
+        return AssertionResult(assertion, AssertionVerdict.FAIL, f"missing JSON field '{key}'")
+    actual = document[key]
+    if type(actual) is not type(expected) or actual != expected:
+        return AssertionResult(assertion, AssertionVerdict.FAIL, f"JSON field '{key}' differs")
+    return AssertionResult(assertion, AssertionVerdict.PASS)
+
+
 def _check_assertion(assertion: str, output: AdapterOutput) -> AssertionResult:
     parsed = classify_assertion(assertion)
     if parsed.syntax == AssertionSyntax.PROSE:
@@ -115,6 +160,9 @@ def _check_assertion(assertion: str, output: AdapterOutput) -> AssertionResult:
         if value not in output.response:
             return AssertionResult(assertion, AssertionVerdict.PASS)
         return AssertionResult(assertion, AssertionVerdict.FAIL, f"'{value}' found in response")
+
+    if kind == "response_json_equals":
+        return _check_json_field(assertion, value, output.response)
 
     if kind == "exit_status":
         expected = value.lower()

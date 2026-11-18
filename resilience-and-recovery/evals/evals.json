@@ -76,13 +76,15 @@
     },
     {
       "id": "restore-timing-with-content-mismatch",
-      "prompt": "Read evals/fixtures/audit-restore-drill.json. Give the operator a recovery verdict, showing which observations support it and what would permit reconsideration.",
-      "expected_output": "Report that recovery is blocked by content mismatch and missing data-loss proof despite the time result. Preserve the isolated target and require a verified integrity and data-loss recheck before reconsidering.",
+      "prompt": "Read evals/fixtures/audit-restore-drill.json. Give the operator a recovery verdict, showing which observations support it and what would permit reconsideration. Return one JSON object with top-level string fields cutover, recovery_time, content_integrity, data_loss, and rationale. Use lowercase values and explain supported observations and next checks in rationale. For cutover use hold or proceed. For recovery_time, content_integrity, and data_loss use met, failed, or unverified.",
+      "expected_output": "Report that recovery is blocked by content mismatch and missing data-loss proof despite the time result. Preserve the isolated target and require a verified integrity and data-loss recheck before reconsidering. Provide the decision and explanation in the requested JSON object.",
       "assertions": [
-        "Recognizes 42 minutes as within the stated 60-minute recovery time target",
-        "Treats the unequal fingerprints as an integrity failure despite matching record counts",
-        "Treats the recovery point objective as unverified because observed data loss is missing",
-        "Withholds production cutover"
+        "response_json_equals:cutover=\"hold\"",
+        "response_json_equals:recovery_time=\"met\"",
+        "response_json_equals:content_integrity=\"failed\"",
+        "response_json_equals:data_loss=\"unverified\"",
+        "Explains why equal counts do not override the fingerprint mismatch",
+        "Specifies which integrity and data-loss observations would permit reconsideration"
       ],
       "files": [
         "evals/fixtures/audit-restore-drill.json"

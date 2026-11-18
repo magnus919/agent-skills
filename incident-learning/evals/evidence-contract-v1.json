@@ -3,7 +3,7 @@
   "cases": {
     "followup-requires-observable-freeze-control": {
       "task_inputs": {
-        "prompt_sha256": "f6b0a019d0f910dcfe513734a6b9dc2249b974cf8482d798904e1c553371d391",
+        "prompt_sha256": "3fb2c660079de2790df5961de4eff049f5589de020eebe92c67c2d939f0a8c6d",
         "fixture_sha256": {
           "evals/fixtures/audit-incident-followup.json": "a2e0b0a76140c23431923f98dbf15452841a41833d332c4b4285ba4ce66cfe64"
         }
