@@ -15,6 +15,7 @@ EXACT_ASSERTION_KINDS = frozenset(
     {
         "response_contains",
         "response_not_contains",
+        "response_json_equals",
         "exit_status",
         "artifact_exists",
         "environment_state",

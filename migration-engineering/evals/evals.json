@@ -137,12 +137,15 @@
     },
     {
       "id": "cutover-blocked-by-content-parity",
-      "prompt": "Use evals/fixtures/audit-migration-parity.json to prepare a cutover decision with evidence, corrective action and the next verification boundary.",
-      "expected_output": "Hold cutover for unverified content parity. Preserve the source writer, diagnose the slice mismatch, and require a replay-safe reconciliation check before retesting.",
+      "prompt": "Use evals/fixtures/audit-migration-parity.json to prepare a cutover decision with evidence, corrective action and the next verification boundary. Return one JSON object with top-level string fields cutover, active_writer, content_parity, retry_safety, and rationale. Use lowercase values and explain supported observations and next checks in rationale. For cutover use hold or proceed, for active_writer use source or target, and for content_parity and retry_safety use met, failed, or unverified.",
+      "expected_output": "Hold cutover for unverified content parity. Preserve the source writer, diagnose the slice mismatch, and require a replay-safe reconciliation check before retesting. Provide the decision and explanation in the requested JSON object.",
       "assertions": [
-        "Uses the unequal slice digests as the cutover blocker",
-        "Preserves the source as the authorized writer",
-        "Requires evidence that retrying reconciliation does not introduce duplicate writes"
+        "response_json_equals:cutover=\"hold\"",
+        "response_json_equals:active_writer=\"source\"",
+        "response_json_equals:content_parity=\"failed\"",
+        "response_json_equals:retry_safety=\"unverified\"",
+        "Connects the cutover decision to the unequal slice digests",
+        "Proposes a reconciliation test that would detect duplicate writes after a retry"
       ],
       "files": [
         "evals/fixtures/audit-migration-parity.json"

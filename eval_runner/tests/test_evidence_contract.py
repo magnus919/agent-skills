@@ -150,3 +150,101 @@ def test_task_and_source_hash_drift_fail_closed(tmp_path):
     )
     with pytest.raises(ValueError, match="prompt hash mismatch"):
         load_evidence_contracts(tmp_path, [case])
+
+
+@pytest.mark.parametrize(
+    "contract_path",
+    sorted(
+        list(ROOT.glob("*/evals/evidence-contract-v1.json"))
+        + list(ROOT.glob("*/skills/*/evals/evidence-contract-v1.json"))
+    ),
+)
+def test_checked_in_skill_evidence_contract(contract_path):
+    skill = contract_path.parent.parent
+    cases = load_cases(skill / "evals/evals.json")
+    assert load_evidence_contracts(skill, cases)
+
+
+@pytest.mark.parametrize(
+    ("skill", "case_id", "observations"),
+    [
+        (
+            "resilience-and-recovery",
+            "restore-timing-with-content-mismatch",
+            {
+                "cutover": "hold",
+                "recovery_time": "met",
+                "content_integrity": "failed",
+                "data_loss": "unverified",
+            },
+        ),
+        (
+            "migration-engineering",
+            "cutover-blocked-by-content-parity",
+            {
+                "cutover": "hold",
+                "active_writer": "source",
+                "content_parity": "failed",
+                "retry_safety": "unverified",
+            },
+        ),
+        (
+            "incident-learning",
+            "followup-requires-observable-freeze-control",
+            {
+                "observed_entry_point": "retry",
+                "other_entry_points": "unverified",
+                "validation_owner": "release engineering",
+            },
+        ),
+    ],
+)
+def test_lifecycle_decisions_resolve_without_passing_the_rationale(skill, case_id, observations):
+    from eval_runner.grader import grade_output
+    from eval_runner.models import AdapterOutput, ExitStatus
+
+    case = next(
+        case for case in load_cases(ROOT / skill / "evals/evals.json") if case.id == case_id
+    )
+    good = grade_output(
+        case.id,
+        case.assertions,
+        AdapterOutput(ExitStatus.COMPLETED, response=json.dumps(observations)),
+    )
+    assert good.pass_count == len(observations)
+    assert good.manual_count > 0
+    assert not good.passed
+
+    for field in observations:
+        for bad in (
+            {**observations, field: "contradiction"},
+            {k: v for k, v in observations.items() if k != field},
+        ):
+            result = grade_output(
+                case.id,
+                case.assertions,
+                AdapterOutput(ExitStatus.COMPLETED, response=json.dumps(bad)),
+            )
+            assert result.fail_count == 1
+
+
+@pytest.mark.parametrize(
+    ("assertion", "response", "verdict"),
+    [
+        ("response_json_equals:decision=true", '{"decision":true}', "pass"),
+        ("response_json_equals:decision=true", '{"decision":true,"decision":true}', "fail"),
+        ("response_json_equals:decision=true", '{"decision":1}', "fail"),
+        ("response_json_equals:decision=true", "decision: true", "fail"),
+        ("response_json_equals:decision=null", "{}", "fail"),
+        ("response_json_equals:decision=null", '{"decision":null}', "pass"),
+        ("response_json_equals:decision=unquoted", '{"decision":true}', "manual_review"),
+    ],
+)
+def test_exact_json_decision_requires_a_valid_typed_field(assertion, response, verdict):
+    from eval_runner.grader import grade_output
+    from eval_runner.models import AdapterOutput, ExitStatus
+
+    result = grade_output(
+        "strict-json", [assertion], AdapterOutput(ExitStatus.COMPLETED, response=response)
+    )
+    assert result.results[0].verdict.value == verdict
