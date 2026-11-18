@@ -529,7 +529,26 @@ def test_routing_inventory(root: Path = ROOT) -> dict[str, Any]:
         )
     }
     integration = {path for path in files if path.startswith("tests/integration/")}
+    additional_manifest = root / "scripts/additional-test-files.txt"
+    additional_entries = (
+        [
+            line.strip()
+            for line in additional_manifest.read_text(encoding="utf-8").splitlines()
+            if line.strip() and not line.lstrip().startswith("#")
+        ]
+        if additional_manifest.name in workflow_text and additional_manifest.is_file()
+        else []
+    )
+    additional_selected = {
+        path
+        for path in files
+        if any(
+            path == entry or path.startswith(entry.rstrip("/") + "/")
+            for entry in additional_entries
+        )
+    }
     workflow_explicit = {path for path in files if path in workflow_text}
+    workflow_explicit.update(additional_selected)
     routes: dict[str, list[str]] = {
         "core_manifest": sorted(core_selected),
         "skill_local_python_autodiscovery": sorted(skill_auto - core_selected),
@@ -723,8 +742,18 @@ def build_inventory(root: Path = ROOT, checklist: Path | None = None) -> dict[st
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--json", action="store_true", help="emit the evidence inventory as JSON")
+    parser.add_argument(
+        "--require-test-routing",
+        action="store_true",
+        help="fail when a test-like source has no declared route",
+    )
     args = parser.parse_args()
     report = build_inventory()
+    if args.require_test_routing:
+        report["validation_errors"].extend(
+            f"test source has no declared route: {path}"
+            for path in report["test_routing"]["unclassified_paths"]
+        )
     if args.json:
         print(json.dumps(report, indent=2, sort_keys=True))
     else:
