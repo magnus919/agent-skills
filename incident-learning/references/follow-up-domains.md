@@ -16,7 +16,7 @@ Every incident finding maps to at least one of six follow-up domains. Each domai
 - Update a product assumption in the assumption ledger
 - Add a user story for handling a previously unanticipated scenario
 
-**Routing target:** [product-lifecycle-learning](../product-lifecycle-learning/SKILL.md) for assumption updates and product-outcome review.
+**Routing target:** [product-lifecycle-learning](../../product-lifecycle-learning/SKILL.md) for assumption updates and product-outcome review.
 
 **Verification method:** The requirement, specification, or design change is documented and approved; the change addresses the gap identified in the escaped-from analysis.
 
@@ -32,7 +32,7 @@ Every incident finding maps to at least one of six follow-up domains. Each domai
 - Configure a timeout or circuit breaker
 - Update a dependency or handle its failure mode
 
-**Routing target:** Implementation specialist per the system's tech stack ([backend-engineering](../backend-engineering/SKILL.md), [frontend-engineering](../frontend-engineering/SKILL.md), or domain-specific skill).
+**Routing target:** Implementation specialist per the system's tech stack ([backend-engineering](../../backend-engineering/SKILL.md), [frontend-engineering](../../frontend-engineering/SKILL.md), or domain-specific skill).
 
 **Verification method:** The code change is merged, tested, and deployed; the specific failure mode from the incident is reproduced and confirmed fixed.
 
@@ -48,7 +48,7 @@ Every incident finding maps to at least one of six follow-up domains. Each domai
 - Add an integration test covering the component boundary where the failure occurred
 - Add a performance or load test for a scaling-related incident
 
-**Routing target:** [qa-methodology](../qa-methodology/SKILL.md) for test strategy and design.
+**Routing target:** [qa-methodology](../../qa-methodology/SKILL.md) for test strategy and design.
 
 **Verification method:** The test exists, passes, and fails when the original failure condition is reintroduced (mutation or fault-injection verification).
 
@@ -64,7 +64,7 @@ Every incident finding maps to at least one of six follow-up domains. Each domai
 - Add a trajectory-review checkpoint for a previously unobserved failure pattern
 - Update a dataset to include the incident scenario
 
-**Routing target:** [agent-evals-and-observability](../agent-evals-and-observability/SKILL.md) for eval design and implementation.
+**Routing target:** [agent-evals-and-observability](../../agent-evals-and-observability/SKILL.md) for eval design and implementation.
 
 **Verification method:** The eval case exists, produces a failing result when run against the pre-fix system, and produces a passing result against the post-fix system.
 
@@ -81,7 +81,7 @@ Every incident finding maps to at least one of six follow-up domains. Each domai
 - Update an incident response procedure
 - Instrument a previously unmonitored component
 
-**Routing target:** [site-reliability-engineering](../site-reliability-engineering/SKILL.md) for monitoring, alerting, and operational practice.
+**Routing target:** [site-reliability-engineering](../../site-reliability-engineering/SKILL.md) for monitoring, alerting, and operational practice.
 
 **Verification method:** The monitor or alert fires under the incident condition (tested via fault injection or replay); the runbook is exercised and produces the expected outcome.
 

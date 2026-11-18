@@ -72,7 +72,7 @@ monolith. If the boundary still needs shared writes, frequent cross-boundary
 transactions, unobservable consumers, or has no tested recovery path, stop and
 recommend modular improvement or request more evidence rather than creating a
 distributed shape by default. Route target-boundary justification to the
-[`software-architecture`](../software-architecture/SKILL.md) decision owner;
+[`software-architecture`](../../software-architecture/SKILL.md) decision owner;
 migration-engineering owns the safe current-to-target transition once authorized.
 
 For transition-pattern selection detail, load
