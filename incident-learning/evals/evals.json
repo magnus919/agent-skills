@@ -78,6 +78,20 @@
         "If a replacement follow-up is suggested, it is a specific, bounded, verifiable item — not another open-ended investigation",
         "The rejection is recorded with rejection authority, date, and residual-risk acceptance — it is a conscious decision, not a forgotten item"
       ]
+    },
+    {
+      "id": "followup-requires-observable-freeze-control",
+      "prompt": "Review evals/fixtures/audit-incident-followup.json. Prepare a durable follow-up that separates observations and open questions and can be verified before closure.",
+      "expected_output": "Propose an owner and an acceptance check that exercises the retry entry point while the freeze is active. Preserve the timeline and distinguish the unknown scope from the observed failure.",
+      "assertions": [
+        "Identifies the retry entry point as the observed control gap",
+        "Leaves shared exposure of other entry points as an evidence question",
+        "Assigns the proposed control validation to release engineering",
+        "Defines an acceptance check that shows no deployment is submitted during a freeze"
+      ],
+      "files": [
+        "evals/fixtures/audit-incident-followup.json"
+      ]
     }
   ]
 }

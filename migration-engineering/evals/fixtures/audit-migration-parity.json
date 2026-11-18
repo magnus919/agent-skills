@@ -1,0 +1,10 @@
+{
+  "case_context": "A bounded shadow data migration",
+  "source_count": 1000,
+  "shadow_count": 1000,
+  "source_slice_digest": "fixture-source",
+  "shadow_slice_digest": "fixture-shadow",
+  "retry_status": "duplicate execution not verified",
+  "active_writer": "source",
+  "target_write_authorized": false
+}

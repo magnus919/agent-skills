@@ -1,0 +1,25 @@
+{
+  "case_context": "A synthetic deployment incident",
+  "facts": [
+    {
+      "time": "09:00Z",
+      "observed": "An authorized operator activated the deployment freeze"
+    },
+    {
+      "time": "09:03Z",
+      "observed": "A retry job submitted a deployment without reading the freeze"
+    },
+    {
+      "time": "09:05Z",
+      "observed": "An operator canceled the queued deployment before traffic changed"
+    }
+  ],
+  "unknowns": [
+    "whether other deployment entry points share the same control"
+  ],
+  "owners": {
+    "control": "release engineering",
+    "incident": "incident lead"
+  },
+  "change_authorized": false
+}
