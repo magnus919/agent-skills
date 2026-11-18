@@ -89,9 +89,9 @@ dashboards and Grafana-side alert routes for them are `grafana` territory.
 ## Routing
 
 - Observability strategy — what to instrument, SLI/SLO design, error budgets —
-  is [platform-engineering](../platform-engineering/SKILL.md).
+  is [platform-engineering](../../platform-engineering/SKILL.md).
 - Dashboards, panels, Grafana alert rules, contact points, and notification
-  policies are [grafana](../grafana/SKILL.md).
+  policies are [grafana](../../grafana/SKILL.md).
 - This skill owns the collection/ingest/retention layer and the Prometheus
   rules files those layers consume. When a task crosses into those skills,
   route there instead of duplicating their content.
