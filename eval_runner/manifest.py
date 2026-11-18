@@ -85,7 +85,11 @@ def build_manifest(
         "case": {
             "case_id": case.id,
             "prompt_hash": case.prompt_hash,
-            "fixture_hashes": case.fixture_hashes(skill_path),
+            "fixture_hashes": (
+                adapter_input.fixture_hashes
+                if adapter_input.fixture_hashes is not None
+                else case.fixture_hashes(skill_path)
+            ),
         },
         "adapter": {
             "name": adapter_name,

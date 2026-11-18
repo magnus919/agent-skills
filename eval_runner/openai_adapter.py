@@ -232,6 +232,12 @@ class OpenAICompatAdapter:
         return messages, provenance
 
     def execute(self, input: AdapterInput) -> AdapterOutput:
+        if input.case.files:
+            return AdapterOutput(
+                exit_status=ExitStatus.ERROR,
+                error="This adapter cannot deliver case fixtures. Use a fixture-capable CLI harness.",
+                artifact_inventory_complete=False,
+            )
         messages, provenance = self._build_input(input)
         payload = {
             "model": self._model,

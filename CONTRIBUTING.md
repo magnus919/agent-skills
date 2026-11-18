@@ -54,6 +54,14 @@ Improving this CI integration means changing **our Jev API inputs**, not trainin
 
 Paired-eval CI has a five-skill resource cap. Changes anywhere in a skill directory—including references, templates, assets, and README—make that skill eligible if it has an eval manifest. When a change touches more than five eligible skills, CI fails selection rather than silently evaluating a subset. Split the PR or propose an explicit cap change. The model job freezes the selected case IDs before generation; Jev compares that list with the received reports. Read both the expected-versus-observed case count and the assertion coverage before interpreting a green Jev audit. A missing case report, skipped model job, or missing selection evidence is incomplete coverage even if Jev judged every assertion it saw. None of these counts establishes semantic correctness or release approval.
 
+### Fixture-backed evals
+
+Declare task inputs with the case's `files` field and keep the grader and
+expected outcomes out of those inputs. The CLI runner exposes the original
+relative paths beneath `EVAL_INPUT_DIR`. The paired runner captures the bytes
+once and gives each arm its own copy. A text-only API adapter reports a
+fixture case as unsupported before issuing a request.
+
 ## Skill catalog structure
 
 The catalog is two-layered by design. Keep your change in the layer that matches the job, and prefer beefing up an existing skill over creating a near-duplicate:

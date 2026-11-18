@@ -16,7 +16,8 @@ Configuration via harness_config:
   timeout_seconds: int  — max wall time (default: 120)
   extra_args: list[str]  — additional CLI arguments
 
-The subprocess receives EVAL_OUTPUT_DIR pointing at a fresh, per-trial directory.
+The subprocess receives EVAL_OUTPUT_DIR for a fresh output directory and
+EVAL_INPUT_DIR for case fixtures when the selected case declares files.
 The adapter refuses to reuse an existing output directory so stale artifacts cannot
 be attributed to a new trial.
 """
@@ -79,6 +80,10 @@ class CliSubprocessAdapter:
                 artifact_inventory_complete=False,
             )
         env["EVAL_OUTPUT_DIR"] = str(input.output_dir.resolve())
+        if input.fixture_dir is None:
+            env.pop("EVAL_INPUT_DIR", None)
+        else:
+            env["EVAL_INPUT_DIR"] = str(input.fixture_dir.resolve())
 
         start = time.monotonic()
         try:
