@@ -138,6 +138,19 @@
         "Requires baseline sizing and recovery verification for resource limits.",
         "Does not describe memory caps or supervision as a vulnerability fix."
       ]
+    },
+    {
+      "id": "bundle-archive-preview-before-restore",
+      "prompt": "Using evals/fixtures/audit-bundle.json, locate the Tailscale backup/restore sub-skill and show an offline recovery preview plan. Treat any missing archive bytes as missing evidence.",
+      "expected_output": "Identify the nested entry point and root restore wrapper. Use a dry-run only when an actual fixture archive is available. State what the preview and missing fixture can prove.",
+      "assertions": [
+        "Identifies skills/headscale-backup/SKILL.md as the nested entry point",
+        "Selects the root restore wrapper in dry-run mode for the preview",
+        "Withholds a successful verification claim when the archive is absent"
+      ],
+      "files": [
+        "evals/fixtures/audit-bundle.json"
+      ]
     }
   ]
 }

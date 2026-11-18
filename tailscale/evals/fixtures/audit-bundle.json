@@ -1,0 +1,11 @@
+{
+  "operation": "restore",
+  "artifact": "restore-test.tar.gz",
+  "target": "local test fixture only",
+  "authorization": "preview only",
+  "evidence": [
+    "archive file name",
+    "planned destinations",
+    "dry-run result"
+  ]
+}
