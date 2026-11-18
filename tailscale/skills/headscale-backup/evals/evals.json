@@ -33,6 +33,7 @@
       "prompt": "We have a headscale backup tarball from last week. Prove the backup actually works by restoring it onto a fresh test host and confirming the tailnet comes back.",
       "expected_output": "Scenario: restore drill on a fresh host. The agent previews the restore mappings, confirms the target, file scope, and rollback path, restores checksum-verified assets to their archived destinations while controlling the Headscale service, and verifies recovery with a health check and headscale nodes list. It rejects any root override that would move assets until the config and service paths have been separately updated and validated. The output distinguishes the proposed checks from observed results.",
       "assertions": [
+        "Checks the restore preview against the intended fixture paths before approving writes",
         "The restore target, write scope, and rollback path are confirmed before writes",
         "Archive assets pass manifest checksum verification before any restore write",
         "The headscale service is stopped before restore writes and restarted afterward",

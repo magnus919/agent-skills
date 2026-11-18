@@ -7,8 +7,17 @@ SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 SCRIPTS="$SKILL_DIR/scripts"
 PASS=0
 FAIL=0
+SKIP=0
 TMPDIR=$(mktemp -d)
 TEST_EPUB="$TMPDIR/test-book.epub"
+HAS_EPUBLIB=0
+if python3 -c "import epublib" 2>/dev/null; then
+  HAS_EPUBLIB=1
+elif [[ "${EPUB_TEST_REQUIRE_EPUBLIB:-0}" == 1 ]]; then
+  echo "epublib is required for the mandatory edit and conversion checks" >&2
+  rmdir "$TMPDIR"
+  exit 1
+fi
 
 cleanup() { rm -rf "$TMPDIR"; }
 trap cleanup EXIT
@@ -18,6 +27,11 @@ header() { echo ""; echo "=== $1 ==="; }
 fail() {
   echo "  ❌ FAIL: $1"
   FAIL=$((FAIL + 1))
+}
+
+skip() {
+  echo "  SKIP: $1"
+  SKIP=$((SKIP + 1))
 }
 
 pass() {
@@ -285,7 +299,7 @@ fi
 # 9. epub-edit (requires epublib)
 # ═══════════════════════════════════════════════════════
 header "epub-edit"
-if python3 -c "import epublib" 2>/dev/null; then
+if [[ "$HAS_EPUBLIB" -eq 1 ]]; then
   # Test info subcommand
   if python3 "$SCRIPTS/epub-edit" info "$TEST_EPUB" --json 2>/dev/null > "$TMPDIR/edit-info.json"; then
     pass "edit info: exits OK"
@@ -307,8 +321,8 @@ if python3 -c "import epublib" 2>/dev/null; then
     fail "edit metadata: exits non-zero"
   fi
 else
-  pass "edit: epublib not installed — skipping"
-  pass "edit metadata: epublib not installed — skipping"
+  skip "edit: epublib not installed"
+  skip "edit metadata: epublib not installed"
 fi
 
 # Test dry-run on metadata (works without epublib)
@@ -359,7 +373,7 @@ fi
 # 11. epub-convert (requires epublib)
 # ═══════════════════════════════════════════════════════
 header "epub-convert"
-if python3 -c "import epublib" 2>/dev/null; then
+if [[ "$HAS_EPUBLIB" -eq 1 ]]; then
   CONVERT_OUT="$TMPDIR/converted.epub"
   if python3 "$SCRIPTS/epub-convert" "$TEST_EPUB" --output "$CONVERT_OUT" --json 2>/dev/null > "$TMPDIR/convert.json"; then
     CHANGES=$(python3 -c "import json; print(json.load(open('$TMPDIR/convert.json'))['count'])" 2>/dev/null || echo "?")
@@ -368,7 +382,7 @@ if python3 -c "import epublib" 2>/dev/null; then
     fail "convert: exits non-zero"
   fi
 else
-  pass "convert: epublib not installed — skipping"
+  skip "convert: epublib not installed"
 fi
 
 CONVERT_OUT="$TMPDIR/converted.epub"  # always set
@@ -452,7 +466,7 @@ done
 # ═══════════════════════════════════════════════════════
 echo ""
 echo "═══════════════════════════════════════"
-echo "  PASS: $PASS  FAIL: $FAIL  TOTAL: $((PASS + FAIL))"
+echo "  PASS: $PASS  FAIL: $FAIL  SKIP: $SKIP  TOTAL: $((PASS + FAIL + SKIP))"
 echo "═══════════════════════════════════════"
 
 if [ "$FAIL" -gt 0 ]; then
