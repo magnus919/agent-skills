@@ -18,11 +18,13 @@ if str(_scripts_dir) not in sys.path:
     sys.path.insert(0, str(_scripts_dir))
 
 import io
+from itertools import count
 import json
 import os
 import sys
 import tempfile
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any
 
 from binary_analysis.cli.main import main
@@ -73,7 +75,12 @@ class TestAuditDurationMs:
     """Regression: audit events must have duration_ms > 0."""
 
     def test_audit_events_have_positive_duration(self, monkeypatch):
-        """After a full lifecycle, audit events must have duration_ms > 0."""
+        """Record measured durations independently of the runner's speed."""
+        ticks = count(0, 0.125)
+        monkeypatch.setattr(
+            "binary_analysis.cli.binary_ops.time",
+            SimpleNamespace(perf_counter=lambda: next(ticks)),
+        )
         with tempfile.TemporaryDirectory() as tmpdir:
             monkeypatch.setattr(
                 "binary_analysis.projects.workspace.get_workspace_root",
@@ -110,7 +117,6 @@ class TestAuditDurationMs:
             )
 
             # Every event must have duration_ms >= 0 (integer, non-negative)
-            events_with_positive = 0
             for i, event in enumerate(events):
                 duration = event.get("duration_ms", -1)
                 assert isinstance(duration, int), (
@@ -120,15 +126,10 @@ class TestAuditDurationMs:
                     f"Event {i} ({event.get('command', 'unknown')}): "
                     f"duration_ms must be >= 0, got {duration}"
                 )
-                if duration > 0:
-                    events_with_positive += 1
 
-            # At least analyze should have > 0 (it involves a slow import)
-            assert events_with_positive >= 1, (
-                f"Expected at least one audit event with duration_ms > 0, "
-                f"got {events_with_positive} out of {len(events)}. "
-                f"Events: {json.dumps(events, indent=2)[:500]}"
-            )
+            durations = {event["command"]: event["duration_ms"] for event in events}
+            assert durations["import"] == 125
+            assert durations["analyze"] == 125
 
 
 # ---------------------------------------------------------------------------
