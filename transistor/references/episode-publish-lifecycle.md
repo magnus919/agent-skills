@@ -86,7 +86,7 @@ state. Without the fieldset you also get `published_at`, `media_url`,
 export TRANSISTOR_API_KEY="<API_KEY>"
 
 # 1. Create the episode (always a draft). Audio can ride along now:
-transistor episode-create --show <SHOW_ID> \
+transistor --yes episode-create --show <SHOW_ID> \
   --title "Episode 12: Roasting" \
   --summary "A primer on roasting coffee" \
   --season 2 --number 4 \
@@ -95,11 +95,11 @@ transistor episode-create --show <SHOW_ID> \
 
 # (skip to 3 if you attached audio above)
 # 2. Attach audio later via the metadata PATCH — this does NOT publish:
-transistor episode-update --id <EPISODE_ID> \
+transistor --yes episode-update --id <EPISODE_ID> \
   --audio-url "https://uploads.example.com/ep12.mp3"
 
 # 3. Publish on the dedicated endpoint:
-transistor episode-publish --id <EPISODE_ID>
+transistor --yes episode-publish --id <EPISODE_ID>
 # PATCH /v1/episodes/<EPISODE_ID>/publish with episode[status]=published
 ```
 
@@ -143,7 +143,7 @@ or 2:
 
 ```bash
 # 1. Authorize: get a signed upload URL (max 5GB)
-transistor authorize-upload --filename Episode1.mp3
+transistor --yes authorize-upload --filename Episode1.mp3
 # -> {"audio_url": "https://uploads.example.com/ep1.mp3",
 #     "upload_url": "https://...r2.cloudflarestorage.com/...",
 #     "content_type": "audio/mpeg", "expires_in": 600}

@@ -362,10 +362,10 @@ class ArgumentErrorTests(unittest.TestCase):
         )
 
     def test_episode_update_with_no_fields_dies(self):
-        self.assertCleanError(run_cli("episode-update", "--id", EPISODE_ID), "Nothing to update")
+        self.assertCleanError(run_cli("--dry-run", "episode-update", "--id", EPISODE_ID), "Nothing to update")
 
     def test_subscriber_delete_requires_arguments(self):
-        self.assertCleanError(run_cli("subscriber-delete"), "--id")
+        self.assertCleanError(run_cli("--dry-run", "subscriber-delete"), "--id")
 
     def test_missing_api_key_dies_before_network(self):
         result = run_cli("shows")
@@ -907,6 +907,48 @@ class ScriptConventionsTests(unittest.TestCase):
                 for marker in ("TODO", "FIXME", "HACK", "XXX"):
                     self.assertNotIn(marker, comment, f"line {i}: {marker} marker")
 
+
+
+class WriteConfirmationTests(unittest.TestCase):
+    def test_write_commands_refuse_before_client_creation(self):
+        cli = ts
+        commands = (
+            ("show-update", "--id", "show-id", "--title", "Audit"),
+            ("episode-create", "--show", "show-id", "--title", "Audit"),
+            ("episode-update", "--id", "episode-id", "--title", "Audit"),
+            ("episode-publish", "--id", "episode-id", "--force"),
+            ("authorize-upload", "--filename", "audio.mp3", "--file", "audio.mp3"),
+            ("subscriber-create", "--show", "show-id", "--email", "audit@example.test"),
+            ("subscriber-batch", "--show", "show-id", "--email", "audit@example.test"),
+            ("subscriber-delete", "--id", "subscriber-id"),
+            ("webhook-create", "--show", "show-id", "--event", "episode_published",
+             "--url", "https://example.test/fixture"),
+            ("webhook-delete", "--id", "webhook-id"),
+        )
+        for args in commands:
+            with (
+                self.subTest(command=args[0]),
+                patch.object(sys, "argv", [str(SCRIPT), *args]),
+                patch.object(cli, "TransistorClient") as client,
+                contextlib.redirect_stderr(io.StringIO()) as stderr,
+                self.assertRaises(SystemExit) as result,
+            ):
+                cli.main()
+            self.assertEqual(result.exception.code, 1)
+            self.assertIn("--yes", stderr.getvalue())
+            client.assert_not_called()
+
+    def test_confirmed_delete_reaches_the_client(self):
+        cli = ts
+        with (
+            patch.object(sys, "argv", [str(SCRIPT), "webhook-delete", "--id", "webhook-id", "--yes"]),
+            patch.object(cli, "TransistorClient") as client,
+            contextlib.redirect_stdout(io.StringIO()),
+        ):
+            client.return_value.dry_run = False
+            client.return_value.delete_webhook.return_value = None
+            cli.main()
+        client.return_value.delete_webhook.assert_called_once()
 
 if __name__ == "__main__":
     unittest.main()
