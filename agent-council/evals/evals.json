@@ -56,6 +56,7 @@
       "prompt": "I installed agent-council from pip inside a container. It runs, but I read that the hermes-profiles library isn't bundled — what happens to my panel of experts and what should I do?",
       "expected_output": "The agent explains that pip/wheel installs do not bundle the profile library, so auto-selection falls back to LLM-generated personas; it offers the two remedies from the skill — supply custom personas via --persona-file, or run from a recursive source checkout where profiles are available — and notes the diversity tradeoff.",
       "assertions": [
+        "Distinguishes unavailable optional profiles from the bundled Python package source when describing the fallback",
         "States that pip and wheel installs lack the hermes-profiles library and fall back to LLM-generated personas.",
         "Offers --persona-file with a JSON file of custom personas as the control path.",
         "Mentions that a recursive source checkout restores real professional profiles with SOUL.md methodology.",

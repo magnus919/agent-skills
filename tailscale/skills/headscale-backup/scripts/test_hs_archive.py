@@ -24,7 +24,7 @@ UMBRELLA_RESTORE = HERE.parents[2] / "scripts" / "headscale-restore.sh"
 class HeadscaleArchiveTests(unittest.TestCase):
     def setUp(self) -> None:
         self.temp = tempfile.TemporaryDirectory(prefix="hs-archive-test-")
-        self.root = Path(self.temp.name)
+        self.root = Path(self.temp.name).resolve()
         self.bin = self.root / "bin"
         self.bin.mkdir()
         self._fake_sqlite3()
@@ -111,6 +111,33 @@ class HeadscaleArchiveTests(unittest.TestCase):
                 with sqlite3.connect(snapshot.name) as connection:
                     self.assertEqual(connection.execute("PRAGMA quick_check").fetchone()[0], "ok")
                     self.assertEqual(connection.execute("SELECT name FROM nodes").fetchone()[0], "fixture-node")
+
+    def test_umbrella_backup_preview_creates_no_archive(self) -> None:
+        result = self.run_script(
+            UMBRELLA_BACKUP,
+            "--config-dir", str(self.config_dir),
+            "--data-dir", str(self.data_dir),
+            "--certs-dir", str(self.certs_dir),
+            "--output-dir", str(self.backups),
+            "--dry-run", "--json",
+        )
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+        plan = json.loads(result.stdout)
+        self.assertIs(plan["dry_run"], True)
+        self.assertEqual(plan["output_dir"], str(self.backups))
+        self.assertEqual(list(self.backups.iterdir()), [])
+
+    def test_umbrella_restore_preview_preserves_existing_database(self) -> None:
+        archive = self.backup(UMBRELLA_BACKUP)
+        with sqlite3.connect(self.db) as connection:
+            connection.execute("UPDATE nodes SET name = 'current-node'")
+        before = self.db.read_bytes()
+        result = self.run_script(UMBRELLA_RESTORE, "--backup", str(archive), "--dry-run", "--json")
+        self.assertEqual(result.returncode, 0, result.stderr or result.stdout)
+        plan = json.loads(result.stdout)
+        self.assertIs(plan["dry_run"], True)
+        self.assertEqual(plan["backup_path"], str(archive))
+        self.assertEqual(self.db.read_bytes(), before)
 
     def test_umbrella_backup_and_restore_wrappers_work_end_to_end(self) -> None:
         path = self.backup(UMBRELLA_BACKUP)

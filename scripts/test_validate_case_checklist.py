@@ -456,6 +456,26 @@ class ChecklistEvidenceTest(unittest.TestCase):
 
         self.assertTrue(any("integrity hash" in error for error in errors))
 
+    def test_additional_pytest_manifest_routes_a_directory_only_when_used(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            tests = root / "standalone/tests"
+            tests.mkdir(parents=True)
+            (tests / "test_fixture.py").write_text("def test_example(): pass\n")
+            scripts = root / "scripts"
+            scripts.mkdir()
+            (scripts / "additional-test-files.txt").write_text("standalone/tests/\n")
+            self.assertEqual(
+                validator.test_routing_inventory(root)["unclassified_paths"],
+                ["standalone/tests/test_fixture.py"],
+            )
+            workflows = root / ".github/workflows"
+            workflows.mkdir(parents=True)
+            (workflows / "validate.yml").write_text(
+                "      - run: pytest $(cat scripts/additional-test-files.txt)\n"
+            )
+            self.assertEqual(validator.test_routing_inventory(root)["unclassified_paths"], [])
+
     def test_adjudication_companion_source_pins_are_verified(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

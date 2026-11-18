@@ -55,6 +55,7 @@
       "prompt": "A colleague generated four files for a client delivery: report.pdf, brief.docx, data.xlsx, and deck.pptx. Before sending them out, verify every file is structurally sound and will render, and explain what the validation result means including what happens when no renderer is installed on the machine.",
       "expected_output": "A validation pass over all four formats using scripts/validate-documents.py --render-check --json with the four files: report.pdf, brief.docx, data.xlsx, deck.pptx. The agent interprets the JSON report: status ok means every file passed structural checks (PDF header/EOF/page objects; OOXML ZIP container, content types, required parts, XML well-formedness); per-file render results are ok when a renderer produced output, and unavailable when no renderer is installed for that format, which is reported honestly rather than treated as a defect. Any file that fails structure or rendering is flagged with its failed checks and the agent fixes or rebuilds it before delivery. The explanation notes exit codes 0 (pass or render unavailable), 1 (failure), 2 (usage error).",
       "assertions": [
+        "Uses the shipped fixtures only as a smoke test and reports evidence from checking each deliverable separately",
         "All four files (pdf, docx, xlsx, pptx) are validated in one pass with the shared script",
         "The report distinguishes structural status (ok/fail) from render status (ok/unavailable)",
         "A missing renderer is reported as unavailable, not as a document failure",
