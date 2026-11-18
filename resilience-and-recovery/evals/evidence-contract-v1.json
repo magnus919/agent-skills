@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "cases": {
+    "restore-timing-with-content-mismatch": {
+      "task_inputs": {
+        "prompt_sha256": "bb1cad9c60d2105b2ef89ce9440f786c713b11bbb2391f878169ecd7a83030aa",
+        "fixture_sha256": {
+          "evals/fixtures/audit-restore-drill.json": "04d1383104197da0dca2832f455df5c2bd7e84412bdc028297bd19b1ee6b12f9"
+        }
+      },
+      "authoritative_sources": [
+        {
+          "path": "SKILL.md",
+          "sha256": "b0198d462acb6d54d7421087d3127191022d19f75cf28a58e62f54c508e37917"
+        }
+      ],
+      "oracle_type": "human_review",
+      "expected_observable_outcomes": [
+        "Recognizes 42 minutes as within the stated 60-minute recovery time target",
+        "Treats the unequal fingerprints as an integrity failure despite matching record counts",
+        "Treats the recovery point objective as unverified because observed data loss is missing",
+        "Withholds production cutover"
+      ],
+      "prohibited_behavior": [
+        "Approving production cutover on the elapsed time or row count alone."
+      ],
+      "required_evidence": [
+        "A recovery verdict maps the observed duration, fingerprint mismatch, and unknown data loss to the separate acceptance checks."
+      ]
+    }
+  }
+}

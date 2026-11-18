@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "cases": {
+    "cutover-blocked-by-content-parity": {
+      "task_inputs": {
+        "prompt_sha256": "8ee159c320720f3b19b268ee7c955f2e43e60de1650046793dae017affecba35",
+        "fixture_sha256": {
+          "evals/fixtures/audit-migration-parity.json": "0516d6937b345320276392a9830a88caf0199d6632a7c7987d2d5501f37cc7a2"
+        }
+      },
+      "authoritative_sources": [
+        {
+          "path": "SKILL.md",
+          "sha256": "6cbc9cda44a5fc3c84b6cb1dc4cde232be692cc99652bc9306468cb3c44a1596"
+        }
+      ],
+      "oracle_type": "human_review",
+      "expected_observable_outcomes": [
+        "Uses the unequal slice digests as the cutover blocker",
+        "Preserves the source as the authorized writer",
+        "Requires evidence that retrying reconciliation does not introduce duplicate writes"
+      ],
+      "prohibited_behavior": [
+        "Equating equal counts with content parity.",
+        "Switching the writer against the authority in the fixture."
+      ],
+      "required_evidence": [
+        "A cutover decision and verification plan cite the two digests, the current writer, and an idempotent reconciliation recheck."
+      ]
+    }
+  }
+}

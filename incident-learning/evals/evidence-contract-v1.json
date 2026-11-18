@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "cases": {
+    "followup-requires-observable-freeze-control": {
+      "task_inputs": {
+        "prompt_sha256": "f6b0a019d0f910dcfe513734a6b9dc2249b974cf8482d798904e1c553371d391",
+        "fixture_sha256": {
+          "evals/fixtures/audit-incident-followup.json": "a2e0b0a76140c23431923f98dbf15452841a41833d332c4b4285ba4ce66cfe64"
+        }
+      },
+      "authoritative_sources": [
+        {
+          "path": "SKILL.md",
+          "sha256": "3e1b951dfa9049e152a0eed6f8704808b2135252d138d91c72bf9baca7436ee2"
+        }
+      ],
+      "oracle_type": "human_review",
+      "expected_observable_outcomes": [
+        "Identifies the retry entry point as the observed control gap",
+        "Leaves shared exposure of other entry points as an evidence question",
+        "Assigns the proposed control validation to release engineering",
+        "Defines an acceptance check that shows no deployment is submitted during a freeze"
+      ],
+      "prohibited_behavior": [
+        "Treating all deployment entry points as affected without evidence.",
+        "Claiming a production fix from a follow-up proposal."
+      ],
+      "required_evidence": [
+        "A follow-up names the owner and a freeze-active retry test with no deployment submission as the observed success condition."
+      ]
+    }
+  }
+}

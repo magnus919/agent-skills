@@ -133,6 +133,19 @@
         "Defines a modular improvement and a condition for reassessment.",
         "Does not select a migration pattern merely because extraction was requested."
       ]
+    },
+    {
+      "id": "cutover-blocked-by-content-parity",
+      "prompt": "Use evals/fixtures/audit-migration-parity.json to prepare a cutover decision with evidence, corrective action and the next verification boundary.",
+      "expected_output": "Hold cutover for unverified content parity. Preserve the source writer, diagnose the slice mismatch, and require a replay-safe reconciliation check before retesting.",
+      "assertions": [
+        "Uses the unequal slice digests as the cutover blocker",
+        "Preserves the source as the authorized writer",
+        "Requires evidence that retrying reconciliation does not introduce duplicate writes"
+      ],
+      "files": [
+        "evals/fixtures/audit-migration-parity.json"
+      ]
     }
   ]
 }

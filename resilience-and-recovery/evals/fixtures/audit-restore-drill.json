@@ -1,0 +1,12 @@
+{
+  "case_context": "An isolated restore drill for a synthetic record store",
+  "recovery_time_target_minutes": 60,
+  "elapsed_minutes": 42,
+  "permitted_data_loss_minutes": 5,
+  "observed_data_loss_minutes": null,
+  "expected_record_count": 1000,
+  "restored_record_count": 1000,
+  "expected_content_fingerprint": "fixture-a",
+  "restored_content_fingerprint": "fixture-b",
+  "production_cutover_authorized": false
+}

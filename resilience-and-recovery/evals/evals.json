@@ -73,6 +73,20 @@
         "The response identifies that 'near zero' RPO is not a measurable value and requires a specific RPO definition",
         "The response states that closing an exercise with an unowned cross-team gap is not acceptable — ownership must be assigned before closure"
       ]
+    },
+    {
+      "id": "restore-timing-with-content-mismatch",
+      "prompt": "Read evals/fixtures/audit-restore-drill.json. Give the operator a recovery verdict, showing which observations support it and what would permit reconsideration.",
+      "expected_output": "Report that recovery is blocked by content mismatch and missing data-loss proof despite the time result. Preserve the isolated target and require a verified integrity and data-loss recheck before reconsidering.",
+      "assertions": [
+        "Recognizes 42 minutes as within the stated 60-minute recovery time target",
+        "Treats the unequal fingerprints as an integrity failure despite matching record counts",
+        "Treats the recovery point objective as unverified because observed data loss is missing",
+        "Withholds production cutover"
+      ],
+      "files": [
+        "evals/fixtures/audit-restore-drill.json"
+      ]
     }
   ]
 }
