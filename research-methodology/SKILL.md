@@ -2,7 +2,8 @@
 name: research-methodology
 description: >-
   Plan, conduct, evaluate, and synthesize rigorous research investigations with credible
-  evidence and a traceable method, including source-to-claim closure for media evidence.
+  evidence and a traceable method, including public professional profiles, career timelines,
+  and source-to-claim closure for media evidence.
   Do not use this skill for repeated source extraction and durable note orchestration;
   use `research-and-vault` for that capture workflow, or `ffmpeg` for media operations.
 license: MIT
@@ -22,6 +23,8 @@ Professional research process for a subagent. Three tracks based on the type of 
 - **Academic/Comprehensive** — deep systematic research when depth matters most
 
 All three share the same lifecycle (Scope → Gather → Evaluate → Analyze → Synthesize → Report) but differ in evidence standards, speed, and output format.
+
+Public people research is a cross-track method, not a fourth track. For substantive research on a person’s public professional role, work, or career, load [Public people research](references/public-people-research.md) before external lookup. Use the selected track’s evidence standard; do not turn a single factual lookup into a dossier.
 
 Media evidence is a technical-verification extension, not a fourth operational track. This skill owns research scope, source evaluation, claim closure, sampling-completeness audits, exclusions, and durable preservation. The `ffmpeg` skill owns FFmpeg commands, media probes, extraction, editing, rendering, and target verification; human or capable reviewers own semantic/editorial observations and approval. Load `references/media-evidence-routing.md` whenever a research conclusion depends on media tooling, sampled frames/audio/transcripts, or editorial judgment.
 
@@ -86,6 +89,7 @@ The acceptance gate is evidence completeness and artifact verification, not elap
 | Reference | When to load |
 |-----------|-------------|
 | `references/source-evaluation.md` | You need to judge whether a source is credible — CRAAP test, triangulation, reliability tiers |
+| `references/public-people-research.md` | You need to establish identity, freshness, source independence, and relevance across public professional sources |
 | `references/structured-analytic-techniques.md` | You need to evaluate competing explanations — ACH, driving forces, pre-mortem, indicators |
 | `references/synthesis-patterns.md` | You need to combine findings from multiple sources into synthesized conclusions |
 | `references/technical-verification.md` | You need to test a technical claim by reproducing it — benchmarks, API behavior, configuration |
