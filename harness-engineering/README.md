@@ -30,6 +30,9 @@ wait, restart, client reconnection and reviewed integration. Tool-service contra
 also distinguish host file handlers from command sandboxes, authenticate local
 callers and check trust before activating project-defined processes.
 
+The [DeerFlow case study](references/deerflow-case-study.md) shows when to give
+research its own execution loop rather than another prompt for a general agent.
+
 ## What You Get
 
 Business-policy placement guidance that separates explanations, eligibility, and command authority.

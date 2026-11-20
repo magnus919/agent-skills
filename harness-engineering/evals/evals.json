@@ -814,6 +814,19 @@
         "Reconciles the unsettled operation before retry and bounds total follow-up.",
         "Distinguishes checkpoint readiness from report acceptance."
       ]
+    },
+    {
+      "id": "research-workflow-evidence-gate",
+      "prompt": "Our research agent on a general-purpose harness finished a plausible report. All links resolve, but two central citations do not support their claims and the process cannot resume after a restart. We are considering a DeerFlow-style specialist. Compare the two DeerFlow designs and specify the smallest bounded workflow worth testing.",
+      "expected_output": "A version-scoped comparison and a specialist design that blocks unsupported claims and can recover without repeating work.",
+      "assertions": [
+        "Distinguishes the explicit research graph in DeerFlow 1.x from a general lead agent using a research skill in 2.x.",
+        "Names at least one required transition or stop rule enforced in code rather than model instructions.",
+        "Requires a separate claim-support check; link validity is not enough to accept the report.",
+        "Defines a checkpoint and a restart probe that detect duplicated effects.",
+        "Provides an explicit non-success outcome when evidence or budget is insufficient.",
+        "Does not claim that static source inspection proves DeerFlow delivered better research outcomes."
+      ]
     }
   ]
 }
