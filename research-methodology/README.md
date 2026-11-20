@@ -13,7 +13,7 @@ Use it when the work needs a repeatable process and an inspectable result. It is
 | Path | What it provides |
 |---|---|
 | `SKILL.md` | Trigger conditions, workflow, and guidance for loading deeper resources. |
-| `references/` | Journalistic, industry, comprehensive, technical-verification, source-evaluation, synthesis, public professional research, and media-evidence routing guidance. |
+| `references/` | Journalistic, industry, comprehensive, technical-verification, source-evaluation, synthesis, public biography and professional research, and media-evidence routing guidance. |
 | `assets/` | Research brief/log plus a media claim ledger for source-to-experiment closure and sampling audits. |
 
 ## Quick Start
@@ -29,7 +29,7 @@ Install or expose this directory using your agent's standard Agent Skills loadin
 - Plan, conduct, evaluate, and synthesize rigorous research. Use for journalistic, industry, or technical investigations that need credible evidence and a traceable method.
 - Requests involving the method, deliverables, or review process described in `SKILL.md`.
 - Work where a reusable template or reference from this skill would reduce avoidable mistakes.
-- Substantive public professional research where same-name records, stale titles, or repeated biographies can produce a misleading profile.
+- Substantive public profiles: research a person’s background and work without confusing same-name records, stale titles, or private details with verified history.
 - Media research that needs sourced technical claims, build-specific reproduction records, sampling-completeness checks, or a clean handoff between FFmpeg evidence and human editorial judgment.
 
 ## Requirements
