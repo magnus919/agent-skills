@@ -88,6 +88,8 @@ reviewer.
 
 ## Apply it: a bounded research specialist
 
+For a concrete screening contract, see the [evidence sufficiency checkpoint](research-evidence-checkpoint.md).
+
 Start with one assignment type and one acceptance contract, not a general
 workflow engine. An outer coordinator can own assignment, budget, approvals, and
 the final disposition. A specialist can own graph transitions and report

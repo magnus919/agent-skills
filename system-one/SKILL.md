@@ -88,6 +88,7 @@ tracked corpus unless publication is explicitly requested.
 | Confidence-based acceptance and escalation to a stronger judge | `references/selective-judgment.md` and `templates/cascade-qualification.md` |
 | Probability, threshold, calibration, model comparison | `references/evaluation-and-calibration.md` and `templates/benchmark-record.md` |
 | Design a matched comparison, qualify adapters, separate fixed-contract from model-adapted tracks, or assess equivalence | `references/comparison-design.md` and `templates/benchmark-record.md` |
+| Measure adaptation after a label split or a new label, including invalid outputs and adaptation cost | `references/taxonomy-drift-pilot.md` |
 | Compare singleton and batched request quality or calibration | `references/request-shape-evaluation.md` and `templates/benchmark-record.md` |
 | Replace an LLM rubric judge, diagnose graded scale offsets, or test correlated judge errors | `references/rubric-judge-research.md`, then `references/evaluation-and-calibration.md` |
 | Measure router ablations and full fallback economics | `references/cascade-economics.md` and `templates/benchmark-record.md` |

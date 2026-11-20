@@ -804,6 +804,18 @@
       ]
     },
     {
+      "id": "research-evidence-sufficiency-checkpoint",
+      "prompt": "A research agent proposes publishing a claim using a primary report it has not opened, two articles derived from that report, and a conflicting utility record. One follow-up was dispatched before a restart and has no result receipt. Design a checkpoint before publication.",
+      "expected_output": "Preserve retrieval, support, independent origins and unresolved gaps separately; hold publication and reconcile the pending follow-up.",
+      "assertions": [
+        "Does not count two derivatives of one primary record as independent corroboration.",
+        "Treats the unopened primary as missing and does not promote a proposed claim link to verified support.",
+        "Routes the contradictory record to review before approval rather than averaging it away.",
+        "Reconciles the unsettled operation before retry and bounds total follow-up.",
+        "Distinguishes checkpoint readiness from report acceptance."
+      ]
+    },
+    {
       "id": "research-workflow-evidence-gate",
       "prompt": "Our research agent on a general-purpose harness finished a plausible report. All links resolve, but two central citations do not support their claims and the process cannot resume after a restart. We are considering a DeerFlow-style specialist. Compare the two DeerFlow designs and specify the smallest bounded workflow worth testing.",
       "expected_output": "A version-scoped comparison and a specialist design that blocks unsupported claims and can recover without repeating work.",
