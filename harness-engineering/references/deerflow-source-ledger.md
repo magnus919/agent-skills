@@ -16,8 +16,12 @@ documented configuration at these revisions, not live behavior.
 | Which containment and state are configured? | [Sample config](https://github.com/bytedance/deer-flow/blob/58fc5bd5b8e6ea46538e9481ba06ca2a46e14e2a/config.example.yaml#L1709-L1812) documents local and isolated providers; [Compose overlay](https://github.com/bytedance/deer-flow/blob/58fc5bd5b8e6ea46538e9481ba06ca2a46e14e2a/docker/docker-compose.dood.yaml) shows opt-in Docker host socket access. [Storage config](https://github.com/bytedance/deer-flow/blob/58fc5bd5b8e6ea46538e9481ba06ca2a46e14e2a/config.example.yaml#L2620-L2658) and [retention contract](https://github.com/bytedance/deer-flow/blob/58fc5bd5b8e6ea46538e9481ba06ca2a46e14e2a/backend/docs/checkpoint-retention-contract.md) distinguish backends and replay targets. | Actual mount/network isolation, crash recovery, or exactly-once effects. |
 | What qualifies a worker result? | [Receipts](https://github.com/bytedance/deer-flow/blob/58fc5bd5b8e6ea46538e9481ba06ca2a46e14e2a/backend/packages/harness/deerflow/agents/middlewares/receipt_verification.py#L79), [batch checks](https://github.com/bytedance/deer-flow/blob/58fc5bd5b8e6ea46538e9481ba06ca2a46e14e2a/backend/packages/harness/deerflow/subagents/batch_acceptance.py#L24), and [executor stop reasons](https://github.com/bytedance/deer-flow/blob/58fc5bd5b8e6ea46538e9481ba06ca2a46e14e2a/backend/packages/harness/deerflow/subagents/executor.py#L1982-L2046) separate claim provenance, bounded checks, and execution status. | Universal or independent semantic acceptance. |
 
-Groktocrawl discovery returned third-party architecture summaries as well as
-official source. Third-party summaries and generated research synthesis are
+The authenticated Groktocrawl deep run reported 120 retrieval attempts, 111
+successful source captures, and evidence gaps. It surfaced the
+[v2.2.0 release notes](https://github.com/bytedance/deer-flow/releases/tag/v2.2.0),
+which document metadata-only `allowed-tools` and opt-in script workflows.
+Its results also included unpinned and secondary material, so its synthesis
+was not sufficient to attribute implementation details to the pinned release. Third-party summaries and generated research synthesis are
 navigation aids, not independent corroboration. Unpinned pages were superseded
 by pinned code or docs for mechanism claims. No DeerFlow code or test suite
 was run for this case study.

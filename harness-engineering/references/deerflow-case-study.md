@@ -59,7 +59,12 @@ The Gateway admits a run with task context; the lead assembly combines model,
 instructions, authorized tools, and middleware. The deep-research skill guides broad discovery, deeper reads,
 source diversity and validation, and a synthesis check. Delegation is a
 separate conditional runtime capability, not a required research stage.
-Neither is a mandatory research graph for every run. Compare the checked-in instructions
+Neither is a mandatory research graph for every run. The
+[v2.2.0 release notes](https://github.com/bytedance/deer-flow/releases/tag/v2.2.0)
+also distinguish skill `allowed-tools` compatibility metadata from actual tool
+authorization, and describe an optional, default-disabled script workflow
+extension. An explicit workflow can therefore be built on the general runtime
+without assuming one is enforced by ordinary research prompts. Compare the checked-in instructions
 with actual runtime records: did the run load the skill, invoke only approved
 tools, preserve evidence, and return an accepted artifact?
 
