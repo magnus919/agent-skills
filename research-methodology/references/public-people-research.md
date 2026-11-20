@@ -17,7 +17,13 @@ Start from how work in this field leaves public traces, not a list of profession
 3. **Turn the traces into independent searches.** Use minimal public identity hints plus the field's actual words. Try looking for the **artifact** itself (who made what), a **credit or institutional record** (how a contribution was recorded), and a **first-person voice** (what the person said or published). Use different record producers where possible, and test a separate path to corroborate rather than treating three queries as three origins.
 4. **Pivot from verified outputs.** Follow public titles, dates, collaborators, projects, issuers, or identifiers from a trustworthy artifact to its original record and adjacent evidence. Check each pivot still refers to the same person. If no employer is relevant, use a public output, collective, venue, or author identifier instead. If the footprint is genuinely sparse, report that limit; do not force a familiar site or infer a career from silence.
 
-For example, if someone is credited on a public festival program but has no employer biography, the program's credit convention, the original work or catalogue entry, and a recorded participant discussion can suggest separate paths. The organizer's duplicated announcement is still only one origin. This is a pattern to derive, not a fixed venue list.
+### Worked orientations, not a checklist
+
+- **Software:** A release note identifies a change the project published. Follow its linked change and maintainer or reviewer credit to check the person's role; a mention or downstream adoption does not establish authorship.
+- **Scholarship:** A publisher's article and contribution statement can separate analysis from supervision. Pivot through a persistent author identifier, then to a related dataset or another institution's dated project record; another copy of the same article adds no independent corroboration.
+- **Civic work:** A public body's agenda may establish a proposed item or listed speaker. Follow the item identifier to the clerk's adopted minutes and recorded vote to distinguish proposing, speaking, and deciding. A news recap based solely on those minutes is not a new origin.
+
+For another field, derive analogous traces, record keepers, and pivots. Do not copy these sites or assume that each field has an employer, publication, or public register.
 
 ## 3. Search distinct evidence lanes
 
