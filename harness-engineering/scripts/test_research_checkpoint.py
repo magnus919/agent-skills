@@ -1,8 +1,14 @@
 """Offline challenges: artificial records, no retrieval or model call."""
 
+import importlib.util
 import unittest
+from pathlib import Path
 
-from research_checkpoint import screen
+SCRIPT = Path(__file__).with_name("research_checkpoint.py")
+SPEC = importlib.util.spec_from_file_location("research_checkpoint", SCRIPT)
+checkpoint_module = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(checkpoint_module)
+screen = checkpoint_module.screen
 
 
 def example():
