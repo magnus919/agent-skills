@@ -1,0 +1,22 @@
+{
+  "provenance": "Hand-authored synthetic support requests; no mail or model outputs.",
+  "labels": {
+    "v1": ["billing", "technical", "review"],
+    "v2": ["invoice_copy", "payment_issue", "technical", "review"]
+  },
+  "cases": [
+    {"id":"d1","group":"statement","split":"adapt","text":"Please send an invoice copy for accounting.","v1":"billing","v2":"invoice_copy"},
+    {"id":"d2","group":"payment","split":"adapt","text":"My payment failed at checkout.","v1":"billing","v2":"payment_issue"},
+    {"id":"d3","group":"timeout","split":"adapt","text":"The app shows an error on launch.","v1":"technical","v2":"technical"},
+    {"id":"d4","group":"unclear-bill","split":"adapt","text":"I have a billing question but no details yet.","v1":"billing","v2":"review"},
+    {"id":"c1","group":"archive","split":"calibration","text":"Can I get a copy of our old invoice?","v1":"billing","v2":"invoice_copy"},
+    {"id":"c2","group":"bank","split":"calibration","text":"My card was charged twice for one purchase.","v1":"billing","v2":"payment_issue"},
+    {"id":"t1","group":"reimbursement","split":"test","text":"I need a duplicate receipt for reimbursement.","v1":"billing","v2":"invoice_copy"},
+    {"id":"t2","group":"renewal","split":"test","text":"I was charged twice after renewing.","v1":"billing","v2":"payment_issue"},
+    {"id":"t3","group":"export","split":"test","text":"The app shows an error while exporting.","v1":"technical","v2":"technical"},
+    {"id":"t4","group":"generic","split":"test","text":"Could someone help me with this?","v1":"review","v2":"review"},
+    {"id":"t5","group":"ambiguous","split":"test","text":"Question about my billing account.","v1":"billing","v2":"review"},
+    {"id":"t6","group":"negation","split":"test","text":"I was not charged twice; I only need a receipt copy.","v1":"billing","v2":"invoice_copy"},
+    {"id":"t7","group":"restatement","split":"test","text":"Two debits appeared for my single subscription.","v1":"billing","v2":"payment_issue"}
+  ]
+}
