@@ -24,9 +24,62 @@ measurements, or proof that these controls cover every deployment.
 | State | The [1.x graph builder](https://github.com/bytedance/deer-flow/blob/2ab28765803d4d9582aaa8f2f3355137d154e273/src/graph/builder.py) exports an uncheckpointed graph and separately offers an in-memory checkpointer. The [2.x checkpoint provider](https://github.com/bytedance/deer-flow/blob/58fc5bd5b8e6ea46538e9481ba06ca2a46e14e2a/backend/packages/harness/deerflow/runtime/checkpointer/provider.py) supports memory, SQLite, and Postgres; the [retention contract](https://github.com/bytedance/deer-flow/blob/58fc5bd5b8e6ea46538e9481ba06ca2a46e14e2a/backend/docs/checkpoint-retention-contract.md) describes replay and lineage. | Persist an accepted brief, source ledger, stage and pending effects. Prove restart and reconciliation against the chosen backend. Chat history, memory, and resumable execution are not interchangeable. |
 | Feedback | The [2.x terminal-response middleware](https://github.com/bytedance/deer-flow/blob/58fc5bd5b8e6ea46538e9481ba06ca2a46e14e2a/backend/packages/harness/deerflow/agents/middlewares/terminal_response_middleware.py) rejects a silent empty post-tool finish. [Batch acceptance](https://github.com/bytedance/deer-flow/blob/58fc5bd5b8e6ea46538e9481ba06ca2a46e14e2a/backend/packages/harness/deerflow/subagents/batch_acceptance.py) runs declared checks when supplied. | A nonempty reply or a successful worker run is not a verified deliverable. A file/schema check also does not establish that a citation supports a claim. |
 
+## Two execution loops
+
+### 1.x: a research graph with explicit routing
+
+The graph starts at the coordinator; it can clarify intent, end a simple
+interaction, or route substantive work to the planner, optionally through
+background investigation. The planner emits structured steps. The research
+team routes the first unfinished research, analysis, or processing step to its
+corresponding worker, then returns to the planner when results exist. The
+reporter is the final graph node. This is more constrained than giving a
+generalist a research playbook, but the model still chooses the plan,
+interpretation, and report.
+
+Three details change what the graph actually guarantees:
+
+- Human review is conditional: the feedback node interrupts unless
+  `auto_accepted_plan` is set. The HTTP path uses an in-memory checkpointer and
+  a LangGraph resume command; the bundled CLI workflow sets auto-accept true.
+  Even without auto-accept, the planner can go straight to the reporter when
+  it judges the context sufficient or reaches the iteration cap.
+- The research-team router tests whether `execution_res` is populated. A worker
+  error can populate that field and the observation list. The graph can
+  therefore advance with an error observation, not only usable evidence.
+- Reporter completion says the graph ended. It does not establish source
+  sufficiency, factual support, or persistence across process loss.
+
+See the [pinned source ledger](deerflow-source-ledger.md) for the exact branches
+and evidence limits.
+
+### 2.2.0: a general runtime with a research policy
+
+The Gateway admits a run with task context; the lead assembly combines model,
+instructions, authorized tools, and middleware. The deep-research skill guides broad discovery, deeper reads,
+source diversity and validation, and a synthesis check. Delegation is a
+separate conditional runtime capability, not a required research stage.
+Neither is a mandatory research graph for every run. Compare the checked-in instructions
+with actual runtime records: did the run load the skill, invoke only approved
+tools, preserve evidence, and return an accepted artifact?
+
+The general runtime gives an operator reusable execution and state controls,
+but a specialist still needs an acceptance contract. Conversely, a separate
+research graph is worth the additional state and maintenance when missing a
+review, source class, or escalation is consequential enough to require a hard
+transition. For exploratory work, a generalist with a research skill, bounded
+retrieval, and independent checks may be enough.
+
 ## Delegation: completion is not acceptance
 
 The [worker executor](https://github.com/bytedance/deer-flow/blob/58fc5bd5b8e6ea46538e9481ba06ca2a46e14e2a/backend/packages/harness/deerflow/subagents/executor.py#L1982-L2046) can represent a budget-capped worker as completed with a separate cap reason. Preserve that reason on handoff. [Receipt verification](https://github.com/bytedance/deer-flow/blob/58fc5bd5b8e6ea46538e9481ba06ca2a46e14e2a/backend/packages/harness/deerflow/agents/middlewares/receipt_verification.py#L79) is evidence for a reported action, not proof that the resulting report is correct. Keep worker termination, observed effects, and parent acceptance separate.
+
+The sample config declares three running slots and 64 queued, with a
+300-second queue timeout, shared by ordinary tasks and durable batches. It
+also documents a distinct default of six delegations per lead run. These are
+configuration examples, not measured throughput. The optional acceptance judge
+is off in the sample; a runtime with receipts is not automatically a semantic
+reviewer.
 
 ## Apply it: a bounded research specialist
 
@@ -55,3 +108,12 @@ sources, a valid URL that does not support the claim, and interruption after
 retrieval. Check that resume does not duplicate external effects and that a
 missing artifact fails acceptance. These are proposed tests, not reported
 DeerFlow benchmark results.
+
+For a concrete fixture, use two dated source snapshots that disagree and one
+source that is retrievable but irrelevant. Require a delivered report and a
+ledger mapping each material claim to a source and excerpt. Interrupt after
+one source result is stored, resume, and confirm that the durable record and
+final report agree. Then remove one necessary source or force a worker budget
+stop. An acceptable result explicitly identifies the gap and holds delivery
+rather than treating a citation, terminal response, or graph transition as
+success.
