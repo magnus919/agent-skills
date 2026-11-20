@@ -37,6 +37,7 @@ Routing for authoritative business rules and their independent translation check
 |---|---|
 | `SKILL.md` | Decision contracts, integrations, evaluation boundaries, and task routing |
 | `references/` | Pilot design, model/provider guides, comparisons, DevOps decisions, validated escalation, semantic linting, hosting, and troubleshooting |
+| `references/taxonomy-drift-pilot.md` | Compare how rules, local models and Jev adapt when labels change, with an offline smoke test |
 | `references/pairwise-ranking.md` | Score versus pairwise Choice, comparison schedules, aggregation limits, and measured Jev tradeoffs |
 | `references/question-design.md` | Self-contained questions, source-candidate extraction, uncertainty, speculative branches, and preference versus veto semantics |
 | `templates/` | Decision/action contracts, cascade qualification, execution records, benchmarks, lint rules, and feedback evaluation |
