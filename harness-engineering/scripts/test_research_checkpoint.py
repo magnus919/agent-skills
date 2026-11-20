@@ -41,8 +41,15 @@ class ResearchCheckpointTest(unittest.TestCase):
         self.assertEqual(screen(x)["disposition"], "ready_for_acceptance_review")
 
     def test_unknown_origin_has_no_independence_credit(self):
+        for value in ("", "  ", None, "unknown", "  UnKnOwN  "):
+            with self.subTest(value=value):
+                x = example()
+                x["links"][1]["origin"] = value
+                self.assertEqual(screen(x)["next_candidate"]["reason"], "insufficient_independent_origins")
+
+    def test_whitespace_cannot_split_one_origin(self):
         x = example()
-        x["links"][1]["origin"] = ""
+        x["links"][1]["origin"] = "  study-a  "
         self.assertEqual(screen(x)["next_candidate"]["reason"], "insufficient_independent_origins")
 
     def test_potential_contradiction_holds_even_when_support_sufficient(self):

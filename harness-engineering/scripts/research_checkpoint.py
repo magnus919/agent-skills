@@ -52,7 +52,8 @@ def screen(ledger):
         support = [(l, s) for l, s in reviews[c] if l["review"] == "verified" and l["relation"] == "supports"]
         opposing = [l for l, _ in reviews[c] if l["review"] != "rejected" and l["relation"] == "contradicts"]
         # Independence is claim-relative. Empty/unknown origin earns no credit.
-        origins = {l["origin"] for l, _ in support if isinstance(l.get("origin"), str) and l["origin"].strip()}
+        normalized_origins = (l["origin"].strip() for l, _ in support if isinstance(l.get("origin"), str))
+        origins = {origin for origin in normalized_origins if origin and origin.casefold() != "unknown"}
         if opposing:
             contradiction = True
             gaps.append({"claim": c, "reason": "unresolved_contradiction"})

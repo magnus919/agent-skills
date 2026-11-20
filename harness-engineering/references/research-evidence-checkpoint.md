@@ -67,6 +67,10 @@ then observe reconciliation and budget accounting across restart.
 
 ## Evidence and boundaries
 
+- [Diogo Almeida’s CODE Summit talk, 15:22](https://www.youtube.com/watch?v=Cyt3LU8TyNc&t=922s)
+  argues for decomposing automated work into verifiable stages and managing
+  state explicitly. The organizer’s posted talk and its transcript informed
+  the question; they do not validate this checkpoint. Inspected November 20, 2026.
 - [W3C PROV-DM, derivation](https://www.w3.org/TR/prov-dm/#term-Derivation)
   gives vocabulary for tracking derived evidence; it does not prove
   independence. Read through authenticated retrieval November 20, 2026.
