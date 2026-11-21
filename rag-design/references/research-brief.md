@@ -34,6 +34,5 @@ limits. The skill routes to [retrieval architectures](retrieval-architectures.md
 [authorization and tenancy](authorization-and-tenancy.md), and
 [implementation and evaluation](implementation-and-evaluation.md). The
 [design record](../templates/rag-design-record.md) carries the findings into
-new designs. Private research orientation informed the questions. Public
-claims are mapped to public evidence in the ledger. No vendor service,
+new designs. The ledger maps technical claims to public evidence. No vendor service,
 published benchmark, forecast, or tenant deployment was independently run.
