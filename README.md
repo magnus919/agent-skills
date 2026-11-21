@@ -569,6 +569,10 @@ Build production-grade AI agents and graph-based state machines with PydanticAI 
 
 QA and SDET methodology for senior-to-principal engineers — test strategy, automation, regression, risk-based prioritization, exploratory testing, mutation-guided test hardening, quality gates, AI code quality gates for agentic development, agentic eval design, career leveling, and SDET engineering. Ships 16 references, 6 templates, 3 assets, 2 tested scripts, and 10 evals.
 
+### [rag-design](rag-design/SKILL.md)
+
+Design personal and enterprise RAG across lexical, vector, graph, temporal, and multimodal evidence. Define a predictable retrieval harness, evidence-level authorization, agent memory maintenance, and acceptance tests.
+
 ### [raleigh](raleigh/SKILL.md)
 
 Query, search, and download public datasets from the City of Raleigh Open Data portal. Wraps the ArcGIS REST API to access 170+ datasets — crime reports, food inspections, building permits, bike lanes, parks, zoning, traffic, budgets, and more. No API key needed. Ships a Python CLI with catalog, search, info, query, download, and categories commands.

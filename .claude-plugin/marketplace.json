@@ -1185,6 +1185,15 @@
       "description": "Design and apply QA methodology for software teams: test strategy, regression testing, CI failure triage, test automation, quality gates and metrics, risk-based testing, exploratory testing, test design techniques, AI code quality gates (independent verification, artifact provenance, spec-first oracles, AI-review-comment triage, acceptance-criteria testability for Spec-Driven Development), mutation-guided test hardening and review evidence (surviving mutants, weak assertions, diff-aware mutation testing), agentic eval design (dataset test design, judge-as-system-under-test, flaky-eval discipline), QA career levels (Senior/Staff/Principal), and SDET engineering (test infrastructure, gTAA, CI/CD integration). Do not use for root-cause debugging of production incidents, security implementation or threat modeling, or evaluation framework governance and statistical analysis — route those to systematic-debugging, secure-software-engineering, and agent-evals-and-observability respectively."
     },
     {
+      "name": "rag-design",
+      "source": "./",
+      "skills": [
+        "./rag-design"
+      ],
+      "strict": false,
+      "description": "Design retrieval-augmented generation (RAG) for personal, enterprise, and multi-tenant systems. Choose lexical, vector, hybrid, graph, temporal, or multimodal retrieval and define evidence, ingestion, memory writes, citations, document and fragment authorization, and evaluation. Do not use for operating one framework or datastore, general SaaS architecture, or model training."
+    },
+    {
       "name": "raleigh",
       "source": "./",
       "skills": [

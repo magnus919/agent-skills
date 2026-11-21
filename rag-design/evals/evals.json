@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "skill_name": "rag-design",
+  "evals": [
+    {
+      "id": "personal-vault-baseline",
+      "prompt": "Design a RAG assistant for my local Markdown vault. I need exact product IDs, paraphrased passages, precise citations, and my latest preference after I correct an old one.",
+      "expected_output": "An incremental personal implementation with an authorized baseline, rebuildable evidence, and correction rules.",
+      "assertions": [
+        "Provides an exact or lexical path for identifier queries.",
+        "Uses a paraphrase test to justify or assess semantic retrieval.",
+        "Resolves citations to a versioned source location.",
+        "Specifies how a newer explicit preference supersedes the old preference."
+      ]
+    },
+    {
+      "id": "graph-local-versus-global",
+      "prompt": "Our archive has vendor-service-dependency questions and quarterly themes across all reports. Compare graph and simpler retrieval approaches. Some relationships are confidential.",
+      "expected_output": "Distinct local traversal and global synthesis designs with comparable baselines and evidence policy.",
+      "assertions": [
+        "Uses bounded entity/path retrieval for the relationship workload.",
+        "Compares collection-wide synthesis against an appropriate simpler baseline.",
+        "Applies access policy to graph edge evidence.",
+        "Applies access policy to materialized summaries derived from restricted reports."
+      ]
+    },
+    {
+      "id": "multimodal-evidence-localization",
+      "prompt": "Our scanned equipment manuals contain charts and unlabeled wiring diagrams. Design retrieval and show how you would evaluate whether the assistant used the correct evidence.",
+      "expected_output": "A text extraction and visual retrieval comparison with evidence-preserving generation and citations.",
+      "assertions": [
+        "Compares a text extraction baseline to an image or page retrieval branch.",
+        "Supplies actual visual evidence to the generator for layout-dependent claims.",
+        "Defines a case that distinguishes the correct source document from the correct figure or region."
+      ]
+    },
+    {
+      "id": "atomic-authorization-and-revocation",
+      "prompt": "Two tenant companies share one RAG service. Inside one company, only Finance can read one appendix in a widely shared PDF. Indexes, caches, and graph summaries can lag. Who can contribute, publish, and retrieve?",
+      "expected_output": "An action-to-resource authorization design with source policy and enforceable lifecycle behavior.",
+      "assertions": [
+        "Specifies server-derived tenant identity for retrieval.",
+        "Makes the restricted appendix an independently enforceable evidence scope before deriving embeddings.",
+        "Defines authority for contributing independently of authority for publishing.",
+        "Specifies a safe treatment of summaries whose contributors have different read scopes.",
+        "Suppresses stale reads during revocation even while asynchronous cleanup is pending."
+      ]
+    },
+    {
+      "id": "temporal-series-and-forecast",
+      "prompt": "An operations agent needs to compare queue trends and estimate the chance tomorrow's maximum backlog exceeds a threshold. It has a metrics store, release notes, and incident graph. Some queues are restricted and events can arrive late.",
+      "expected_output": "An authorized temporal evidence plan that joins measurements to dated context and governs probability estimates.",
+      "assertions": [
+        "Specifies a scoped numeric series query with units, window and coverage.",
+        "Joins measurements to dated evidence with corresponding entity and time keys.",
+        "Separates an observed trend from an estimate of the probability of the specified threshold event.",
+        "Requires time-ordered calibration or validation with data available at the historical forecast cutoff.",
+        "Declines a numeric probability when the forecast evidence is insufficient."
+      ]
+    },
+    {
+      "id": "memory-worker-consolidation",
+      "prompt": "Design a background worker that consolidates customer notes and inferred preferences. It might process an old batch after a steward correction or an ACL change.",
+      "expected_output": "A scoped worker design with staged outputs and safe replay.",
+      "assertions": [
+        "Gives generated updates reviewable provenance distinct from authoritative source content.",
+        "Checks current version and write authority before publishing.",
+        "Prevents a retried old batch from undoing a newer correction.",
+        "Provides a way to revert or retire a published derivative."
+      ]
+    },
+    {
+      "id": "harness-checkpoint-and-partial-output",
+      "prompt": "Design a LangGraph or equivalent harness for a support agent that uses documents, diagrams, graph paths and telemetry. A query resumes after a user loses access and the diagram branch times out.",
+      "expected_output": "A typed, bounded workflow with policy-aware replay and evidence-backed output.",
+      "assertions": [
+        "Defines request, evidence, and output contracts with explicit evidence references.",
+        "Reauthorizes evidence on resume under the current principal and policy.",
+        "Restricts claims to evidence the completed branches can support.",
+        "Defines an end-to-end acceptance case for revoked evidence stored in a checkpoint."
+      ]
+    }
+  ]
+}
