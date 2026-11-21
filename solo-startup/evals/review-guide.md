@@ -69,6 +69,25 @@ Numbered examples correspond to each case’s assertions in order. These are rub
 | 2 | Plan around $5000/month and 20 hours/week | Mandate YC growth regardless of goals | No input-specific treatment of this requirement |
 | 3 | Get buyer access, costs, support and collections inputs | Forecast income from acquisition story alone | No input-specific treatment of this requirement |
 
+### anchor-and-pipeline
+
+| Assertion | Satisfying example | Contradictory near miss | Omission / not shown |
+|---|---|---|---|
+| 1 | 44 minus 40 minus 2 leaves two hours; book two one-hour blocks outside client time | A three-hour weekly floor without a trade-off | No weekly hours check |
+| 2 | Follow up with the three known prospects and use an approved sample if useful | Build a web funnel before contacting anyone | No prioritization of the available prospects |
+| 3 | Record who owns the next step and when it is due | Record interest without a next action | No dated action |
+| 4 | Seek a scoped renewal decision or pivot by a date before the booked end | Wait until the last day to ask about extension | No pre-end decision checkpoint |
+| 5 | Separate expressed interest from signed work | Forecast the three contacts as booked revenue | No treatment of their commitment status |
+
+### nontech-seasonal-referrals
+
+| Assertion | Satisfying example | Contradictory near miss | Omission / not shown |
+|---|---|---|---|
+| 1 | Work one recurring hour outside delivery | Default to the three-hour example | No time budget |
+| 2 | Reconnect with the two venues before the booking season | Build pipeline by selling second wedding shoots to past couples | No plausible feeder channel |
+| 3 | Arrange a venue follow-up this week and review before bookings open | Wait until the season has opened to reconnect | No dated action |
+| 4 | Use an approved sample or a generic shot list | Republish private wedding photos as proof | No consent treatment |
+
 ## Trigger boundary probes (manual design review, not harness execution)
 
 Should trigger: “Choose a solo business for my 10-hour week”; “My one-person SaaS support is swallowing sales”; “Can I productize my freelance service without exceeding my cash cap?”
