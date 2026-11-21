@@ -33,6 +33,8 @@ Do not claim that combining these routes has demonstrated superior outcomes.
   [source records](references/source-records.md). Refresh time-sensitive claims.
 - For selecting an offer or handling changed scope, read
   [models and worked decisions](references/models-and-decisions.md).
+- For keeping service sales active during delivery, read [business development
+  cadence](references/business-development-cadence.md).
 - For the deliverable, fill [decision record](assets/decision-record.md).
 - For testing this skill, read [eval review guide](evals/review-guide.md).
 
@@ -113,6 +115,14 @@ hours and cash for acquiring customers. Track qualified conversations to offers,
 paid conversions, delivered outcomes and retained customers; distinguish channel
 traffic from qualified demand. Include platform fees, audience ownership/export,
 and concentration risk. Building in public is optional, not a distribution plan.
+
+For a solo service with active client work, reserve a recurring non-client sales
+slot before filling delivery capacity. Size it from real hours, not an industry
+quota. Give it an output: relationship follow-up, a buyer or partner conversation,
+or a scoped next step. Review booked-through dates and renewals before a gap
+opens; proposals and verbal interest do not reserve future revenue. If no time
+remains after binding commitments, propose a capacity or scope trade-off rather
+than bill business development to a client or assume evenings are available.
 
 ## 5. Make the promise survivable
 

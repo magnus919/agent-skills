@@ -78,6 +78,18 @@
         "Centers the stated income and hours goal without inventing a universal growth benchmark.",
         "Identifies buyer access, costs, support and cash assumptions needed for a bounded test."
       ]
+    },
+    {
+      "id": "anchor-and-pipeline",
+      "prompt": "I consult solo and can work at most 44 hours weekly. One anchor client buys 40 hours/week and ends in seven weeks. Administration takes two hours. I have three interested former clients but no signed follow-on. I can use work samples approved for public use. How do I avoid a dry spell without shortchanging my client?",
+      "expected_output": "Protect a feasible non-client sales rhythm now and separate forecast from commitments.",
+      "assertions": [
+        "Keeps the proposed non-client business-development rhythm within the two remaining hours per week unless capacity is explicitly renegotiated.",
+        "Prioritizes concrete follow-up with reachable prospects over building new marketing infrastructure.",
+        "Gives open opportunities a next action and date.",
+        "Proposes a renewal or go/no-go checkpoint before the anchor ends.",
+        "Does not count interested prospects as booked work."
+      ]
     }
   ]
 }
