@@ -79,6 +79,15 @@ Numbered examples correspond to each case’s assertions in order. These are rub
 | 4 | Seek a scoped renewal decision or pivot by a date before the booked end | Wait until the last day to ask about extension | No pre-end decision checkpoint |
 | 5 | Separate expressed interest from signed work | Forecast the three contacts as booked revenue | No treatment of their commitment status |
 
+### nontech-seasonal-referrals
+
+| Assertion | Satisfying example | Contradictory near miss | Omission / not shown |
+|---|---|---|---|
+| 1 | Work one recurring hour outside delivery | Default to the three-hour example | No time budget |
+| 2 | Reconnect with the two venues before the booking season | Build pipeline by selling second wedding shoots to past couples | No plausible feeder channel |
+| 3 | Arrange a venue follow-up this week and review before bookings open | Wait until the season has opened to reconnect | No dated action |
+| 4 | Use an approved sample or a generic shot list | Republish private wedding photos as proof | No consent treatment |
+
 ## Trigger boundary probes (manual design review, not harness execution)
 
 Should trigger: “Choose a solo business for my 10-hour week”; “My one-person SaaS support is swallowing sales”; “Can I productize my freelance service without exceeding my cash cap?”

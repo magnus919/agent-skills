@@ -20,7 +20,7 @@ It supports staying small as well as deliberately growing beyond one person.
 | SKILL.md | A practical process from operating limits to a proceed/revise/stop decision |
 | references/ | Primary-source research, model trade-offs, a weekly business development routine, and worked examples |
 | assets/ | A short reusable decision record |
-| evals/ | Eight realistic quality cases and a review rubric |
+| evals/ | Nine realistic quality cases and a review rubric |
 
 ## Quick Start
 

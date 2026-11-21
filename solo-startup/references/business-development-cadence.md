@@ -3,6 +3,8 @@
 Use for a solo consultancy, freelance practice, or other capacity-limited service
 with a lumpy sales cycle. The trade-off is not sending more messages; it is
 keeping the next buying decision moving without breaking present promises.
+Keep the mechanics portable: a buyer, a reason to act, and a dated next step.
+The sourcing channel, buying cycle, and useful proof vary by market.
 
 ## Choose how much time to protect
 
@@ -36,6 +38,10 @@ keeping the next buying decision moving without breaking present promises.
   If a partner can bring actual buyers, a short briefing can teach one useful
   decision and point to one next step. Track interest, attendance, and paid
   follow-through separately. Do not treat audience size as demand.
+  Adapt proof to the field and buyer: for a local photography service, a sample
+  shot list and turnaround schedule could be more useful than a public article.
+  Where prior customers are unlikely to buy again, work complementary referral
+  partners or a buyer-relevant marketplace instead of inventing repeat demand.
 
 A discovery conversation should establish the decision, owner, timing, and a
 plausible paid next step. Log source, stage, next action, and date in a plain

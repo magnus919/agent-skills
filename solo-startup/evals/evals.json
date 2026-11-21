@@ -90,6 +90,17 @@
         "Proposes a renewal or go/no-go checkpoint before the anchor ends.",
         "Does not count interested prospects as booked work."
       ]
+    },
+    {
+      "id": "nontech-seasonal-referrals",
+      "prompt": "I run a solo wedding photography business. A delivery push leaves one hour a week for business development this month. Most couples do not book a second wedding. Two venues trust me and the next season opens for booking in six weeks. Couples have not approved publication of their photos. What should I do now?",
+      "expected_output": "Design a realistic feeder-channel cadence for a non-tech service without assuming repeat demand or exposing private portfolio material.",
+      "assertions": [
+        "Keeps the weekly plan within one hour under the stated limit.",
+        "Uses venues or another credible referral source rather than assuming couples will buy the same service again.",
+        "Uses a dated next action tied to the upcoming booking window.",
+        "Does not recommend publishing unapproved client photos."
+      ]
     }
   ]
 }
