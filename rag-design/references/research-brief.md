@@ -1,5 +1,8 @@
 # Research brief
 
+Based on research by Magnus Hedemark, with additional public-source research
+and synthesis by Codex.
+
 Investigation date 2026-11-21. Question: which representation, retrieval,
 and policy choices fit personal and shared RAG, and which documented
 limitations affect adoption? The bounded technical investigation covers
