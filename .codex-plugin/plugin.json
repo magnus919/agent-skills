@@ -149,6 +149,7 @@
     "./promise-theory",
     "./pydanticai",
     "./qa-methodology",
+    "./rag-design",
     "./raleigh",
     "./react",
     "./release-engineering",
