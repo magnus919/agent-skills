@@ -481,7 +481,8 @@
         "The response excludes the mismatched retry result from release evidence despite its matching dataset label and case IDs",
         "The response calls for an isolated rerun against the originally frozen inputs",
         "The response leaves partner-case authorization unassessed while the required approval trace is inaccessible",
-        "The response assigns release disposition to the domain owner and assigns runner recovery to the platform owner"
+        "The response assigns release disposition to the domain owner and assigns runner recovery to the platform owner",
+        "The response puts the release on hold while required authorization evidence is unavailable"
       ],
       "case_set": "dev"
     }

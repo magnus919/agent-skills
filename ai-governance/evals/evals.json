@@ -305,7 +305,8 @@
         "The response treats C’s effective authority as unknown pending fresh runtime evidence",
         "The response assigns a governance owner to verify a successor sponsor for C",
         "The response leaves D’s downstream effect unresolved until cancellation or independent effect reconciliation is evidenced",
-        "The response assigns a runtime owner to investigate or close each runtime discrepancy"
+        "The response assigns a runtime owner to investigate or close each runtime discrepancy",
+        "The response routes consequential containment to the authorized runtime or service owner"
       ],
       "case_set": "dev"
     }
