@@ -471,6 +471,19 @@
         "Checks pending-choice state separately from its screen presentation.",
         "Limits the attach result to the tested client protocol instead of inferring exactly-once external effects."
       ]
+    },
+    {
+      "id": "self-service-eval-retry-evidence",
+      "prompt": "A domain team submitted a refund eval with a frozen dataset, fixture hash, and two required cases. The runner timed out. A retry returned both case IDs and the expected dataset label, but the resolved fixture hash differs. In a corrected run, the partner case finishes but its required approval trace is inaccessible. The platform owner calls the dashboard green and offers to approve release. Write the self-service report and actions.",
+      "expected_output": "A report separating execution, admissibility, evidence coverage and release authority. Hold for valid execution evidence and required trace evidence, with owners and next actions.",
+      "assertions": [
+        "The response records the timeout separately from case results and identifies which evidence is missing",
+        "The response excludes the mismatched retry result from release evidence despite its matching dataset label and case IDs",
+        "The response calls for an isolated rerun against the originally frozen inputs",
+        "The response leaves partner-case authorization unassessed while the required approval trace is inaccessible",
+        "The response assigns release disposition to the domain owner and assigns runner recovery to the platform owner"
+      ],
+      "case_set": "dev"
     }
   ]
 }
