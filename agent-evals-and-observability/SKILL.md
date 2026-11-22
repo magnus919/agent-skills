@@ -72,6 +72,7 @@ Stop when the supported decision, evidence gaps, residual risks, and responsible
 | Review tools, state, recovery, or side effects | [references/trajectory-review.md](references/trajectory-review.md) |
 | Record optional, privacy-bounded human intervention detail | [references/trajectory-review.md#optional-intervention-events](references/trajectory-review.md#optional-intervention-events) |
 | Triage a regression or decide release readiness | [references/regression-and-release.md](references/regression-and-release.md) |
+| Hand off a self-service eval submission, isolated rerun or incomplete report | [references/self-service-eval-journey.md](references/self-service-eval-journey.md) |
 | Design traces, logs, metrics, or privacy controls | [references/production-observability.md](references/production-observability.md) |
 | Interoperate with OpenTelemetry | [references/opentelemetry-genai.md](references/opentelemetry-genai.md) |
 | Need framework-specific implementation | [references/framework-routing.md](references/framework-routing.md) |
