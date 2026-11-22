@@ -84,7 +84,7 @@
     {
       "id": "routed-task-cost-sensitivity",
       "prompt": "For the same 120 eligible supplier exceptions, the analyst workflow costs $1,200 and accepts 120. The routed workflow costs $800 all-in and accepts 100. Under higher reviewer load, the routed workflow costs $990 all-in and accepts 90. Both routed scenarios use $30 of model calls; all-in includes rejected attempts and rework. We need at least 95 accepted exceptions per period and have yet to review critical errors. What should we do?",
-      "expected_output": "A decision that calculates $10, $8 and $11 per accepted exception, recognizes that the high-review route fails the acceptance floor, and conditions further rollout on quality evidence.",
+      "expected_output": "A decision that compares cohort costs per accepted exception, recognizes that the high-review route fails the acceptance floor, and conditions further rollout on quality evidence.",
       "assertions": [
         "The response divides the total cohort cost by that cohort’s accepted outcomes, giving $10 for analysts, $8 for base routing, and $11 for stressed routing",
         "The response treats the 90 accepted exceptions in the stress case as failing the 95-outcome minimum",
