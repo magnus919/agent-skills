@@ -108,6 +108,7 @@ Progressive disclosure: load only the reference relevant to the current question
 | Vendor/model due diligence, supply chain, board reporting, metrics, audit | [references/procurement-third-party-and-board-oversight.md](references/procurement-third-party-and-board-oversight.md) |
 | Admitting, updating, disabling or retiring Skills, MCP servers or A2A capabilities | [references/capability-admission-and-update.md](references/capability-admission-and-update.md) |
 | Granting, promoting, reducing, suspending or revoking scoped agent authority | [references/earned-autonomy.md](references/earned-autonomy.md) |
+| Reconciling estate inventory, approved grants and observed runtime authority | [references/agent-estate-reconciliation.md](references/agent-estate-reconciliation.md) |
 | Assigning software-factory decision rights, protected terms and meaningful human oversight | [references/agentic-engineering-governance.md](references/agentic-engineering-governance.md) |
 | Tracing any idea to its informing books and research notes; bibliography | [references/source-index.md](references/source-index.md) |
 
