@@ -321,3 +321,12 @@ Accessed 2026-11-02 UTC. Records separate source claims from our synthesis. No f
 - Retained claims: Transactional handoff and wake intent, restart liveness, final-effect identity guards, workflow invariants, versioned recovery, attribution limits, bounded passive diagnosis, context resolution and declared package closure.
 - Limit/counterevidence: Public docs primarily 0.6.6; no runtime or general security certification. Default-off guard and trusted-network attribution are explicit qualifications.
 - Disposition: retained → openrig-source-audit.md; effect-recovery-matrix.md; three new evals.
+
+## S41 — Wharton–Accenture Agentic Cost Framework
+
+- Source: [Wharton–Accenture report](https://knowledge.wharton.upenn.edu/wp-content/uploads/2026/11/Wharton%E2%80%93Accenture-Agentic-Cost-Framework-2026.pdf), pp. 6–8, 11, 17.
+- Revision/date: November 2026, accessed 2026-11-22.
+- Evidence class: Primary scenario-modeling report.
+- Retained claims: Shared context and task similarity can affect the cost of agent specialization. Reuse can reduce upfront costs while adding recurring context cost.
+- Limit/counterevidence: The report calls for more empirical evidence on complexity and knowledge integration costs. Its modeled costs omit parts of local transition and adoption.
+- Disposition: retained in [the topology economics example](topology-economics-example.md). See the [economics source index](../../ai-operating-economics/references/source-index.md#cost-and-usage) for the broader cost-model boundary.
