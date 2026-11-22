@@ -179,6 +179,19 @@
         "Reports the omitted scope as incomplete observation rather than healthy coverage.",
         "Does not reuse the stale assessment as authority for repair."
       ]
+    },
+    {
+      "id": "topology-cost-at-quality-after-reuse",
+      "prompt": "We evaluate one agent versus specialists on the same 100 warranty claims with common quality and authorization gates. Both pass and each produces 95 accepted outcomes. The single agent costs $500 in total. Specialists cost $650, including coordination and review. A compatible shared connector may avoid $200 of specialist setup while adding $20 in recurring context cost per cohort. This decision covers one cohort. Give the current and conditional reuse decision and what to verify.",
+      "expected_output": "A cost-at-quality decision using $500 versus $650 initially and $470 for specialists if the reuse estimate holds. It prices both setup and recurring costs and scopes the decision to the evidence.",
+      "assertions": [
+        "The response uses the same accepted-outcome denominator and quality evidence for both topologies",
+        "The response prefers the $500 baseline to the $650 specialist option under the initial cost assumptions",
+        "The response calculates the reuse case as $470 for the stated horizon by accounting for both $200 avoided setup and $20 recurring context cost",
+        "The response conditions reconsideration on verifying reuse compatibility and cost assumptions",
+        "The response identifies at least one coordination or governance cost that should be observed during a matched comparison"
+      ],
+      "case_set": "dev"
     }
   ]
 }

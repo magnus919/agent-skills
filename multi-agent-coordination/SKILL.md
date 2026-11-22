@@ -83,6 +83,7 @@ a diagram, a prompt or a terminal status indicator.
 | Active question | Read | Useful artifact |
 |---|---|---|
 | Should agents split this work; centralized, peer or hierarchy? | [Decomposition/topology](references/decomposition-and-topology.md) | Charter, experiment |
+| Compare the cost of a topology split or revisit it after reuse | [Topology economics example](references/topology-economics-example.md) | Coordination experiment, economics record |
 | Persistent identities, task claims, queue overload, takeover | [Ownership/flow](references/ownership-and-flow.md) | Assignment, snapshot |
 | Who needs which facts; lost intent after compaction; messaging | [Communication/context](references/communication-and-context.md) | [Decision packet](templates/decision-packet.md), handoff |
 | Authority laundering, shared resources, cancellation, crash | [Authority/recovery](references/authority-and-recovery.md) | [Recovery drill](templates/recovery-drill.md) |
