@@ -182,7 +182,7 @@
     },
     {
       "id": "topology-cost-at-quality-after-reuse",
-      "prompt": "We evaluate one agent versus specialists on the same 100 warranty claims with common quality and authorization gates. Both pass and each produces 95 accepted outcomes. The single agent costs $500 in total. Specialists cost $650, including coordination and review. A compatible shared connector may avoid $200 of specialist setup while adding $20 in recurring context cost per cohort. This is a fresh design choice for one cohort and neither setup cost has been paid. Give the current and conditional reuse decision and what to verify.",
+      "prompt": "We evaluate one agent versus specialists on the same 100 warranty claims with common quality and authorization gates. Both pass and each produces 95 accepted outcomes. The single agent costs $500 in total. Specialists cost $650, including coordination and review. A compatible shared connector may avoid $200 of specialist setup while adding $20 in recurring context cost per cohort. This is a fresh design choice for one cohort and neither setup cost has been paid. Give the current and conditional reuse decision, cost per accepted claim at the stated acceptance count, and what to recheck before adopting reuse.",
       "expected_output": "A cost-at-quality decision that keeps the single-agent baseline for a fresh choice at initial costs and prefers specialists if verified reuse makes them cheaper over the stated cohort while they still meet the common gates.",
       "assertions": [
         "The response uses 95 accepted outcomes as the denominator for each topology",
@@ -192,7 +192,10 @@
         "The response recommends specialists for the stated cohort if the reuse estimate is verified and the common gates still hold",
         "The response calls for verifying the shared connector’s compatibility before choosing specialists",
         "The response calls for validating the net cost of reuse over the stated cohort before choosing specialists",
-        "The response identifies at least one coordination or governance cost that should be measured in a matched comparison"
+        "The response identifies at least one coordination or governance cost that should be measured in a matched comparison",
+        "The response calculates costs per accepted claim of approximately $5.26, $6.84 and $4.95 for the single agent, new specialists and specialists with reuse if acceptance remains 95, allowing equivalent rounding",
+        "The response requires fresh quality evidence for the reused configuration before adoption",
+        "The response requires fresh authorization evidence for the reused configuration before adoption"
       ]
     }
   ]

@@ -329,4 +329,4 @@ Accessed 2026-11-02 UTC. Records separate source claims from our synthesis. No f
 - Evidence class: Primary scenario-modeling report.
 - Retained claims: Shared context and task similarity can affect the cost of agent specialization. Reuse can reduce upfront costs while adding recurring context cost.
 - Limit/counterevidence: The report calls for more empirical evidence on complexity and knowledge integration costs. Its modeled costs omit parts of local transition and adoption.
-- Disposition: retained in [the topology economics example](topology-economics-example.md). See the [economics source index](../../ai-operating-economics/references/source-index.md#cost-and-usage) for the broader cost-model boundary.
+- Disposition: retained in [the topology economics example](topology-economics-example.md). The source index in the optional `ai-operating-economics` skill covers the broader cost-model boundary.

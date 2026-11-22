@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "cases": {
+    "routed-task-cost-sensitivity": {
+      "references/task-economics-example.md": "4265d9d4e2d83b9d9cae4e156c3a7054325d78a8f3324ce14e79abc65b1a74aa"
+    },
+    "cadence-incremental-decision-value": {
+      "references/task-economics-example.md": "4265d9d4e2d83b9d9cae4e156c3a7054325d78a8f3324ce14e79abc65b1a74aa"
+    }
+  }
+}

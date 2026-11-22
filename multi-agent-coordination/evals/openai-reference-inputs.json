@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "cases": {
+    "topology-cost-at-quality-after-reuse": {
+      "references/topology-economics-example.md": "e60c15f20aafac75dc70fba3401321cb2f129fe025df892ef2fca20d779518af"
+    }
+  }
+}

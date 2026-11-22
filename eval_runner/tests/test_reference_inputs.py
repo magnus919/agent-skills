@@ -23,6 +23,19 @@ CASES = [
     ("product-design-and-ux", "embedded-loan-recovery", "embedded-business-agent.md"),
     ("pydanticai", "non-chat-proposal", "application-proposals.md"),
     ("spec-driven-development", "policy-translation-fidelity", "executable-business-policy.md"),
+    ("ai-operating-economics", "routed-task-cost-sensitivity", "task-economics-example.md"),
+    ("ai-operating-economics", "cadence-incremental-decision-value", "task-economics-example.md"),
+    ("ai-governance", "agent-estate-authority-reconciliation", "agent-estate-reconciliation.md"),
+    (
+        "agent-evals-and-observability",
+        "self-service-eval-retry-evidence",
+        "self-service-eval-journey.md",
+    ),
+    (
+        "multi-agent-coordination",
+        "topology-cost-at-quality-after-reuse",
+        "topology-economics-example.md",
+    ),
 ]
 
 
