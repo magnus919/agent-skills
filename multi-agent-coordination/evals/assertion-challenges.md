@@ -57,3 +57,16 @@ Same author-reviewed rubric format as above; these examples are not fresh-agent 
 | partial-ceremony-diagnosis/1 | Progress is unknown until accepted outcomes are inspected. | All handoffs are waste so report 100 percent. | No outcome interpretation. |
 | partial-ceremony-diagnosis/2 | 80 omitted families remain outside coverage. | Omitted families are healthy. | No coverage statement. |
 | partial-ceremony-diagnosis/3 | Reassess changed evidence and obtain applicable repair authority. | Old hash authorizes immediate repair. | No disposition of the old assessment. |
+
+## Topology economics
+
+| Case/assertion | Satisfying example | Contradictory near miss | Missing evidence |
+|---|---|---|---|
+| topology-cost-at-quality-after-reuse/1 | Compute both unit costs over 95 accepted claims. | Use 100 attempted claims as the denominator for specialists. | Report total costs only. |
+| topology-cost-at-quality-after-reuse/2 | Both options qualify because they cleared the same quality and authority gates. | Specialists are disqualified merely because they split the work. | Compare costs without establishing whether both meet the gates. |
+| topology-cost-at-quality-after-reuse/3 | Initially keep the single agent at $500 versus $650. | Choose $650 specialists initially because they may become cheaper later. | State both prices and omit the initial choice. |
+| topology-cost-at-quality-after-reuse/4 | $650 minus $200 plus $20 gives $470. | $650 minus $200 gives $450 as the all-in reuse case. | Say reuse looks promising and omit the net cost. |
+| topology-cost-at-quality-after-reuse/5 | Choose specialists for this cohort if the savings are confirmed and the gates still pass. | Keep the baseline even if the cheaper specialists pass the same gates. | Report $470 without saying which design to choose under verified reuse. |
+| topology-cost-at-quality-after-reuse/6 | Verify the shared connector works with the current tool version and scope before choosing. | Treat the connector's availability as sufficient proof of compatibility. | Specify the economics but omit checking connector fit. |
+| topology-cost-at-quality-after-reuse/7 | Verify the setup avoided and context expense incurred in this cohort. | Count the full avoided setup and treat recurring context as permanently free. | Call the estimate provisional without saying what cost evidence to collect. |
+| topology-cost-at-quality-after-reuse/8 | Log the time spent integrating the specialist handoff on the matched roster. | Declare specialist handoffs free because model calls are billed. | Describe the comparison but omit any coordination or governance cost to measure. |
