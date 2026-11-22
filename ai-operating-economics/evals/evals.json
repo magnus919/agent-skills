@@ -80,6 +80,31 @@
         "The response includes a named owner, review trigger, and transition or containment consideration"
       ],
       "case_set": "release"
+    },
+    {
+      "id": "routed-task-cost-sensitivity",
+      "prompt": "For the same 120 eligible supplier exceptions, the analyst workflow costs $1,200 and accepts 120. The routed workflow costs $800 all-in and accepts 100. Under higher reviewer load, the routed workflow costs $990 all-in and accepts 90. Both routed scenarios use $30 of model calls; all-in includes rejected attempts and rework. We need at least 95 accepted exceptions per period and have yet to review critical errors. What should we do?",
+      "expected_output": "A decision that calculates $10, $8 and $11 per accepted exception, recognizes that the high-review route fails the acceptance floor, and conditions further rollout on quality evidence.",
+      "assertions": [
+        "The response divides the total cohort cost by that cohort’s accepted outcomes, giving $10 for analysts, $8 for base routing, and $11 for stressed routing",
+        "The response treats the 90 accepted exceptions in the stress case as failing the 95-outcome minimum",
+        "The response accounts for the unchanged inference spend while identifying reviewer load as a driver of the changed economic result",
+        "The response withholds a broad rollout while critical-error evidence remains unresolved"
+      ],
+      "case_set": "dev"
+    },
+    {
+      "id": "cadence-incremental-decision-value",
+      "prompt": "Our agent can prepare a supplier exception report monthly, weekly, or daily. The expected four-week cost and review demand are $50/20 minutes, $130/80 minutes, and $230/200 minutes. We estimate the reports lead to one, five, and five distinct decisions changed in time, respectively. Review can spend up to 100 minutes. Which cadence should we pilot, and what must we measure before adopting it?",
+      "expected_output": "A bounded recommendation that prices the cadence change against incremental timely decisions, rejects daily on reviewer capacity, and tests whether weekly changes actual decisions enough to justify cost.",
+      "assertions": [
+        "The response calculates the weekly increment versus monthly as $80 for four extra timely decisions, or $20 per incremental decision",
+        "The response rejects daily because its 200 minutes exceed available reviewer capacity",
+        "The response identifies that daily adds no expected timely decisions over weekly",
+        "The response proposes observing unique decisions actually changed in time rather than using report volume as the benefit",
+        "The response bases its pilot or adoption recommendation on evidence of incremental decision value and reviewer burden"
+      ],
+      "case_set": "dev"
     }
   ]
 }
