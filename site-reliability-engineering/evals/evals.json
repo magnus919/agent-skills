@@ -225,6 +225,30 @@
         "Distinguishes noeviction write rejection from protection against OOM or expiry.",
         "Requires a scoped authorized recovery rehearsal rather than unapproved production fault injection."
       ]
+    },
+    {
+      "id": "postmortem-preliminary-decision-gap",
+      "prompt": "The dashboard shows the notification queue fell behind minutes after someone paused a consumer. Restarting the consumer restored throughput. We have logs but have not heard from the operator. It is the third occurrence this quarter. Give me the postmortem and tell me whether to require a second approval for any pause.",
+      "expected_output": "A preliminary evidence-linked report distinguishes the pause, backlog, and observed recovery without inventing the operator’s rationale or calling the restart proof of cause. Recurrence and missing decision context warrant a human-led interview and a restricted transcript handoff. Another approval is not treated as the answer before existing controls and trade-offs are understood.",
+      "assertions": [
+        "Labels the current review preliminary or equivalently incomplete.",
+        "Does not assert that the restart proves the cause of the incident.",
+        "Routes examination of the operator’s decision context to a human interviewer.",
+        "Requests an authorized transcript for agent synthesis, or verified notes when a transcript cannot be used.",
+        "Does not recommend a second approval as a finding-backed fix on the available evidence."
+      ]
+    },
+    {
+      "id": "postmortem-transcript-revises-findings",
+      "prompt": "Revise a preliminary report which recommended a second approver because an operator paused our consumer. Authorized transcript, 04:20: “Two of us approved the pause; we saw duplicate notices going out, and the only switch stopped all consumption.” Dashboard: duplicate notifications spiked before the pause, backlog grew during it. A manager says the operator had a separate switch but nobody can produce evidence it was usable. State what belongs in the broadly shared report versus the restricted record.",
+      "expected_output": "Revise the explanation using transcript and telemetry without overstating corroboration or resolving the disputed control. Keep the transcript restricted, require human verification before finalizing, and consider evidence-backed ways to address duplicate delivery and safe partial recovery rather than adding an approval by default.",
+      "assertions": [
+        "Attributes the existing approval to the transcript instead of treating it as independently verified by telemetry.",
+        "Preserves uncertainty about whether the separate switch was usable.",
+        "Explains why the earlier second-approval recommendation should be reconsidered.",
+        "Keeps raw transcript content in the restricted evidence record, not the broad report.",
+        "Requires human verification of the revised synthesis before finalization."
+      ]
     }
   ]
 }

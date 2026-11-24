@@ -13,6 +13,8 @@
 | **Severity**   | [SEV1 / SEV2 / SEV3 / SEV4] |
 | **Duration**   | [Start time] – [End time] ([Total duration in minutes/hours]) |
 | **Date(s)**    | [Date range of the incident] |
+| **Review status** | [Preliminary / Human review pending / Final] |
+| **Review depth** | [Report / Analysis / Human-led investigation] |
 | **Reported by**| [Name / Team] |
 | **Participants** | [Name / Team], [Name / Team], [Name / Team] |
 
@@ -31,7 +33,7 @@
 
 [1-2 paragraphs providing a high-level overview of the incident. Describe what happened, which systems were involved, the overall impact on users and business, and how the incident was ultimately resolved. This section should be understandable by someone outside the immediate team — executives, customer support, other engineering teams.]
 
-**Example:** "On [DATE] between [START TIME] and [END TIME] UTC, the [SERVICE NAME] experienced a [DESCRIPTION OF FAILURE]. This caused [IMPACT] for [NUMBER] users. Root cause was [BRIEF ROOT CAUSE]. The incident was resolved by [RESOLUTION ACTION]. Total time to resolve was [DURATION]."
+**Example:** "On [DATE] between [START TIME] and [END TIME] UTC, the [SERVICE NAME] experienced a [DESCRIPTION OF FAILURE]. This caused [IMPACT] for [NUMBER] users. The review found [SUPPORTED FINDING(S) OR MATERIAL UNKNOWN(S)]. The incident was resolved by [RESOLUTION ACTION]. Total time to resolve was [DURATION]."
 
 ---
 
@@ -46,7 +48,7 @@ All times in [UTC / LOCAL TZ].
 | [YYYY-MM-DD HH:MM] | [First responder acknowledged] | [Name] |
 | [YYYY-MM-DD HH:MM] | [Initial investigation — what was checked] | [Name] |
 | [YYYY-MM-DD HH:MM] | [Escalation to additional team members] | [Name] |
-| [YYYY-MM-DD HH:MM] | [Root cause identified] | [Name] |
+| [YYYY-MM-DD HH:MM] | [Evidence for a proposed explanation found] | [Name] |
 | [YYYY-MM-DD HH:MM] | [Mitigation action taken] | [Name] |
 | [YYYY-MM-DD HH:MM] | [Service restored / incident resolved] | [Name] |
 | [YYYY-MM-DD HH:MM] | [Monitoring confirmed healthy / all-clear] | [System / Person] |
@@ -99,54 +101,22 @@ All times in [UTC / LOCAL TZ].
 
 ---
 
-## Root Cause
+## Findings and Unknowns
 
-### Summary
+| Type | Finding | Evidence / confidence |
+|------|---------|-----------------------|
+| Trigger | [What initiated the disruption, or unknown] | [Source / confidence] |
+| Contributing conditions | [What made it possible or amplified impact] | [Sources / confidence] |
+| Recovery | [What restored service; cite separate recovery evidence] | [Source / confidence] |
+| Open questions | [What is missing, disputed, or needs testing] | [Next evidence to seek] |
 
-[1-2 sentences describing the root cause at a high level.]
+## Decision Context (for a human-led investigation)
 
-### 5 Whys Analysis
-
-| Why? | Answer |
-|------|--------|
-| **1.** Why did [symptom] happen? | [Answer] |
-| **2.** Why did [cause from #1] happen? | [Answer] |
-| **3.** Why did [cause from #2] happen? | [Answer] |
-| **4.** Why did [cause from #3] happen? | [Answer] |
-| **5.** Why did [cause from #4] happen? | **[Root cause — the fundamental system or process issue]** |
-
-### Root Cause Diagram
-
-```
-[SYMPTOM]
-    |
-    v
-[Why #1]
-    |
-    v
-[Why #2]
-    |
-    v
-[Why #3]
-    |
-    v
-[Why #4]
-    |
-    v
-[ROOT CAUSE]
-```
-
----
-
-## Contributing Factors
-
-List factors that contributed to the incident's severity, duration, or impact beyond the root cause.
-
-| Factor | Description | Category |
-|--------|-------------|----------|
-| [Factor 1] | [Description of how this factor contributed] | [Process / People / Technology / External] |
-| [Factor 2] | [Description of how this factor contributed] | [Process / People / Technology / External] |
-| [Factor 3] | [Description of how this factor contributed] | [Process / People / Technology / External] |
+- **Human interviewer or investigation owner:** [Name or role]
+- **Decisions and perspectives to cover:** [What the responders saw, believed, and considered at the time; what became clear only later]
+- **Evidence returned to the agent:** [Authorized transcript in the restricted record, or verified notes when a transcript cannot be used. Do not embed raw transcripts or restricted links in the broadly shared copy.]
+- **What changed after synthesis:** [Revised findings, source pointers for authorized readers, corroboration and remaining disagreement]
+- **Human verification:** [Reviewer, status, and confirmation that the synthesis represents the accounts accurately]
 
 ---
 
@@ -187,7 +157,7 @@ List factors that contributed to the incident's severity, duration, or impact be
 
 ## Action Items
 
-Action items derived from this postmortem. Each item has a reference ID that can be linked from epics or tickets.
+List only actions tied to supported findings, or an explicit investigation step for remaining uncertainty. Identify the finding and the observable outcome that will verify improvement in each description. Remove unused rows.
 
 | ID | Description | Owner | Deadline | Type | Epic/Ticket |
 |----|-------------|-------|----------|------|-------------|
@@ -277,7 +247,7 @@ Action items derived from this postmortem. Each item has a reference ID that can
 - [Link to relevant logs (Splunk / ELK / CloudWatch)]
 - [Link to chat transcript / incident Slack channel]
 - [Link to incident ticket / PagerDuty timeline]
-- [Link to zoom recording / meeting notes]
+- [Shareable meeting summary, if approved. Keep interview recordings, transcripts, and verified interview notes in the restricted record.]
 
 ### Related Postmortems
 

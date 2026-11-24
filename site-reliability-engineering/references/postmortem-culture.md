@@ -27,7 +27,7 @@
 
 ### What Is a Blameless Postmortem?
 
-A blameless postmortem is a structured process conducted after an incident to understand what happened, why it happened, and how to prevent it from happening again. The defining characteristic — the "blameless" part — is that the analysis focuses entirely on systemic causes, process failures, and environmental conditions, never on individual actions, mistakes, or character.
+A blameless postmortem is a structured process conducted after an incident to understand what happened, why it happened, and how to prevent it from happening again. The defining characteristic — the "blameless" part — is that the analysis examines actions in their technical, organizational, and environmental context without assigning personal blame.
 
 The core axiom of blameless postmortems is:
 
@@ -85,7 +85,7 @@ The threshold should be calibrated to the team's capacity. A good heuristic: **i
 
 ## 3. Postmortem Structure
 
-A good postmortem is organized, consistent, and actionable. Below is the canonical structure used by leading SRE organizations.
+Choose the depth of review using [Incident Learning](incident-learning.md). A reliable timeline answers what happened; a deeper review explains why decisions made sense at the time. Use the following structure in proportion to the incident.
 
 ### 3.1 Metadata Header
 
@@ -107,7 +107,7 @@ A 3-5 sentence overview accessible to non-technical stakeholders. State what hap
 
 ### 3.3 Timeline
 
-A chronological, time-stamped account of the incident. This is the most important section for learning. Include:
+A chronological, time-stamped account of the incident. Link material entries to evidence and mark disputed or approximate times. Include:
 
 - **Before:** The state of the system prior to the trigger event (deployments, config changes, traffic shifts)
 - **Trigger:** The specific event that initiated the incident
@@ -118,31 +118,17 @@ A chronological, time-stamped account of the incident. This is the most importan
 
 Timeline entries should be precise UTC timestamps. Include relevant logs, metrics, and command output. Do not editorialize — just state what happened and when.
 
-### 3.4 Root Cause
+### 3.4 Findings and Uncertainty
 
-A single paragraph describing the fundamental underlying failure. The root cause should be **systemic** — a statement about process, design, or environment, not about a person.
+Separate the trigger, the conditions that made it possible or amplified harm, and the action that restored service. Restoration is not proof of cause. State causal links only where supported; list material gaps and alternatives still in play.
 
-**Good root cause statement:** "A race condition between the deploy pipeline's health-check timeout (30s) and the new service's JVM warmup period (45s) caused the load balancer to mark all instances as unhealthy, blackholing traffic."
+### 3.5 Contributing Conditions
 
-**Bad root cause statement:** "Alice deployed during peak hours without checking the warmup time."
-
-### 3.5 Contributing Factors
-
-All the conditions that made the root cause possible or worsened the impact. This is where most of the learning lives. Common categories:
-
-| Category | Examples |
-|----------|----------|
-| **System design** | Single point of failure, missing redundancy, tight coupling |
-| **Process** | Missing change review, insufficient test coverage, gaps in runbook |
-| **Tooling** | Poor observability, confusing dashboards, slow deployment tooling |
-| **Organizational** | Team knowledge silos, inadequate on-call training, time pressure |
-| **Environmental** | Dependency failure (DNS, cloud provider, third-party API), capacity exhaustion |
-
-Aim for 3-8 contributing factors per postmortem.
+Check technical design, tooling, recent changes, and organizational constraints, including what responders knew and which options were available. Use as many findings as the evidence supports. If a consequential decision remains unexplained, use the human interview and transcript handoff in [Incident Learning](incident-learning.md).
 
 ### 3.6 Action Items
 
-Specific, tracked, and owner-assigned tasks to prevent recurrence. Each action item should follow the SMART criteria.
+Specific, tracked, and owner-assigned tasks to prevent recurrence. Tie each item to a finding and define how its benefit will be verified. Do not fill an action quota.
 
 | Field | Description |
 |-------|-------------|
@@ -172,11 +158,11 @@ Supporting evidence: dashboard screenshots, log excerpts, config files, chat tra
 
 ## 4. The 5 Whys Methodology
 
-The 5 Whys is a root-cause analysis technique that iteratively asks "Why?" to peel back layers of symptoms until the fundamental systemic cause is exposed. It was developed by Sakichi Toyoda and is a core component of the Toyota Production System and Lean methodology.
+The 5 Whys is a questioning technique for looking beyond the immediate trigger. A chain of answers is a hypothesis until the links are supported. It was developed by Sakichi Toyoda and is a core component of the Toyota Production System and Lean methodology.
 
 ### How It Works
 
-Start with the incident description, then ask "Why did this happen?" For each answer, ask "Why?" again. Repeat until the answer points to a process, design, or organizational issue — not a person's action.
+Start with the incident description, then ask "Why did this happen?" For each answer, ask "Why?" again. Use the questions as optional prompts, not a form to complete. Branch into parallel contributing conditions and stop at the edge of the evidence.
 
 ### Worked Example
 
@@ -209,7 +195,7 @@ Start with the incident description, then ask "Why did this happen?" For each an
 
 - Complex incidents with multiple interacting failures may need more sophisticated analysis (e.g., causal trees, STAMP)
 - The technique tends to produce a single linear narrative, which can miss parallel contributing factors
-- The fifth "why" is often arbitrary; stop when you hit a systemic cause, not when you hit five
+- The fifth "why" is arbitrary. Stop where evidence runs out and record the open question.
 
 ---
 
@@ -243,9 +229,9 @@ Human fixes attempt to prevent recurrence through individual effort, training, d
 | **Blame / disciplinary action** | Destroys psychological safety, discourages future reporting, and doesn't fix the root cause |
 | **Process checklist** | Checklists are effective only when the failure mode is known and the checklist is enforceable |
 
-### The Golden Rule
+### Choose controls for the conditions you found
 
-> **If a fix can be automated, it should be automated. If a guardrail can be built, it should be built. A human fix is the failure of engineering, and a second failure to fix the right thing.**
+Prefer changes that reduce risk, but do not assume an extra approval or automated block would have helped. Check for existing controls and test how a proposed one would affect response and recovery.
 
 ### Exceptions
 
@@ -287,7 +273,7 @@ The review process ensures quality, consistency, and real learning. It should no
 
 ### Step 1: Draft (Within 48 Hours)
 
-The incident responder or designated postmortem owner writes the initial draft. Focus on the timeline while memory is fresh. Do not wait for perfection — publish an incomplete draft early.
+The incident responder or designated postmortem owner writes the initial draft. Focus on the timeline while memory is fresh. Label an incomplete draft as preliminary and keep restricted material in the investigation record. Follow the human review workflow before issuing final findings.
 
 ### Step 2: Peer Review (Within 1 Week)
 
@@ -300,8 +286,8 @@ The postmortem is reviewed by:
 
 Review criteria:
 - Is the timeline accurate and complete?
-- Is the root cause truly systemic?
-- Are contributing factors explored, not just the trigger?
+- Does the write-up separate the trigger, contributing conditions, recovery, and unknowns?
+- Did a human validate the synthesis of any material interview evidence?
 - Is every action item SMART and owned?
 - Does the document pass the "blameless language" test?
 
@@ -371,7 +357,7 @@ If you don't measure it, you don't know if it's working. Track these metrics to 
 | **Repeat incident rate** | Declining trend | Are we learning? Same-class incidents should decrease |
 | **Mean time to resolve (MTTR)** | Stable or declining | Are postmortem findings improving response? |
 | **Incident severity distribution** | Shift toward lower severities | Are preventative measures working? |
-| **Action items per postmortem** | 3-5 (sweet spot) | Too few = shallow analysis; too many = scope creep |
+| **Benefit of completed actions** | Verify against the linked finding | Did the change reduce risk or improve response? |
 
 ### Cultural Metrics
 
@@ -393,7 +379,7 @@ The postmortem stops at the first apparent cause rather than digging deeper.
 
 **Signs:** Action items are trivial or obvious. Root cause is a single sentence that blames a person or a "config error." Contributing factors section is empty.
 
-**Fix:** Use the 5 Whys. Ask "What made that possible?" for every finding. Insist on at least three contributing factors.
+**Fix:** Ask what made the trigger possible and what amplified the impact. If logs cannot explain a key decision, ask a human interviewer to investigate rather than filling in a plausible explanation.
 
 ### Too Many Action Items
 
@@ -401,7 +387,7 @@ A postmortem produces 15+ action items, most of which are never completed. This 
 
 **Signs:** Action item list is a brain dump. Many items are vague ("improve testing"). No owner assigned. Completion rate is below 50%.
 
-**Fix:** Limit action items to 3-5 per postmortem. Force prioritization. If something is important but not a top-5 priority, create a separate initiative. Track completion aggressively.
+**Fix:** Prioritize actions tied to supported findings. Do not invent work to reach a target; verify the benefit of the actions you do take.
 
 ### No Follow-Through
 
@@ -423,7 +409,7 @@ Despite professed blameless culture, postmortems contain subtle blame language. 
 
 Only major incidents get postmortems; the small ones and near-misses are ignored. This means the high-frequency, low-severity failure modes never get fixed.
 
-**Fix:** Lower the postmortem threshold. Create a lightweight "mini-postmortem" format (just timeline + root cause + 1 action item) for smaller incidents.
+**Fix:** Lower the postmortem threshold. Create a lightweight "mini-postmortem" format (timeline, supported findings or open questions, and follow-up if warranted) for smaller incidents.
 
 ---
 
@@ -543,10 +529,10 @@ For low-severity incidents where a full postmortem is disproportionate:
 ### What Happened
 [2-3 sentences]
 
-### Root Cause
-[1 sentence, systemic]
+### Findings and Unknowns
+[Trigger, any supported contributing conditions, and what remains unknown]
 
-### One Action Item
+### Follow-Up (if warranted)
 - [ ] [Concrete, owned, tracked] — Owner, Due
 
 ### What We Learned
