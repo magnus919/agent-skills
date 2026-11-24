@@ -10,13 +10,14 @@ Use it when the work needs a repeatable process and an inspectable result. It is
 
 Agentic operations now include scoped action contracts, independent recovery evidence, replay challenges and operational evidence for human governance decisions about earned autonomy. These materials do not install runtime controls or grant production permissions.
 
-Review Valkey/Redis durability, failover, memory pressure and consumer recovery against independently observed outcomes.
+For incident reviews, it can build a timeline from evidence, identify where human interviews are needed, and turn those conversations into lessons the team can verify.
 
 ## What You Get
 
 | Path | What it provides |
 |---|---|
-| `references/in-memory-store-reliability.md` | Review Valkey/Redis durability, failover, memory pressure and consumer recovery against independently observed outcomes. |
+| `references/in-memory-store-reliability.md` | For incident reviews, it can build a timeline from evidence, identify where human interviews are needed, and turn those conversations into lessons the team can verify. |
+| `references/incident-learning.md` | Choose how deeply to investigate and turn responder interviews into verified findings. |
 | `SKILL.md` | Trigger conditions, workflow, operational closure gate, and guidance for loading deeper resources. |
 | `references/` | Reference material for SLOs, incidents, on-call, toil, troubleshooting, product engagement, adoption, reliability design, human systems, and the SRE learning ecosystem. |
 | `templates/` | Templates for SLOs, error budgets, incident response, runbooks, service reviews, reliability design reviews, and overload recovery. |

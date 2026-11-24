@@ -22,7 +22,7 @@ A comprehensive methodology for designing, operating, and improving reliable pro
 | Trigger | What It Means |
 |---|---|
 | "Design reliability into this system" | SLO/SLI framework, error budget policy, resilience architecture |
-| "Run an incident postmortem" | Blameless postmortem with timeline, 5 Whys, action tracking |
+| "Run an incident postmortem" | Evidence-linked timeline, proportionate investigation, and follow-up |
 | "Improve our on-call" | Rotation design, alert tuning, toil reduction, escalation policy |
 | "Build observability" | The Four Golden Signals, dashboard design, alert rule patterns |
 | "Do a reliability review" | Architecture review against SRE principles, risk assessment |
@@ -59,6 +59,10 @@ Compose existing specialists: [agent-production-operations](../agent-production-
 
 For in-memory datastore durability, failover, memory pressure and consumer recovery evidence, read [the focused guide](references/in-memory-store-reliability.md). For open-source-oriented choices, prefer Valkey's BSD licensing and community governance; preserve explicit engine requirements and verify version-specific compatibility. Redis's AGPL option does not erase licensing or trust preferences, and this guidance makes no claim about business-community preference.
 
+## Incident learning gate
+
+For post-incident work, follow [Incident Learning](references/incident-learning.md) and use the [Postmortem Template](templates/postmortem-template.md). Use the agent to build a sourced timeline, surface gaps, and test explanations. When decisions or context are missing in a serious, recurring, or poorly understood incident, route interviews to a human. Have the human return an authorized transcript (or verified notes when recording is unavailable) for the agent to revise its findings; require human verification before finalizing. A documented timeline does not close an investigation.
+
 ## Reference Files
 
 | Topic | File | When to Load |
@@ -68,6 +72,7 @@ For in-memory datastore durability, failover, memory pressure and consumer recov
 | SLO Implementation Recipe | `references/slo-implementation-recipe.md` | Agent-executable SLO adoption sequence and stakeholder review |
 | Error Budget Governance | `templates/error-budget-policy.md` and `references/slo-sli-framework.md` | Policy design, burn rate alerts |
 | Incident Command System | `references/incident-command-system.md` | During/after incident, training |
+| Incident Learning | `references/incident-learning.md` | Choosing review depth, human interviews, transcript handoff, and evidence synthesis |
 | Blameless Postmortems | `references/postmortem-culture.md` | After incident, process design |
 | Monitoring & Alerting | `references/monitoring-alerting.md` | Observability design, alert rules |
 | On-Call Best Practices | `references/oncall-best-practices.md` | Rotation design, team sizing |
