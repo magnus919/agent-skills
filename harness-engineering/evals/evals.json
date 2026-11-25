@@ -827,6 +827,17 @@
         "Provides an explicit non-success outcome when evidence or budget is insufficient.",
         "Does not claim that static source inspection proves DeerFlow delivered better research outcomes."
       ]
+    },
+    {
+      "id": "stale-rule-stalls-ready-work",
+      "prompt": "The factory has budget, healthy workers and eligible backlog, but no progress. The scheduler trace shows a locally cached 'no repository edits' freeze from last week vetoing a ready docs-only change. The policy owner's current version expressly ends the temporary freeze and allows internal docs edits; the binding ban on public publishing still applies. Two workers are using old session summaries. How do you diagnose and recover, and what evidence would show it worked?",
+      "expected_output": "Identify the obsolete veto and its authority and distribution path, reconcile through the policy owner, then prove the corrected boundary in fresh and resumed executions.",
+      "assertions": [
+        "Identifies the cached freeze as the observed veto and compares its source, scope and version to current authoritative policy.",
+        "Preserves the binding publishing ban and does not grant new rights or silently override unresolved policy conflicts.",
+        "Coordinates with the policy owner and traces stale derived copies in both the scheduler and worker session summaries.",
+        "Requires a behavioral check showing an authorized docs edit can proceed and unauthorized public publishing remains blocked using a separate negative test, including previously affected resume paths."
+      ]
     }
   ]
 }

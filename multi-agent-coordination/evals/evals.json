@@ -197,6 +197,17 @@
         "The response requires fresh quality evidence for the reused configuration before adoption",
         "The response requires fresh authorization evidence for the reused configuration before adoption"
       ]
+    },
+    {
+      "id": "factory-review-capacity",
+      "prompt": "A software factory has inference budget and idle builders. Twelve completed changes have filled the reviewer queue, the oldest is three days old, and the support lead asks for a break from visible changes. Several ready features are waiting. Later, review capacity returns but support still cannot absorb another launch. What should the factory do now and when those conditions change?",
+      "expected_output": "A two-stage admission and release decision that addresses the current bottleneck, then revisits each limit independently.",
+      "assertions": [
+        "Defers new feature starts while the reviewer queue is full despite spare budget and idle builders.",
+        "Prioritizes unblocking existing work or finishing the oldest eligible review without bypassing required review or permissions.",
+        "When review and safe staging capacity return, treats implementation or dark deployment separately from user exposure and holds exposure while support is overloaded.",
+        "Names observable resume conditions and accountable owners for review and customer-facing exposure rather than treating CI success as evidence of available capacity."
+      ]
     }
   ]
 }
