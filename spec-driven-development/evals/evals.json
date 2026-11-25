@@ -199,6 +199,16 @@
         "Any reused unaffected evidence is identified with a justification.",
         "Reused unaffected evidence is not represented as a full re-review of candidate B."
       ]
+    },
+    {
+      "id": "feature-map-sidebar-settings",
+      "prompt": "A customer says the sidebar compact-mode option looks saved but resets after reopening. The repo calls it appearance.density. Its acceptance spec already says the choice must persist and a rejected save must preserve the old preference. Draft a feature-map entry an unfamiliar agent can actually use. Assume you have not seen the repository's command names.",
+      "expected_output": "A linked, runnable-route entry that maps plain user vocabulary to setup, state transitions, evidence and a verified driver or explicit unknown.",
+      "assertions": [
+        "Maps the customer's words to the product path and existing acceptance requirements instead of inventing a second specification.",
+        "Names the initial state, save, reopen/readback transition and rejected-save case.",
+        "Requires an existing reusable driver or marks its command as unknown rather than presenting an invented command as tested."
+      ]
     }
   ]
 }
