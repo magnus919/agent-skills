@@ -166,6 +166,30 @@ Companion controls: **immutable audit trails** (what/when/why/what-changed, for 
 
 **Implication for release engineers:** the job shifts from *executing* releases to *defining autonomy tiers, reviewing agent rationale diffs, owning audit trails, and calibrating trust*. Routine toil (retrying flakes, triaging failures, drafting changelogs, dependency updates) is delegated; humans concentrate on go/no-go judgment, security, and high-blast-radius approvals. The human gate is deliberately preserved.
 
+## Qualify post-release checks before automating repair
+
+1. **Observe first.** Run a bounded approved set of user journeys on the exact
+   released build, using test accounts or fixtures. Record expected and actual
+   behavior, baseline and candidate identity, and who should act. Suppress
+   duplicate findings without masking repeat failures.
+2. **Propose next.** Once observations are credible, route evidence-backed
+   repair proposals through ordinary review. Verify the fix in isolation and
+   rerun the affected journey against the candidate. Assign an owner for false
+   positives, regressions and undoing the change.
+3. **Automate only within earned scope.** Require explicit authorization, a
+   defined risk class, existing required checks and an independently exercised
+   rollback/disable path. Stop on unknown evidence, a failed invariant or
+   exhausted budget. Keep novel, high-risk and out-of-scope work in human review.
+
+For the [saved settings example](../../spec-driven-development/templates/FEATURE-MAP.md),
+start by checking persistence after reopening on a release cohort. Watch
+user-reported lost settings and follow-up fixes alongside reverts and known
+exposure. Track release version, denominator and observation window; measure
+responsiveness or startup when the defect affects them. A low revert rate
+does not count problems fixed forward or changes users never saw. Set rollout
+criteria from local evidence, not from the PR volume or revert rates in
+[Lauren Tan's case study](https://ai.engineer/talks/O_zcc6Xl12g-all-code-is-slop-except-mine).
+
 ## Running a Release Train: The Operational Checklist
 
 Synthesis of the four projects' mechanics into a reusable operating rhythm for any train-based release:

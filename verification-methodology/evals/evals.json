@@ -71,6 +71,16 @@
         "Requires affected checks and a current verdict before delivery while preserving superseded history",
         "Permits reuse of unaffected evidence only with an explicit scope/impact justification"
       ]
+    },
+    {
+      "id": "screenshot-is-not-persistence",
+      "prompt": "The exact build shows compact mode on in a screenshot taken just after Save. It might still reset after reopening or after a rejected save. Classify what is evidenced, what remains unverified, and what tests would cover both persistence and sequences of saves without spending verification effort indiscriminately.",
+      "expected_output": "Separate visible state, persistence and sequence-wide properties with evidence appropriate to each.",
+      "assertions": [
+        "Accepts the screenshot as evidence of visible state only and keeps persistence unverified.",
+        "Proposes an independent reopen/readback against the same test profile and controlled rejection.",
+        "Explains what sequence/property testing adds and does not claim a formal model establishes behavior of the integrated build."
+      ]
     }
   ]
 }

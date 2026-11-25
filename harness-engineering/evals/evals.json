@@ -3,6 +3,16 @@
   "skill_name": "harness-engineering",
   "evals": [
     {
+      "id": "workaround-survives-lint",
+      "prompt": "Agents keep copying a desktop settings workaround: a product timer calls a persistence internal and the app looks saved before the data is durable. A new lint rule blocks the import in new code, but the starter template and three neighboring features still show the workaround. Plan the fix and how to know the copying stopped.",
+      "expected_output": "Contain new copies, remove misleading examples, leave a tested replacement and separately verify the saved setting.",
+      "assertions": [
+        "Identifies the template and nearby code as copy sources and proposes replacing them rather than leaving the lint alone.",
+        "Moves the persistence invariant behind a supported API and verifies its dependency guard with both allowed and disallowed cases.",
+        "Separates absence of new shortcut copies from functional evidence that settings survive reopen."
+      ]
+    },
+    {
       "id": "minimal-repository",
       "prompt": "Set up a small Python repository for an agent. Existing Makefile runs checks; keep my AGENTS.md and unfinished edits.",
       "expected_output": "A minimal additive harness using existing checks and preserving user work.",

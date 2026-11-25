@@ -16,6 +16,22 @@
 - Missing evidence for a criterion is a HOLD, not a FAIL
 - Contradictory evidence (claim says X, evidence shows Y) is a FAIL
 
+## Match the evidence to the claim
+
+For the [saved settings journey](../../spec-driven-development/templates/FEATURE-MAP.md),
+match each claim to the cheapest check that can actually falsify it:
+
+| Claim | Evidence that can support it | Inadequate substitute |
+|---|---|---|
+| The interface shows the requested state | Screenshot or UI assertion from the exact running candidate and setup | An isolated mock or a screenshot of the wrong build |
+| The setting persists | Exercise save, reopen the app with the same test profile, and read the value back independently | A screenshot taken before reopening |
+| Save behavior is consistent across supported sequences | Generate representative valid sequences, assert the property, and retain seeds and failing traces for replay | One successful journey or examples selected after the fact |
+| A consequential transition cannot violate a well-defined invariant | A checked model with explicit assumptions and a separate check that the implementation matches the relevant behavior | Treating a model proof as evidence that the integrated app works |
+
+Use invariants and small models where the added coverage matters. A video,
+property test, model check and human judgment can complement one another;
+none silently expands the authority to expose a change.
+
 ## Uncertainty Handling
 
 When evidence is insufficient:

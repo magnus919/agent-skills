@@ -22,6 +22,12 @@ not a universal sizing rule. Route work by both complexity and consequence: a
 one-line authorization change may need a fast implementation but deep security
 verification. Existing permission and regulatory requirements remain binding.
 
+For a feature that users describe differently from how the repository names it,
+link a [feature map](../templates/FEATURE-MAP.md) from the planning handoff.
+It maps user language to a running journey, initial state, transition, evidence
+and a reusable driver. It points to existing acceptance criteria; it is not a
+parallel specification or proof that the journey passed.
+
 ## Two evidence lanes
 
 | Lane | Question | Evidence | Typical finding |
