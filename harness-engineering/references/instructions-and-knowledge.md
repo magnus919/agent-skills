@@ -55,6 +55,16 @@ Example: renderer must not access filesystem directly. An import-name grep is a
 cheap screen. An AST dependency rule plus a boundary integration test can observe
 more of the actual property. Do not label grep output proof of process isolation.
 
+## Prevent policy drift at capture
+
+Record observations, one-off requests and proposed rules as such. Do not activate
+a durable rule just because a conversation was summarized or a worker suggested
+it. Give authorized rule changes a current source, owner, scope and review or
+expiry trigger; link a superseded revision to its replacement. Keep historical
+decisions searchable for audit but out of active policy retrieval by default.
+On expiry or supersession, re-evaluate the authoritative baseline, refresh cached
+derivatives, and test authorized and denied cases. Expiry never creates a grant.
+
 ## Maintenance decisions
 
 Duplicate fact → remove duplicate after checking references. Conflicting rule →
