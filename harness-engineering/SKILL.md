@@ -145,6 +145,7 @@ for worked examples and mode-specific exit artifacts.
 | Trace, conversation or review suggests a lasting lesson | [Lesson-to-PR](references/lesson-to-pr.md) | [Lesson candidate](templates/lesson-candidate.md) |
 | Failures or uncertain audit findings | [Diagnosis](references/diagnosis.md) | [Harness contract](templates/harness-contract.md) |
 | Startup/worker split and fresh-session discovery | [Session lifecycle](references/initialization-and-session-lifecycle.md) | [Session protocol](templates/session-protocol.md) |
+| A workaround keeps appearing in new changes | [Recurring pattern cleanup](references/recurring-pattern-cleanup.md) | Prevent new copies and replace examples agents imitate |
 | Invisible knowledge, stale/contradictory rules | [Knowledge and invariants](references/instructions-and-knowledge.md) | [Guardrail promotion](templates/guardrail-promotion.md) |
 | Context retrieval, compression/reset, budgets | [Context design](references/context-design.md) | [Context budget](templates/context-budget.md) |
 | Persistence, state transitions, partial effects | [State and recovery](references/context-and-state.md) | [State](templates/state.json), [recovery drill](templates/recovery-drill.md) |
