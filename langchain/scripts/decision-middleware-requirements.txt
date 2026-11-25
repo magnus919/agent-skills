@@ -1,0 +1,4 @@
+langchain==1.5.2
+langchain-core==1.8.4
+langgraph==1.2.24
+pytest>=8,<10

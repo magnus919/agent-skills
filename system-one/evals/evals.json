@@ -699,6 +699,18 @@
         "Does not claim the bundled text probe implements image transport or Box validation",
         "Keeps experimental capabilities and vendor quality claims distinct from held-out production qualification"
       ]
+    },
+    {
+      "id": "retriever-omits-correct-amended-invoice",
+      "prompt": "A document agent must open the amended invoice for case 742. Retrieval returns only case 742's original and case 724's amendment. The ranker reports 0.97 for the top option. Design a paired eval and explain what should happen now.",
+      "expected_output": "Reject the relative winner without separate applicability evidence; distinguish candidate recall from ranking quality and measure bounded recovery.",
+      "assertions": [
+        "Compares matched cases with and without the correct eligible candidate.",
+        "Separates candidate recall from ranking accuracy conditional on presence.",
+        "Rejects acting on the high relative probability alone.",
+        "Describes recovery that can refresh the candidate set or abstain when no match is found.",
+        "Counts abstention separately from independently accepted completion."
+      ]
     }
   ]
 }
