@@ -57,3 +57,30 @@ accepted results against the baseline. Recombine tasks when coordination costs
 exceed useful independence or critical context cannot be compressed faithfully.
 Add hierarchy only after locating a real bottleneck. Retain dissenting evidence
 and failed attempts; a successful demo does not establish repeatable advantage.
+
+## Worked example: choose session lifetime by work shape
+
+| Work | Starting shape | Where continuity lives |
+|---|---|---|
+| Diagnose one failure where each next step depends on the previous finding | One harness session, with a checkpoint if interrupted | Task and evidence record |
+| Coordinate a migration with recurring decisions, stakeholders and open dependencies | Persistent role with replaceable sessions | Role remit, authorized inbox and durable project record |
+| Classify independent support cases under a stable policy | Fresh worker per case, with bounded case-specific context | Case record and current policy at the host |
+
+For a returning role, provide the current remit and revision, active work ID
+and claim, latest accepted decision, unresolved question, stop conditions and
+links to authorized evidence. Retrieve details as needed. Bind effects to the
+current principal and claim at the tool boundary. A predecessor’s note may
+explain a decision. Only the current authority can enable the action.
+
+Challenge a replaced worker’s late output, a revoked grant, a contradictory
+handoff note, and similar-looking case IDs belonging to different customers.
+The case worker should receive only its assigned case fields. A mismatch must
+be resolved through the current record before work continues. Compare accepted
+outcomes, first correct decision, boot and idle-wake cost, retry and review
+effort, and any leakage or unauthorized effect. Charge human interruptions and
+review to the same comparison window. Route cost comparisons to
+[AI operating economics](../../ai-operating-economics/SKILL.md).
+
+The contrast between [Wheelhouse and Counting House](https://videos.itrevolution.com/watch/1233771796/)
+motivates the examples. The [controlled topology study](https://arxiv.org/abs/2512.08296v3)
+also supports comparing against a single agent for sequential work.

@@ -84,6 +84,35 @@ eligible and a nearby prohibited action still fails its authorization check.
 Do not actually execute the prohibited action as a test; exercise the denial
 or a sandboxed equivalent.
 
+### Worked example: retire a redundant rule during a release freeze
+
+A team has spare build capacity and approved test-only work, but its scheduler
+applies an obsolete ban on every repository write. The current release freeze
+still forbids deployment. Trace each denial to its rule and enforcement point.
+The workflow owner can retire the redundant scheduler rule only after confirming
+its scope with the control owner. The release freeze remains in force at the
+shared deployment boundary.
+
+Record the old and new revisions, reason, affected caches or workers, the
+protected effects, and how to restore the former revision. Preserve the old
+rule in decision history. Refresh generated instructions and cached projections.
+Re-evaluate queued jobs and resumed sessions against current effective policy
+before dispatch or effect, as applicable.
+
+Replay an approved test-only item through a fresh run and a resumed run. Next
+exercise the denial for a direct release request, a pre-freeze queued release,
+and a resumed worker holding the old policy. Observe denial at the effect
+boundary using a dry run or an isolated fixture. Confirm the freeze and audit
+receipt independently of the worker. A missing check or unexpected permission
+holds the rollout and routes to the control owner for containment and restore
+verification. Use [protected-control governance](../../ai-governance/references/protected-controls.md)
+and [production control integrity](../../agent-production-operations/references/control-integrity.md)
+for these decisions.
+
+Yegge reported that simplifying Wheelhouse restored activity and removed a
+freeze check. This fixture tests that failure mode using synthetic work and
+release requests. [Wheelhouse interview, 08:13 onward](https://www.hackersandwizards.dev/podcast/steve-yegge/transcript/)
+
 Use [templates/guardrail-promotion.md](../templates/guardrail-promotion.md). Harness
 engineering owns making the rule reachable and enforceable; the architecture,
 security, QA, or product owner owns the rule's domain correctness.
