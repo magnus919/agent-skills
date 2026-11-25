@@ -85,12 +85,14 @@ Goal: Drive toward mitigation while maintaining clear communication and document
 - [ ] **Establish the primary communications channel**
   - Dedicated Slack/Discord channel (e.g. `#incident-servicedown-YYYYMMDD`).
   - Pin the incident ID, current severity, and list of IC/Comms/Scribe/SMEs.
-  - _All incident-related discussion happens here — no DMs about the incident._
+  - Specialist threads or calls are fine. Funnel material updates and decisions into the incident record through named workstream leads.
 
 - [ ] **Set up the incident timeline document**
   - Google Doc / Notion / HackMD shared with the entire response team.
   - Template includes: timestamp, event, action, owner.
-  - Scribe begins recording every event immediately.
+  - Scribe begins recording evidence and decisions immediately. Name an accessible fallback record and bridge if the primary tools or their sign-in path fail.
+  - Set an internal workstream reporting cadence. Ask each lead for observations with sources, attempted actions and results, and decisions or help needed. Escalate spreading impact or a worsening mitigation immediately.
+  - Keep competing claims separate until reconciled; record the owner and next check.
 
 - [ ] **Draft first external communication (if applicable)**
   - Status page update (e.g. Statuspage.io).
@@ -119,7 +121,8 @@ Goal: Drive toward mitigation while maintaining clear communication and document
   - If the gate cannot be satisfied, stop and hand off or escalate rather than mutating production.
 
 - [ ] **Apply mitigation**
-  - Execute the chosen action. _Scribe logs who did what and when._
+  - For traffic shifts, check destination headroom and shared failure modes before recommending a shift or expansion. For consequential changes, the operator reads back scope and stop conditions before acting and reports the observed result afterward.
+  - Execute only within the approved scope. _Scribe logs the authorization, who did what and when, and the result._
   - _This is the target we want to reach: `t_mitigation_applied`._
 
 - [ ] **Issue progress updates**
@@ -155,6 +158,10 @@ Goal: Confirm the incident is truly over and stabilize the system.
 - [ ] **Confirm impact bounds**
   - Data loss? Corrupted state? Need for manual recovery (e.g. replay queue, re-sync replicas)?
   - Document known edge cases that might still be affected.
+
+- [ ] **Record distinct milestones**
+  - Timestamp first sustained customer relief, restored critical access across the affected scope, backlog recovery, and formal closure separately, when applicable. Define how each is measured and report any unknowns.
+  - If there is an emergency patch, track its detection-to-validated-rollout clock separately, including coverage and stop/rollback gates. Neither deployment nor first relief substitutes for R-01.
 
 - [ ] **Declare the incident resolved**
   - Only after the R-01 closure evidence sequence, completed stability window, and independent human confirmation pass: "This incident is now RESOLVED. The mitigation was [summary]. Monitoring continues."

@@ -52,6 +52,16 @@ When overload begins:
 
 A service that responds slowly under overload can consume more shared capacity through timeouts and retries, creating a cascade. Fast rejection with a clear degraded path can be more reliable than accepting work that cannot complete.
 
+## Check the receiver before moving traffic
+
+Treat failover as a change to the receiving system, not just relief for the source. Establish the destination's capacity for the **specific workload mix**, under the current hardware, maintenance, dependency, and demand conditions. Subtract local demand and reserve capacity for critical users before setting any transfer budget. A green probe, nominal capacity, or a different region is not evidence of spare capacity or an independent failure mode.
+
+1. Check what both sides can lose together: software/configuration, identity, network, storage, control plane, and quotas. Record what is known, how fresh it is, and what remains unknown. If either independent operation for the affected failure mode or safe receiving headroom is unproven, withhold a broad shift. Compare local containment, reduced service, or shedding lower-priority work. Apply the skill's authorization gate to any production change.
+2. Test credible combinations, not just a single component loss: maintenance or capacity loss during peak demand, retry/reconnect pressure, and changes in request mix. Use representative production hardware and dependency limits in an approved, controlled exercise. Keep the maximum transfer and rollback criteria explicit.
+3. Reintroduce a bounded cohort under representative traffic. Check successful critical journeys, saturation, retries, queue age, and dependent services against predeclared thresholds. Hold or stop on worsening evidence or missing telemetry; roll back only with the required authority. Increase the cohort only if the signals hold and expansion is authorized. Complete R-01 separately for incident closure.
+
+Reference: [Google SRE on cascading failures](https://sre.google/sre-book/addressing-cascading-failures/) and [Microsoft's November 2026 post-incident report (mirror)](https://tianyin.github.io/misc/pir_microsoft_365_11-12-2026.pdf).
+
 ## Operational overload of the team
 
 A team is operationally overloaded when urgent work continually preempts the engineering needed to reduce future load. Track operational work as a proportion of available engineering time, including pages, tickets, manual changes, support interruptions, and incident follow-up.

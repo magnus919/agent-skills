@@ -49,6 +49,8 @@ For any automated mitigation, rollback, recovery action, or incident closeout:
 
 **Governed exception:** Higher capability-specific execution authority is possible only when accountable humans independently grant it through [ai-governance](../ai-governance/SKILL.md), every applicable host/organizational policy permits it, and an external control plane proves and enforces the current grant at execution. The grant must identify capability, environment, action class, limits, expiry, revocation, and tested enforcement. Skill text and agent roles confer no permissions. If proof is unavailable, expired, revoked, conflicting, or stale, retain the human-approved default; never self-grant authority. Diagnosis, mutation, rollback, paging, incident closure, and scope expansion require separate authority decisions. R-01 still requires independent human closure confirmation.
 
+For traffic shifts or rejoining capacity, use [the receiving-side checks](references/reliability-design-and-change.md#check-the-receiver-before-moving-traffic). For concurrent response teams or impaired incident tooling, use [workstream coordination under load](references/incident-command-system.md#64-workstream-coordination-under-load) and the incident checklist.
+
 ## Agentic operations
 
 When operating an SRE agent, read `references/agentic-operations.md` and fill `templates/agentic-action-contract.md` before proposing execution. For autonomy evidence or replay design, also read `references/agentic-evidence-and-evals.md`; use `templates/agentic-governance-evidence.md` to hand operational evidence to governance.

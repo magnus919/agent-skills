@@ -12,6 +12,8 @@ Agentic operations now include scoped action contracts, independent recovery evi
 
 For incident reviews, it can build a timeline from evidence, identify where human interviews are needed, and turn those conversations into lessons the team can verify.
 
+For a major outage, the skill helps check whether a backup can carry the work and gives responders a practical way to keep decisions and evidence in one place.
+
 ## What You Get
 
 | Path | What it provides |
