@@ -1,0 +1,419 @@
+{
+  "scope": "Digests bind capture bytes observed during research. Publisher sources remain at their URLs.",
+  "captures": [
+    {
+      "id": "bibliography",
+      "url": "https://www.yegge.ai/bibliography",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 39770,
+      "sha256": "71a3d1a7b91bfbf5a9f9764042086efeb09a2a292601e2616cc7085fd84021d4",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S01",
+      "url": "https://yegge.ai/essays/introducing-beads-a-coding-agent-memory-system/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 30241,
+      "sha256": "3400876178424042fc2406a4fbf7f99cee5b359b4619300c1834698e7b07614c",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S02",
+      "url": "https://yegge.ai/essays/beads-best-practices/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 12333,
+      "sha256": "38ad4a9d990d8dfa9043dfc3e4cf66f6dc2c9d61d10a619c8db8044455015728",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S03",
+      "url": "https://yegge.ai/essays/six-new-tips-for-better-coding-with-agents/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 32621,
+      "sha256": "ebe831e6d7f49ca2c0ee7674cbbf49e4a237beb17cad27324ed41e81c19cb5b6",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S04",
+      "url": "https://yegge.ai/essays/welcome-to-gas-town/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 50311,
+      "sha256": "72c251198d9ae1228b720e9aef9e971a217bad39495df24f675282b030e60b87",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S05",
+      "url": "https://yegge.ai/essays/the-future-of-coding-agents/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 24062,
+      "sha256": "c0446d57a68187dc0a1f43963ea2a7254a9df2dddc989ec624bdee950624a5ce",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S06",
+      "url": "https://yegge.ai/essays/welcome-to-the-wasteland-a-thousand-gas-towns/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 20130,
+      "sha256": "0797db52a70994065942a602ad4497d60e4fceaf2b7c1978864c2372dc889582",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S07",
+      "url": "https://yegge.ai/essays/gas-town-from-clown-show-to-v10/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 19160,
+      "sha256": "3240314eb6f5b8a1f79ec4e872fe351d32d4ad2f411e88e573d3653dda592c6c",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S08",
+      "url": "https://yegge.ai/essays/welcome-to-gas-city/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 27091,
+      "sha256": "95b0ee3e90fdfe88f23c5f4404a359af8ea74d98cd05a59e3ead0cb58f1e64d8",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S09",
+      "url": "https://yegge.ai/essays/the-shape-of-things-to-come/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 39792,
+      "sha256": "b119ded1e8325ebd9bbbe42ce0bdf9448200f9451f74deaba0b2f54cb47ec1de",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S10",
+      "url": "https://yegge.ai/essays/model-welfare/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 17215,
+      "sha256": "b66e8c29beeb5655158672f539a15f143d3ef5d2f4dda2f10f83613c7a29ccd6",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S11",
+      "url": "https://yegge.ai/essays/fences-not-sandboxes/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 20199,
+      "sha256": "75dcf982b7f8c3400f99e6ba67b3ad8fd076233c84d532f48e7434faffeda824",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S12",
+      "url": "https://yegge.ai/essays/seats-and-sunsets/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 24581,
+      "sha256": "32ebb5d23eadf29891c53c3f6513505f305ca6d81ecd41cca9e6c793c39cdb05",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S13",
+      "url": "https://www.hackersandwizards.dev/podcast/steve-yegge/transcript/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 73351,
+      "sha256": "a0fd988695acafc8bc6237eba2edba13b507f2a3a42918e94f21776ec922fb93",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S14",
+      "url": "https://www.yegge.ai/essays/the-counting-house/",
+      "accessed": "2026-11-25",
+      "capture_method": "direct publisher HTTPS, raw HTML",
+      "bytes": 68386,
+      "sha256": "6f634639fbd4645dbecb60654c094296873fa0a762329a20515a41b8e63da6ea",
+      "capture_check": "publisher title, date and body verified after GroktoCrawl barrier"
+    },
+    {
+      "id": "S15",
+      "url": "https://tessl.io/registry/ainativedev/aidevcon-2026-nyc/0.3.1/files/skills/talk-yegge-ai-powered-factories/references/transcript.md",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 68447,
+      "sha256": "ce8e73d31a812b61a99641f369bbf29bc3fc899e954b7126617aeb7afa99f1d9",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S16",
+      "url": "https://ai.engineer/code/2026/talks/steve-yegge",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 60242,
+      "sha256": "9e47dd8c86e92dda4b8e5254292b6604a6139200a7ace60e2c7db04c92fbb5e5",
+      "capture_check": "boilerplate:fail; timestamped source transcript inspected"
+    },
+    {
+      "id": "S17",
+      "url": "https://softwareengineeringdaily.com/wp-content/uploads/2026/11/SED1980-Steve-Yegge-2026.txt",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 64086,
+      "sha256": "8dd3a747577e3ffbf275a2c8cf49713d09edf4147f84b91eaea8ceb883661cfb",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S18",
+      "url": "https://blog.codacy.com/ai-giants-recap-people-are-sleeping-on-swarms-steve-yegge",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 6247,
+      "sha256": "73f7037d4550d3e0f2c01e98bb9316d784422f033f61beb6da7b57d028bc642c",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S19",
+      "url": "https://github.com/gastownhall/gascity",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 14906,
+      "sha256": "34cc5df8bc6ffc6cbe76d9836c6d8ad55e8860a3804067c71ac21c103088c5ba",
+      "capture_check": "adapter result inspected, tool supplied no quality field"
+    },
+    {
+      "id": "S20",
+      "url": "https://www.yegge.ai/gastown",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 8874,
+      "sha256": "66f8e41b147ce0c26fad615ba7e9b4a6c7a917ea9ed7763ddbff392293b0e699",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S21",
+      "url": "https://www.latent.space/p/steve-yegges-vibe-coding-manifesto",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 6640,
+      "sha256": "5f621aa63837f3d8561e064e74660cdf15ad22d653a5e1782f43c1d2ac5e7c67",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S22",
+      "url": "https://www.yegge.ai/talks",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 2927,
+      "sha256": "818aebc0aaf89ba72afa7ee1ec77cf78329562c1bb6c8e50cb346cb7de4dd1ef",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S23",
+      "url": "https://github.com/gastownhall/beads",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 26160,
+      "sha256": "fbe0c52521c37f191b8adfb80653473d4c9b5204abbcbf3ac17d65ee6c74272e",
+      "capture_check": "adapter result inspected, tool supplied no quality field"
+    },
+    {
+      "id": "S24",
+      "url": "https://videos.itrevolution.com/watch/1184927954",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 21989,
+      "sha256": "ce8410cdeb1d778758e144ab812db0a6e236681a661f95f84c102565b97ef0ef",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S25",
+      "url": "https://yegge.ai/essays/the-ai-vampire/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 18662,
+      "sha256": "7d1ac2cd027d04620b2af5ffce34e5f386ca003bf1b9826c00fd690d5882b805",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S26",
+      "url": "https://yegge.ai/essays/vibe-maintainer/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 25830,
+      "sha256": "5e8e994b5c0fa02df2e772893cd5a6b9d070cc1bf0dcfcea76a02c7a311323ec",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S27",
+      "url": "https://yegge.ai/essays/the-flat-curve-society/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 26833,
+      "sha256": "4fc725db1a3766a09f99018ca804f2225612529721cdbb7dde37fa04534c82f0",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S28",
+      "url": "https://yegge.ai/essays/zero-framework-cognition-a-way-to-build-resilient-ai-applications/",
+      "accessed": "2026-11-25",
+      "capture_method": "direct publisher HTTPS, raw HTML",
+      "bytes": 28995,
+      "sha256": "1dfe34a5bb860dbec45c1df6b5b49ae1505d97dc36db48f829ba35201bce91a1",
+      "capture_check": "publisher title, date and body verified after GroktoCrawl barrier"
+    },
+    {
+      "id": "S29",
+      "url": "https://yegge.ai/essays/the-brute-squad/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 27948,
+      "sha256": "4409616c7fc9d42986ef4c039a26a7d84dc66f060e881ecb097cfb72a9b8103b",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S30",
+      "url": "https://itrevolution.com/product/vibe-coding-book/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 17445,
+      "sha256": "0fd2a544c9589cdd96cb12a3c26943ebf9b3a83c032249f0663a254a196fadea",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S31",
+      "url": "https://yegge.ai/essays/self-driving-ide-is-coming/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 29285,
+      "sha256": "08a3d5e60c1e9a8c905a8a47bdc74c8b84ad97e802b85445433a1046c66e0995",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S32",
+      "url": "https://yegge.ai/essays/gas-town-emergency-user-manual/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 17466,
+      "sha256": "7e67dcdc27b8eaf8bae1a5cf9aeee08780be4c3631f5838eae46507ba61425f4",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S33",
+      "url": "https://github.com/gastownhall/gastown",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 30844,
+      "sha256": "ca039ef47e37b166b44c45a3bb8f13ff1feb892fa40ee91585762b39f17d1eff",
+      "capture_check": "adapter result inspected, tool supplied no quality field"
+    },
+    {
+      "id": "S34",
+      "url": "https://yegge.ai/essays/the-anthropic-hive-mind/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 22601,
+      "sha256": "dc7a542002cd66295a4ea6ad9203bfa986378358593e3765c078703a301d9e97",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S35",
+      "url": "https://yegge.ai/essays/software-survival-30/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 29791,
+      "sha256": "4bcb39f935e301cdfbb9aeaaaf1849ac55f8ae2f65af6d758b894b5068c5ae24",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S36",
+      "url": "https://yegge.ai/essays/beads-blows-up/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 21877,
+      "sha256": "8153ea4f8633890b53d57841e3ee9f1f18a40a87b0c37d3063d516f10c8ecf07",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S37",
+      "url": "https://yegge.ai/essays/the-beads-revolution-how-i-built-the-todo-system-that-ai-agents-actually-want-to/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 11402,
+      "sha256": "5341cc687a9760fc52a6c201b788e81a32c57f5830f9489159eae2912e4ae77d",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S38",
+      "url": "https://ai.engineer/talks/yWS0udrIOc8-agentic-security-permissions-provenance-agent",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 51759,
+      "sha256": "89db3f48afe4530c2016b049044a0051a0ab67d0be7a95681c125730c33fe443",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S39",
+      "url": "https://videos.itrevolution.com/watch/1122003035",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 21970,
+      "sha256": "b22d8929d50ec766b74e8892c9a2d5c891459422bc6c3178c11f6e2e4f537826",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "S40",
+      "url": "https://videos.itrevolution.com/watch/1233771796/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 18641,
+      "sha256": "d070a414e67ba6d89dde52a5cfa725039fc2e63b8d3b2c77783690b73f977e91",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "X01",
+      "url": "https://research.google/blog/towards-a-science-of-scaling-agent-systems-when-and-why-agent-systems-work/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 7896,
+      "sha256": "73e324677521a7b24cf26b0a0da466e76aeff7c419bacb08ed019d2a058df4cc",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "X02",
+      "url": "https://www.anthropic.com/research/multi-agent-research-system",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 24073,
+      "sha256": "a6f1c83943d03e09c1d3e76c2a9c670936c264fb1ed707908f82ec3d793794cb",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "X03",
+      "url": "https://www.anthropic.com/research/managed-agents",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 13218,
+      "sha256": "495661633a5c4ad929d7bcfe6c9741659129be7b6fd68fb9f47f90cee7f1e14e",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "X04",
+      "url": "https://proceedings.nips.cc/paper_files/paper/2025/hash/b1041e52d3be19f0a9bc491657488e4a-Abstract-Datasets_and_Benchmarks_Track.html",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 2277,
+      "sha256": "c0912fbe29b7295bc491620e3a1eff1f05a304812f9c85603c745e3fa21fd1c1",
+      "capture_check": "all checks passed"
+    },
+    {
+      "id": "X05",
+      "url": "https://dora.dev/research/2025/dora-report/",
+      "accessed": "2026-11-25",
+      "capture_method": "GroktoCrawl scrape, decoded markdown field encoded as UTF-8",
+      "bytes": 4393,
+      "sha256": "5c0665c3997008df299655d836a869a870e89d619dcecc7156103d6bb96bb536",
+      "capture_check": "all checks passed"
+    }
+  ]
+}

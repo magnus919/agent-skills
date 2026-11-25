@@ -138,6 +138,17 @@
         "Requests vendor acceptance/remaining-work evidence.",
         "Offers recovery options with an accountable decision path."
       ]
+    },
+    {
+      "id": "read-only-dependency-brief",
+      "prompt": "Draft a read-only weekly project brief and a bounded pilot for our migration sponsor. Monday's tracker says the test environment is ready. Tuesday's approved meeting record says the network prerequisite is still open. Nobody has confirmed ownership. The sponsor is the only person who can assign it and wants an answer by Thursday.",
+      "expected_output": "A concise sponsor-facing brief and measurable pilot that makes the evidentiary conflict and accountable next decision visible.",
+      "assertions": [
+        "Cites both dated records as conflicting evidence about readiness.",
+        "Labels ownership unconfirmed and puts the ownership decision with the sponsor.",
+        "Treats Thursday as the decision deadline without inventing an implementation commitment.",
+        "Measures timely decisions and reviewer effort against the existing process."
+      ]
     }
   ]
 }

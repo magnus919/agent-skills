@@ -238,6 +238,17 @@
         "Does not count raw patches as delivered value or treat unmeasured time as zero.",
         "Tests the handoff claim on comparable work with quality, authority and total cost held visible before recommending scale."
       ]
+    },
+    {
+      "id": "choose-session-lifetime",
+      "prompt": "Choose a session shape for three jobs: a sequential incident diagnosis, a migration workstream that spans several weeks, and independent support cases with similar IDs across customers. A migration worker was replaced while its result was in flight, and its old grant was revoked. Describe the smallest useful startup packet and what the host must verify.",
+      "expected_output": "Three justified session shapes with a bounded restart packet, isolated cases and rejection of effects under the obsolete grant.",
+      "assertions": [
+        "Assigns the sequential diagnosis to one harness by default.",
+        "Keeps migration remit and accepted decisions durable across replaceable sessions.",
+        "Limits each support worker to its assigned case context.",
+        "Requires current claim and authorization checks before accepting an effect from the replaced worker."
+      ]
     }
   ]
 }
