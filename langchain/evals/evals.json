@@ -62,6 +62,18 @@
         "Does not treat middleware execution or typed output shape as authorization or correctness evidence",
         "Separates framework wiring, System One calibration, and harness workflow evidence and labels unexecuted code as a sketch"
       ]
+    },
+    {
+      "id": "sticky-route-separate-tool-gate",
+      "prompt": "Each follow-up in our LangChain draft agent reruns a costly router. We want to keep its tier through a normal thread, let an explicitly new task choose again, and never let an unavailable draft-risk checker fall through to the write handler. Show the hooks, state, and an offline integration test.",
+      "expected_output": "Checkpointed tier selection and independently enforced pre-tool checks, with observable routing and tool-effect tests.",
+      "assertions": [
+        "Explains why a per-invocation before-agent hook needs checkpointed thread state to avoid reclassifying normal follow-ups.",
+        "Uses a model-call middleware hook to apply the selected tier.",
+        "Keeps an unavailable risk check from invoking the affected tool handler.",
+        "Tests normal thread reuse and explicit reclassification on a new thread.",
+        "Tests the actual tool effect independently of the final chat message."
+      ]
     }
   ]
 }

@@ -102,3 +102,26 @@ TypeSafe's [value extraction cookbook](https://docs.typesafe.ai/cookbooks/pre_pa
 [composite scoring pattern](https://docs.typesafe.ai/patterns/composite-scoring.md)
 are useful starting points. Follow the live documentation index and verify
 current provider semantics before relying on version-specific behavior.
+
+## Test when retrieval leaves out the right answer
+
+Replay a task with the correct eligible candidate present, then remove only
+that candidate. For example, ask a document agent to open the amended invoice.
+The degraded shortlist includes the original invoice and a similar amendment
+for another invoice. Relative choice must still return a winner; an independent
+applicability answer should say none or unknown. Code must not execute when
+applicability is unestablished. An authorized refresh or expanded retrieval
+may restore the missing candidate; a stronger reasoner seeing the same
+incomplete shortlist does not restore it. Revalidate before execution.
+
+Measure eligible-candidate recall before ranking, false applicability when
+the candidate was absent, misranking when it was present, abstention, fallback
+and independently accepted task outcomes. Include confidently wrong
+applicability judgments in calibration. Keep the same task, authority and
+acceptance check across the pair, and report correct abstention separately
+from completed work.
+
+[Browserbase's Stagehand example](https://www.browserbase.com/blog/what-is-jev)
+shows separate best-choice and any-match judgments before an LLM fallback.
+Its reported early latency measurement is for the single Stagehand act
+operation, not a general browser-workflow result. Calibrate locally.

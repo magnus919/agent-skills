@@ -44,6 +44,26 @@ An unattended goal must have a no-progress bound and a total budget, even if
 individual commands have timeouts. Infinite autoresearch-style loops are not a
 safe default for a user task.
 
+### Check progress without putting a judge on every step
+
+Use cheap observed signals first: a milestone verified, a dependency still
+pending within its expected window, or the same failure recurring without
+a state change. Trigger a bounded semantic check at a milestone or a repeated
+failure, with an independent time/no-progress limit for when no events arrive.
+Ask whether the latest attempts advanced a specific goal. Supply the goal,
+recent attempts, observed effects and unresolved blockers with time bounds;
+the last message alone cannot distinguish slow progress from a busy loop.
+Record the decision, evidence, next owner and acknowledgement deadline. A
+monitor can request triage or hand work to an authorized owner. It does not
+verify completion, widen permissions, or restart a mutation of unknown effect.
+
+Keep mandated pre-tool authorization and checks on the required path. Budget
+their delay separately from inference. If a semantic check times out, reduce
+capability or hold the affected action for review; never skip a mandatory
+check to meet latency. Compare a healthy long-running task with repeated
+activity but no verified progress, and record false alerts and delay to triage.
+[Source: Runkle on runtime guardrails and progress checks](https://www.youtube.com/watch?v=qquIt--ANqI&t=391s).
+
 ## Parent-to-child authority and shared budgets
 
 For each delegation, bind the child to the parent task, current grant, expiry,
