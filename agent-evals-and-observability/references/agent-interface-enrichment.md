@@ -20,6 +20,29 @@ Challenge artifact flows with missing or expired references, wrong identity or t
 
 Interpret quality, reliability, safety, context use, latency, and total cost as separate dimensions. Context savings do not establish task improvement; task success does not excuse authorization failure. A vendor's reported benchmark is motivation for a local hypothesis, not evidence for this system. Synthetic design responses, static fixtures, adapter mocks, and prose-only claims can test a contract but cannot establish production uplift. Treat unresolved evidence as inconclusive and state what live integration or user evidence is still needed.
 
+## Isolate routing overhead
+
+Run matched cases with the fixed approved model, a router using a generative
+model, and a router using a bounded decision model. Keep the routes, task
+mix, tools, acceptance criteria and hard controls fixed. Stratify by task
+difficulty and cold/warm cache; include a route that needs a second attempt,
+a legitimate task change and a router outage. Balance run order or use
+isolated caches; do not let one treatment warm another.
+
+Record timestamps for queue entry/start, classifier service, context rebuild,
+downstream inference/tools, fallback and independent acceptance. Attribute
+wall time to the critical path rather than summing overlapping spans. Report
+p50/p95 to usable result with timeouts and failures accounted for, acceptance
+per eligible task, and cost per accepted result. A cheap model can win at its
+own call and lose once the router, lost cache or second attempt is counted.
+Do not call a faster median an improvement if acceptance or a hard control
+regresses.
+
+Example diagnosis: median downstream work drops from 8s to 6s, but a 3s
+serial routing hop makes the uncomplicated case 9s instead of 8s. That is
+a synthetic trace, not an estimate for the whole cohort; verify with paired
+observed tasks. See [LangChain's first-party routing write-up](https://www.langchain.com/blog/how-to-build-a-model-router-in-the-harness).
+
 ## Suggested case families
 
 Build paired cases that include:

@@ -31,7 +31,7 @@ The core question is not “Did the model make people faster?” It is: “What 
 |---|---|---|
 | Idea or proposed AI workflow | Steps 1–2 | `templates/ai-initiative-evidence-record.md` |
 | Existing pilot or outcome data | Steps 3–7 | `references/evidence-method.md` plus the evidence record |
-| Compare model routing or decide how often work should run | Steps 3–5 | [Worked task economics example](references/task-economics-example.md) plus the evidence record |
+| Compare model routing or decide how often work should run | Steps 3–5 | [Worked task economics example](references/task-economics-example.md) plus the evidence record; for a low-cost fast path, see [routing break-even](references/routing-break-even.md) |
 | Request for broader population or side-effect authority | Steps 7–8; load `references/evidence-method.md` section 7a for the governance packet | Governance evidence packet plus the evidence record |
 | Executive, portfolio, launch, or lifecycle review | Steps 8–9 | `templates/ai-economics-review.md`; route launch/runtime details onward |
 | Standalone financial, statistical, telemetry, runtime, or governance implementation task | When Not to Use | Named adjacent specialist skill |

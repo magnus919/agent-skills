@@ -49,6 +49,28 @@ A valid empty retrieval result is not the same as a transport error or a cancell
 query. Preserve those distinctions in the status handed to the user and in retained
 telemetry. Do not turn unavailable evidence into a negative search conclusion.
 
+## Check that fast safeguards still cover the intended work
+
+Compute the denominator from the versioned policy at action admission:
+attempts that required a particular check, counted once per attempt using
+an attempt ID, whether or not the checker ran. For those attempts, distinguish
+valid check verdict (allow or deny), routed to review, held, execution without
+a required verdict, and missing telemetry. Track verdict coverage separately
+from safe handling; routing to review protects the action but is not a model
+verdict. Reconcile admission records with tool outcomes so a checker outage
+cannot erase its own evidence. Treat unverified coverage as unknown and an
+observed unauthorized execution as a control incident.
+
+Pair the coverage and disposition breakdown with check and task p95, reviewer
+queue age, and accepted outcomes by action class. On a timeout or unavailable
+checker, hold the affected action or route it to the authorized review lane;
+keep separately permitted work available. Validate coverage and safe failure
+before restoring capability. To test, inject an outage and compare with normal
+traffic; a faster dashboard that omits the affected attempts is not a win.
+
+Motivation: [Runkle's account of disabling a slow tool-risk check](https://www.youtube.com/watch?v=qquIt--ANqI&t=391s).
+The coverage metric is a proposed operating control, not a reported result.
+
 ## Bound degradation and recovery
 
 For each important failure, name the detector/window, owner, immediate action,
