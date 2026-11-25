@@ -2,17 +2,22 @@
 
 import pytest
 
-pytest.importorskip("langchain.agents")
+from importlib.util import find_spec
 
-from langchain_core.language_models.fake_chat_models import FakeMessagesListChatModel
-from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
+HAS_LANGCHAIN = find_spec("langchain") is not None and find_spec("langchain.agents") is not None
+pytestmark = pytest.mark.skipif(
+    not HAS_LANGCHAIN, reason="Install decision-middleware-requirements.txt to exercise LangChain"
+)
 
-from decision_middleware import DecisionUnavailable, make_agent
+if HAS_LANGCHAIN:
+    from langchain_core.language_models.fake_chat_models import FakeMessagesListChatModel
+    from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 
+    from decision_middleware import DecisionUnavailable, make_agent
 
-class ToolReadyFake(FakeMessagesListChatModel):
-    def bind_tools(self, tools, **kwargs):
-        return self
+    class ToolReadyFake(FakeMessagesListChatModel):
+        def bind_tools(self, tools, **kwargs):
+            return self
 
 
 def models(responses=None):
