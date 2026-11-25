@@ -47,6 +47,7 @@ Machine learning engineering is the bridge between model research and production
 | `references/specialization-decisions.md` | Choosing rules/classifiers/zero-shot/prompt/SFT/RL, designing fixed-budget comparisons and interpreting verifier or case-study claims |
 | `references/specialization-evidence.md` | Primary-source findings, contradictory results and local validation limits |
 | `references/weight-space-programming.md` | Direct tensor inspection/editing hypotheses, feedback budgets, negative results and artifact validation |
+| `references/gemma-4-fine-tuning.md` | Choosing a Gemma 4 checkpoint, building and checking training batches, adapting dense/MoE or multimodal models, and qualifying exports |
 | `references/fine-tuning.md` | Setting up a LoRA/QLoRA/ full fine-tuning run — data prep, hyperparameters, validation strategy |
 | `references/evaluation.md` | Evaluating a model — benchmark selection, custom eval sets, regression tracking, comparison methodology |
 | `references/evaluation-and-lineage.md` | Metric/configuration decisions, repeated stochastic comparisons, end-to-end lineage, temporal feature parity, drift response, and adaptation/serving tradeoffs |

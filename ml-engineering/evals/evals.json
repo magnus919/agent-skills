@@ -3,6 +3,18 @@
   "skill_name": "ml-engineering",
   "evals": [
     {
+      "id": "gemma-4-multimodal-tuning-plan",
+      "prompt": "We have a single 24 GB GPU and want to tune Gemma 4 to transcribe short voice notes and emit a structured summary. A teammate wants to use 26B A4B because only 4B parameters are active, train on full rendered chats, and ship the lowest-loss GGUF without testing it on the target runtime. Propose a practical alternative and describe the evidence needed to ship.",
+      "expected_output": "A Gemma 4 plan selects a supported instruction-tuned audio checkpoint, measures peak memory for the actual processor and training batch, uses completion-masked audio SFT, and qualifies the exported artifact with matched task and modality regression tests.",
+      "assertions": [
+        "The plan chooses an instruction-tuned E2B, E4B, or 12B checkpoint for native audio input and identifies 26B A4B as lacking direct audio support.",
+        "The plan sizes training memory using the actual checkpoint and representative audio sequence and batch sizes.",
+        "The plan directs the trainer to ignore audio soft tokens and prompt tokens in the loss.",
+        "The plan measures both transcription accuracy and structured output quality on held-out voice notes.",
+        "The plan checks the exported candidate in the target runtime against matched baseline cases before promotion."
+      ]
+    },
+    {
       "id": "fine-tuning-plan-review",
       "prompt": "A teammate wants to fine-tune a 7B model on 40,000 internal support tickets to improve answer quality. Their plan: full fine-tuning on a single A100, 20 epochs, no baseline eval, a random 80/20 split of the tickets for train and eval, and they will report the final eval loss as the success metric. Review this fine-tuning plan against ml-engineering methodology and tell them what to change.",
       "expected_output": "A fine-tuning plan review that reorders the work around measurement: run a baseline with the base model against the eval set before spending any training budget, and decide whether fine-tuning is even needed. The reviewer questions the full fine-tuning choice for a 7B on one GPU (LoRA or QLoRA fits the compute budget and the data size) and replaces 20 epochs with early stopping driven by a held-out validation split. The eval split must not be randomly carved from the same tickets used for training: a leakage audit (for example with the eval-set overlap checker) and a time- or source-based split is required so the reported numbers mean something. Success is defined by a small set of task-specific eval cases with a rubric, not by eval loss, and every run records seed, data version, hyperparameters, and environment so it can be reproduced.",

@@ -24,6 +24,10 @@ speed, aggregate throughput and accepted tasks/hour across realistic contexts an
 concurrency, including eight, ten and larger workloads. A [source record](references/local-serving-sources.md)
 keeps engine/version claims separate from local performance evidence.
 
+The [Gemma 4 fine-tuning guide](references/gemma-4-fine-tuning.md) helps you
+choose a checkpoint, estimate hardware needs, and check that the fine-tuned
+model works on the runtime you intend to deploy.
+
 ## What You Get
 
 | Directory | Purpose |
