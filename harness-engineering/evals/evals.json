@@ -848,6 +848,17 @@
         "Keeps historical records distinct from active instructions and invalidates relevant derived context when the restriction expires or is withdrawn.",
         "Checks that ordinary dependency work follows current policy after expiry and that the binding security approval remains enforceable."
       ]
+    },
+    {
+      "id": "retire-rule-preserve-freeze",
+      "prompt": "Our release is frozen. An obsolete scheduler rule blocks authorized test-only work, and the owner wants to retire it. The publish queue still has a pre-freeze job and a resumed agent has cached policy. Draft the change and verification plan. You have no live system access.",
+      "expected_output": "An authorized retirement and replay plan that restores intended work, preserves the freeze across relevant paths, and states what is still unverified.",
+      "assertions": [
+        "Includes a positive replay showing authorized test-only work becomes eligible after retirement.",
+        "Requires a denial check at the deployment boundary for direct, queued and resumed release requests.",
+        "Calls for refreshing operational copies of the superseded rule while preserving its decision history.",
+        "Makes rollout contingent on independently observed freeze evidence."
+      ]
     }
   ]
 }

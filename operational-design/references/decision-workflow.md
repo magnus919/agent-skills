@@ -14,6 +14,34 @@ Use this workflow to choose a process, control, metric, or vendor operating mode
 
 A support process misses its 24-hour SLA. Mapping shows a vendor handoff queue is the constraint. The decision is to add a triage owner and vendor escalation tier for 30 days, not automate first. Success requires 95% first response within 24 hours, fewer than 2% reopens, and zero critical control exceptions; the weekly review either scales the model or reverts it.
 
+## Worked example: qualify a service workflow by intent
+
+A support team wants to automate delivery-status responses. A status request
+can sound like a shipment-loss report, which requires timely human investigation.
+Treat these as separate intents with different handling and consequences. Start
+with shadow runs on approved cases, leaving live handling with the service team.
+
+1. Record the owner, case boundary, human baseline, fallback, and the exact
+   model, instructions, tools and policy under evaluation. Retain a separate
+   human-adjudicated holdout that includes ambiguous and rare consequential cases.
+2. Compare cost, timeliness and errors with the baseline per intent. If aggregate
+   accuracy improves while loss-report recall drops below its agreed floor, route
+   that intent and uncertain cases to staffed review. Evaluate the status intent
+   independently. A judge's agreement can inform evaluation alongside independent
+   labels. Use [evaluation design](../../agent-evals-and-observability/references/evaluation-design.md)
+   and [judge stability](../../agent-evals-and-observability/references/judge-stability.md).
+3. Record each intent's current authority, approved data, actions, owner,
+   monitored error threshold and fallback. Route promotion or demotion to
+   [earned autonomy](../../ai-governance/references/earned-autonomy.md).
+   Keep any later system-of-record write behind a separate executor that
+   revalidates eligibility, applies current authority, reconciles duplicate
+   requests and records the outcome. Shadow success supports an evaluation
+   decision. A write needs its own authorized qualification.
+
+In the example, the loss intent remains on the human route even if the
+routine status intent qualifies for a later tier. Recheck on policy, data or
+model change. [The Counting House](https://yegge.ai/essays/the-counting-house/)
+
 ## Reusable Artifact
 
 ```text

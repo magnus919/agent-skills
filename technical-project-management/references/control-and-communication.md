@@ -54,6 +54,31 @@ options with who benefits, who bears cost, and what becomes impossible. Escalate
 when the relevant decision rights are absent or contested. Do not manufacture
 agreement or silently reassign ownership.
 
+## Worked example: read-only dependency review
+
+A migration sponsor wants earlier warning of slipping dependencies. The project
+tracker says a test environment is ready. An approved meeting record says the
+network prerequisite is still open, and neither source identifies who accepted
+ownership. Give the agent read access to those sources and a weekly draft
+destination visible to the sponsor. Use [the status and decision template](../templates/status-and-decision.md)
+for the draft. Report the status as disputed, cite both dated records, mark the
+owner unconfirmed, and ask the sponsor to decide who can confirm readiness by
+the latest useful date. Escalate time-sensitive decisions using the sponsor's
+existing route. The sponsor decides and authorizes any follow-up.
+
+Compare with the existing review across comparable work windows. Count decisions
+made in time to act, confirmed and missed blockers, reviewer and interruption
+minutes, and cost per accepted brief. A brief counts as accepted when the sponsor
+confirms that it is actionable and its evidence and uncertainty are correct. Stop
+on a material data-access or authority violation, or when the agreed review
+window shows sustained extra burden without decision benefit.
+
+Route cross-project capacity or benefit decisions to
+[technical program management](../../technical-program-management/SKILL.md).
+Route executive attention and briefing to
+[chief of staff methodology](../../chief-of-staff-methodology/SKILL.md).
+[November 24 interview, 29:09 and 43:48 onward](https://softwareengineeringdaily.com/wp-content/uploads/2026/11/SED1980-Steve-Yegge-2026.txt)
+
 ## Edge conditions and exit
 
 A request to "make the report green" does not change evidence. Prepare a truthful
