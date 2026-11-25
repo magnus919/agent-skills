@@ -291,7 +291,7 @@ Role handoffs are a critical failure point in incident management. A poorly perf
 |---|---|
 | 1 | Outgoing IC announces: "I am handing off IC to [NAME]." |
 | 2 | Outgoing IC briefs incoming IC on: current situation, actions taken, decisions made, open tasks, pending escalations, stakeholder status. |
-| 3 | Outgoing IC reviews the timeline log with the incoming IC. |
+| 3 | Review the incident record. Incoming IC reads back impact, attempted and active actions, unresolved conflicts, and the next decision and owner; outgoing IC corrects any mismatch. |
 | 4 | Scribe timestamps: "IC transferred from [OUT] to [IN] at [TIME]." |
 | 5 | Incoming IC announces to the channel/call: "I am now the Incident Commander." |
 | 6 | Outgoing IC remains available for 5 minutes as a resource, then stands down. |
@@ -455,7 +455,19 @@ Examples:
 - [ ] IC reviews the timeline log every 30 minutes for accuracy
 - [ ] Comms posts regular updates to stakeholders
 
-### 6.4 Communication Templates
+### 6.4 Workstream coordination under load
+
+The incident commander sets a reporting cadence and an escalation path. Name one reporting lead per workstream; the same person can cover several small workstreams. Specialist discussions can stay in their own channels. Keep a single authoritative state record with a visible timestamp and working links to supporting evidence.
+
+- **Send changes, not chat transcripts.** Each lead reports: timestamp, affected scope, verified observation and its source, hypothesis if any, action tried and result, and decision or help needed. Report expanding impact, conflicting changes, or an adverse mitigation immediately rather than waiting for the next update.
+- **Preserve disagreements.** Keep conflicting observations side by side with time, region/cohort, and evidence. Assign an owner to reconcile them; do not let a polished summary turn an unresolved hypothesis into a fact. Record unsuccessful actions so another team does not repeat them without new evidence.
+- **Read back material decisions.** The operator confirms the target and scope, success and stop conditions, and authority before action. Report what actually happened afterward. The scribe records the readback and observed outcome separately. A readback confirms understanding, not authorization.
+- **Practice loss of the normal coordination plane.** Preselect a backup bridge, paging path and incident record that can be reached without the same failed identity, network, collaboration, or telemetry dependency as applicable. Exercise access in advance. On cutover, announce which copy is authoritative and reconcile the record on return. Keep credentials and restricted data out of general channels.
+- **Transfer understanding, not just a role.** The incoming commander reads back impact, actions underway or tried, unresolved conflicts, and the next decision and owner. The outgoing commander confirms or corrects that picture before transferring command.
+
+An agent may organize evidence and draft updates. Named humans validate the shared picture, acknowledge direction, and own the handoff. See [Google SRE on managing incidents](https://sre.google/sre-book/managing-incidents/) and [Reuters' reporting on fragmented incident coordination](https://www.investing.com/news/stock-market-news/exclusivemicrosoft-declares-code-red-after-historic-outage-internal-memos-show-5048702).
+
+### 6.5 Communication Templates
 
 **Initial notification (Slack / PagerDuty):**
 ```

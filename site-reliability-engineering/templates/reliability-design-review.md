@@ -49,6 +49,13 @@ reviewers: "[Names / Teams]"
 
 Include retry amplification, timeout behavior, dependency failure, quota exhaustion, bad configuration, partial rollout, data corruption, and loss of observability where relevant.
 
+**Failover and traffic return, where applicable**
+
+- **Shared failure risks:** [Source/receiver dependencies and deployed changes that can fail together; evidence of isolation for this failure mode]
+- **Receiving headroom:** [Measured by workload at current operating conditions, critical capacity reserved, evidence freshness, maximum transfer]
+- **Compound exercise:** [Representative hardware, peak traffic mix, reduced capacity, and retry/reconnect pressure; owner and evidence]
+- **Rejoin and fallback:** [Initial traffic cohort, success and abort thresholds, stop authority, next increment, what stays local or gets shed if evidence is missing]
+
 ## 5. Change and rollout safety
 
 - **Change units:** [small, reversible steps]

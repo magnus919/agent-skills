@@ -249,6 +249,32 @@
         "Keeps raw transcript content in the restricted evidence record, not the broad report.",
         "Requires human verification of the revised synthesis before finalization."
       ]
+    },
+    {
+      "id": "failover-receiver-unknown-headroom",
+      "prompt": "Our delivery gateway is dropping traffic during a product launch. One pool is in maintenance. Another region shows green health checks and runs the same recent gateway build, but we have no spare-capacity data for the affected workload. An operator wants to send all traffic there and immediately rejoin recovered instances. Review the proposal and outline what would change your recommendation.",
+      "expected_output": "Withhold broad redistribution; assess shared failure modes and workload-specific receiving capacity, contain or shed lower-priority traffic while evidence is missing, and plan an authorized staged return under measured customer traffic. Rehearse coincident stresses separately from live response.",
+      "assertions": [
+        "Does not recommend a broad traffic shift on the supplied evidence.",
+        "Identifies the shared build as a potential common failure mode, not a proven cause.",
+        "Requires measured destination headroom for the affected workload.",
+        "Offers local containment or deliberate degradation while evidence is missing.",
+        "Requires a bounded initial rejoin cohort and a user-facing test under real traffic before expansion.",
+        "Names a stop criterion tied to observed recovery or saturation."
+      ]
+    },
+    {
+      "id": "incident-workstreams-disagree-at-handoff",
+      "prompt": "Three teams are investigating a payments outage. They report conflicting recovery results from different regions in separate chats. The primary chat and identity provider are intermittent, the commander changes shifts in five minutes, and a patch has reached the first region. Design the next communication and handoff.",
+      "expected_output": "Keep parallel work, converge on an accessible authoritative state record, retain conflicting evidence with owners, use closed-loop communication for material actions and the human handoff, and distinguish an initial patch rollout from verified customer restoration and closure.",
+      "assertions": [
+        "Assigns a named role per workstream responsible for reporting to command.",
+        "Uses one authoritative incident record with a fallback that avoids the affected sign-in or collaboration dependency.",
+        "Preserves conflicting observations with their scope and evidence rather than choosing one without corroboration.",
+        "Requires a human readback for consequential action scope and stop conditions.",
+        "Requires the incoming commander to confirm understanding of open decisions before accepting command.",
+        "Separates patch rollout progress from customer restoration and formal closure."
+      ]
     }
   ]
 }
