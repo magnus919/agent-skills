@@ -105,6 +105,18 @@
         "The response bases its pilot or adoption recommendation on evidence of incremental decision value and reviewer burden"
       ],
       "case_set": "dev"
+    },
+    {
+      "id": "cheap-path-routing-break-even",
+      "prompt": "A fixed model costs $1 per eligible task attempt. A proposed router adds $0.05 to each attempt. Cheap completions cost $0.30; other tasks cost $1.25 including an initial attempt, a cold-cache re-run and review. What's the minimum cheap completion share for savings, and what would invalidate the recommendation?",
+      "expected_output": "Calculates a break-even of roughly 31.6% under equal acceptance and checks real accepted outcomes and sensitivity.",
+      "assertions": [
+        "Includes the router cost on every eligible attempt.",
+        "Computes approximately 31.6% cheap-path completion as the break-even share.",
+        "Counts repeat work, cold-cache reprocessing and review once in the fallback path.",
+        "Requires actual acceptance and cost per accepted task when outcome rates differ.",
+        "Checks sensitivity to higher fallback rates or cost before recommending rollout."
+      ]
     }
   ]
 }

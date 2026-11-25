@@ -485,6 +485,18 @@
         "The response puts the release on hold while required authorization evidence is unavailable"
       ],
       "case_set": "dev"
+    },
+    {
+      "id": "route-faster-model-slower-task",
+      "prompt": "A fixed-model agent delivers usable results in a median of 8 seconds. Routed downstream work is 6 seconds, but users report a slowdown and some tasks retry on the premium model. Design an experiment and the trace review.",
+      "expected_output": "Compare three matched treatments and attribute differences to measured critical-path stages without dropping failures.",
+      "assertions": [
+        "Includes a fixed-model baseline, a generative router and a bounded decision router on matched tasks.",
+        "Measures router queue and service time separately from downstream work.",
+        "Tracks cache state or rebuilding and fallback as distinct contributors.",
+        "Reports accepted task outcomes and time to usable result rather than only per-call latency.",
+        "Accounts for failures and timeouts in the comparison."
+      ]
     }
   ]
 }
