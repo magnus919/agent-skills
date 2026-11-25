@@ -1,5 +1,7 @@
 # Fine-Tuning
 
+For Gemma 4 checkpoints, use the [Gemma 4 fine-tuning guide](gemma-4-fine-tuning.md) for family-specific model selection, training recipes, and runtime parity checks.
+
 ## Approach Selection
 
 | Approach | When to use | VRAM | Data needed |
