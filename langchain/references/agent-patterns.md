@@ -183,6 +183,10 @@ class DecisionMiddleware(AgentMiddleware):
 For a workflow requiring an explicit graph route, keep the branch in outer orchestration or use LangGraph conditional edges rather than assuming `create_agent`'s generative loop owns the decision policy. The official [middleware guide](https://docs.langchain.com/oss/python/langchain/middleware) documents custom state and hooks, and the current [AgentMiddleware API](https://reference.langchain.com/python/langchain/agents/middleware/types/AgentMiddleware) exposes `abefore_agent` for asynchronous work; see [System One](../../system-one/SKILL.md) for the typed contract and [harness-engineering](../../harness-engineering/SKILL.md) plus its [placement guide](../../harness-engineering/references/system-one-decisions.md) for workflow ownership. The snippet is a design sketch; it has not been SDK-tested.
 
 
+For a runnable example with checkpointed thread routing and a separate
+pre-tool gate, see [Route a thread and guard a tool separately](decision-middleware.md).
+It exercises real middleware hooks with offline fake models.
+
 ### Handoff contract
 
 Application orchestration gives middleware or a pre-agent step authorized, versioned state and the finite set of allowed routes. The injected System One adapter consumes its pinned question/rubric/model revision and returns validated typed answers, model identity, and explicit unknown/error status. Middleware may carry this result in state; deterministic application policy consumes it to choose a route. Return adapter/model failures to System One, while LangChain wiring defects and harness action, recovery, and accepted-task outcomes go to their respective owners.
