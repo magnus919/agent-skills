@@ -22,6 +22,28 @@ source revisions; cross-machine wall clocks alone do not establish causal order.
 [Lamport's event-ordering work](https://www.microsoft.com/en-us/research/publication/time-clocks-ordering-events-distributed-system/)
 provides the foundation; the envelope above is our engineering synthesis.
 
+## Trusted feedback and narrow handoffs
+
+A product-embedded agent may hear directly from users, operators and maintainers.
+Route that feedback as a proposal, not consent to spend, change policy, or ship.
+Define whose requests can enter the ready queue and who can accept road-map,
+spending, integration and user-exposure decisions. Keep this authority model
+separate from the execution machinery (CI, tests, merges and deployment).
+A maintainer can delegate routine intake in scope without granting release rights.
+
+Moving an assignment because its owner is interrupt-driven is not a role change.
+State the transfer reason, task and new owner; state which responsibilities and
+grants remain unchanged. Disambiguate similarly named human and agent roles by
+stable identity and decision scope. Require acknowledgement of the transfer and
+verify the original seat still serves its other work. For replacement or a
+resumed session, supply a compact handoff with current role, policy revision,
+accepted decisions, open work and authoritative links. Inherited history does
+not extend authority.
+
+[Yegge's Wheelhouse case](https://ai.engineer/code/2026/talks/steve-yegge)
+motivates the distinction: a community request, a task transfer, and a role
+replacement are different operations even if all arrive through conversation.
+
 ## Decision placement
 
 Before asking an approver, assemble: proposed action, exact target, current scope,

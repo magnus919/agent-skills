@@ -55,12 +55,34 @@ Example: renderer must not access filesystem directly. An import-name grep is a
 cheap screen. An AST dependency rule plus a boundary integration test can observe
 more of the actual property. Do not label grep output proof of process isolation.
 
+## Prevent policy drift at capture
+
+Record observations, one-off requests and proposed rules as such. Do not activate
+a durable rule just because a conversation was summarized or a worker suggested
+it. Give authorized rule changes a current source, owner, scope and review or
+expiry trigger; link a superseded revision to its replacement. Keep historical
+decisions searchable for audit but out of active policy retrieval by default.
+On expiry or supersession, re-evaluate the authoritative baseline, refresh cached
+derivatives, and test authorized and denied cases. Expiry never creates a grant.
+
 ## Maintenance decisions
 
 Duplicate fact → remove duplicate after checking references. Conflicting rule →
 resolve with owner, do not let the model vote. Stale fact → invalidate and refresh.
 Never-used detail → move to on-demand reference. Recurring runtime mistake →
 consider an executable invariant before adding another paragraph.
+
+If ready work sits idle despite healthy workers and spare budget, distinguish
+lack of capacity from a policy veto. Trace one blocked decision to the exact
+rule, source, revision and scope. Compare against current authority and trace
+derived copies in scheduler caches, generated instructions and session
+summaries. If ownership or precedence remains ambiguous, escalate rather than
+overriding the rule. Once the authorized owner confirms the disposition, keep
+superseded guidance for audit but invalidate its operational copies. Verify
+both sides in fresh and resumed executions: the authorized item becomes
+eligible and a nearby prohibited action still fails its authorization check.
+Do not actually execute the prohibited action as a test; exercise the denial
+or a sandboxed equivalent.
 
 Use [templates/guardrail-promotion.md](../templates/guardrail-promotion.md). Harness
 engineering owns making the rule reachable and enforceable; the architecture,

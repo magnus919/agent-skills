@@ -54,6 +54,26 @@ handling under accepted policy. Record denied/canceled/timed-out attempts in
 outcome denominators. A heartbeat proves liveness at most; blocked and idle
 statuses need source/time and corroboration.
 
+### Worked example: available budget, no downstream capacity
+
+A factory has idle builders and money left, but the required review queue is
+full and support cannot absorb another rollout. Stop admitting new feature
+work into implementation. Find the oldest eligible review or the dependency
+blocking it; route the work to an authorized owner without weakening review
+independence. Continue operating capacity checks even if every PR is green.
+
+Reassess the two constraints separately. If reviewers can take more work and
+there is room to stage the result safely, resume bounded implementation. Keep
+user exposure on hold until the release owner confirms that the target cohort
+and support can absorb the change. Maintain a limit on staged work too. Record
+queue age and WIP, the release constraint, and what event or threshold should
+trigger another admission decision. Do not treat merge or deployment as
+customer acceptance. See [release engineering](../../release-engineering/SKILL.md).
+
+[Yegge’s Wyvern account](https://ai.engineer/code/2026/talks/steve-yegge) is
+the motivating example: players asked for a slower pace even while enjoying
+new features. The above is a proposed operating policy, not a benchmark.
+
 OpenRig's [queue documentation](https://openrig.dev/docs/coordination) motivates
 durable owned work and distinguishes closure from acceptance. HERDR's
 [README](https://github.com/herdrdev/herdr) separates terminal persistence from

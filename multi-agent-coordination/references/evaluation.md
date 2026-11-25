@@ -33,6 +33,18 @@ review completeness and defects. Do not optimize the ratio by deleting necessary
 checks, inflating milestones or dividing one job into many accepted subtasks.
 Thresholds need local baseline/error analysis and an owner, not a vendor default.
 
+## Test factory economics, not production volume
+
+When a factory requests more capacity, compare a bounded cohort of real product
+work against a simpler baseline, including a way to finish work already started.
+Count accepted integrated outcomes and retain time, spend, failed attempts, rework,
+and review/support effort. Report human effort in hours unless a declared rate
+converts it to dollars. Do not treat idle seats, larger token budgets, or more
+patches as better outcomes. Report zero accepted outcomes explicitly; its unit
+cost is undefined, not zero. If a change to handoff context or model routing is
+claimed to save tokens, rerun comparable tasks and check repeated reads, total
+cost, accepted quality and authority violations before rollout.
+
 ## Challenge roster
 
 Exercise duplicate delivery, worker/coordinator loss, stale intent, late output,
