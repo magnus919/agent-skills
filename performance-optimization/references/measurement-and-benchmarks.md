@@ -13,6 +13,42 @@ Read this when the baseline is missing, the metric is ambiguous, or a lab benchm
 
 Choose a representative workload from observed slow cases, including adverse data sizes and a normal case. Freeze fixture identity and record build, hardware, OS/runtime, dependencies, flags, concurrency, warmup, and command. Check that benchmark output cannot be optimized away and that setup/teardown is included or excluded intentionally. For asynchronous systems, decide whether wall time, CPU time, queue delay, or throughput answers the question.
 
+### Show that both sides did equivalent work
+
+For each timed arm, record attempted and completed useful units, expected
+effects or output digest, and the clock boundary where work completes. Check
+that a queue submission is not being compared with completed processing; that
+a lazy iterator is consumed; and that a cache hit is counted only where the
+question actually assumes that cache. For a migration, verify the resulting
+state through an independent readback when practical. A mismatch is a difference
+in behavior or measurement boundary, not a speedup.
+
+Compare configurations at the level of the claim. An as-shipped comparison
+can legitimately compare current defaults if named as such. A recommendation
+about implementations should also account for production-relevant tuning,
+warmup and build modes; do not mistake a debug build, untuned connection pool
+or different durability setting for an intrinsic difference. Identify whether
+the producer, load generator or a shared resource saturated. Use separate
+profiling when instrumentation itself materially perturbs the timing.
+
+Check a surprising result against a simple bound: removing a non-overlapping
+step that consumed 10% of baseline latency cannot by itself remove 50% of that
+latency. If the reported gain exceeds the bound, check for a changed workload,
+critical path, measurement window or interaction with another bottleneck before
+attributing the gain.
+
+Example: an export benchmark counts accepted jobs and appears three times
+faster. The candidate now returns at enqueue while the baseline waits for the
+file. Measure both from the request to a usable file, verify the expected row
+count or content digest, and report enqueue responsiveness as a separate
+outcome if it matters. Keep errors and incomplete work in the reported counts.
+
+Inspired by Lauren Tan's pstack
+[benchmark checklist](https://github.com/cursor/plugins/blob/b7b93c36be9bcc36a74db438e0fd385d660bc559/pstack/skills/benchmark-checklist/SKILL.md)
+and [hillclimb playbook](https://github.com/cursor/plugins/blob/b7b93c36be9bcc36a74db438e0fd385d660bc559/pstack/skills/poteto-mode/playbooks/hillclimb.md).
+
+## Compare, calibrate, and report
+
 Before enforcing a strict CI ratchet, run the unchanged benchmark against itself (an A/A or equivalent stability check) across the ordinary CI environment and workload variation. Record its false alarms, spread, failures, and timeouts. Set any threshold beyond routine noise and chosen with the predeclared practical gain in mind; if those ranges overlap, keep the signal diagnostic until measurement or environment stability improves. An A/A check tests the measurement and gate, not whether a change helps users.
 
 For noisy comparisons, repeat baseline and candidate in alternating or randomized blocks under the same fixture and environment. Preserve each run and report distributions and spread, then compare the observed change with both routine noise and the predeclared practical threshold. Choose an uncertainty method that fits the measurement and design; more runs do not fix a biased or unrepresentative fixture. There is no universal run count, p-value, or confidence-interval cutoff. A deterministic count can be checked exactly only if its environment and measurement are genuinely stable.
