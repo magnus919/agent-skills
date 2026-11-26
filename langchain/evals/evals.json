@@ -3,6 +3,18 @@
   "skill_name": "langchain",
   "evals": [
     {
+      "id": "langsmith-typed-evaluator",
+      "prompt": "I want LangSmith to score a Deep Agents trace with a hosted decision model. How do I configure what the model sees and keep the dashboard interpretable after changes?",
+      "expected_output": "Maps minimal trace evidence to state, keeps grading instructions in typed questions, and versions advisory feedback.",
+      "assertions": [
+        "Uses a server-side provider secret rather than including it in trace state.",
+        "Separates mapped trace variables from trusted criteria.",
+        "Uses a feedback key per criterion.",
+        "Versions the score series after changes to the evaluator contract.",
+        "Does not treat hosted scoring as proof of acceptance."
+      ]
+    },
+    {
       "id": "langchain-core-workflow",
       "prompt": "Use langchain to handle a realistic primary task. Explain the inputs, ordered workflow, and concrete output.",
       "expected_output": "A langchain response defines the task boundary, identifies required inputs, applies the documented workflow, and produces a concrete output with verification.",

@@ -69,3 +69,21 @@ add_routes(app, chain, path="/rag")
 - [ ] Use cheaper models (gpt-4o-mini) for simple routing tasks
 - [ ] Set up LangSmith Datasets for regression testing
 - [ ] Use environment variables for all secrets
+
+## LangSmith: online typed decision evaluator
+
+For an authorized trace project, follow the
+[LangSmith setup for Jev](https://www.langchain.com/blog/jev-is-now-available-in-langsmith-evals):
+configure a server-side TypeSafe provider secret and select its decision model
+in the evaluator's model configuration. Map only the needed run or thread
+variables to state; write scoring criteria as separate typed questions.
+Each criterion gets its own feedback key. Version the feedback keys when the
+meaning, rubric or judge changes so dashboards do not mix unlike scores.
+Check current UI and supported model names before configuration; never send raw
+secrets or unnecessary private trace data to the judge.
+
+Treat online scores as advisory feedback. Use the
+[agent-eval method](../../agent-evals-and-observability/references/judge-stability.md)
+for frozen trace replay and judge qualification, and
+[harness engineering](../../harness-engineering/references/system-one-decisions.md)
+for asynchronous execution, retry semantics and separate completion evidence.

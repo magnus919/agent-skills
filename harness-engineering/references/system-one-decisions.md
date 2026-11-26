@@ -122,3 +122,26 @@ outcomes.
 Return model-level errors to System One, framework adapter defects to LangChain,
 and journey/side-effect/freshness failures to the harness owner. Recombine the
 evidence before claiming the application works.
+
+## Advisory scoring outside the task's completion path
+
+Instrumentation may score a completed, authorized run without deciding whether
+it succeeded. Keep exact checks and observed side effects authoritative. For
+semantic monitoring, use an asynchronous bounded job with a minimal, redacted
+evidence packet. Persist the status separately from the run outcome: scored,
+insufficient evidence, timed out, or invalid. None of the latter states is a
+negative judgment, and none is evidence of success.
+
+Idempotently persist the judge result for the run, evidence revision, evaluator
+model and rubric version. Ordinary retries reuse that result; a deliberate
+repeatability study needs distinct attempts that bypass result reuse. Give a
+changed rubric/model a distinct series, and join later verified outcome evidence
+or reviewer corrections to the original run. Track missing joins and delivery
+delay instead of treating absence of a user action as a label. Measure queue
+delay and the extra cost of retries. Keep authorization and release gates
+independent of the advisory signal.
+
+[Inngest's worked implementation](https://www.inngest.com/blog/how-to-use-jev-for-agent-evals-and-check-it-against-real-outcomes)
+shows checkpointed scorer execution and linking later outcomes to the same
+run. Its implementation illustrates a pattern; it does not independently
+validate that judge against production outcomes.
