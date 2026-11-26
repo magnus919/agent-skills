@@ -3,6 +3,18 @@
   "skill_name": "harness-engineering",
   "evals": [
     {
+      "id": "advisory-judge-retry-vs-repeat",
+      "prompt": "A monitoring worker scores finished agent traces. Retries double-bill calls and the project also needs a deliberate judge-stability replay. Design the runtime boundary.",
+      "expected_output": "Runs versioned advisory scoring asynchronously with explicit failure status; distinguishes idempotent retries from fresh stability samples.",
+      "assertions": [
+        "Keeps semantic scoring separate from verified completion and authorization.",
+        "Persists or reuses results on ordinary retries for the same versioned input.",
+        "Uses fresh samples for deliberate repeatability measurement.",
+        "Records missing-evidence and timeout states without turning them into task verdicts.",
+        "Links later independent outcome evidence to the same run."
+      ]
+    },
+    {
       "id": "workaround-survives-lint",
       "prompt": "Agents keep copying a desktop settings workaround: a product timer calls a persistence internal and the app looks saved before the data is durable. A new lint rule blocks the import in new code, but the starter template and three neighboring features still show the workaround. Plan the fix and how to know the copying stopped.",
       "expected_output": "Contain new copies, remove misleading examples, leave a tested replacement and separately verify the saved setting.",
