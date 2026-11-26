@@ -345,6 +345,20 @@ Container resets fix local state but NOT iCloud sync corruption. Signs of cloud 
 - Didn't work? → Form NEW hypothesis
 - DON'T add more fixes on top
 
+**When two fixes fail the same check, look for a shared assumption before trying a
+third.** Name the assumption both fixes depended on. Choose one observation
+that would differ if it were false, and probe the first boundary where the two
+explanations predict different behavior. Compare affected and unaffected cases
+where possible. For example, if two cache changes did not fix a stale settings
+screen, trace one settings version from the saved record to the API response
+before changing cache behavior again. If the API itself returns the old version
+with the cache out of the path, revise the diagnosis. If the probe cannot
+distinguish the explanations, report what evidence is missing instead of
+stacking another fix. The Phase 4 architecture checkpoint still applies.
+
+Inspired by Lauren Tan's pstack principle
+[Attack the Premise](https://github.com/cursor/plugins/blob/b7b93c36be9bcc36a74db438e0fd385d660bc559/pstack/skills/principle-attack-the-premise/SKILL.md).
+
 ### 4. When You Don't Know
 
 - Say "I don't understand X" — don't pretend to know

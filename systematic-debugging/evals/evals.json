@@ -61,6 +61,17 @@
         "The response treats 'identical config' as an assumption to verify by diffing, not a fact",
         "Prod-specific data shapes are checked against the validation paths that reject them"
       ]
+    },
+    {
+      "id": "two-fixes-share-an-unverified-premise",
+      "prompt": "A settings page still shows old values. Two separate fixes changed cache invalidation, and both failed the same end-to-end save-and-reload check. A colleague proposes another invalidation strategy. How should we decide what to try next?",
+      "expected_output": "Stop before another cache patch. State the common assumption that the read returns fresh data before caching or rendering. Propose a bounded observation that distinguishes stale upstream data from a cache/render failure, and explain how its possible outcomes change the next hypothesis.",
+      "assertions": [
+        "The response identifies an explicit assumption shared by both failed fixes",
+        "The response describes a probe whose outcomes distinguish upstream staleness from cache or render staleness",
+        "The response defers another fix until the shared assumption is checked",
+        "The response does not claim the architecture is broken merely because two fixes failed"
+      ]
     }
   ]
 }
