@@ -15,3 +15,23 @@ Select evidence rather than requiring every evaluation type:
 | Human review | Domain or subjective criteria cannot be directly automated | Review remains rubric- and context-sensitive |
 
 Use synthetic, curated, replayed-production, adversarial, and regression cases as distinct declared sources. Choose a mix based on task harm, reversibility, novelty, external side effects, and availability of valid evidence.
+
+
+## Compare software review configurations
+
+For a model or reviewer-topology comparison, reuse the same pinned candidate
+diffs, target revision, issue/spec, accessible context and budget envelope.
+Use independently adjudicated defects, known-good cases, and executable
+verification where feasible. A withheld defect roster is an oracle, not review
+context. Keep existing required lanes and permissions unchanged.
+
+Report unique confirmed findings and known consequential misses by class;
+separate invalid, duplicate and out-of-scope findings. Then verify whether the
+repaired candidate fixes the issue without regressions. Track reviewer and repair
+cost, human triage, latency and unresolved runs; keep failed attempts in the
+denominator for cost per accepted change. Comment count and agreement are not
+defect recall. A cheaper pass is not a gain if it transfers work to human triage.
+
+See the [factory handoffs evidence ledger](https://github.com/magnus919/agent-skills/blob/main/docs/research/factory-handoffs-and-review/evidence.md)
+for field and benchmark results and their limits; it does not justify a universal
+reviewer count or replace existing release gates.
