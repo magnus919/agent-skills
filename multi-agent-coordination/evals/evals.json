@@ -249,6 +249,17 @@
         "Limits each support worker to its assigned case context.",
         "Requires current claim and authorization checks before accepting an effect from the replaced worker."
       ]
+    },
+    {
+      "id": "arena-versus-coverage-swarm",
+      "prompt": "We have an approved brief and want three independently built scheduling-control prototypes, then one coherent implementation. Separately, audit four packages in parallel; three workers report PASS and one never returns. Where do Council, Arena and Swarm fit, and what closes the two jobs?",
+      "expected_output": "Use Arena for competing artifacts under a frozen brief and criteria; distinguish it from Council's opinions and a coverage Swarm. Select a coherent base, integrate only compatible contributions, check the combined artifact, and record the absent package as a coverage gap rather than a pass.",
+      "assertions": [
+        "The response distinguishes independently built artifacts from opinions and from partitioned work",
+        "The response defines the shared brief and criteria before candidate generation",
+        "The response verifies the synthesized artifact after integrating compatible contributions",
+        "The response reports the missing package as an unresolved coverage gap"
+      ]
     }
   ]
 }
