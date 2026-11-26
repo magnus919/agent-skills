@@ -39,6 +39,26 @@ Role and factory changes are proposals through lesson-to-PR. Version the role, e
 
 Intake: export invoices, accepted contract v1. Contract owner defines paid/unpaid semantics; implementer produces CSV export; verifier exercises invoice→export; release owner controls delivery. While implementation runs, owner requests v2 currency grouping. Record change C1, identify implementer and verifier as affected, fence v1 integration, obtain v2 acknowledgements and reserve rework within the same budget. Continue unrelated documentation only with explicit unchanged-input evidence. An old v1 export arriving later stays quarantined. Component green plus an old v1 scenario is not v2 acceptance. Use factory-steering.md and the snapshot helper for declaration-level impact screening.
 
+## Worked integration failure: approved but not merged
+
+Two jobs build on separate worktrees. The second has current approvals on its
+branch, but the first lands before it. Check the second against the actual
+integration candidate (current target plus any preceding queued changes) and
+rerun affected checks. If the target checkout has unrelated edits, preserve them
+and use a clean integration checkout or the forge's protected merge path.
+Worktrees isolate working files, not authority, shared Git metadata, or deployment.
+
+Record review, authorization, integration readiness, and observed merge as
+distinct facts. Show a dirty checkout, stale target, conflict, or pending CI as
+an integration blocker, with the candidate and next action. Never turn a Git
+failure into a new request for human approval. If a merge result is uncertain,
+query the forge or target history for the exact candidate before retrying.
+Persist the result outside the worker's session; a later worker should recover
+from the last confirmed action, not guess from the prior model's prose.
+
+See the [evidence and source limits](https://github.com/magnus919/agent-skills/blob/main/docs/research/factory-handoffs-and-review/evidence.md).
+The linked case is illustrative, not proof of a specific harness's reliability.
+
 ## Exit
 
 Deliver the charter, role/assignment contracts, bounded production flow, versioned artifacts and actual acceptance/recovery evidence for the requested scope. A design-only request ends with a reviewable plan and unverified assumptions. A running factory requires observed host behavior; the bundled reconciliation helper cannot grant production readiness.

@@ -47,6 +47,21 @@ Task evidence remains useful history after integration; it cannot silently becom
 release evidence. Inspect combined changes and rerun affected checks against the
 integrated candidate. Record justified reuse of unaffected evidence.
 
+## Route evidence before spending on review
+
+Run the applicable inexpensive, trusted checks first when failure would make
+specialist review premature. Keep acceptance criteria and the check definition
+under the appropriate owner, not editable by the candidate to obtain a pass.
+Fix or explain a failed build before paying for semantic review of that revision.
+Choose specialist lanes from changed surfaces and consequences, not a fixed
+agent roster. For example, a course-access change needs behavioral cases for
+eligible and ineligible users and a policy-owner decision if entitlement changes.
+A passing build or a model verdict cannot authorize that policy change. Reclassify
+the lanes if repair touches a new surface.
+
+See the [factory handoffs evidence ledger](https://github.com/magnus919/agent-skills/blob/main/docs/research/factory-handoffs-and-review/evidence.md)
+for the source case and where the evidence stops.
+
 ## Disposition and bounded repair
 
 - Failed behavior: route to implementation unless the contract/oracle is wrong.
