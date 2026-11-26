@@ -44,6 +44,36 @@ not extend authority.
 motivates the distinction: a community request, a task transfer, and a role
 replacement are different operations even if all arrive through conversation.
 
+## Worked example: a shared thread with mixed access
+
+Support collaborator Mei asks the triage agent in a shared channel to check a
+reported export failure. The assignment permits a read of the named case, with
+private evidence available to Mei. Preserve Mei's authenticated identity, task
+scope, grant reference, policy revision, and allowed audience when handing the
+lookup to a data agent. The tool boundary resolves the current credential and
+grant before reading. Record the acting agent and the effective downstream
+principal so the read can be attributed.
+
+Jo administers the bot and asks it to paste the raw customer record into the
+thread. Bot administration governs configuration. Disclosure requires the
+data owner's approval for the record and current audience. An unverified guest
+can submit a symptom through the approved intake channel, with private lookup
+and disclosure held until the requester and scope are established. A domain
+approver can authorize a specific disclosure through the approved channel.
+Bind that decision to the content and audience, and recheck recipients before
+returning the result.
+
+Keep Mei's pending lookup bound to her original authority and deliver its
+evidence through the access-controlled case record. Report only an authorized
+status in the shared thread. Treat a later message from Jo as a separate
+request. A reply, reaction, or forwarded approval string supplies context
+until its sender, decision scope, and current validity are established.
+
+Grok Bot documents surface-specific handoffs and connector selection. The
+example above illustrates a portable policy using those distinctions.
+[Collaboration handoffs](https://docs.x.ai/grok-bot/chat-and-collaboration#let-bots-hand-work-off) ·
+[Team Bots](https://docs.x.ai/grok-bot/team-bots)
+
 ## Decision placement
 
 Before asking an approver, assemble: proposed action, exact target, current scope,

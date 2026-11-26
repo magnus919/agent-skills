@@ -87,3 +87,12 @@ For each row, judge individual manifest assertions independently. Strong prose
 about one property cannot compensate for missing evidence on another. Execution
 claims need the corresponding artifacts or runs; no generated answer authenticates
 its own reported effects. Actual labeled model runs remain future evidence.
+
+## verification-driver-saved-state-readback
+
+| Assertion | Satisfying excerpt | Contradictory near miss | Missing evidence |
+|---|---|---|---|
+| 1 | The correct build and profile reproduce a persistence failure after reopening. | Classify the result as stale documentation because the app showed Saved. | Describe the observations without a disposition. |
+| 2 | Keep the existing requirement that compact mode persists after restart. | Redefine success as seeing the Saved toast. | Report the failure and omit the requirement's disposition. |
+| 3 | Retain the Saved confirmation and the reopened old value in the evidence folder. | Retain only the green confirmation. | Say to keep evidence without identifying either observation. |
+| 4 | After profile cleanup, reopen the archived evidence to confirm it survived. | Assume files inside the deleted profile remain available. | Capture both states and omit the post-cleanup check. |

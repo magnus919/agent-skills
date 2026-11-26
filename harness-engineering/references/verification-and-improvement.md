@@ -22,6 +22,26 @@ Completion requires the whole relevant contract, not an aggregate score that hid
 an authority breach or missing boundary. The bundled runner records command exits
 only; it cannot establish test collection or correctness of the commands selected.
 
+## Exercise the project verification driver
+
+Use the project's existing feature map and reusable driver to close the
+write, run, observe, and repair loop. Qualify the driver against the running
+candidate and route drift using the
+[verification methodology](../../verification-methodology/references/evidence-standards.md#verify-the-driver-and-maintain-the-coverage-map).
+Record the candidate, profile, exercised path, and retained evidence.
+
+Example: a settings driver opens the preferences UI in a disposable profile,
+turns on a setting, and captures a “Saved” confirmation. Close and reopen the
+same profile on the expected build, then observe the setting through the
+normal user path. If the driver reopened the wrong profile, repair it and repeat
+the journey. If the correct profile still shows the old value, record the
+persistence failure against the accepted requirement. Retain the initial,
+confirmed, and reopened states outside the disposable profile and confirm the
+evidence survives cleanup.
+
+This applies pstack's project-local verification pattern to a single behavior.
+[Create a verification skill](https://github.com/cursor/plugins/blob/b7b93c36be9bcc36a74db438e0fd385d660bc559/pstack/skills/create-verification-skill/SKILL.md)
+
 ## Experiment protocol
 
 State a failure hypothesis. Freeze a representative task set, model/config,

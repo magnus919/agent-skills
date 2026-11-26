@@ -2,6 +2,23 @@
 
 An agent register is useful when a reviewer can resolve discrepancies between the approved inventory and the running estate. Start with a bounded review population and observation window. Join stable deployment identifiers, consuming agents and principals. Record where the join is uncertain. Use the existing [capability admission record](../templates/capability-admission-record.md) and [earned autonomy decision](../templates/earned-autonomy-decision.md) for the authority decision. Runtime observations and containment receipts come from agent-production-operations.
 
+## Choose authority by action
+
+A standing organizational task can use a scoped, organization-managed workload
+principal where the resource supports it. When an action exercises a person's
+rights, use a scoped delegation for that person where available. Record the
+credential mode, resource, and grant for each path. A single deployment can
+use both modes, such as an approved scheduled queue scan and an interactive
+lookup delegated by the requester. When suitable authorization is unavailable,
+hold the affected path pending a resource-owner decision.
+
+Record the accountable business sponsor and designated technical administrators
+separately from runtime credentials and resource approvals. Sponsorship governs
+purpose and lifecycle. Technical administration governs configuration and
+recovery. The effective connector principal and current grant determine runtime
+access. [Entra agent identities](https://learn.microsoft.com/en-us/entra/agent-id/agent-identities) ·
+[Entra administrative relationships](https://learn.microsoft.com/en-us/entra/agent-id/agent-owners-sponsors-managers)
+
 ## Scope and evidence
 
 This synthetic example reviews a purchase-order workflow in one production tenant at 10:00 UTC. Policy for this tenant requires a runtime observation within 24 hours for this review. Repeat discovery across the deployment registry, identity provider, enforcement logs, gateway and scheduled work. Record each source's owner, observation time, tenant scope and known blind spots. The registry describes intended deployments. The grant and its activation receipt describe approved scope. Gateway and runtime signals describe observed identity, actions and enforcement. Match using attested deployment identifiers or scoped runtime evidence. A name match or common principal can suggest a join without proving one.
