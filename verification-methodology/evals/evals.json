@@ -81,6 +81,18 @@
         "Proposes an independent reopen/readback against the same test profile and controlled rejection.",
         "Explains what sequence/property testing adds and does not claim a formal model establishes behavior of the integrated build."
       ]
+    },
+    {
+      "id": "new-writer-invalidates-bounded-model-correspondence",
+      "prompt": "Our model checked the rule \u201cnever mark an export delivered twice\u201d for two workers with retry enabled. The last verified map covered the normal worker and its atomic completion write. The latest commit adds a reconciliation worker that can write completion without that helper. The model and chart are unchanged and the checker still passes. A teammate proposes removing retry from the model to simplify it. Give the current verdict and the next evidence to collect.",
+      "expected_output": "An implementation verdict on hold, with the prior model result preserved as historical bounded evidence, mapping and exercising the new writer before updating the sync record.",
+      "assertions": [
+        "Names the reconciliation worker and changed write boundary as a gap in model-to-code correspondence.",
+        "Distinguishes the old bounded model result from an unverified implementation and from a confirmed implementation defect.",
+        "Requires checking relevant interleavings or testing the concrete boundary, and a meaningful negative control for the checker.",
+        "Does not accept removing retry without an approved behavior or scope change.",
+        "Records what was checked and excluded separately from what the diagram depicts."
+      ]
     }
   ]
 }
