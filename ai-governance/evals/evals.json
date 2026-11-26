@@ -309,6 +309,17 @@
         "The response routes consequential containment to the authorized runtime or service owner"
       ],
       "case_set": "dev"
+    },
+    {
+      "id": "standing-agent-and-user-delegated-authority",
+      "prompt": "A support agent scans a team queue nightly and can look up restricted case details during a signed-in employee's session. The queue supports organization-owned app access, while the restricted case service supports only user delegation. The business sponsor and the bot administrator are different employees. Specify the authority and ownership for both paths, including what happens when a user grant is unavailable.",
+      "expected_output": "Use a narrowly scoped organizational principal for the scheduled scan and a scoped current user delegation for the interactive lookup. Hold the lookup without valid delegation. Record the business sponsor and technical administrator separately from the runtime principals and resource grants.",
+      "assertions": [
+        "Assigns the scheduled queue scan a scoped organization-managed principal.",
+        "Assigns the restricted lookup the requesting employee's scoped delegation.",
+        "Holds the restricted lookup when current delegation is unavailable.",
+        "Records distinct responsibilities for business sponsorship and technical administration."
+      ]
     }
   ]
 }
