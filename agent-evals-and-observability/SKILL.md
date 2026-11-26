@@ -64,6 +64,7 @@ Stop when the supported decision, evidence gaps, residual risks, and responsible
 | Select or calibrate graders | [references/graders.md](references/graders.md) |
 | Evaluate monitor independence, correlated failures, detection, or escalation delivery | [references/monitor-quality.md](references/monitor-quality.md) and [templates/monitor-assessment.md](templates/monitor-assessment.md) |
 | Validate judge stability, abstention, and escalation | [references/judge-stability.md](references/judge-stability.md) |
+| Audit frozen traces, disputed labels, and targeted judge blind spots | `references/frozen-trace-judge-audit.md` |
 | Check evidence cherry-picking, overreach, or bounded in-workflow probes | [references/grounding-probes.md](references/grounding-probes.md) |
 | Provide requested machine-readable evidence or join multiple evaluation artifacts | [references/decision-audit-record.md](references/decision-audit-record.md) and [templates/decision-audit-record.json](templates/decision-audit-record.json) |
 | Evaluate grounded claims and attribute RAG failures | [references/grounding-attribution.md](references/grounding-attribution.md) |
