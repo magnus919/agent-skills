@@ -1,5 +1,7 @@
 # writers-helper — Your personal writer's assistant
 
+[![Deploy on MindPal](https://mindpal.space/badges/deploy-on-mindpal.svg)](https://mindpal.space/skills/writers-helper?utm_source=github&utm_medium=readme_button)
+
 A complete writing companion for fiction and nonfiction: it helps you plan a book, research it, draft it, revise it, break through creative blocks, build writing habits, and take it all the way to a publisher — proposals, query letters, agents, and book deals included.
 
 ## Why Install This Skill

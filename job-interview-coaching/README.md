@@ -1,5 +1,7 @@
 # Job Interview Coaching
 
+[![Deploy on MindPal](https://mindpal.space/badges/deploy-on-mindpal.svg)](https://mindpal.space/skills/job-interview-coaching?utm_source=github&utm_medium=readme_button)
+
 Prepare better answers, practise realistic interviews, and conduct interviews that reveal useful evidence.
 
 ## Why Install This Skill

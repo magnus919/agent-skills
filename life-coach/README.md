@@ -1,5 +1,7 @@
 # Life Coach - Bounded, User-Led Adult Coaching
 
+[![Deploy on MindPal](https://mindpal.space/badges/deploy-on-mindpal.svg)](https://mindpal.space/skills/life-coach?utm_source=github&utm_medium=readme_button)
+
 Help an AI agent support personal goals and decisions without pretending to be a therapist, a credentialed human coach, or the owner of someone else's choices.
 
 ## Why Install This Skill
