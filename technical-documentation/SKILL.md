@@ -43,7 +43,7 @@ Technical documentation is the interface between a tool and its user. This metho
 
 **Good docs answer the question the reader has** — Different readers come with different questions. Getting started? Reference? Troubleshooting? Structure docs to route each reader to their answer fast.
 
-**Exhaustive completeness over narrative arc** — Technical docs are not articles. Readers skip to the part they need. Cover every parameter, every edge case, every error code. Don't skip the boring bits — those are the ones people need.
+**Be complete for the reader’s job.** Reference must cover the contract; a tutorial needs a reliable path to the first success, and a how-to needs decisions, checks, and likely failure branches. Let a reader follow a link for detail they do not need yet. Use the information-architecture reference to choose the shape before writing.
 
 **Every doc is a liability** — Every page you write must be maintained. Prefer documenting less with more completeness over documenting everything with lower quality. Maintenance cost is proportional to surface area.
 
