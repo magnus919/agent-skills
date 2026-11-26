@@ -82,6 +82,7 @@ a diagram, a prompt or a terminal status indicator.
 
 | Active question | Read | Useful artifact |
 |---|---|---|
+| Competing solutions to one brief, coverage fan-out, or race | [Arena and swarm](references/arena-and-swarm.md) | Selection and verification record |
 | Should agents split this work; centralized, peer or hierarchy? | [Decomposition/topology](references/decomposition-and-topology.md) | Charter, experiment |
 | Compare the cost of a topology split or revisit it after reuse | [Topology economics example](references/topology-economics-example.md) | Coordination experiment, economics record |
 | Persistent identities, task claims, queue overload, takeover | [Ownership/flow](references/ownership-and-flow.md) | Assignment, snapshot |
