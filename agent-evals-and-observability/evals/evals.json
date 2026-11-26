@@ -3,6 +3,18 @@
   "skill_name": "agent-evals-and-observability",
   "evals": [
     {
+      "id": "frozen-judge-replay-and-disputed-label",
+      "prompt": "A cheaper judge perfectly matches the human on 500 replay calls across five fixed traces, four labeled pass. The sole failed trace asks for clarification instead of running a required search. Its continuous quality scores barely move. What can I conclude?",
+      "expected_output": "Separates repeatability, reference agreement and policy validity; proposes an evidence-led rubric audit and a controlled challenge case.",
+      "assertions": [
+        "Treats the five traces rather than the 500 repeated judgments as independent cases.",
+        "Identifies 80% as the always-pass baseline.",
+        "Reports continuous score stability without inferring accuracy from it.",
+        "Separates an observed missing search from whether clarification should pass the task contract.",
+        "Suggests a paired controlled change with a known defect rather than treating a fluent answer as proof."
+      ]
+    },
+    {
       "id": "eval-dataset-design",
       "prompt": "I want to build an evaluation set for our customer-support agent to judge whether responses are good before every release. What does the dataset design look like: what cases belong in it, how many, and how do I keep it from going stale?",
       "expected_output": "An eval dataset design organized around the agent's task contract: the response defines a set of representative tasks sampled from real production traffic (the actual questions and edge cases users ask), each with a task description, the input, and the expected behavior, and it explains the population discipline: cases are drawn from production distributions including the failure modes the team cares about, plus a curated set of edge cases and regression cases from past incidents. The dataset's size is matched to the decision it supports (a small curated set for release gating versus a larger sampling set for tuning), and the response covers the freshness contract: a process for adding new cases from production incidents and removing or re-validating cases that no longer reflect the product, with versioning so results stay comparable across releases.",

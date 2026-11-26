@@ -3,6 +3,17 @@
   "skill_name": "system-one",
   "evals": [
     {
+      "id": "judge-read-versus-derive",
+      "prompt": "A decision model sees a patch and a log excerpt. We want it to check whether the patch claims recovery and whether recovery actually works. A paper reports a cheap fallback worked on two datasets; another found shared errors. What should we infer?",
+      "expected_output": "Separates bounded reading from verification and reconciles distinct published workloads without transferring thresholds.",
+      "assertions": [
+        "Uses a bounded question only for the claim visible in supplied evidence.",
+        "Requires an independent execution check to establish recovery.",
+        "Does not treat published fallback accuracy or confidence as universal.",
+        "Distinguishes fallback rescue from shared confident errors."
+      ]
+    },
+    {
       "id": "contract-design",
       "prompt": "We need to classify support tickets into billing, technical, or other; score urgency; and decide whether a human should review. Design the System One contract and deterministic policy boundary.",
       "expected_output": "A contract that uses Choice for routing, an explicitly ordered Score for urgency, and a separate review/abstention policy; the model does not authorize side effects.",
