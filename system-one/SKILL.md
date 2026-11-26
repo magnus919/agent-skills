@@ -86,6 +86,7 @@ tracked corpus unless publication is explicitly requested.
 | DevOps telemetry routing, diagnostic test ranking, repair evidence, optional CI jobs, deployment transitions, or durable incident decisions | `references/devops-decision-patterns.md` and `templates/decision-execution-record.md`; operational procedures remain in SRE/QA/release and tool skills |
 | Review the DevOps/escalation eval assertions and their satisfying, contradictory, or missing-evidence challenges | `references/devops-escalation-eval-review.md` |
 | Confidence-based acceptance and escalation to a stronger judge | `references/selective-judgment.md` and `templates/cascade-qualification.md` |
+| Review revised published Jev evidence and workload boundaries | `references/selective-judgment-evidence-update.md` |
 | Probability, threshold, calibration, model comparison | `references/evaluation-and-calibration.md` and `templates/benchmark-record.md` |
 | Design a matched comparison, qualify adapters, separate fixed-contract from model-adapted tracks, or assess equivalence | `references/comparison-design.md` and `templates/benchmark-record.md` |
 | Measure adaptation after a label split or a new label, including invalid outputs and adaptation cost | `references/taxonomy-drift-pilot.md` |
