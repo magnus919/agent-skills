@@ -122,6 +122,17 @@
         "Requires preservation of ranking/order or snapshot requirements when batching reads.",
         "Retains failures and timeouts in the evidence rather than dropping them from the conclusion."
       ]
+    },
+    {
+      "id": "benchmark-accepts-jobs-without-finishing",
+      "prompt": "Our new report generator looks 3x faster in a lab benchmark. The old endpoint returns a report URL when the file is ready; the new endpoint returns when it enqueues the job. Should we ship the speed claim? What would a fair comparison count?",
+      "expected_output": "Reject the 3x claim as a comparison of different completion boundaries. Compare matched requests to usable verified report output, count attempted and completed jobs and failures, and distinguish submission latency from end-to-end latency.",
+      "assertions": [
+        "The response identifies that enqueue and usable output are different timing boundaries",
+        "The response verifies completed equivalent report output in both arms",
+        "The response reports failures and incomplete work separately from successful latency",
+        "The response does not use the measured ratio as evidence of user-facing speedup"
+      ]
     }
   ]
 }
