@@ -52,6 +52,16 @@ Senior-to-principal QA and SDET methodology: test strategy, automation, regressi
 
 **Test behavior, not implementation.** Tests coupled to behavior survive refactoring; tests coupled to implementation break on it.
 
+**Ground behavioral tests in an independent expectation.** For every new or
+materially changed behavioral test, identify the source of the expected result
+and the plausible defect the test would catch. Apply this to human- and
+agent-authored tests. For a regression test, demonstrate that the same test
+fails for the intended reason on known-bad behavior and passes on the corrected
+candidate. When the original defect is unavailable, use a faithful negative
+control or targeted mutation and state what it represents. If the contrast
+cannot be demonstrated, report the regression coverage as unproven. See
+[spec-first oracle review](references/ai-test-artifact-evidence.md#spec-first-oracle-review).
+
 **Risk drives priority.** Not everything deserves equal test investment. Score probability × impact, then allocate accordingly.
 
 **Flaky tests are worse than no tests.** A nondeterministic failure trains teams to ignore all failures. Quarantine on detection; rerun once, never twice.

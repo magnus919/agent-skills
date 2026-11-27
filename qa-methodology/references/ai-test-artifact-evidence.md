@@ -10,6 +10,26 @@ Classify the artifact (production code, test, fixture, mock, charter, review com
 
 Before reading implementation-coupled tests, derive expected behavior from the specification: normal, invalid, boundary, state-transition, failure, permission/security, concurrency, and recovery cases as applicable. Inspect each generated test for a behavioral oracle, independent expected value, fixture isolation, meaningful failure, and the ability to detect a plausible defect. Reject line-execution tests, mock-only assertions, mirrored assumptions, tautologies, vacuous assertions, and exact-string checks where the output is nondeterministic. Add a hand-built negative case, differential check, property, or bounded mutation to show the test can fail for the wrong behavior.
 
+### Worked example: a required CSV column
+
+The accepted export contract requires the `reference` column when enabled.
+Read the downloaded CSV and compare its parsed header with the expected columns
+from that contract. An assertion that gets its expected list from the
+exporter's column helper can accept the same omission on both sides.
+
+Keep the test and equivalent setup fixed across revisions. On the known-bad
+exporter, the export completes and the assertion fails because `reference` is
+missing. On the corrected candidate, the same assertion passes. A fixture crash
+does not demonstrate the regression. If the old revision is unavailable, remove
+the column in an isolated test variant or use a faithful negative fixture.
+Record the substitute and the fault it represents. Choose a focused probe
+appropriate to the risk and scope of the change.
+
+Give the verifier the accepted criterion, the expected-result source, the
+test and candidate identities, the equivalent setup, and both observed
+outcomes. [Verification methodology](../../verification-methodology/SKILL.md#the-verification-protocol)
+judges what those observations support.
+
 ## Review comments are hypotheses
 
 Treat an AI review comment as a triage signal, never as approval evidence. Check it against the spec, diff, actual API/tool contract, and domain context. Label it substantiated, unsubstantiated, duplicate, context-dependent, or requires domain review. Large diffs, generated migrations, authentication/authorization changes, data-loss paths, and comments dependent on unavailable context require human or domain escalation. Record review queue delay and unresolved high-impact findings; do not reward comment volume or model confidence.
