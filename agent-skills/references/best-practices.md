@@ -300,3 +300,20 @@ Once you have a working skill, two guides can help you refine it further:
 
 * **[Evaluating skill output quality](/skill-creation/evaluating-skills)** — Set up test cases, grade results, and iterate systematically.
 * **[Optimizing skill descriptions](/skill-creation/optimizing-descriptions)** — Test and improve your skill's `description` field so it triggers on the right prompts.
+
+## Example: reuse a mechanical evidence collection step
+
+In a repository that repeatedly captures the status of the same documented
+command, use the repository's existing runner to produce the evidence through
+one supported entry point. For example, a read-only command can accept a target
+revision and an output directory, run the approved check, and record revision,
+check name, exit status and artifact path in JSON. Document the invocation,
+prerequisites and error behavior. Start with the existing command and output
+contract before adding a wrapper. See the [CLI builder](../../cli-builder/SKILL.md).
+
+An exit status is a record of execution under those inputs. The skill still
+owns choosing the right check, reading the result in context, and deciding
+whether the evidence addresses the user request. Verify an invalid revision and
+a check that intentionally fails. Preserve the evidence record for both.
+Compare repeat attempts on the same task to see whether the procedure saves
+effort without losing relevant evidence.

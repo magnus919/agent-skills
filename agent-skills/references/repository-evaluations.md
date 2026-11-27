@@ -54,3 +54,21 @@ Run the repository-root commands listed in `SKILL.md`. In particular, eval valid
 Changes anywhere under a skill with a manifest make it eligible for paired-eval selection. More than five eligible skills fail selection explicitly. Selection evidence and expected case IDs must agree with received reports before claiming complete selected-case coverage; skipped jobs or missing reports are gaps. Assertion coverage is relative to the generated reports, not the entire catalog.
 
 A review is complete when the applicable checks pass on the final revision and the report identifies which behavioral and release claims remain unassessed. Never fill evidence gaps with invented run or review metadata.
+
+## Example: paired trials without visible treatment cues
+
+Prepare the same natural task, project inputs, tools and budget for both arms.
+Check the candidate-facing prompts, file contents, directory names and
+environment labels. Put the assignment map, grading rubric and hidden
+assertions outside the candidate's readable workspace. Keep neutral run IDs
+for evidence joins. A legitimate prompt such as “fix the duplicate export
+and add a regression test” stays intact. Remove material that identifies the
+candidate's treatment or tells it what a hidden grader wants.
+
+Example: `fixtures/treatment_b_do_not_fail` leaks the arm through its path.
+Rename both staged inputs to the same project-relative path and record the
+mapping in the evaluator's run record. A rubric copied into the project folder
+remains a leak even if the folder has a neutral name. In a genuinely matched
+pair, a recorded file or tool operation can establish that a required resource
+was used. A candidate's statement about using it is self-report. Treat missing
+telemetry as unobserved and match any claim to the available evidence.
