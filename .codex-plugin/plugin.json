@@ -107,6 +107,7 @@
     "./litellm",
     "./llama-cpp",
     "./llamaindex",
+    "./magnus-mode",
     "./managing-editor",
     "./meetings",
     "./mermaid-diagrams",

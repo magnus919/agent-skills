@@ -394,6 +394,10 @@ Operate llama.cpp from hardware-aware installation and GGUF selection through ve
 
 An expert-level skill for building LLM applications over your data with LlamaIndex. RAG pipelines, multi-agent orchestration, event-driven workflows, knowledge graph construction, and production deployment.
 
+### [magnus-mode](magnus-mode/SKILL.md)
+
+Explicitly assess where a technology project stands, identify missing prerequisites, and route to the relevant discovery, planning, delivery, or operations skill.
+
 ### [managing-editor](managing-editor/SKILL.md)
 
 Coordinate editorial work from intake through publication across news, books, journals, magazines, digital content, and organizational publishing. Includes decision-right mapping, quality and correction workflows, contributor communication, bounded subagent delegation, and reusable planning and release templates.

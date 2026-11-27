@@ -1,0 +1,184 @@
+#!/usr/bin/env python3
+"""Require reviewed scope, complete routes and a fresh portable map."""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import importlib
+import json
+import re
+import sys
+from graphlib import TopologicalSorter
+from pathlib import Path
+from typing import Any
+
+import yaml  # type: ignore[import-untyped]
+
+canonical_names = importlib.import_module("check-catalog-set").canonical_names
+ROUTER = "magnus-mode"
+SCOPES = {"route", "unrelated", "router"}
+SCOPE = "docs/magnus-mode-scope.json"
+SOURCE = "magnus-mode/lifecycle.json"
+REFERENCE = "magnus-mode/references/lifecycle.md"
+SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
+FRONTMATTER = re.compile(r"\A---\n(.*?)\n---(?:\n|$)", re.S)
+
+
+def unique_keys(items: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in items:
+        if key in result:
+            raise ValueError(f"duplicate key: {key}")
+        result[key] = value
+    return result
+
+
+def load(path: Path) -> Any:
+    return json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=unique_keys)
+
+
+def description_id(root: Path, name: str) -> str:
+    path = root / name / "SKILL.md"
+    match = FRONTMATTER.match(path.read_text(encoding="utf-8"))
+    if not match:
+        raise ValueError(f"{name}: missing skill frontmatter")
+    description = yaml.safe_load(match[1])["description"]
+    if not isinstance(description, str) or not description.strip():
+        raise ValueError(f"{name}: invalid description")
+    return hashlib.sha256(" ".join(description.split()).encode()).hexdigest()
+
+
+def roster_difference(expected: set[str], actual: set[str], what: str) -> None:
+    if expected != actual:
+        raise ValueError(
+            f"{what}: missing {sorted(expected - actual)}, extra {sorted(actual - expected)}"
+        )
+
+
+def check_scope(root: Path, names: set[str]) -> set[str]:
+    scope = load(root / SCOPE)
+    roster_difference(names, set(scope), "Catalog scope")
+    routed: set[str] = set()
+    stale = []
+    for name, entry in sorted(scope.items()):
+        state = entry["scope"]
+        if state not in SCOPES or (name == ROUTER) != (state == "router"):
+            raise ValueError(f"{name}: invalid scope {state}")
+        if entry["description_sha256"] != description_id(root, name):
+            stale.append(name)
+        if state == "route":
+            routed.add(name)
+    if stale:
+        raise ValueError(
+            f"Scope review required for changed skill descriptions: {', '.join(stale)}"
+        )
+    return routed
+
+
+def checked_step(step: dict[str, Any]) -> tuple[str, list[str], set[str]]:
+    key = step["id"]
+    words = (step["title"], step["applies"], step["evidence"])
+    if not SLUG.fullmatch(key) or not all(
+        isinstance(value, str) and value.strip() for value in words
+    ):
+        raise ValueError(f"{key}: invalid step ID, title, applicability or evidence")
+    after, support = step["after"], step["support"]
+    if not isinstance(after, list) or not isinstance(support, list):
+        raise ValueError(f"{key}: predecessors and support must be lists")
+    if len(after) != len(set(after)) or len(support) != len(set(support)):
+        raise ValueError(f"{key}: duplicate predecessor or supporting skill")
+    if step["owner"] in support:
+        raise ValueError(f"{key}: owner cannot also support the same step")
+    return key, after, {step["owner"], *support}
+
+
+def check_routes(phases: dict[str, list[dict[str, Any]]], routed: set[str]) -> None:
+    graph: dict[str, list[str]] = {}
+    referenced: set[str] = set()
+    for phase, steps in phases.items():
+        if not phase.strip() or not steps:
+            raise ValueError("Every phase needs a title and at least one step")
+        for step in steps:
+            key, after, used = checked_step(step)
+            if key in graph:
+                raise ValueError(f"duplicate step: {key}")
+            graph[key] = after
+            referenced.update(used)
+    missing_steps = {dep for deps in graph.values() for dep in deps} - graph.keys()
+    if missing_steps:
+        raise ValueError(f"Unknown predecessors: {sorted(missing_steps)}")
+    tuple(TopologicalSorter(graph).static_order())
+    roster_difference(routed, referenced, "Lifecycle route coverage")
+
+
+def block(step: dict[str, Any]) -> list[str]:
+    deps = ", ".join(f"`{p}`" for p in step["after"]) or "None"
+    support = ", ".join(f"`{s}`" for s in step["support"]) or "None"
+    return [
+        f"### {step['title']} (`{step['id']}`)",
+        "",
+        f"- **Applies:** {step['applies']}",
+        f"- **Owner:** `{step['owner']}`.",
+        f"- **Supporting skills, only when relevant:** {support}.",
+        f"- **Hard predecessors when applicable:** {deps}.",
+        f"- **Exit evidence:** {step['evidence']}",
+        "",
+    ]
+
+
+def render(phases: dict[str, list[dict[str, Any]]]) -> str:
+    lines = [
+        "# Technology lifecycle map",
+        "",
+        "<!-- Generated by scripts/check-magnus-mode.py from lifecycle.json. -->",
+        "",
+        "Use the headings to navigate, not as a checklist every change must complete.",
+        "Predecessors are hard only when applicable; record why a step can be skipped.",
+        "Do not skip a material prerequisite merely because it has not been done.",
+        "Use the catalog names to find installed skills; supporting skills are optional",
+        "and their own triggers and permissions still apply.",
+        "",
+    ]
+    for phase, steps in phases.items():
+        lines.extend([f"## {phase}", ""])
+        for step in steps:
+            lines.extend(block(step))
+    return "\n".join(lines)
+
+
+def run(root: Path, write: bool, fingerprint: str | None) -> int:
+    names = set(canonical_names(root)[0])
+    if fingerprint:
+        if fingerprint not in names:
+            raise ValueError(f"Not a canonical skill: {fingerprint}")
+        print(description_id(root, fingerprint))
+        return 0
+    phases = load(root / SOURCE)
+    check_routes(phases, check_scope(root, names))
+    artifact = root / REFERENCE
+    expected = render(phases)
+    if write:
+        artifact.write_text(expected, encoding="utf-8")
+    elif not artifact.exists() or artifact.read_text(encoding="utf-8") != expected:
+        raise ValueError(f"Stale {REFERENCE}; run scripts/check-magnus-mode.py --write")
+    print("Magnus Mode scope, routes, and lifecycle reference are current.")
+    return 0
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument("--write", action="store_true")
+    modes.add_argument("--fingerprint", metavar="SKILL")
+    args = parser.parse_args()
+    try:
+        return run(args.root, args.write, args.fingerprint)
+    except (ValueError, OSError, KeyError, TypeError, yaml.YAMLError) as error:
+        print(f"Magnus Mode: {error}", file=sys.stderr)
+        return 1
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

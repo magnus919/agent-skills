@@ -807,6 +807,15 @@
       "description": "Build LLM applications with the LlamaIndex framework. Use when working with LlamaIndex or comparing RAG and agent orchestration frameworks. Do not use this skill for unrelated requests; route to the nearest named specialist."
     },
     {
+      "name": "magnus-mode",
+      "source": "./",
+      "skills": [
+        "./magnus-mode"
+      ],
+      "strict": false,
+      "description": "Assess and route technology-project work when the user explicitly invokes Magnus Mode. Use it to find the next evidenced step across discovery, planning, delivery, or operations. Do not auto-invoke it for ordinary coding, single-skill requests, or unrelated catalog work."
+    },
+    {
       "name": "managing-editor",
       "source": "./",
       "skills": [

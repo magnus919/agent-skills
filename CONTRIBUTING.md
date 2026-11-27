@@ -24,6 +24,10 @@ Each skill must:
 
 The coverage report keeps claims separate. `manifest_present` means only that a file exists. Per skill, `schema_valid` is `not_applicable` when `evals/evals.json` is missing, `false` when a present manifest fails parsing/schema/semantic validation, and `true` only when the manifest passes repository v1 validation. Aggregate schema-valid coverage counts only skills where `schema_valid` is `true`. The remaining states are named but intentionally `not_assessed` in v1: `executable_grader_bindings_present`, `recent_run_evidence_present`, and `release_gated_evidence_present`. Those require separate versioned contracts for grader bindings, provenance/freshness, and release-gate evidence.
 
+### Magnus Mode catalog coverage
+
+Classify new skills and review changed trigger descriptions using the [Magnus Mode maintenance guide](docs/magnus-mode-maintenance.md). Only skills with a material role in planning, delivering, or operating a technology project need route entries.
+
 ### Writing useful eval assertions
 
 Use `response_json_equals:<field>=<JSON scalar>` when the task explicitly
