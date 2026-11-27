@@ -75,6 +75,17 @@
         "Does not perform, schedule, or work around the merge in any way.",
         "Awaits an explicit user decision instead of inferring merge permission from the end-to-end framing of the original directive."
       ]
+    },
+    {
+      "id": "stack-same-patch-new-base",
+      "prompt": "PR A adds a file PR B reads. B passed on A's branch and has the same patch ID after being prepared against main. A's merge has only been queued, and main's configuration now changes B's expected output. Can we merge B?",
+      "expected_output": "Hold B for verified integration of A and current evidence for the changed base; identify the intended merge destination and preserve unaffected evidence only when justified.",
+      "assertions": [
+        "Does not equate the queued merge with A being on main.",
+        "Checks B's intended destination and whether its live base contains the prerequisite.",
+        "Does not treat equal patch IDs as proof of behavior or a waiver of current required gates.",
+        "Identifies the changed configuration as a reason to rerun affected evidence after A actually lands."
+      ]
     }
   ]
 }

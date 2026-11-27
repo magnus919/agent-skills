@@ -138,6 +138,10 @@ re-verify CI and review on the new head, update the handoff's `head_sha`, and
 only then continue. Mutations — commits, pushes, merges, comments — happen
 only after verification.
 
+For dependent PRs, also reconcile their target, prerequisite changes, and the
+integrated state that the checks actually covered. See
+[stacked pull requests](references/stacked-pull-requests.md).
+
 ## Stop at the boundary
 
 Stop and report the exact reason, taking no further action, when:
