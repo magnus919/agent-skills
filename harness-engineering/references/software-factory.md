@@ -62,3 +62,28 @@ The linked case is illustrative, not proof of a specific harness's reliability.
 ## Exit
 
 Deliver the charter, role/assignment contracts, bounded production flow, versioned artifacts and actual acceptance/recovery evidence for the requested scope. A design-only request ends with a reviewable plan and unverified assumptions. A running factory requires observed host behavior; the bundled reconciliation helper cannot grant production readiness.
+
+## Worked intake: preserve distinct reports before dispatch
+
+A maintenance scan has scope to collect findings and attach source and product
+revision. It has no repair assignment. Two deliveries of event E41 point to
+the same report R17 on build B4. Keep one delivery record and record the repeat.
+Report R23 is distinct and describes an export arriving without the selected
+column on B4. R17 describes the same missing column after reopening. Keep both
+reports and their affected journeys in one candidate investigation. Record the
+common-cause hypothesis and its alternatives. A shared symptom alone leaves
+causation unresolved.
+
+An incoming report R31 describes a link exposing a different tenant's export.
+Route it immediately through the existing incident path with its original
+source and affected revision. Preserve its separate impact and avoid buffering
+it with routine export findings. Read the approved issue or trace store under
+the existing scoped grant. When authoritative records disagree or cannot be
+read, record what was observed, what access was unavailable and who can
+resolve it. A retrieved statement provides evidence within its source scope.
+
+The routine queue has an owner, review cadence and a work-in-progress bound.
+At review, decide whether to assign one bounded investigation, divide it with
+a reason, or close a duplicate. Retain the identities, reported impacts and
+any open uncertainty. A new report during active work follows
+[factory steering](factory-steering.md#example-revalidate-the-affected-work-only).
