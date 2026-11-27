@@ -320,6 +320,16 @@
         "Holds the restricted lookup when current delegation is unavailable.",
         "Records distinct responsibilities for business sponsorship and technical administration."
       ]
+    },
+    {
+      "id": "scope-sample-and-revoke-maintenance-autonomy",
+      "prompt": "An export-fixture queue can build verified PRs and wants unattended merge. A verifier passes the old head, the grant expires during a queue run, and a different change may have exposed an already downloaded file. Define the covered action, sampling, hold and restoration decisions.",
+      "expected_output": "A scoped authority decision distinguishes verified readiness, active grant, observed effects and recovery, with a sample denominator and required oversight.",
+      "assertions": [
+        "Separates supervised work, verified queue handoff and a scoped landing grant with owner, expiry and protected boundaries.",
+        "Defines a sample population and records mandatory review or exception handling separately.",
+        "Holds on the stale or expired boundary and requires effect reconciliation and authorized restoration."
+      ]
     }
   ]
 }

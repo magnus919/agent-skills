@@ -32,3 +32,44 @@ Complete with a scoped decision, owner, expiry, evidence links and enforcement h
 required evidence is absent, deliver a bounded hold/restriction and name what would resolve it.
 
 For software-factory decision rights and meaningful human checkpoints, use `references/agentic-engineering-governance.md` and `templates/engineering-decision-rights.md` (paths relative to the skill root).
+
+## Worked decision: a bounded maintenance merge class
+
+This synthetic example fills the existing earned-autonomy decision record for
+an export-fixture maintenance class. The service owner sets the ceiling. The
+release authority owns approval, the repository control owner enforces it,
+and the worker follows the resulting grant. A real decision would require
+the corresponding evidence, approval and enforcement receipts.
+
+| Mode | Capability, environment and action | Decision evidence and authority |
+|---|---|---|
+| Supervised execution | L2, disposable test environment, edit fixture and run checks under supervision | Observe representative successes and failure paths. Keep the maker and evidence roles distinguishable. |
+| Verified queue | L3 within an approved branch and verification grant for this class | Workers run the permitted checks and hand over PRs. Human landing decisions remain reserved. Count all eligible opportunities, including holds, stale or wrong-target checks and escaped issues. |
+| Scoped unattended landing | Proposed L3 grant M-17, allowlisted fixture-only changes in the example repository's default branch | Expand only after the owner accepts the predeclared evidence, the authority approves the class with an expiry, and the controller proves allow, deny, expiry, revocation and wrong-head behavior. Land only verified current candidates within the cap. Deployment, customer data, policy and entitlement changes remain separately governed. |
+
+Example decision record M-17 revision 2 applies to the export-fixtures bot,
+the allowlisted `fixtures/export/` paths, and the example repository's default
+branch. Maximum unattended concurrency is one. Assume the supervised and
+verified-queue grants remain active. The new unattended grant is HOLD because
+proof of denial at expiry is incomplete. The release authority must review the
+checker and controller receipts before setting an activation date and expiry.
+In this example the service owner reviews evidence after the first observation
+window and after material tool, repository, or policy changes. The controller
+owner revokes the grant on a mandatory-check failure. A still-valid narrower
+grant determines which verification may continue during the hold.
+
+Before deciding expansion, compare opportunities in the same work class,
+including false-ready results, missed escalations, reviewer minutes, and
+rework. Agree the evidence window, sample sufficiency and thresholds before
+seeing the result. An expired grant or stale mandatory verifier holds the
+affected class. Cancel or drain inflight jobs under the approved policy
+and reconcile any landing or effect already in motion. Restore the approved
+state or reduce to the still-valid supervised grant. Resuming unattended
+landing requires an owner decision, current evidence and a verified control
+receipt. A reverted commit may leave downloaded data or a sent message behind.
+Reconcile that effect using its authorized owner, even after source recovery.
+
+See the [loop example](../../harness-engineering/templates/loop-contract.md#example-fixture-maintenance-with-scoped-landing),
+[sampling example](agentic-engineering-governance.md#sample-the-approved-work-class),
+[decision audit](../../agent-evals-and-observability/references/decision-audit-record.md#example-reconstruct-a-held-landing)
+and [operator handoff](../../verified-delivery/references/interruption-handoff.md#example-brief-an-operator-after-a-scoped-hold).

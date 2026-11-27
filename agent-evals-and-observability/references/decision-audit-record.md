@@ -42,3 +42,22 @@ NIST AI 200-2's initial public draft emphasizes objectives and real-world outcom
 | Reviewable evidence and disposition | Trace review and release/authority decision, joined by this record |
 
 This is a practical mapping, not a claim of implementing every stage or requirement of TEVV-Athlon. See [NIST AI 200-2 initial public draft](https://doi.org/10.6028/NIST.AI.200-2.ipd), announced August 7, 2026, status checked 2026-10-08. Updating terminology alone is not validation.
+
+## Example: reconstruct a held landing
+
+For [synthetic grant M-17](../../ai-governance/references/earned-autonomy.md#worked-decision-a-bounded-maintenance-merge-class),
+populate the existing JSON fields for one held fixture item. These illustrative
+references stand in for artifacts with resolvable revisions in a real run:
+
+| Template field | Example link or value |
+|---|---|
+| Objective and environment | Review landing eligibility under M-17 for candidate C8 in the allowlisted test-fixture action class. |
+| Artifacts and evidence | E-11 points to the original checker receipt on C7. E-12 points to the integrated C8 revision and serializer change. E-13 is the controller's denial of the now-expired grant. Record each source, revision and time. |
+| Probes and outcomes | C7 PASS remains a historical attempt. A reviewer's C8 reuse recommendation is challenged by E-12. C8 verification is not run and remains unresolved. The deployment outcome is unmeasured. |
+| Decision and blind spots | HOLD by the release owner. Supersede the earlier landing recommendation, cite E-12 and E-13, and record the fresh run and grant decision needed for review. The hold itself is distinct from a reconciled cancellation receipt. |
+
+Record choices and dispositions when they occur. Reconstruct disagreement
+and supersession from the linked evidence and attempts in that same record.
+Put unavailable results in the existing blind spots and next-evidence fields.
+A recommendation about landing remains separate from its eligibility checks,
+authority and the actual side effect.
