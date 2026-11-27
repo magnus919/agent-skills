@@ -904,6 +904,25 @@
         "Preserves both the confirmation and the reopened state as evidence.",
         "Requires checking that evidence remains available after teardown."
       ]
+    },
+    {
+      "id": "buffer-related-reports-with-urgent-outlier",
+      "prompt": "A read-only scanner sees E41 twice, both copies of R17. R23 is a distinct export failure with a similar symptom on B4. R31 reports a different tenant’s export link. The routine queue is near capacity. Specify triage and evidence for assigning work.",
+      "expected_output": "Replay deduplication preserves distinct findings and a high-impact report takes the existing incident path immediately.",
+      "assertions": [
+        "Deduplicates event E41 and preserves both R17 and R23 with source, revision and impact in a candidate cluster.",
+        "Routes R31 promptly through the existing incident path independently of the routine queue.",
+        "Keeps the scanner collection-only and assigns a review owner and bounded queue."
+      ]
+    },
+    {
+      "id": "revalidate-in-flight-work-after-new-evidence",
+      "prompt": "A report from B4 touches export acceptance in C4 while layout review continues. The reporter also asks to expand access. Tell the coordinator what to hold, what can continue and how a new contract could take effect.",
+      "expected_output": "New evidence refreshes affected work without silently revising accepted intent or broader authority.",
+      "assertions": [
+        "Identifies the affected export evidence and distinguishes the independently valid layout review.",
+        "Routes expanded access to the contract owner and binds any approved change to a new revision and affected checks."
+      ]
     }
   ]
 }

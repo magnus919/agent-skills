@@ -13,3 +13,20 @@ Load for changed intent, reprioritization, new responsibilities or cancellation 
 Use templates/factory-change.md. Run scripts/factory.py against templates/factory-snapshot.json after tailoring it; it screens the declared snapshot for affected tasks, version mismatches, expired leases and missing acknowledgement. It neither sends changes nor inspects the real host. A clean snapshot does not prove current authority, correct artifacts or acceptance.
 
 Challenge at least: duplicate change, stale update, simultaneous conflicting updates, old result after acknowledgement, lost director after sending, queued child after cancellation, external effect before checkpoint and exhausted shared budget. Record actual host outcomes separately from a plan or synthetic fixture.
+
+## Example: revalidate the affected work only
+
+In the [intake batch](software-factory.md#worked-intake-preserve-distinct-reports-before-dispatch),
+R23 shows that the report-download path may reproduce a failure originally
+reported from the settings screen. The active assignment is testing persistence
+against approved contract C4 on build B4. Record the report, source, revision
+and scope uncertainty. Invalidate the acceptance evidence for the affected
+export path until the actual combination is rechecked. An unrelated layout
+review can continue if its inputs and acceptance remain current.
+
+A report suggesting expanded access or new behavior is a scope proposal.
+Route it to the contract owner with affected requirement and task IDs and the
+new evidence. Continue within the current grant or pause the affected transition
+as the existing stop rule requires. When the owner revises the contract, record
+the accepted revision, reconcile affected work and rerun those checks before
+closing the relevant decision.
