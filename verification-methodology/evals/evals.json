@@ -73,6 +73,17 @@
       ]
     },
     {
+      "id": "test-execution-versus-behavior-verdict",
+      "prompt": "Review three criteria for the same CSV candidate. C1 runs the collected suite successfully at the exact head. C2 requires the reference column when enabled, but its green test gets the expected header from the production column helper and the old-build run crashed before export. C3 requires the export to contain both fixture rows, but the verifier independently parsed a download from the exact candidate and found only one. Assign each criterion a verdict, justify the scope of the evidence, and specify what could resolve the gap.",
+      "expected_output": "The report passes the explicit suite execution criterion, holds the unproved column behavior, fails the contradicted row behavior, and requests a valid comparison.",
+      "assertions": [
+        "Passes C1 only as evidence that the collected suite executed successfully on the exact candidate.",
+        "Holds C2 because the shared production helper and baseline setup crash leave the column behavior unverified.",
+        "Fails C3 because direct exact-candidate evidence contradicts the required row count.",
+        "Requests a contract-derived header check that detects the missing column on a known-bad build or a faithful negative control and passes on the exact candidate."
+      ]
+    },
+    {
       "id": "screenshot-is-not-persistence",
       "prompt": "The exact build shows compact mode on in a screenshot taken just after Save. It might still reset after reopening or after a rejected save. Classify what is evidenced, what remains unverified, and what tests would cover both persistence and sequences of saves without spending verification effort indiscriminately.",
       "expected_output": "Separate visible state, persistence and sequence-wide properties with evidence appropriate to each.",

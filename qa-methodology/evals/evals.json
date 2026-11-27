@@ -119,6 +119,16 @@
       ]
     },
     {
+      "id": "regression-test-independent-expectation",
+      "prompt": "An engineer and a coding agent co-authored a CSV regression test for a missing reference column. Their test calls the production column helper to compute the expected header. The test is green on the new revision, but the archived bad build crashes during fixture setup. The accepted export contract lists the expected columns. Recommend what must change before retaining the test as a regression guard and what evidence to capture if the old build cannot be repaired.",
+      "expected_output": "A focused regression test derives its expectation independently and demonstrates that it detects the missing column, while distinguishing missing evidence from a real negative.",
+      "assertions": [
+        "Derives the expected header from the accepted export contract and proposes checking the actual downloaded CSV.",
+        "Requires the same regression assertion to fail because the required column is missing and pass on the corrected candidate.",
+        "Treats the setup crash as insufficient and offers a faithful missing-column control or mutation with its scope recorded."
+      ]
+    },
+    {
       "id": "ai-generated-test-oracle-review",
       "prompt": "An agent generated tests from an implementation and all tests pass. Review whether the tests are evidence of behavior.",
       "expected_output": "A spec-first review that derives normal, negative, boundary, and failure cases, checks independent oracles and fixture isolation, rejects mirrored or implementation-coupled assertions, and requests independent verification or mutation evidence.",

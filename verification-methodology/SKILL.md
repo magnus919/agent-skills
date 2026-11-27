@@ -19,6 +19,16 @@ Pass/fail assessment against pre-defined criteria.
 2. **Assess criteria** — convert requirements into observable pass/fail conditions; identify what would disprove each claim.
 3. **Investigate** — collect direct, reproducible evidence from the source named by the request and record commands, source locations, or source URLs. Own this collection when the source is accessible: do not ask the user to relay evidence you can retrieve yourself. Ask only for access you genuinely lack.
 4. **Decide** — mark each criterion passed, failed, blocked, or not applicable. Do not convert missing evidence into a pass.
+   - Before passing a behavioral criterion on test evidence, confirm that the
+     expected result is independent of the behavior under test and that the
+     check can distinguish the relevant wrong behavior. For a regression
+     claim, check that the same test rejects the known-bad behavior or a
+     faithful negative control at the intended assertion and accepts the exact
+     candidate. If the only evidence is circular, passes on the wrong behavior,
+     or failed during setup, mark the claim HOLD. Mark it FAIL when valid
+     evidence shows the candidate violates the criterion. A green suite can
+     satisfy an explicit suite-execution criterion within its scope.
+     See the [worked regression example](../qa-methodology/references/ai-test-artifact-evidence.md#worked-example-a-required-csv-column).
    - When verification is split across lanes, no lane's PASS is the gate verdict. Wait for every required lane and reconcile conflicts before synthesis.
    - A later source-fidelity BLOCK supersedes an earlier prose, rendering, or checklist PASS for the same artifact hash. Immediately label earlier PASS packets as superseded so downstream workers cannot mistake them for the current verdict.
    - Pattern scans and internal consistency cannot substitute for checking factual transformations against the named primary source or source dossier.
