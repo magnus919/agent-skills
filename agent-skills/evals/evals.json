@@ -140,6 +140,25 @@
         "Retains the genuinely required shell prerequisite even if disabled by default.",
         "Distinguishes installed visibility from actual session loading."
       ]
+    },
+    {
+      "id": "separate-mechanical-check-and-judgment",
+      "prompt": "Agents manually rerun the documented repository validation tool and copy statuses into their reports. Design a reusable evidence step for a named revision. Include an intentional failure and say what exit status proves.",
+      "expected_output": "The skill exposes one documented rerunnable entry point and keeps acceptance judgment tied to the user’s task.",
+      "assertions": [
+        "Reuses the existing command and supplies an invocation with required inputs and evidence output.",
+        "Retains failure evidence and limits the meaning of a recorded exit status."
+      ]
+    },
+    {
+      "id": "hide-paired-treatment-and-grade-observed-activity",
+      "prompt": "A paired skill trial uses the honest task “fix the duplicate export and add a regression test.” One arm sees ./treatment_b and the grading rubric is in its repository. Only one harness has a file-open trace. Repair the comparison and explain what can be graded.",
+      "expected_output": "Matched arms retain their natural task and the evaluator distinguishes actual evidence from missing telemetry.",
+      "assertions": [
+        "Moves treatment cues and the rubric out of candidate-visible paths and files while preserving the natural test request.",
+        "Keeps task, model, tools and budget comparable across the skill arms.",
+        "Uses observed activity where available and treats a missing trace as unobserved."
+      ]
     }
   ]
 }
