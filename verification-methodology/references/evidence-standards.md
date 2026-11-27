@@ -79,6 +79,36 @@ compare the display with the expected roster by location. An empty result is
 not success until you know the driver reached the correct location and completed
 the read. A passing browser path does not cover a separate CLI path.
 
+### Worked example: a disposable settings-to-export driver
+
+A project already has a development launcher, an export fixture seeder and
+a browser driver. Start with those commands. Allocate a new profile, port and
+run directory per candidate. Bind the run to the requested build and confirm
+the launcher serves the run-owned instance. Wait for the fixture's two known
+rows to be readable in the UI. A successful process health probe while seeding
+is still in progress leaves the driver unqualified.
+
+Use the [mapped user journey](../../spec-driven-development/templates/FEATURE-MAP.md#example-settings-to-export).
+Capture the save acknowledgement, reopen the same profile, then download and
+parse the export outside the profile. Retain the build, target, setup and
+command record with the observed values. Clean up only the run's process and
+profile. Check that the retained evidence still opens afterward. A wrong build
+or profile makes the run unsuitable for a product verdict. An inaccessible
+required variant stays HOLD with its missing prerequisite.
+
+For a before/after check, use equivalent isolated profiles and fixtures on both
+revisions. Preserve the failing baseline, the candidate outcome and an unaffected
+control path. If the baseline cannot run comparably, record the missing comparison
+and report the candidate observation at its own scope.
+
+During integration, an unchanged source patch can pick up a different export
+serializer. If the new serializer drops a field, the earlier export verdict
+no longer covers the landing combination. Rerun the affected download and
+parsed-content checks on the intended combination and keep HOLD until evidence
+arrives. An independent settings-only observation can carry forward if its
+candidate, contract and runtime dependencies are shown unaffected. Required
+checks still follow their current-head policy.
+
 Inspired by Lauren Tan's pstack [Create a verification skill](https://github.com/cursor/plugins/blob/b7b93c36be9bcc36a74db438e0fd385d660bc559/pstack/skills/create-verification-skill/SKILL.md)
 and [Maintain a verification skill](https://github.com/cursor/plugins/blob/b7b93c36be9bcc36a74db438e0fd385d660bc559/pstack/skills/maintain-verification-skill/SKILL.md).
 [Rob Shocks' walkthrough](https://youtu.be/lUhXa8GiXns?t=375) illustrates the

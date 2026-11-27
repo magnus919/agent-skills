@@ -209,6 +209,16 @@
         "Names the initial state, save, reopen/readback transition and rejected-save case.",
         "Requires an existing reusable driver or marks its command as unknown rather than presenting an invented command as tested."
       ]
+    },
+    {
+      "id": "compare-settings-to-export-behavior-lanes",
+      "prompt": "Plan release review for a fix that reads a saved export-column preference. Known baseline omits the enabled column after reopen. Candidate is claimed fixed. Default exports should still omit the column and retain the same row identities. Settings and downloads can be exercised, but an in-scope scheduled export requires an unavailable entitlement. Give reviewers a feature map and review disposition.",
+      "expected_output": "An evidence plan maps the cross-feature journey, compares behavior on the two revisions, preserves a control and keeps required unreachable coverage open.",
+      "assertions": [
+        "Maps save and reopen to the actual download and observes both the parsed column and expected row identities on baseline and candidate.",
+        "Specifies a disabled-preference control and distinct persistence and export exploration responsibilities.",
+        "Names the missing entitlement and keeps the required scheduled-export criterion unresolved."
+      ]
     }
   ]
 }

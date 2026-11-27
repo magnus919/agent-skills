@@ -115,6 +115,16 @@
         "Recommends restoring the guard or representing the coupled states, and depicting or explicitly accounting for the restore path.",
         "Does not use a green checker or a corrected diagram as proof of current implementation behavior."
       ]
+    },
+    {
+      "id": "qualify-export-driver-and-refresh-evidence",
+      "prompt": "Review this settings-to-CSV run. The new process returns health OK before the two seeded rows appear. The prior driver captured a pass from a shared profile. A qualified run on the exact PR head later passes both settings persistence and CSV content. Integration keeps the same patch but updates the CSV serializer. Settings persistence has no dependency on that serializer. Describe the rerun, evidence retention and current dispositions.",
+      "expected_output": "A bounded verification plan separates readiness, candidate validity and affected integration evidence. It retains evidence outside run-owned resources and does not confer a fresh export verdict.",
+      "assertions": [
+        "Requires checking the exact build and run-owned profile and observing the seeded fixture through the intended surface before trusting the driver.",
+        "Keeps the CSV verdict unresolved until serialized output is checked on the integration candidate and requires a reason before reusing the unaffected settings evidence.",
+        "Retains readable evidence outside the owned profile before teardown and limits teardown to resources created by the run."
+      ]
     }
   ]
 }

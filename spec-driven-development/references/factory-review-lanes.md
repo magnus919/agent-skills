@@ -93,6 +93,26 @@ permits the next boundary, or escalate the unresolved criterion with its owner.
 QA owns test/oracle design; verification-methodology owns evidence judgments;
 bmad owns intent changes; release-engineering owns promotion and rollback.
 
+## Worked review: settings to export
+
+Use the [mapped journey](../templates/FEATURE-MAP.md#example-settings-to-export)
+and [driver qualification](../../verification-methodology/references/evidence-standards.md#worked-example-a-disposable-settings-to-export-driver).
+In this illustrative review, the baseline preserves the reference-column setting
+after reopening, but the downloaded header omits it. The candidate preserves the
+setting and writes the column and both expected rows. With the option off, both
+revisions omit the optional column and still export both rows. These observations
+would establish the regression and its repair on the exercised path.
+
+Assign distinct probes based on consequences. One reviewer exercises save,
+reopen, and rejected save. Another starts from an independently seeded equivalent
+profile and observes how export consumes each preference state, including a
+normal download and the empty-data path. Record explicit coverage and reconcile
+overlap. If an entitled scheduled export is required but unavailable, leave that
+criterion unresolved and keep the required lane open. When a dependency change
+affects serialization during integration, exercise the export again against the
+actual integration candidate. Keep the engineering assessment and policy decision
+in their existing lanes.
+
 ## Source and limits
 
 Cole Medin distinguishes [validation and code review at 14:26](https://www.youtube.com/watch?v=GQatuTWSRqY&t=866s)
