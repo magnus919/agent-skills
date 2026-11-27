@@ -86,6 +86,15 @@
         "Does not treat equal patch IDs as proof of behavior or a waiver of current required gates.",
         "Identifies the changed configuration as a reason to rerun affected evidence after A actually lands."
       ]
+    },
+    {
+      "id": "brief-owner-on-expired-landing-grant",
+      "prompt": "The operator returns after a fixture PR was held. Its prior CI covered a different head, the example landing grant expired, and an external side effect is unconfirmed. Produce the durable handoff and a concise owner-facing brief.",
+      "expected_output": "The handoff accurately joins current facts and evidence with the authorized remaining steps, and distinguishes the owner’s decision.",
+      "assertions": [
+        "Records current target and head, stale evidence, grant state, and authorized remaining checks and reconciliation.",
+        "Names the operator decision, its risk and the unresolved effect separately from any code rollback."
+      ]
     }
   ]
 }

@@ -509,6 +509,15 @@
         "Reports accepted task outcomes and time to usable result rather than only per-call latency.",
         "Accounts for failures and timeouts in the comparison."
       ]
+    },
+    {
+      "id": "audit-superseded-review-and-expired-grant",
+      "prompt": "Produce a decision audit for a fixture landing. J1 recommended reuse of a C7 pass. C8 changes the serializer and a controller records a grant expiry. C8 checking has not run. Show which facts, outcomes and next evidence support the decision.",
+      "expected_output": "One audit record connects versioned evidence, a superseded recommendation and an unresolved current result without claiming an effect.",
+      "assertions": [
+        "Links each finding to versioned evidence and preserves the previous attempt and disagreement.",
+        "Records C8 as unrun and shows the accountable hold and what evidence remains needed."
+      ]
     }
   ]
 }

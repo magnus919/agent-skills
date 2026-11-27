@@ -66,3 +66,24 @@ Paths above are relative to the skill root. Complete the governance review when 
 Cole Medin's [My AI Dark Factory Dream Is Dead (Here's What Actually Works)](https://www.youtube.com/watch?v=GQatuTWSRqY), published October 16, 2026, supplies practitioner examples: release planning outside the factory (9:03), holdouts (10:51), selectable checkpoints (11:48), separate validation/review (14:26), bounded supervision (15:32), protected mission/rules (16:35), and human staging feedback before production (17:40). These are observations from his workflow, not comparative performance evidence or proof that unattended factories cannot work.
 
 The decision-rights matrix, review-capacity conditions and protected-change procedure here are governance synthesis applied to those examples. They extend this skill's existing earned-autonomy guidance; they are not claims that the speaker presented a governance standard.
+
+## Sample the approved work class
+
+For [grant M-17](earned-autonomy.md#worked-decision-a-bounded-maintenance-merge-class),
+define the sampling population as all landed eligible fixture changes in a
+named observation window, counted once per actual landing. Store the roster
+and landed revisions, selection rule, sample denominator and exclusions.
+As an illustration, select two from each batch of ten via a reproducible seed
+with a floor of one for smaller nonempty batches. Calibrate any real rate to
+the change class, exposure, failure severity and reviewer capacity.
+Track withheld items separately to explain why they never entered the roster,
+and inspect near misses, reverts, first uses of new paths and exceptions
+separately from the routine sample. Required pre-landing review remains
+part of the governing route for higher-consequence changes.
+
+Review observed effects alongside the current landing and verifier evidence.
+Track time to detection, recurring failures and any missing evidence. A stale
+mandatory verifier or evidence of a meaningful escaped defect triggers the
+grant's scoped hold and reconciliation rules. When a change includes customer
+access or disclosure, use the relevant reserved decision and recovery path.
+Reverting the PR cannot recover data already downloaded.

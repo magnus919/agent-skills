@@ -154,3 +154,35 @@ resumption at that boundary with the exact reason reported:
 - Every mutation after resumption updates the handoff (`head_sha`,
   `completed_steps`, `pending_steps`, `updated_at`) so the next interruption
   resumes from an accurate record.
+
+## Example: brief an operator after a scoped hold
+
+Use the current durable handoff fields and render a short operator brief
+from the same record. In the
+[synthetic fixture example](../../ai-governance/references/earned-autonomy.md#worked-decision-a-bounded-maintenance-merge-class),
+the fixture change is prepared and reviewable. The check covers a previous
+head, and the scoped landing grant expired. Record the live PR, current head,
+previous check reference, grant expiry, any live watchers and reconciliation
+status in the handoff. Only record gates with evidence on the exact head.
+
+The illustrative record below uses synthetic target and PR identifiers.
+The active directive still permits verification and reconciliation of this
+item. The expired unattended grant cannot supply a merge step.
+
+| Existing field | Value at interruption |
+|---|---|
+| Repository, PR, branch, head | `example.invalid/team/export`, PR 81, `fix/export-fixture`, current C8 (`8888888888888888888888888888888888888888`). |
+| Authorization boundary | Verify current candidate and reconcile existing effects. Unattended landing is held by expiry of M-17. |
+| Completed steps | PR identity confirmed at C8. C7 checker receipt retained as history. |
+| Pending steps and watchers | Run current-head verification and check externally visible effects. No watcher active. |
+| Stop reason and detail | Boundary stop for landing. The release owner is responsible for deciding whether to restore the grant after new evidence. |
+
+The operator brief says what changed, what is held, and which owner can
+decide. For example: “The export fixture update is ready for current-head
+verification. Unattended landing is held because its grant expired. The
+check on the previous revision does not cover the changed serializer.
+The release owner needs current evidence and a new grant decision before
+this action can resume.” Explicitly distinguish the pending owner decision
+from checks the agent can still run under valid authority. If reconciliation
+finds an external effect already occurred, render the responsible owner
+and recovery boundary separately from the code revert.

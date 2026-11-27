@@ -934,6 +934,15 @@
         "Maps the rule to an owner and concrete enforcement and keeps the original acceptance rule fixed for known-failure and held-out comparisons.",
         "Measures interventions alongside accepted task outcomes and detection on comparable exposure."
       ]
+    },
+    {
+      "id": "bound-unattended-loop-and-preserve-holds",
+      "prompt": "Fill a loop contract for a fixture-only maintenance queue. A repeated intake event arrives, a serializer update stales verification, and the allowed landing grant may expire. State how work proceeds, stops and resumes.",
+      "expected_output": "A bounded loop preserves provenance and exact-candidate authority, with distinct failure and stop paths.",
+      "assertions": [
+        "Records input identity, scope, checker evidence, current authority, budgets and responsible roles.",
+        "Stops the affected action and reconciles active work when evidence stales or the grant lapses."
+      ]
     }
   ]
 }
