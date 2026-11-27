@@ -67,3 +67,20 @@ Pilot, stop rule, result, and next action:
 | Team topology or role design | [org-design](../../org-design/SKILL.md) | Capacity/role constraint in; people design out |
 
 Do not create an operations sibling for a narrow tool or department: use the named tool owner or existing methodology and preserve this boundary.
+
+## Example: separate what a probe can settle from a product choice
+
+In the [export brief](../../product-discovery/references/artifact-first-interview.md#example-turn-a-disputed-term-into-acceptance-evidence),
+the membership criterion is accepted in revision 4. Two questions remain.
+Does the current service hold a stable membership ID at download time? Use a
+read-only trace or a reversible fixture in a disposable environment. The fixture
+shows the ID is available. May a former member retrieve a previously issued
+download link? Record that decision as D-12 with the product owner, the affected
+acceptance criterion and the latest decision point. The fixture result answers
+the first question. The second remains open until the owner decides.
+
+Link the observed result and keep scope and decision revision on the
+[project planning record](../../technical-project-management/references/flow-and-capacity.md#example-decisions-across-sessions).
+Use [recorded design rationale](../../software-architecture-analysis/references/recorded-design-rationale.md)
+where rationale matters. Runtime observation establishes behavior at the observed
+revision. Rationale comes from the record of the decision.

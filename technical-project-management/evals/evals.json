@@ -149,6 +149,15 @@
         "Treats Thursday as the decision deadline without inventing an implementation commitment.",
         "Measures timely decisions and reviewer effort against the existing process."
       ]
+    },
+    {
+      "id": "decision-frontier-preserves-independent-work",
+      "prompt": "A current export-layout work item is independent of D-12, an unresolved choice about former-member links. Two sessions need to resume from the same index. What state is canonical, what proceeds, and what reopens after a decision changes?",
+      "expected_output": "A dependency-aware index keeps an authoritative decision and only blocks its dependent work.",
+      "assertions": [
+        "Links one authoritative decision with owner, revision and state from the shared planning index.",
+        "Releases independent work and holds the D-12-dependent slice until the decision is resolved."
+      ]
     }
   ]
 }
