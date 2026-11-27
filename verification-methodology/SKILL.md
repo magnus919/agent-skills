@@ -52,7 +52,7 @@ Do not use this skill for open-ended exploration that has no artifact, claim, de
 |-----------|-------------|
 | `references/criteria-assessment.md` | You need to evaluate whether work meets completion criteria |
 | `references/evidence-standards.md` | You need to judge whether evidence supports the claims made |
-| `references/model-evidence-sync.md` | A change may invalidate evidence from a formal model, state diagram, or bounded checker |
+| `references/model-evidence-sync.md` | A change may invalidate bounded model evidence, or a diagram may imply behavior the source does not support |
 | `references/magnus919-refine-to-ship-gate.md` | You are running the Magnus919 Refine-to-Ship verifier gate — 12 criteria, editorial change verification, output structure |
 | `references/verdict-template.md` | You need to produce a structured pass/fail/hold verdict |
 

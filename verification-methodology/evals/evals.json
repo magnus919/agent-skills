@@ -93,6 +93,17 @@
         "Does not accept removing retry without an approved behavior or scope change.",
         "Records what was checked and excluded separately from what the diagram depicts."
       ]
+    },
+    {
+      "id": "state-diagram-projection-invents-and-hides-paths",
+      "prompt": "A bounded editor model permits sending a save only while connected and can restore a queued edit after reconnect. A simplified state diagram shows separate connection and save regions, with an unguarded send arrow and no restore edge. The checker passed. The PM wants to use the diagram to sign off on offline editing. What can they sign off on and what needs to change?",
+      "expected_output": "Reject the current diagram as evidence for offline editing: it implies an excluded send and omits a relevant restore. Repair or qualify the view using bounded source traces and retain separate evidence for the real application.",
+      "assertions": [
+        "Identifies the unguarded offline send as a transition that the diagram implies but the model excludes.",
+        "Identifies the missing restore path as a distinct omission relevant to the decision.",
+        "Recommends restoring the guard or representing the coupled states, and depicting or explicitly accounting for the restore path.",
+        "Does not use a green checker or a corrected diagram as proof of current implementation behavior."
+      ]
     }
   ]
 }
