@@ -41,6 +41,23 @@ witness does not enumerate all failing histories. Record the scope and results
 of the new model check, the negative control, and the concrete implementation
 check separately. Update the verified mapping only when the evidence agrees.
 
+## Check what a diagram implies
+
+When readers will rely on a simplified diagram to make a decision, test the
+simplification separately from the model result. Compare the starts and
+transitions that the diagram implies with the same bounded source evidence,
+in both directions: does the picture allow a path the source excludes, or
+omit a path that would change the reader's decision? Check guards and coupled
+updates, particularly when several regions are drawn as independent.
+
+For example, an editor sends a save only after a connection returns. A diagram
+with separate connection and save regions makes the send arrow look available
+while offline. Check that path against the trace, then add the missing
+condition or draw the coupled states together. If the source cannot resolve
+the discrepancy, label the diagram illustrative and do not use it to settle
+the promise. Correcting the diagram does not prove the running app behaves
+the same way.
+
 ## Example: an export gains a second completion path
 
 An export service must not emit two delivery receipts for the same export. The
