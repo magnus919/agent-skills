@@ -923,6 +923,17 @@
         "Identifies the affected export evidence and distinguishes the independently valid layout review.",
         "Routes expanded access to the contract owner and binds any approved change to a new revision and affected checks."
       ]
+    },
+    {
+      "id": "recover-current-guardrail-from-session-evidence",
+      "prompt": "Two authorized, sanitized session records show a person repeatedly asking for the parsed export check. A prior session recommends a command that was reverted. The current check exists, but export never invokes it. Other records show a color preference, a one-time outage and a justified denial of a shared account. Propose and evaluate a bounded lesson.",
+      "expected_output": "A scoped lesson repairs existing wiring, keeps legitimate controls, and compares recurrence and outcomes under fixed acceptance.",
+      "assertions": [
+        "Checks current repository and invocation evidence and routes the recurring failure to missing wiring for an existing guardrail.",
+        "Classifies private preference, transient outage and correct denial separately from the recurring defect.",
+        "Maps the rule to an owner and concrete enforcement and keeps the original acceptance rule fixed for known-failure and held-out comparisons.",
+        "Measures interventions alongside accepted task outcomes and detection on comparable exposure."
+      ]
     }
   ]
 }

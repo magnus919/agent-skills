@@ -114,3 +114,16 @@ exact input and return contracts.
 
 Use [templates/observability-plan.md](../templates/observability-plan.md) and
 [templates/acceptance-contract.md](../templates/acceptance-contract.md).
+
+## Worked measure: a person had to restore missing evidence
+
+For the [skipped-check example](lesson-to-pr.md#worked-example-from-skipped-check-to-owned-guardrail),
+record a bounded intervention event only when a person has to identify or
+supply the missing check evidence. In paired records, keep the task, fixture,
+acceptance criteria and authority fixed. Compare accepted outcomes and failure
+detection alongside human interventions. Keep the count of opportunities, which
+paths were exercised, what the checker observed and any incomplete trace.
+A necessary product decision or scoped denial remains visible. A lower raw
+intervention count with an escaped defect does not show improvement.
+Use the existing [trajectory review](../../agent-evals-and-observability/references/trajectory-review.md)
+detail and privacy contract for instrumented comparisons.

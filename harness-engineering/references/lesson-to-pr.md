@@ -81,3 +81,28 @@ connects traces, proposed PRs, datasets and recurrence and says it never merges;
 distinguishes personal from deployment-shared context. These inspire the workflow,
 not its authority model or a vendor dependency. No spoken-demo result is claimed
 from the unavailable video transcript.
+
+## Worked example: from skipped check to owned guardrail
+
+Review only the authorized, minimized session records and the current
+repository and runner evidence. Two independent export tasks needed a human
+to catch the same missing parsed-CSV check. A stale session conclusion had
+recommended a replacement command that main subsequently reverted. Reconcile
+the records as in [context and state](context-and-state.md#worked-example-reconcile-a-stale-session-conclusion).
+Keep a caller-specific color preference in its authorized private scope, close
+a transient service outage after bounded recovery, and preserve a correct
+refusal to access a shared profile. Those observations do not support a new
+shared rule.
+
+The export owner confirms the actual check already exists and the supported
+route bypasses it. Propose wiring the check into that route. In the existing
+[guardrail promotion record](../templates/guardrail-promotion.md), bind the
+acceptance requirement to the gate, owner, disposition on failure, scope,
+expiry or review point, and exact proof. On the original route, a seeded
+export missing its optional column reached review. The wired check must fail
+that replay. A conforming export must pass. An unrelated valid export and a
+held-out empty export exercise the boundary and the accepted contract. Keep
+the oracle and failure behavior fixed across the comparison. With the new
+revision live, assess recurrence only on new work that actually traverses the
+route. Send any adjacent regression back through the existing owner and
+rollback path.

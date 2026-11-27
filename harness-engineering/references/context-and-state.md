@@ -129,3 +129,18 @@ spanning two compactions and an expired original record. Observe the recovered
 operation identity and explicit missing-evidence disposition, not only summary
 fidelity. This is a reusable design requirement, not a claim that Infinity offers
 a deletion protocol or immutable audit ledger.
+
+## Worked example: reconcile a stale session conclusion
+
+An authorized session digest says the team switched CSV verification to a
+new command. Read the scoped decision and current branch before carrying that
+claim forward. The command was reverted because it checked the wrong profile.
+The current runner already has a supported parsed-CSV check. Retain the
+failed approach and its reason in the working brief, and use the currently
+supported command. If the scope, revision or authority cannot be proven, label
+the conclusion unresolved before acting.
+
+Compare the current workflow log with the check invocation. In this example
+the check exists but the export route never calls it. That observation changes
+the diagnosis from missing guidance to missing wiring. Feed the evidence into
+the [existing lesson workflow](lesson-to-pr.md#worked-example-from-skipped-check-to-owned-guardrail).
