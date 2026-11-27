@@ -133,6 +133,8 @@ jobs:
         run: ruby scripts/validate-bundles.rb
       - name: Test bundle manifest validation
         run: ruby scripts/test-validate-bundles.rb
+      - name: Enforce Magnus Mode catalog freshness
+        run: python3 scripts/check-magnus-mode.py
       - name: Validate lifecycle capability matrix catalog
         run: ruby scripts/gen-lifecycle-matrix.rb
       - name: Validate lifecycle capability matrix

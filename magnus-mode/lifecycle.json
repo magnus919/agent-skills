@@ -1,0 +1,422 @@
+{
+  "Discover and frame": [
+    {
+      "id": "frame",
+      "title": "Frame the outcome",
+      "applies": "Every project or change; lightweight for clear low-risk work.",
+      "evidence": "Goal, surface, accountable owner, requested stop, and known authority.",
+      "after": [],
+      "owner": "technical-project-management",
+      "support": [
+        "bmad",
+        "chief-of-staff-methodology",
+        "forward-deployed-engineering",
+        "neckbeard",
+        "org-design",
+        "technical-program-management"
+      ]
+    },
+    {
+      "id": "discover",
+      "title": "Validate the problem",
+      "applies": "When the user, problem, or expected value is not established.",
+      "evidence": "Stakeholder evidence, unresolved assumptions, and validated problem or an explicit open decision.",
+      "after": [
+        "frame"
+      ],
+      "owner": "product-discovery",
+      "support": [
+        "artifact-pyramids",
+        "constrained-optimization",
+        "data-scientist",
+        "gap-analysis",
+        "product-strategy",
+        "research-methodology",
+        "strategy-frameworks"
+      ]
+    },
+    {
+      "id": "shape",
+      "title": "Agree scope and acceptance",
+      "applies": "Every change; a scoped small correction may substantiate this briefly.",
+      "evidence": "Accepted scope, exclusions, testable outcomes and any explicit limits.",
+      "after": [
+        "frame",
+        "discover"
+      ],
+      "owner": "product-shaping",
+      "support": [
+        "amazon-memo",
+        "kanban-guru",
+        "product-lifecycle",
+        "product-methodology",
+        "product-operations-and-governance",
+        "product-roadmapping-and-portfolio"
+      ]
+    }
+  ],
+  "Design and plan": [
+    {
+      "id": "current-state",
+      "title": "Inspect existing systems and constraints",
+      "applies": "When existing behavior, integration, or failure modes affect the work.",
+      "evidence": "Source or observation-backed baseline and material unknowns.",
+      "after": [
+        "frame"
+      ],
+      "owner": "software-architecture-analysis",
+      "support": [
+        "binary-analysis",
+        "c4-diagramming",
+        "cncf-landscape",
+        "data-cleaning",
+        "mermaid-diagrams",
+        "open-knowledge-format",
+        "semantic-spacetime",
+        "technology-radar"
+      ]
+    },
+    {
+      "id": "design",
+      "title": "Resolve architecture and interfaces",
+      "applies": "Material changes to behavior, interfaces, data, or cross-team ownership.",
+      "evidence": "Agreed boundaries, trade-offs and relevant design decisions.",
+      "after": [
+        "shape",
+        "current-state"
+      ],
+      "owner": "software-architecture",
+      "support": [
+        "adr-authoring",
+        "api-design-and-evolution",
+        "data-architect",
+        "digital-twin",
+        "enterprise-architecture",
+        "multi-tenant-saas-architecture",
+        "operational-design",
+        "programming-principles",
+        "promise-theory"
+      ]
+    },
+    {
+      "id": "experience",
+      "title": "Design user flows and measurement",
+      "applies": "When changing a user journey or how success will be measured.",
+      "evidence": "User flow, accessibility needs, measurement and learning plan.",
+      "after": [
+        "shape"
+      ],
+      "owner": "product-design-and-ux",
+      "support": [
+        "brand-designer",
+        "product-adoption",
+        "product-analytics-and-measurement",
+        "product-experimentation",
+        "seo",
+        "web-accessibility"
+      ]
+    },
+    {
+      "id": "risk",
+      "title": "Resolve material risks and decision rights",
+      "applies": "Sensitive data, security, AI authority or other material risk.",
+      "evidence": "Scope-specific approved controls or explicitly named unresolved decisions.",
+      "after": [
+        "shape",
+        "current-state"
+      ],
+      "owner": "secure-software-engineering",
+      "support": [
+        "ai-governance",
+        "ai-operating-economics",
+        "legal-strategy",
+        "privacy-engineering",
+        "security-audit-methodology"
+      ]
+    },
+    {
+      "id": "spec",
+      "title": "Define the behavior contract",
+      "applies": "For work whose agreed outcomes need implementation-ready behavior and tests.",
+      "evidence": "Versioned spec, acceptance cases and error paths tied to scope.",
+      "after": [
+        "shape",
+        "design",
+        "experience",
+        "risk"
+      ],
+      "owner": "spec-driven-development",
+      "support": [
+        "agent-evals-and-observability",
+        "qa-methodology",
+        "verification-methodology"
+      ]
+    },
+    {
+      "id": "plan",
+      "title": "Plan changes and verification",
+      "applies": "Every change; proportionate to scope and risk.",
+      "evidence": "Work breakdown, independent slices, verification plan and dependencies.",
+      "after": [
+        "shape",
+        "spec"
+      ],
+      "owner": "implementation-planning",
+      "support": [
+        "forgejo-cli",
+        "github-runner",
+        "jira",
+        "kanban-guru",
+        "linear",
+        "multi-agent-coordination",
+        "opensource-contributions",
+        "pace-plan",
+        "woodpecker-ci"
+      ]
+    }
+  ],
+  "Build and instrument": [
+    {
+      "id": "fixtures",
+      "title": "Prepare acceptance fixtures",
+      "applies": "When the change needs fixtures and the relevant acceptance contract is stable.",
+      "evidence": "Representative positive, negative, boundary, and failure fixtures tied to the agreed contract.",
+      "after": [
+        "plan"
+      ],
+      "owner": "qa-methodology",
+      "support": [
+        "agent-evals-and-observability",
+        "playwright"
+      ]
+    },
+    {
+      "id": "signals",
+      "title": "Plan observable signals",
+      "applies": "When the behavior or operating risks require new evidence in production.",
+      "evidence": "Agreed signals, interpretation and owners for detecting success or regression.",
+      "after": [
+        "plan"
+      ],
+      "owner": "telemetry",
+      "support": [
+        "grafana",
+        "site-reliability-engineering"
+      ]
+    },
+    {
+      "id": "implement",
+      "title": "Build software",
+      "applies": "For application or infrastructure implementation.",
+      "evidence": "Candidate revision and scoped changes with local evidence.",
+      "after": [
+        "plan"
+      ],
+      "owner": "backend-engineering",
+      "support": [
+        "ascii-city-engine",
+        "cli-builder",
+        "docker-compose",
+        "frontend-engineering",
+        "hugo-theme",
+        "kubernetes",
+        "mobile-development",
+        "platform-engineering",
+        "postgres",
+        "react",
+        "spring-ai",
+        "stripe",
+        "supabase",
+        "terraform",
+        "three",
+        "traefik",
+        "vite"
+      ]
+    },
+    {
+      "id": "hardware",
+      "title": "Build hardware or device integrations",
+      "applies": "For hardware, embedded work, or device interfaces.",
+      "evidence": "Bench evidence, integration boundaries and safe recovery path where relevant.",
+      "after": [
+        "plan"
+      ],
+      "owner": "electronics",
+      "support": [
+        "camera-hacking",
+        "esp32-development",
+        "fpga-development",
+        "meshcore-packet-capture"
+      ]
+    },
+    {
+      "id": "ai-data",
+      "title": "Build data, ML, and agent components",
+      "applies": "For data or AI work, with appropriate data and authority boundaries.",
+      "evidence": "Versioned pipeline or agent changes, inputs, evaluation baseline and local checks.",
+      "after": [
+        "plan"
+      ],
+      "owner": "harness-engineering",
+      "support": [
+        "agent-skills",
+        "autogen",
+        "crewai",
+        "data-engineering",
+        "dspy",
+        "flaresolverr",
+        "flaresolverr-cli",
+        "haystack",
+        "langchain",
+        "langgraph",
+        "litellm",
+        "llama-cpp",
+        "llamaindex",
+        "ml-engineering",
+        "pydanticai",
+        "rag-design",
+        "raleigh",
+        "system-one",
+        "tabpfn",
+        "training-data-annotation",
+        "unsloth",
+        "vllm",
+        "workflow-architect"
+      ]
+    },
+    {
+      "id": "instrument",
+      "title": "Instrument and document changed behavior",
+      "applies": "As needed when behavior, indicators, interfaces, or operating procedures change.",
+      "evidence": "Inspectable signals and current reader-facing docs bound to the changed surface.",
+      "after": [
+        "plan",
+        "signals"
+      ],
+      "owner": "telemetry",
+      "support": [
+        "confluence-cli",
+        "grafana",
+        "notion",
+        "playwright",
+        "technical-documentation"
+      ]
+    }
+  ],
+  "Verify and review": [
+    {
+      "id": "verify",
+      "title": "Verify the actual candidate",
+      "applies": "Every change; run evidence proportionate to the selected delivery path.",
+      "evidence": "Results against acceptance criteria at a specific revision, with clear blind spots.",
+      "after": [
+        "plan",
+        "implement",
+        "hardware",
+        "ai-data",
+        "instrument",
+        "fixtures"
+      ],
+      "owner": "verification-methodology",
+      "support": [
+        "agent-evals-and-observability",
+        "performance-optimization",
+        "playwright",
+        "qa-methodology",
+        "systematic-debugging"
+      ]
+    },
+    {
+      "id": "review",
+      "title": "Review the actual candidate",
+      "applies": "Where the project requires independent review or acceptance.",
+      "evidence": "Review verdict and required approvals for the same candidate revision.",
+      "after": [
+        "verify"
+      ],
+      "owner": "code-review",
+      "support": [
+        "agent-council",
+        "opensource-contributions",
+        "verified-delivery"
+      ]
+    }
+  ],
+  "Release and transition": [
+    {
+      "id": "readiness",
+      "title": "Prove readiness and recovery",
+      "applies": "When transitioning a live service, model, data set, or operating procedure.",
+      "evidence": "Applicable capacity, migration, recovery, rollout and rollback proof.",
+      "after": [
+        "verify",
+        "review"
+      ],
+      "owner": "production-readiness",
+      "support": [
+        "capacity-and-cost-engineering",
+        "migration-engineering",
+        "production-excellence",
+        "resilience-and-recovery"
+      ]
+    },
+    {
+      "id": "rollout",
+      "title": "Release or roll out under authority",
+      "applies": "Only when the requested stop and explicit authority include the action.",
+      "evidence": "Authorized plan, actual deployed revision and post-change checks.",
+      "after": [
+        "readiness"
+      ],
+      "owner": "release-engineering",
+      "support": [
+        "agent-production-operations",
+        "platform-engineering",
+        "product-adoption",
+        "remote-systems-administration",
+        "vercel-eve",
+        "verified-delivery"
+      ]
+    }
+  ],
+  "Operate and learn": [
+    {
+      "id": "operate",
+      "title": "Operate and diagnose a live system",
+      "applies": "When a service is live or the task is operational; no assumed release prerequisite.",
+      "evidence": "Service evidence, owner, impact and recovery/response state.",
+      "after": [],
+      "owner": "site-reliability-engineering",
+      "support": [
+        "agent-production-operations",
+        "crowdsec",
+        "grafana",
+        "litellm",
+        "remote-systems-administration",
+        "resilience-and-recovery",
+        "restic",
+        "slack",
+        "tailscale",
+        "telemetry",
+        "woodpecker-ci"
+      ]
+    },
+    {
+      "id": "learn",
+      "title": "Close the loop and reopen affected decisions",
+      "applies": "After a release observation window, incident, or product experiment.",
+      "evidence": "Sourced outcome, lessons, and only accepted follow-up decisions.",
+      "after": [
+        "operate"
+      ],
+      "owner": "incident-learning",
+      "support": [
+        "ai-operating-economics",
+        "product-analytics-and-measurement",
+        "product-experimentation",
+        "product-lifecycle-learning",
+        "product-methodology"
+      ]
+    }
+  ]
+}

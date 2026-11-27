@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "skill_name": "magnus-mode",
+  "evals": [
+    {
+      "id": "discovery-before-build",
+      "prompt": "Use Magnus Mode. Someone suggested a churn dashboard. We have no accepted brief or agreed metrics; analytics and engineering have written competing implementation plans. Assess our position.",
+      "expected_output": "Select Product Discovery to establish the problem and accountable owner. Treat the plans as candidates rather than permission to build. Name independent read-only work and the current stop.",
+      "assertions": ["Routes the unresolved customer problem to product-discovery", "Identifies scope or acceptance as unverified rather than approved by either plan", "Stops before implementation", "Names a useful read-only task that can proceed independently"]
+    },
+    {
+      "id": "green-ci-missing-decision",
+      "prompt": "Use Magnus Mode to assess a feature that grants billing export access to a new role. CI is green and the branch exists, but the scope of records that role may see is unapproved. Unrelated API backward-compatibility checks passed at the current revision. What is ready and what should wait?",
+      "expected_output": "Identify the unapproved decision and its owner, and preserve unrelated checks. Report the affected spec and permission verification as blocked until the policy is agreed.",
+      "assertions": ["Distinguishes green CI from approval of the access policy", "Names the missing access decision and routes to privacy or secure software engineering and the accountable owner", "Preserves unrelated API checks rather than restarting the entire project", "Does not authorize merging or exposing data"]
+    },
+    {
+      "id": "lightweight-docs-change",
+      "prompt": "Use Magnus Mode to assess an approved correction to a spelling mistake in an explanatory README. It changes no instructions or contract. No rollout is requested.",
+      "expected_output": "Recognize the accepted narrow scope and a lightweight delivery path with a targeted diff or docs check. Record the reason broader steps do not apply.",
+      "assertions": ["Routes to a proportionate lightweight delivery path", "Names a targeted verification check for the correction", "Does not require repeating discovery or scheduling production rollout"]
+    },
+    {
+      "id": "merge-is-not-rollout",
+      "prompt": "Use Magnus Mode to assess a merged PR changing when an operator calls for disaster recovery. CI is green; the last restore exercise used the old trigger. Do not deploy or run a restore.",
+      "expected_output": "Credit verified merge separately, but require applicable recovery evidence and a rollout decision before operational use. Route to recovery and release specialists without acting.",
+      "assertions": ["Does not infer that merged means deployed or ready", "Identifies the stale restore evidence tied to the old trigger", "Routes procedure evidence to resilience-and-recovery", "Respects the assessment-only stop"]
+    },
+    {
+      "id": "plan-parallel-join",
+      "prompt": "Use Magnus Mode. The architecture and feature brief are approved, including the API contract. We need test fixtures, observability design, implementation and a review on the exact candidate. The QA skill is unavailable in this environment. Assess the next steps, not execute them.",
+      "expected_output": "Use established earlier evidence. Place independent fixture and observability preparation in the ready set when no shared writes contend. Bind the required review to the eventual candidate and disclose the missing skill.",
+      "assertions": ["Does not rerun approved discovery or architecture", "Names independent fixture and observability work and their coordination limits", "Separates final candidate verification or review from preparatory work", "Identifies the unavailable skill without treating the QA gate as passed"]
+    }
+  ]
+}

@@ -1,0 +1,762 @@
+{
+  "actuarial-risk-modeling": {
+    "scope": "unrelated",
+    "description_sha256": "54d9d7f547a45d6968b6b5c81fbe627bebc489dc8bdc68095bc012a86c644810"
+  },
+  "adr-authoring": {
+    "scope": "route",
+    "description_sha256": "114454a530e4c77e762591b6f935da6fc0a0a5d0d9d36084acdd36e43bb8cc2c"
+  },
+  "agent-council": {
+    "scope": "route",
+    "description_sha256": "4b96e93454955179942c199ce5f905b6207a217ed87f6833b5476f657f0cfd6d"
+  },
+  "agent-evals-and-observability": {
+    "scope": "route",
+    "description_sha256": "c1287b508bf8cb5c9059ff8700db7223e7efec98dcc5ef30471487d83afb256a"
+  },
+  "agent-production-operations": {
+    "scope": "route",
+    "description_sha256": "dbd5bc3721755dc0841a5e849f7053f4aaa92a02e2ddebb4964256cee2c1853a"
+  },
+  "agent-skills": {
+    "scope": "route",
+    "description_sha256": "8d8e4dcb8bd73573d82b9a0896b22e23894c8418aa8b8c6aefb9e2edf46b2f4e"
+  },
+  "ai-governance": {
+    "scope": "route",
+    "description_sha256": "f4a8f937133720aec04f86b1e7a08d7a5077bdc05b6fa2cd49b40dce0991148b"
+  },
+  "ai-operating-economics": {
+    "scope": "route",
+    "description_sha256": "a4fa26aaa8807a21b4daa49ce27c9ed0a89c5206d0fdbfc8bc6dc8ec6b0eed12"
+  },
+  "amazon-memo": {
+    "scope": "route",
+    "description_sha256": "453119971a24a7a6bf398d38a3ddee36c8213e99deffdd45109732cbdbb6b446"
+  },
+  "analog-occultism": {
+    "scope": "unrelated",
+    "description_sha256": "917132afbb6f50b1dea15053cf25462b0c279443c2c83aa28216359173f7afb2"
+  },
+  "anydoc": {
+    "scope": "unrelated",
+    "description_sha256": "a51229ceee18e37698428d16a5f79e698127f269ab0b3dc293f3738a8e908878"
+  },
+  "api-design-and-evolution": {
+    "scope": "route",
+    "description_sha256": "492355ad15b787bae3176ad6cb70a49202056de29728b9aa2a13c83feb23d88c"
+  },
+  "artifact-pyramids": {
+    "scope": "route",
+    "description_sha256": "1b94fdf31fb1c02c9c0d282a0b6dcaa1cf79f7462489c0e77bfb3e1194e301de"
+  },
+  "ascii-city-engine": {
+    "scope": "route",
+    "description_sha256": "611f0119ed28fc652e9ca2b695d8964fef73ea155d6c792ba077ece1004b2739"
+  },
+  "autogen": {
+    "scope": "route",
+    "description_sha256": "dbd98818ad3e52e1b1439fab74057e3393e23dd895ebd6c62478bcbfddc71c47"
+  },
+  "backend-engineering": {
+    "scope": "route",
+    "description_sha256": "14e72607ba2bf486f0cf0adf6e280ae3740fed231abb228164fb68b14b53c922"
+  },
+  "binary-analysis": {
+    "scope": "route",
+    "description_sha256": "ae1f7ce1575eb1598388621e309b4ee2c33e2b889b47e536a3e127305356e62e"
+  },
+  "bmad": {
+    "scope": "route",
+    "description_sha256": "6b37e8ad48f2e42e386d6657e86f59dabf441a34239a04c46398c8a6c3f31d88"
+  },
+  "brand-designer": {
+    "scope": "route",
+    "description_sha256": "e46b39f5138af96be08021b9f96a230fc815533690a1210bb0b0f14a506ce89a"
+  },
+  "c4-diagramming": {
+    "scope": "route",
+    "description_sha256": "3d9aad0611055b7e468850664a770e9a7c273230cddf55bd431e1b0255f28dbd"
+  },
+  "camera-hacking": {
+    "scope": "route",
+    "description_sha256": "8f8dca3331327eda725523058417217f08b9264660a83a55fa1a34863db8a86c"
+  },
+  "capacity-and-cost-engineering": {
+    "scope": "route",
+    "description_sha256": "d2c7306208c4b3e128c5605b353ee27d9b2fdc7a6ab654ad38d98b50bb3d987f"
+  },
+  "chief-of-staff-methodology": {
+    "scope": "route",
+    "description_sha256": "14a6495a3e788ecd1a71734645409d07386af538f0b618e0832157c243794cb5"
+  },
+  "cli-builder": {
+    "scope": "route",
+    "description_sha256": "62672708a87105582437eba8b630631eb3926b2c57b737a90ba8c5497953e408"
+  },
+  "cncf-landscape": {
+    "scope": "route",
+    "description_sha256": "edca915a065aa6ac4103670998b18066e798436f70c648f1266d07f532b6077a"
+  },
+  "code-review": {
+    "scope": "route",
+    "description_sha256": "c2099af91258018ecd0fe9faea1f18f0a9917f62d5d0829876217968315cfa53"
+  },
+  "color-management": {
+    "scope": "unrelated",
+    "description_sha256": "50bb107580a2f3ce49dc71d0c3bd9440dd2855a7cc9cc2ff332fdfd53505b59b"
+  },
+  "community-guides": {
+    "scope": "unrelated",
+    "description_sha256": "3e67765b67f5dd37812869d1626317cd92b9938d2d35feda3035901a0ac5b402"
+  },
+  "conditional-customer-success": {
+    "scope": "unrelated",
+    "description_sha256": "9578580c31580e220959241ee5fa8f69c41daed39a0b0cde4b0bf7242c5a0cf6"
+  },
+  "confluence-cli": {
+    "scope": "route",
+    "description_sha256": "f619bb71f48bf7e83624e5db6dfda2b7882e71a1a378130f0a4994ee32e17a46"
+  },
+  "constrained-optimization": {
+    "scope": "route",
+    "description_sha256": "bed0d375626325cdaab771c22c949a3063516ae997409d988f3069e0f22b0810"
+  },
+  "copy-editor": {
+    "scope": "unrelated",
+    "description_sha256": "b405835eb07dfa287baa085ec70dce587dbaf410504c93b7895d88e9f4a908be"
+  },
+  "crewai": {
+    "scope": "route",
+    "description_sha256": "52b2f70b3254be097556a80a376432ce9f6e9262d53161338cef914f7c3efda0"
+  },
+  "crm": {
+    "scope": "unrelated",
+    "description_sha256": "fb93c41c0a0c151596419fe85be23af671a1b1a5e6328636d76ad924cb7326f7"
+  },
+  "crowdsec": {
+    "scope": "route",
+    "description_sha256": "86e2af8776e9f9fd62d60e9e39a78557d30ab2979dff2a09cf2d2527bd26dd05"
+  },
+  "cryptpad": {
+    "scope": "unrelated",
+    "description_sha256": "97cfcf309735eae0f59f776972513d3cba005d354e1c87c6f8fe2c8a875ebeb0"
+  },
+  "cyberpunk": {
+    "scope": "unrelated",
+    "description_sha256": "b6725e361fa12bd1773475a5eaa7f349bc4d48082691e97132823e0e4c490f55"
+  },
+  "daily-life-discovery": {
+    "scope": "unrelated",
+    "description_sha256": "350b025d95c7c2d5426c273f13c41a61db3e4ec241f1e528d7773edd91c180e8"
+  },
+  "data-architect": {
+    "scope": "route",
+    "description_sha256": "a6bf8117f7b0cd4a9f336a326746b1e5ffb05dfb18b585aa1cf2e878e2140e9f"
+  },
+  "data-cleaning": {
+    "scope": "route",
+    "description_sha256": "a281529d66924da979d08c9301cbbd4d6e12f5790a2f3954912a4258d6363983"
+  },
+  "data-engineering": {
+    "scope": "route",
+    "description_sha256": "4b3248eef96db9e957a9eaae6f3e42faf24827bd62ef3518cfea094baf09ac49"
+  },
+  "data-scientist": {
+    "scope": "route",
+    "description_sha256": "f61f5f28f2d8d85160fb8f207f2679a67344f2f5619e75c3e127e09294c4bd58"
+  },
+  "de-spin": {
+    "scope": "unrelated",
+    "description_sha256": "0416303c1c6cafce273e49840455101e1da320b5c6ba12fa8920c5e937cb5ebd"
+  },
+  "digital-twin": {
+    "scope": "route",
+    "description_sha256": "b5435bec5da2effbeadbc7d4baf4712b4be9401d0c701bb0c0e97a82aa131054"
+  },
+  "docker-compose": {
+    "scope": "route",
+    "description_sha256": "e5fae1fc98508e44453f282ccb13a3fe18180ae4033a8c798b51936d4e39f919"
+  },
+  "documents": {
+    "scope": "unrelated",
+    "description_sha256": "f126bbeded852a5747cce030dc3c7da8684df11db1108a763c46f99234f1228d"
+  },
+  "dsm5": {
+    "scope": "unrelated",
+    "description_sha256": "526c4dec6d97dcd633d7aa6e0fb054109bcf354f79cac509a0da007bff421cf2"
+  },
+  "dspy": {
+    "scope": "route",
+    "description_sha256": "4100a905318ec4fbc92e80d7f00281560d6d44f70e099828c49ed0d65ff9282d"
+  },
+  "electronics": {
+    "scope": "route",
+    "description_sha256": "a0670911583646df5b29fc727973c8319fe64c3a5c8a915d26e6317f679c8f43"
+  },
+  "email": {
+    "scope": "unrelated",
+    "description_sha256": "6e65cf5ea918a094168a14fc8dbd0fa063c9067014bc3a98beee7b91e20f46d6"
+  },
+  "enterprise-architecture": {
+    "scope": "route",
+    "description_sha256": "a864103868966b99e40076cc775d9bd037dfa7b7f0ae7bd6a993b47975d9323f"
+  },
+  "epub": {
+    "scope": "unrelated",
+    "description_sha256": "e05d42a2161e8938756954d88b7af1c808cce26bbf41cdeb47de9099d8e2fc26"
+  },
+  "esp32-development": {
+    "scope": "route",
+    "description_sha256": "e40d0f3a290c50f81fb877b12efa001ab612fb8af67bccafbb4a920d55eb427c"
+  },
+  "ffmpeg": {
+    "scope": "unrelated",
+    "description_sha256": "27a23e292ddd84cd6e850aec0b74d735ae4ed37294ca303b7ee8f367799e50d5"
+  },
+  "financial-modeling": {
+    "scope": "unrelated",
+    "description_sha256": "0a9590c1c70837e8f9c7bebc1c64816b09e62feab413a1e5503ead960f5cab46"
+  },
+  "fireflies": {
+    "scope": "unrelated",
+    "description_sha256": "a0e3a445aa059bf42bb44b8d908046c6a1e2f88a8544b83d6884246d76abf832"
+  },
+  "flaresolverr": {
+    "scope": "route",
+    "description_sha256": "7f18dc076743fd5e419324b41097ab66cf29534953099dff0ef5a50aa12f5da4"
+  },
+  "flaresolverr-cli": {
+    "scope": "route",
+    "description_sha256": "4285f72bdfb22a4e20f921e63d24083acffed8c42f35066d80177d6d4eb7356a"
+  },
+  "forgejo-cli": {
+    "scope": "route",
+    "description_sha256": "52ccf51917bdb0fe3d09a697bbc0729b8daf1bc113916ab053a01d1006a5d1a2"
+  },
+  "forward-deployed-engineering": {
+    "scope": "route",
+    "description_sha256": "53b876c73e8c71faf7b295c5375bdf933017890d6f7c02d79457ff4e24dde600"
+  },
+  "fpga-development": {
+    "scope": "route",
+    "description_sha256": "1692ec9a3e9957976ed9a81b3f1de673f5397fb8048fbc523309522b902d0b88"
+  },
+  "frontend-engineering": {
+    "scope": "route",
+    "description_sha256": "c4b4a7606ebe5af0f1628a97da561b9cf76897ebb904b2073b41becd939cfadb"
+  },
+  "gap-analysis": {
+    "scope": "route",
+    "description_sha256": "223669a6e88be65ec665bdc3ddd0cd005955776e13909355cf2e6e9d40550aed"
+  },
+  "genius-life": {
+    "scope": "unrelated",
+    "description_sha256": "a9fe2bfe71b90ae963cca5a03002920b27fbbd6b87a470d0a78655ebbf0414cd"
+  },
+  "ghost": {
+    "scope": "unrelated",
+    "description_sha256": "3c88ce50f0db4f332c2421961728bde0199b59f0aa483474a3c7eb94ccbd2534"
+  },
+  "github-runner": {
+    "scope": "route",
+    "description_sha256": "2121a68478024afdaafcffdc067fcd3c9ef552a9ddddc9e265e8581d7aa0c792"
+  },
+  "go-to-market": {
+    "scope": "unrelated",
+    "description_sha256": "4124c5a3c9cec30b87b1eb96fef878bf7207b77be0384918d708ce70bd4cc341"
+  },
+  "grafana": {
+    "scope": "route",
+    "description_sha256": "150ad91b721e320a863c97650b86d07814d9190bd614fae5a22e9d2a8a520dff"
+  },
+  "gutenberg": {
+    "scope": "unrelated",
+    "description_sha256": "c8ffbe4b797ab368137df8d2d10d49b1eb423ebfc5b3097fd7d48319a59153fd"
+  },
+  "harness-engineering": {
+    "scope": "route",
+    "description_sha256": "d73480c1a3f0bfeefa80a6c345e1e4107dc713ebf23d3f39b1f4ebfd76059221"
+  },
+  "haystack": {
+    "scope": "route",
+    "description_sha256": "f1f042c1d3dc0ec12b46ea8224cda9acbc1e8efad7aa3bccf7b2d8cfc9fcbb4c"
+  },
+  "hugo-theme": {
+    "scope": "route",
+    "description_sha256": "a7535c3b86971f05dee2ea2cfdee228ed98076eba01218f9a8e9d0b4d9e75ce3"
+  },
+  "implementation-planning": {
+    "scope": "route",
+    "description_sha256": "b8e4f913156ce177be917127b232ab60e48240cbd27a4bea97212a67f1eee47e"
+  },
+  "incident-learning": {
+    "scope": "route",
+    "description_sha256": "57cc327592764b645441edc993402cea3b1075ff02f0ffdbefb8f63ac4cf97b7"
+  },
+  "infographic": {
+    "scope": "unrelated",
+    "description_sha256": "ae7b64c2a8be55183b1993d2d12b8c164686f52726b01c28d5431e27133ca817"
+  },
+  "jellyfin": {
+    "scope": "unrelated",
+    "description_sha256": "a6df576d09dc9fbd4bb93313b14bcb5b7a84aa7a70bbe06d9a51e9f12df91496"
+  },
+  "jira": {
+    "scope": "route",
+    "description_sha256": "3a38454ac0fb9e071e9f7f23aaf50d53961b008c42b9b8c06c99b1441323105d"
+  },
+  "job-interview-coaching": {
+    "scope": "unrelated",
+    "description_sha256": "d277c0791476e6f1b8ef95a714f9ce527d44c9447fd6f0ecdc8e615ee5c6a225"
+  },
+  "kanban-guru": {
+    "scope": "route",
+    "description_sha256": "c28d89f398395e990dce5897f5b9d3cf285411b42619cdd02cb4a9dc83ef7cbc"
+  },
+  "kubernetes": {
+    "scope": "route",
+    "description_sha256": "44b68591ce50268bcca34693f7bfc31becf3d672d52c933b918e4811b97a5104"
+  },
+  "langchain": {
+    "scope": "route",
+    "description_sha256": "4c12cba372e2af338171c2d27fd649a613bad81473e620db6bfd983685f3b4ce"
+  },
+  "langgraph": {
+    "scope": "route",
+    "description_sha256": "250b4079e937b205ccf0c936c9f456e95feb10be2447fa68b7012fe79de31b16"
+  },
+  "lastfm": {
+    "scope": "unrelated",
+    "description_sha256": "1fc76b47b60ca0a5965dea2ace556fbddcab4c01f24b055b68e036294db41dfc"
+  },
+  "legal-strategy": {
+    "scope": "route",
+    "description_sha256": "c020a9f7386df6aa410cb671457da04dbe50d0e9e3046e2fb8db821ebafd37ce"
+  },
+  "life-coach": {
+    "scope": "unrelated",
+    "description_sha256": "c3ff8bd8b898b64f6ea64ac3fbc1c96cd1e7d7d70b3f495e8afd24120413147a"
+  },
+  "linear": {
+    "scope": "route",
+    "description_sha256": "653f6098e9f8a0abc1721322ad1ef5740eac6620a0e6c2bfcbeb2d94eef3475d"
+  },
+  "litellm": {
+    "scope": "route",
+    "description_sha256": "9e47509475165d8634430addbe9f37d6e33766769739495689de7331c2682511"
+  },
+  "llama-cpp": {
+    "scope": "route",
+    "description_sha256": "a2b0cf04f7b6f0ebf6c00406eed30c8ff2f38e94969cbd2ce7827799e42b80aa"
+  },
+  "llamaindex": {
+    "scope": "route",
+    "description_sha256": "870865afca72d679d87b6cc5070e0388aa966fded8c44f291029cd41263149c6"
+  },
+  "magnus-mode": {
+    "scope": "router",
+    "description_sha256": "8017316bab2ccc74f56c879eeaaafe14b812c6fb9631804ec95140fac3279277"
+  },
+  "managing-editor": {
+    "scope": "unrelated",
+    "description_sha256": "e177a9fc43b65e1943ee7b48ac5cf2f73a7dbefb0c6fe2dc89fe128564b7fa31"
+  },
+  "meetings": {
+    "scope": "unrelated",
+    "description_sha256": "13fd8e60a673fbb77262a94966e11a72250033e3be08b54e69efdb30447fb526"
+  },
+  "mermaid-diagrams": {
+    "scope": "route",
+    "description_sha256": "676678ffe940af5930ca3edc2b03fb7d319d08bae3c52e035d72bd962d32e074"
+  },
+  "meshcore-packet-capture": {
+    "scope": "route",
+    "description_sha256": "1655f5052d1c47ce615eff1ef1b25245e28c674cee4f7b90cbbfa70cd3afc6fc"
+  },
+  "migration-engineering": {
+    "scope": "route",
+    "description_sha256": "48df2316f6dfaef33b121c3e3e390e44efeee817888965bd271ae5a9d9f7c27b"
+  },
+  "ml-engineering": {
+    "scope": "route",
+    "description_sha256": "9dfb851012bd6ef11c22c2861fcbca08b9e7b2b1db437e9290731c293a46bdf8"
+  },
+  "mobile-development": {
+    "scope": "route",
+    "description_sha256": "11d52a4690708e7369d26641d1e2c3e0278d2c0547f0b96e1f7a8a63bb673a8e"
+  },
+  "multi-agent-coordination": {
+    "scope": "route",
+    "description_sha256": "adb62630679feab22a94c0711f957c830a247176c735f8b0f6143f2d9786687e"
+  },
+  "multi-tenant-saas-architecture": {
+    "scope": "route",
+    "description_sha256": "fd8d4fb8370ffcdbc7a5eb820ad0ebc30e16d218edc4bda948abc485ffa41773"
+  },
+  "neckbeard": {
+    "scope": "route",
+    "description_sha256": "10128f59367090b682171d3f417f892f78d2c0c138684916d5a946a0dda5dab1"
+  },
+  "notion": {
+    "scope": "route",
+    "description_sha256": "74d2c0d3da33f5c8faec4c8c4f2fcc54407c05521a3ece5eabbcbdd79005df49"
+  },
+  "nous-branding": {
+    "scope": "unrelated",
+    "description_sha256": "e50d26702e867c87e54c1377dfcc4790dce82f6a7aa0c3ff5417a878128f349f"
+  },
+  "open-knowledge-format": {
+    "scope": "route",
+    "description_sha256": "3181342557857c304385b11ed70d3ce77bef57ea9bddae7bd28e08659142af6e"
+  },
+  "openlibrary": {
+    "scope": "unrelated",
+    "description_sha256": "7bc98ee1f76c63fb010745a5cc9b09341e2785a4ad8fff349ab5a1a8e1fe344b"
+  },
+  "opensource-contributions": {
+    "scope": "route",
+    "description_sha256": "6f0a91914583f4e3308e429db1b0d9cddfda886b619853a78786ef8477042ad1"
+  },
+  "operational-design": {
+    "scope": "route",
+    "description_sha256": "65b39dd1cf12d96232c46f2c5d9b3b54fc44c43e1a82c67802d4f613bb4eef41"
+  },
+  "org-design": {
+    "scope": "route",
+    "description_sha256": "1232be08481494982e286e2c19507b36ec207814b896d717335ef6afc562059a"
+  },
+  "pace-plan": {
+    "scope": "route",
+    "description_sha256": "49f19e4a2154bba7cc11b3b1274200d9a5bc05ba09d5a704b1daa3fc5461da62"
+  },
+  "peertube": {
+    "scope": "unrelated",
+    "description_sha256": "ae657ccc1c90989331680598bd173716502f69f5e3aa5a3341cbdce0c11dc0bc"
+  },
+  "performance-optimization": {
+    "scope": "route",
+    "description_sha256": "60238c32b76d839bb7129f839f21b3d85154e2894db1c3dc5a89d41e1a9e58b0"
+  },
+  "platform-engineering": {
+    "scope": "route",
+    "description_sha256": "e5bf8e214223417bc7739f983003fcb40c6bae6805c1a9da8e0503888f36fef6"
+  },
+  "playwright": {
+    "scope": "route",
+    "description_sha256": "367ce7cfacc55281283303708f7347d5154f172b3e23ed189db4ca8a28d99fd6"
+  },
+  "postgres": {
+    "scope": "route",
+    "description_sha256": "a3ca93520f13d34100fad321e6ab415b9440573697461e6be576c32be05e6cdf"
+  },
+  "privacy-engineering": {
+    "scope": "route",
+    "description_sha256": "523fb993569907a9e18d1876bcb4646cdae837e27bcd4e6d73ed8fbfe1e6becd"
+  },
+  "product-adoption": {
+    "scope": "route",
+    "description_sha256": "8096695ef20e2828b9173de4c500ecde2f622aa8e3e33942ab62b85c7b4c3998"
+  },
+  "product-analytics-and-measurement": {
+    "scope": "route",
+    "description_sha256": "ba257896abed3b314cdcc3c0a1d031956e6e5f10eb95eb068cdc6446f3a34c4e"
+  },
+  "product-design-and-ux": {
+    "scope": "route",
+    "description_sha256": "10249bd857c1f6ae02d2bae95632cdbec74402c97e0c0080edb6df8a9729cc54"
+  },
+  "product-discovery": {
+    "scope": "route",
+    "description_sha256": "890a638000703d65ca4eeb8244046526398c296dc45b752a2d9f488bc9ba1e30"
+  },
+  "product-experimentation": {
+    "scope": "route",
+    "description_sha256": "d27d87473702bf9a6ee048ca48c326bb0ba9f9a1dcc521068373b0fe855ba963"
+  },
+  "product-lifecycle": {
+    "scope": "route",
+    "description_sha256": "ab01357d880aebc5dacee95254208a5bf88d66c72524444aa4f23110f2387169"
+  },
+  "product-lifecycle-learning": {
+    "scope": "route",
+    "description_sha256": "86d8f8158704c05dd088034c0a151ed64d1bbf64bb7dd78f68d5e90d385317e3"
+  },
+  "product-methodology": {
+    "scope": "route",
+    "description_sha256": "8bd8bb44f8605a660acdf001019e70cf589cea4b5637e5a420c30f9a466a1a89"
+  },
+  "product-operations-and-governance": {
+    "scope": "route",
+    "description_sha256": "5865d526829451c98d4ef2bca82d600f6868c0fe91a15c5e8b1aee5747dd239f"
+  },
+  "product-roadmapping-and-portfolio": {
+    "scope": "route",
+    "description_sha256": "624b40c3def9c942b2bd350fa40597f837e109f671c8aac028b88d771a1a6c05"
+  },
+  "product-shaping": {
+    "scope": "route",
+    "description_sha256": "244ed4a66b16e631caa402b285d64d4a96a185a679d87a327b3b96feb1e97f15"
+  },
+  "product-strategy": {
+    "scope": "route",
+    "description_sha256": "a1602d1356e6ded511ed669928aec4a99c6244c5101577b913e4fc1e53b121d3"
+  },
+  "production-excellence": {
+    "scope": "route",
+    "description_sha256": "3c651a476000d756ce4ff5f2e4debdab1c26ba993e9ccbfbdb4fffce03da5f6c"
+  },
+  "production-readiness": {
+    "scope": "route",
+    "description_sha256": "d22ac897d7893a84101ae816bc25e137d9894ff2b9121c64595b880233025574"
+  },
+  "programming-principles": {
+    "scope": "route",
+    "description_sha256": "d3939a3c534ae48284a7bb98acaf90c43117f2eae1671e06c4070f7d7b86c1b8"
+  },
+  "promise-theory": {
+    "scope": "route",
+    "description_sha256": "2f8e2485708dfd4fdcbbfff2e7f9837ca86437a35f11aff170ee0485e2055b6f"
+  },
+  "pydanticai": {
+    "scope": "route",
+    "description_sha256": "21148651d94ad1d91c9682d7e00e380aa2537391fa65dacf15d448dab92bd923"
+  },
+  "qa-methodology": {
+    "scope": "route",
+    "description_sha256": "91a792c9d1ecd66c3e6d7619fa7e0bc2ae97919143c4f0b5b2a03ec2b80bd66a"
+  },
+  "rag-design": {
+    "scope": "route",
+    "description_sha256": "364e5534e08e4a4d33c3646dbaa243af7803bcf5c9360420390e9ebd893e939b"
+  },
+  "raleigh": {
+    "scope": "route",
+    "description_sha256": "3b8e74c3436cc9a472dac6b2292418c5bcc7656332b2d0dce4c1f651223803b4"
+  },
+  "react": {
+    "scope": "route",
+    "description_sha256": "c70cf9f375fe03cff28665f493f4eaf49610a1c8a38a59495a4715fc37a99ad2"
+  },
+  "release-engineering": {
+    "scope": "route",
+    "description_sha256": "70ee93da81c527118cf03c1cfb4134e43ab7f9290b73e4e8b7f979867f0ad99a"
+  },
+  "remote-systems-administration": {
+    "scope": "route",
+    "description_sha256": "b56aec8193b5bea3abe96f2e6cb0007d614d706f8765e517adcaa813e076c495"
+  },
+  "research-and-vault": {
+    "scope": "unrelated",
+    "description_sha256": "36599c1565128227a39e945830989ca4a97064da19bb9737a12959bfe0245a6c"
+  },
+  "research-methodology": {
+    "scope": "route",
+    "description_sha256": "e87e55a4310cfc695b5d481b13763befc0d244022d45db61306b61882665e881"
+  },
+  "resilience-and-recovery": {
+    "scope": "route",
+    "description_sha256": "05b35dd3e368463b2eef112fbcd26df7ac675c5e47a7e3ba2bab2374f83fd864"
+  },
+  "restic": {
+    "scope": "route",
+    "description_sha256": "c29ff61ed6d9f1603b303cf41cc6b55e1ad6f3f60ab189d753ca5bc8b7a6422c"
+  },
+  "secure-software-engineering": {
+    "scope": "route",
+    "description_sha256": "b315bc1e93e4f1f1290738875f2e81bd9faa955d5244f1429125197354fad031"
+  },
+  "security-audit-methodology": {
+    "scope": "route",
+    "description_sha256": "543bc5c1fa491ac5016b4476bba5ce8de91f1076f118661212325b125bf84bf9"
+  },
+  "semantic-spacetime": {
+    "scope": "route",
+    "description_sha256": "48f52171b421eb413b961030d43bf4f0b1cb508530f67509202d7d2e20ea84cb"
+  },
+  "seo": {
+    "scope": "route",
+    "description_sha256": "2ed05da54aa845d7555c26e290a54afa4087ec23a469f136ebfb9c3ebd2fe473"
+  },
+  "site-reliability-engineering": {
+    "scope": "route",
+    "description_sha256": "f91370df6c2ecafe5def86f7d91821a24292738765754e353fe306f29a44a235"
+  },
+  "slack": {
+    "scope": "route",
+    "description_sha256": "e24a0b8f28d36223e4be59392fca416c4cd23951eb96e0cae897c2a6e3a64fb4"
+  },
+  "software-architecture": {
+    "scope": "route",
+    "description_sha256": "5c070c9bf9b88a9a6e59295008305852f43d89a4722eb2c23d55286271986ef9"
+  },
+  "software-architecture-analysis": {
+    "scope": "route",
+    "description_sha256": "63eda8d90eaa6c0ced45ef2370a93de816c8de4ee8205dfcbfbcb83225ec9a69"
+  },
+  "solarpunk": {
+    "scope": "unrelated",
+    "description_sha256": "a1dc10b8150ccbe99f3a42a60979f92598448c9dbdec3aa5ccd062eeb8e33070"
+  },
+  "solo-startup": {
+    "scope": "unrelated",
+    "description_sha256": "06fc3425ccecb054dc61536b55ae0957cfb08cd556db81e2817b09dc52455563"
+  },
+  "spec-driven-development": {
+    "scope": "route",
+    "description_sha256": "67904c1f8bd020052bad03a120d6b49509ad03dc0c3e965bc992c68450d069cb"
+  },
+  "spring-ai": {
+    "scope": "route",
+    "description_sha256": "81a26ff72907c96e15ee3b60adfb0685503d28815874fcbe121b05d655b3b832"
+  },
+  "strategy-frameworks": {
+    "scope": "route",
+    "description_sha256": "cd3c997bbe52892397ffd8608eaab8a804248cdb4a5eb88c35c5d615e37da4fc"
+  },
+  "stripe": {
+    "scope": "route",
+    "description_sha256": "33ca69376af9e01390e411de79834853eb64745341eeab4068c4cb88f6b05d89"
+  },
+  "supabase": {
+    "scope": "route",
+    "description_sha256": "ced1b2f85c1e3a664afb596c244cab2f4af2b81234453ae62314c8364440fcc5"
+  },
+  "system-one": {
+    "scope": "route",
+    "description_sha256": "504300a5b8545cc8168ac6e16ba823890f763f22ad59a474f123bd258de38509"
+  },
+  "systematic-debugging": {
+    "scope": "route",
+    "description_sha256": "03351a214fa7a32fffd0b57d84451aca758a8c8c0b3d2b079ce47595aa907acc"
+  },
+  "tabpfn": {
+    "scope": "route",
+    "description_sha256": "6310f938a022af4a000a440960e4258e5b91a093c038964746d60f10a29010b9"
+  },
+  "tailscale": {
+    "scope": "route",
+    "description_sha256": "a9091004adfaae69cde1d1335b5b331fe13ba265408c5c467f673de34448f8af"
+  },
+  "teach-me": {
+    "scope": "unrelated",
+    "description_sha256": "d9035f93177a34632f3dfad02c6184c53c1f1a2060293776a3ab88cc48ee2a84"
+  },
+  "technical-documentation": {
+    "scope": "route",
+    "description_sha256": "87a0d92e3d8f8c440855dff09dedc156af57a743555a9f76c5e8a9ac17ca54cf"
+  },
+  "technical-program-management": {
+    "scope": "route",
+    "description_sha256": "66565e330d9c9a4bd85ffd799a7989f7a17d2b3c009a22be9f3c75fae50d0937"
+  },
+  "technical-project-management": {
+    "scope": "route",
+    "description_sha256": "4524aa449c9db40c5b2f4a1974c3d342922103b60071c1b51dbe0d461e56261b"
+  },
+  "technology-radar": {
+    "scope": "route",
+    "description_sha256": "0a85fdc1b4fd994613611b018c29506cc9b14c0e7dc2aeb3c23de2e75c490d52"
+  },
+  "telemetry": {
+    "scope": "route",
+    "description_sha256": "629660d6882a4a153fd89c7d3d3996d9677a3f5e56eda3ab65971256ab051577"
+  },
+  "tempest": {
+    "scope": "unrelated",
+    "description_sha256": "4e61663c06dff1c84a4ac5fe6693e616658de46d7ac3d5409ffa90b660f3b3b6"
+  },
+  "terraform": {
+    "scope": "route",
+    "description_sha256": "84e3cff6c00c33c012c4304d9450e48bf9b8b2bbd3efabf0df247e6f6be3b02c"
+  },
+  "three": {
+    "scope": "route",
+    "description_sha256": "fc4668731b13d2bd60052f562e3cc78c76f8029cb9651e6a0b076351d9503b7f"
+  },
+  "tmdb": {
+    "scope": "unrelated",
+    "description_sha256": "1b41715031c6ea24ea81b7e890f035a5966415d5158f7bc34ad6bead3f87c709"
+  },
+  "traefik": {
+    "scope": "route",
+    "description_sha256": "e284855eb9df8f44ab6734f474f4020d977d33938b7efa3de94c4e7cc6512f0b"
+  },
+  "training-data-annotation": {
+    "scope": "route",
+    "description_sha256": "0fc0a0d6a2e1215f688b551f72c2db75e71b4b17d49016a566941e302976ee4b"
+  },
+  "trakt": {
+    "scope": "unrelated",
+    "description_sha256": "7eec24cbecd886e5ce37200e67a857901ac2fd42a619d0b4bd602d77bf60b0b4"
+  },
+  "transistor": {
+    "scope": "unrelated",
+    "description_sha256": "c1bac6fdd26ca13ab991103dc43a676bbb5efbaa4076c9ca06830253cb389045"
+  },
+  "travel-guide": {
+    "scope": "unrelated",
+    "description_sha256": "39ece2e17f0f219bf8eb18ad0f21b5503883a535b65cad8440853f5d81cf01d4"
+  },
+  "unsloth": {
+    "scope": "route",
+    "description_sha256": "2ece05f297d839cee3520a12533faf2cfee922a641adf4fdfe9b778f9b629ebc"
+  },
+  "vercel-eve": {
+    "scope": "route",
+    "description_sha256": "367fdc8fec151717fef3cd5bee57a406d947a7f1e4a67c2c9635301baec8d9d7"
+  },
+  "verification-methodology": {
+    "scope": "route",
+    "description_sha256": "78dfbab5666a96e4e511d842e2844edd1ee283c53767f6f42c35b2c3b3fc2077"
+  },
+  "verified-delivery": {
+    "scope": "route",
+    "description_sha256": "6d7a903ba9f8b4ec4e9e2d7ec6a69cdf1d18152024f473ddcfa496c2cad08154"
+  },
+  "vite": {
+    "scope": "route",
+    "description_sha256": "435bf57db3e01fc53eb38eb25d5a9707d50f739b92d83ba5c50c12052944f1e5"
+  },
+  "vllm": {
+    "scope": "route",
+    "description_sha256": "5ac761f8cbbb295bce89b82deee76ce7716b4f83611aa9d786dd882e5d82eb97"
+  },
+  "waiting-list": {
+    "scope": "unrelated",
+    "description_sha256": "6a1a0c627b0512cd01a78f0e7f380e6609930077ab9823275e1421975a778233"
+  },
+  "web-accessibility": {
+    "scope": "route",
+    "description_sha256": "07365a866f14181fffea6188f6271b66c6f3d03dc237d9b61e296c6fbc1002bc"
+  },
+  "wonderer-methodology": {
+    "scope": "unrelated",
+    "description_sha256": "817036a78764d62cadc98c9cba12704bea2f8dfd62cf65e8d9507b50425dbe59"
+  },
+  "woodpecker-ci": {
+    "scope": "route",
+    "description_sha256": "c3750f3537a0b3f00e98d8022bcd3173c67c74694d8adde8d2d8982df8f6d848"
+  },
+  "workflow-architect": {
+    "scope": "route",
+    "description_sha256": "d69e6f2ea2aa456704d2e55063a8b94b03a9431386a6117f26b1c7ca4f081782"
+  },
+  "writers-helper": {
+    "scope": "unrelated",
+    "description_sha256": "531df6fc64125b419fa508f797a5960b6fb213bdb6e2a21e7715531525cc1da9"
+  },
+  "yc-default-alive-calculator": {
+    "scope": "unrelated",
+    "description_sha256": "0780a5ee4539eb9369f757b482905d80b30acb67d732a7a7b9c5c1f1b57fe5cd"
+  },
+  "yc-weekly-growth-compass": {
+    "scope": "unrelated",
+    "description_sha256": "0fce302c4c70e8278004679fbdd21be6d6c7fb87389a5634864a43cf107b8502"
+  },
+  "youtube-thumbnail": {
+    "scope": "unrelated",
+    "description_sha256": "35c0315bd7894c44f49667602300e21551eea3190a3dc1161917aa15fe165aa2"
+  }
+}
