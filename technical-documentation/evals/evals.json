@@ -5,11 +5,11 @@
     {
       "id": "readme-quickstart",
       "prompt": "I am writing a README for a small CLI tool that parses CSV files. What should the README contain and how should it be structured so a new user can go from zero to running the tool?",
-      "expected_output": "A README structured around getting the reader from install to first successful run: a one-paragraph project overview that states what the tool does (and does not do), the installation command, a minimal quickstart showing the exact command a new user runs with realistic sample input and output, then configuration options and common usage examples with every flag documented, then troubleshooting notes for the failures users actually hit, and finally pointers to related docs. The quickstart comes before the deep reference because the reader's first question is 'does this solve my problem and how do I run it?' Each example shows the command and its output so the reader can verify they are on track. The README documents the interface — flags, exit codes, file formats — not the implementation internals.",
+      "expected_output": "A README structured around getting the reader from install to first successful run: a one-paragraph project overview that states what the tool does (and does not do), the installation command, a minimal quickstart showing the exact command a new user runs with realistic sample input and output, then common usage examples and a link to the complete flag and exit-code reference, then troubleshooting notes for the failures users actually hit, and finally pointers to related docs. The quickstart comes before the deep reference because the reader's first question is 'does this solve my problem and how do I run it?' Each example shows the command and its output so the reader can verify they are on track. The README documents the interface — flags, exit codes, file formats — not the implementation internals.",
       "assertions": [
         "The response opens with a short project overview and what the tool does and does not do",
         "The response places a minimal quickstart with a real command and sample output before deep reference material",
-        "The response documents every flag, option, and exit code with worked examples",
+        "The response keeps common options in the README and gives the reader a direct route to the complete reference for flags, options, and exit codes",
         "The response includes troubleshooting for failures users actually encounter",
         "The response documents the interface rather than internal implementation"
       ]
@@ -72,6 +72,18 @@
         "The response shows the exact commands and what success looks like after each step",
         "The response distinguishes the common cause from rarer alternatives like expiry or hostname mismatch",
         "The response links to the full configuration reference rather than duplicating it"
+      ]
+    },
+    {
+      "id": "separate-reader-jobs-scheduled-exports",
+      "prompt": "Our export README must help people run their first export, recover a broken nightly export, look up the retry setting and understand why retry and publish are separate. It currently copies the schema inline and the recovery steps assume a first-time demo. Restructure it.",
+      "expected_output": "A short routing README with an optional quickstart and distinct tutorial, real-task recovery, canonical reference, and evidence-backed explanation.",
+      "assertions": [
+        "The learning path gives a safe sample and an observable first result.",
+        "Recovery states prerequisites and distinguishes resuming from rerunning without forcing the demo.",
+        "The guide links to one authoritative, versioned retry contract instead of duplicating it.",
+        "The explanation distinguishes documented rationale from inference.",
+        "The README can route across jobs without applying a rigid one-mode-per-file rule."
       ]
     }
   ]

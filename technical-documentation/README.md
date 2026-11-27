@@ -13,7 +13,7 @@ Use it when the work needs a repeatable process and an inspectable result. It is
 | Path | What it provides |
 |---|---|
 | `SKILL.md` | Trigger conditions, workflow, and guidance for loading deeper resources. |
-| `references/` | Reference material: `agent-facing-docs.md`, `api-documentation-cli-help.md`, `readme-patterns.md` |
+| `references/` | Reference material: `agent-facing-docs.md`, `api-documentation-cli-help.md`, `readme-patterns.md`, `information-architecture.md` |
 
 ## Quick Start
 
