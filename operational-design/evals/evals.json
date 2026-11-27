@@ -17,6 +17,15 @@
         "Requires independent adjudicated case evidence for any promotion.",
         "Keeps live effects subject to a separate authorized executor and qualification."
       ]
+    },
+    {
+      "id": "route-empirical-and-owned-decisions",
+      "prompt": "A fixture can show if membership ID is available at export. Whether a former member can redeem an old link is undecided. Route the two decisions and state what each supplies to implementation.",
+      "expected_output": "The evidence question has a probe and the product decision has an accountable owner.",
+      "assertions": [
+        "Uses a read-only observation or reversible fixture and records evidence for membership ID availability.",
+        "Records former-member behavior as an owned decision with a dependency or decision point."
+      ]
     }
   ]
 }

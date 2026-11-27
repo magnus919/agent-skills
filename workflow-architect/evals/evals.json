@@ -150,6 +150,16 @@
       "files": [
         "evals/fixtures/audit-bundle.json"
       ]
+    },
+    {
+      "id": "validate-decision-handoff-before-implementation",
+      "prompt": "A receiving agent gets an export-layout handoff at brief revision 4. Former-member links depend on open D-12. The client cannot access the required disposable export fixture. Specify the receiving and review contract.",
+      "expected_output": "The handoff protects accepted scope and blocks the action whose required capability is missing.",
+      "assertions": [
+        "Checks the governing revision and keeps the open D-12 work outside the approved slice.",
+        "Records a scoped hold for the missing fixture capability.",
+        "Defines review evidence linked to candidate and criterion."
+      ]
     }
   ]
 }
