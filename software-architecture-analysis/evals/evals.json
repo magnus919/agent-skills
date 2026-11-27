@@ -108,6 +108,17 @@
         "It does not automatically change the design or implementation.",
         "It names an accountable owner or next evidence step before either artifact changes."
       ]
+    },
+    {
+      "id": "current-mechanism-vs-recorded-rationale",
+      "prompt": "Why does export publishing still wait separately from staging? Current code subscribes to a storage event. An accepted ADR from the original implementation says the old polling step protected readers from partial files. A later PR replaced polling; discussion mentions CPU but never records a decision to optimize it. Explain the distinction and tell me if the original rationale still applies. Don't change code.",
+      "expected_output": "A focused explanation using current source and dated decision evidence, distinguishing why the boundary was introduced from unknown motivation for the replacement and evidence still needed for the current guarantee.",
+      "assertions": [
+        "Separates the observed or code-traced current mechanism from original documented rationale.",
+        "Does not present unaccepted CPU discussion as a decided motive.",
+        "Does not assume the storage event provides the old guarantee without examining its semantics.",
+        "Names the evidence needed to resolve the open question without changing the code."
+      ]
     }
   ]
 }

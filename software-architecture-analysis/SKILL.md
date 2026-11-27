@@ -29,6 +29,10 @@ metadata:
 
 **Don't use for:** Greenfield or proactive architecture design (route to [`software-architecture`](../software-architecture/SKILL.md)), direct code review, bug hunting, or security auditing. Route API/interface semantics to `api-design-and-evolution`, data-platform strategy to `data-architect`, implementation to the relevant engineering skill, deployment substrate to `platform-engineering`, and execution of an approved cross-system migration to `migration-engineering`.
 
+For a focused explanation of an existing subsystem, skip the full inventory.
+Trace current behavior and, if asked why, recover the recorded decision separately
+using [recorded design rationale](references/recorded-design-rationale.md).
+
 ## Build Workflow
 
 ```
