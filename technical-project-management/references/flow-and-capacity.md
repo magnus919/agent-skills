@@ -53,3 +53,18 @@ this approach. Protect scope flexibility without hiding essential work.
 The limiting resource or flow policy is identified, the next experiment or capacity
 decision is owned, and the effect on the project forecast is explicit. Do not
 redesign the whole team operating model to answer a single schedule question.
+
+## Example: decisions across sessions
+
+Maintain one authoritative record per decision. The planning index links that
+record and shows dependency, owner and state. In the
+[export example](../../operational-design/references/decision-workflow.md#example-separate-what-a-probe-can-settle-from-a-product-choice),
+D-12, owned by the product owner, blocks the former-member link behavior only.
+The membership-ID probe is complete and linked. An independent export-layout
+task is ready under the already accepted brief revision 4.
+
+At session pickup, resolve the decision link and compare its revision with
+the dependent task. Keep open investigations visible in the planning index.
+Send only the ready slice to implementation. If D-12 changes, reopen the
+affected criterion and tasks through the contract owner. An updated index
+summarizes the current decision without creating a second source of truth.

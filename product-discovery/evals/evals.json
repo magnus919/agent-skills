@@ -173,6 +173,16 @@
         "Does not treat pitch enthusiasm as demand validation.",
         "Does not propose changing existing calendar exports."
       ]
+    },
+    {
+      "id": "define-domain-term-in-governing-brief",
+      "prompt": "Two teams disagree whether a shared export means a membership workspace or any link. The accountable owner picks membership. Revise the acceptance evidence while leaving expired-link behavior undecided.",
+      "expected_output": "One traceable criterion follows the authorized meaning and preserves the open choice.",
+      "assertions": [
+        "Records the owner-confirmed membership meaning in a specific revised acceptance criterion.",
+        "Distinguishes a member from a linked guest using two observable cases.",
+        "Keeps expired-link behavior open pending its owner decision."
+      ]
     }
   ]
 }

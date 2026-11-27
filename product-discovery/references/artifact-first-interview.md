@@ -45,3 +45,16 @@ Do not mark the whole product validated from an author interview. Do not block a
 ## Validate this mode
 
 Compare the previous skill and this mode on the same imperfect artifacts with the same answer facts. Preserve actual turns and proposed patches. Record consequential findings, questions asked, irrelevant edits, unresolved contradictions, and reviewer acceptance. A finding counts only if it was not explicit in the draft, affects a decision, and is traceable to an exchange. Label scripted users and model reviews as synthetic evidence; they do not establish human value. If the baseline does as well, report that result.
+
+## Example: turn a disputed term into acceptance evidence
+
+An export brief, revision 3, says “shared workspace exports.” The export owner
+uses “shared workspace” for any record with a link. Support uses it for a workspace
+with membership. Open the existing brief and ask which meaning governs this
+feature. The accountable product owner chooses membership. Record the original
+phrase, confirmed meaning, decision reference and edited criterion EX-4 in
+revision 4: a linked guest without membership must be denied the team download.
+Use a member and a linked guest as contrasting cases. Retain open product
+questions in the handoff rather than drafting answers for the owner.
+
+Continue the same example in [operational design](../../operational-design/references/decision-workflow.md#example-separate-what-a-probe-can-settle-from-a-product-choice).
