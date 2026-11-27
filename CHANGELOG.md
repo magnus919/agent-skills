@@ -1,5 +1,31 @@
 # Changelog
 
+## [0.10.0](https://github.com/magnus919/agent-skills/compare/v0.9.0...v0.10.0) (2026-11-27)
+
+
+### Features
+
+* add bounded design review and context maps ([#813](https://github.com/magnus919/agent-skills/issues/813)) ([6e472b0](https://github.com/magnus919/agent-skills/commit/6e472b033750c23e3139fd83744e089a6ee66ad1))
+* add Magnus Mode technology lifecycle router ([#891](https://github.com/magnus919/agent-skills/issues/891)) ([c50a9c5](https://github.com/magnus919/agent-skills/commit/c50a9c5e97efa0b5f4c16ba9570d4a7e3df4095e))
+* **seo:** enrich evidence-led business GEO workflows ([#809](https://github.com/magnus919/agent-skills/issues/809)) ([34a4d62](https://github.com/magnus919/agent-skills/commit/34a4d62a616b6d131727b8ec1361711665bdda50))
+* **skill:** add copy-editor methodology ([#816](https://github.com/magnus919/agent-skills/issues/816)) ([4d0fc07](https://github.com/magnus919/agent-skills/commit/4d0fc072b55929da8775ecf7d2f397679f6c6dfb))
+* **skill:** add managing-editor workflow ([#814](https://github.com/magnus919/agent-skills/issues/814)) ([3ac64ae](https://github.com/magnus919/agent-skills/commit/3ac64ae7f886ae5ce5505fc8d4b29c396700e0fc))
+* **skill:** port wonderer methodology from hermes-profiles ([#818](https://github.com/magnus919/agent-skills/issues/818)) ([3b5309e](https://github.com/magnus919/agent-skills/commit/3b5309ec191139437c7c589fbd231e6be9d9e532))
+
+
+### Bug Fixes
+
+* **agent-skills:** surface frozen release evidence checks ([#841](https://github.com/magnus919/agent-skills/issues/841)) ([3d56c09](https://github.com/magnus919/agent-skills/commit/3d56c09c5218b066a735925fbfce8d97851bb992))
+* **eval:** deliver declared fixtures to both trial arms ([#836](https://github.com/magnus919/agent-skills/issues/836)) ([f623523](https://github.com/magnus919/agent-skills/commit/f623523d41672583f39ee8c19c83b0261a70ec34))
+* **eval:** stage declared skill and bundle resources ([#831](https://github.com/magnus919/agent-skills/issues/831)) ([c289870](https://github.com/magnus919/agent-skills/commit/c2898707107d7c33a86430dc821402a496facc9f))
+* **flaresolverr-cli:** ship a standalone executable ([#832](https://github.com/magnus919/agent-skills/issues/832)) ([9660e60](https://github.com/magnus919/agent-skills/commit/9660e60b93f7168fba887877634608bd4fedea0c))
+* **inference:** ground serving comparisons in workload evidence ([#811](https://github.com/magnus919/agent-skills/issues/811)) ([da4ce5c](https://github.com/magnus919/agent-skills/commit/da4ce5c6823cce6da80f4e09c84998a4928402c1))
+* **skills:** repair reference handoffs batch a ([#834](https://github.com/magnus919/agent-skills/issues/834)) ([e68c7bf](https://github.com/magnus919/agent-skills/commit/e68c7bf355773d07e6ac376e0f209185d4553e0f))
+* **skills:** repair reference handoffs batch b ([#835](https://github.com/magnus919/agent-skills/issues/835)) ([42c6cb8](https://github.com/magnus919/agent-skills/commit/42c6cb856fbd7d5608faa04b409638c9d2ec9f80))
+* **skills:** require confirmation for external CLI writes ([#830](https://github.com/magnus919/agent-skills/issues/830)) ([fc3901b](https://github.com/magnus919/agent-skills/commit/fc3901bc89bd176333efcd3f4891430dd58c0415))
+* **traefik:** correct sourceCriterion, ipStrategy and buffering examples ([#819](https://github.com/magnus919/agent-skills/issues/819)) ([84831c5](https://github.com/magnus919/agent-skills/commit/84831c587aabe754915b8af70ae6e3ab85274804))
+* **validation:** reject broken relative links in skill references ([#839](https://github.com/magnus919/agent-skills/issues/839)) ([9adc94a](https://github.com/magnus919/agent-skills/commit/9adc94a98afdffeb100a059ac5460df42d16bcd5))
+
 ## [0.9.0](https://github.com/magnus919/agent-skills/compare/v0.8.0...v0.9.0) (2026-11-07)
 
 
