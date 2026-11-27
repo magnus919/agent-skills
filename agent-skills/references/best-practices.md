@@ -305,11 +305,19 @@ Once you have a working skill, two guides can help you refine it further:
 
 In a repository that repeatedly captures the status of the same documented
 command, use the repository's existing runner to produce the evidence through
-one supported entry point. For example, a read-only command can accept a target
-revision and an output directory, run the approved check, and record revision,
-check name, exit status and artifact path in JSON. Document the invocation,
-prerequisites and error behavior. Start with the existing command and output
-contract before adding a wrapper. See the [CLI builder](../../cli-builder/SKILL.md).
+one supported entry point. For this catalog, start from the checkout under review, use its development
+dependencies, and choose a known base revision and a writable evidence
+directory. The existing coverage command compares the checkout with the base:
+
+```bash
+python3 scripts/eval-coverage.py --modified-from "$base_revision" --json \
+  > "$evidence_dir/eval-coverage.json" 2> "$evidence_dir/eval-coverage.stderr"
+```
+
+Record the check name, base and candidate revisions, exit status, and output
+paths in the calling workflow. Preserve stderr when an invalid base prevents
+a JSON report. Start with the existing command and output contract before adding
+a wrapper. See the [CLI builder](../../cli-builder/SKILL.md).
 
 An exit status is a record of execution under those inputs. The skill still
 owns choosing the right check, reading the result in context, and deciding
