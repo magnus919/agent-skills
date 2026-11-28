@@ -3,6 +3,20 @@
   "skill_name": "agent-evals-and-observability",
   "evals": [
     {
+      "id": "qualify-executable-grader",
+      "prompt": "Our benchmark scores a warehouse stock export. It accepts a file with the correct header and one row missing, but rejects a complete file with different permitted quoting. One grader run timed out. Before we admit this task, design control trials and the evidence to keep.",
+      "expected_output": "A frozen, repeatable grader qualification plan exercises valid and invalid outputs in clean fixtures and keeps incomplete execution distinct from semantic outcomes.",
+      "assertions": [
+        "Expects the reference export to pass.",
+        "Expects an independently prepared complete export with permitted quoting differences to pass.",
+        "Expects the untouched starting state to score below the acceptance threshold.",
+        "Requires the plausible export with a missing row to fail on record completeness.",
+        "Repeats a control in a fresh fixture to test grade repeatability.",
+        "Records a grader timeout as unscored evidence.",
+        "Binds the receipts to the task, fixture and grader revisions."
+      ]
+    },
+    {
       "id": "frozen-judge-replay-and-disputed-label",
       "prompt": "A cheaper judge perfectly matches the human on 500 replay calls across five fixed traces, four labeled pass. The sole failed trace asks for clarification instead of running a required search. Its continuous quality scores barely move. What can I conclude?",
       "expected_output": "Separates repeatability, reference agreement and policy validity; proposes an evidence-led rubric audit and a controlled challenge case.",

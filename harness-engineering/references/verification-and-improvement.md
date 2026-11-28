@@ -60,6 +60,10 @@ can mean redundancy, poor design, or an unexercised path. Trace attribution is
 needed to choose the repair. Roll back a failing experiment rather than weakening
 acceptance. Use the catalog evaluation specialist for statistical or grader design.
 
+When the change is a learned model adapter, use the
+[deployment-harness specialization study](../../ml-engineering/references/specialization-decisions.md#worked-study-a-coding-adapter-in-its-deployment-harness).
+Hold the deployment harness fixed for the first base-to-adapter comparison.
+
 Periodically remove stale instructions, contradictory sources, unused context,
 and duplicated state after checking which behavior depends on them. Preserve
 rollback evidence. Harness maintenance should reduce burden as well as add control.

@@ -3,6 +3,20 @@
   "skill_name": "ml-engineering",
   "evals": [
     {
+      "id": "coding-adapter-deployment-comparison",
+      "prompt": "A coding LoRA improved over the base with reasoning off inside its training agent. We plan to ship it inside a different agent with a different context policy. The base also has a stronger reasoning setting. A second trial swaps both the agent and the task category, and finance heard that the LoRA uses fewer calls on jointly solved tasks. Design a study that can support the shipping decision.",
+      "expected_output": "A pinned deployment comparison checks matched reasoning, stronger incumbent, controlled transfer, selection leakage and end-to-end resource accounting.",
+      "assertions": [
+        "Pairs base and adapter inside the actual deployment harness at the same reasoning effort and budget.",
+        "Includes the practical stronger-reasoning base as a separate incumbent configuration.",
+        "Keeps task families fixed when isolating the harness change.",
+        "Keeps the harness fixed when isolating the task-family change.",
+        "Reserves a final task roster that does not participate in checkpoint selection.",
+        "Preserves paired gains and losses by case.",
+        "Calculates serving cost per accepted task using costs from all attempts."
+      ]
+    },
+    {
       "id": "gemma-4-multimodal-tuning-plan",
       "prompt": "We have a single 24 GB GPU and want to tune Gemma 4 to transcribe short voice notes and emit a structured summary. A teammate wants to use 26B A4B because only 4B parameters are active, train on full rendered chats, and ship the lowest-loss GGUF without testing it on the target runtime. Propose a practical alternative and describe the evidence needed to ship.",
       "expected_output": "A Gemma 4 plan selects a supported instruction-tuned audio checkpoint, measures peak memory for the actual processor and training batch, uses completion-masked audio SFT, and qualifies the exported artifact with matched task and modality regression tests.",
