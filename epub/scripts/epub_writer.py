@@ -19,8 +19,9 @@ def _ignore_end_ns(self, prefix):
 
 def open_book(path):
     """Keep namespace declarations when EPUBLib uses BeautifulSoup's XML builder."""
-    from bs4 import BeautifulSoup
-    from epublib import EPUB
+    # These optional dependencies are installed by the EPUB integration job.
+    from bs4 import BeautifulSoup  # deptry: ignore[DEP001,DEP003]
+    from epublib import EPUB  # deptry: ignore[DEP001,DEP003]
 
     xml = '<root xmlns="urn:default" xmlns:p="urn:prefix" p:attr="value"/>'
     probe = BeautifulSoup(xml, "xml")
