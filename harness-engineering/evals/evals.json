@@ -953,6 +953,17 @@
         "Records input identity, scope, checker evidence, current authority, budgets and responsible roles.",
         "Stops the affected action and reconciles active work when evidence stales or the grant lapses."
       ]
+    },
+    {
+      "id": "hold-dependent-work-after-queue-ejection",
+      "prompt": "An agent factory has PR A for logging and PR B for a schema change in the merge queue. PR C requires B. Independent PR D is queued behind B and its green integration result includes B. B has just been ejected for a failing integration check. The review backlog is growing, and five workers are asking for new tasks. Direct the next round of work.",
+      "expected_output": "Continue eligible work, reconcile affected candidate evidence, assign the schema failure, and limit intake at the review bottleneck.",
+      "assertions": [
+        "Holds C while its required schema change is missing, or uses an explicitly supported jointly validated landing.",
+        "Allows independent D to continue only with current candidate evidence that excludes the ejected B.",
+        "Assigns diagnosis of B to the schema owner or names an accountable owner for that interface.",
+        "Limits new work in progress in response to the growing review backlog."
+      ]
     }
   ]
 }
