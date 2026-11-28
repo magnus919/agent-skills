@@ -45,6 +45,7 @@ Machine learning engineering is the bridge between model research and production
 | `references/sequence-sources.md` | Primary-source findings and uncertainty for tabular and sequence representations |
 | `references/transaction-sequences.md` | Ordered-event representation, windows, label maturity, forward/entity validation and stateful serving |
 | `references/specialization-decisions.md` | Choosing rules/classifiers/zero-shot/prompt/SFT/RL, designing fixed-budget comparisons and interpreting verifier or case-study claims |
+| `references/cooperative-post-training.md` | Choosing which policy to train in a multi-agent system, designing team rewards and matching rollout and serving budgets |
 | `references/specialization-evidence.md` | Primary-source findings, contradictory results and local validation limits |
 | `references/weight-space-programming.md` | Direct tensor inspection/editing hypotheses, feedback budgets, negative results and artifact validation |
 | `references/gemma-4-fine-tuning.md` | Choosing a Gemma 4 checkpoint, building and checking training batches, adapting dense/MoE or multimodal models, and qualifying exports |

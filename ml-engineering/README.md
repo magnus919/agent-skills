@@ -28,6 +28,10 @@ The [Gemma 4 fine-tuning guide](references/gemma-4-fine-tuning.md) helps you
 choose a checkpoint, estimate hardware needs, and check that the fine-tuned
 model works on the runtime you intend to deploy.
 
+The [cooperative post-training guide](references/cooperative-post-training.md)
+helps you choose which policy to train when agents struggle to divide work or
+share findings, and compare that change with a fixed-policy workflow.
+
 ## What You Get
 
 | Directory | Purpose |

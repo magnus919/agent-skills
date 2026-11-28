@@ -185,6 +185,9 @@ families are dependent; group bootstrap by the unit of independence, not individ
 near-duplicate examples. Small or unrepresentative sets support pilot decisions
 only. Document multiple comparisons and avoid selecting the best noise spike.
 
+For multi-agent adaptation, use [cooperative post-training](cooperative-post-training.md)
+to choose the trainable policy, reward and controls before freezing the study.
+
 ## Saved-receipt comparison helper
 
 `scripts/compare_task_runs.py` compares one attempt per task from two pinned JSON
