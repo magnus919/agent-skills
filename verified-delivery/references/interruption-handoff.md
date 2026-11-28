@@ -125,8 +125,10 @@ resumption at that boundary with the exact reason reported:
 - **Live state consistent** — the PR (when recorded) exists and its merge
   state is determinable. If it is open, continue normal reconciliation. If it
   was merged while `post-merge-verify` remains pending, verify that the merge
-  contains the recorded head and matches the authorized change, record the
-  merge as completed, and resume post-merge verification. A PR closed without
+  matches the authorized change on the intended target, record the merge
+  as completed, and resume post-merge verification. With squash or rebase,
+  use the forge's merge record and verify the landed result because the PR
+  head can have a different SHA from the landed commit. A PR closed without
   that change, a merge containing a conflicting head, or a rolled-back change
   makes the handoff stale because the recorded pending steps no longer
   describe reality.
@@ -147,8 +149,10 @@ resumption at that boundary with the exact reason reported:
 ## Reconciliation rules
 
 - Read-only verification always precedes mutation on a resume.
-- Gate evidence binds to the head it was verified on; a moved head
-  invalidates it until re-verified.
+- Gate evidence binds to the revision it verified. Reconcile a moved PR
+  head, and re-check a replacement queue candidate even when the head is
+  unchanged. Keep the PR head in `head_sha`. Record queue entry and candidate
+  identity, verdicts, and live status in the evidence and pending steps.
 - A live watcher recorded in `watchers` is never duplicated; wait on it or
   supersede it explicitly and record the change.
 - Every mutation after resumption updates the handoff (`head_sha`,
