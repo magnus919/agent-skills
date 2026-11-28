@@ -25,6 +25,8 @@ import sys
 import warnings
 from datetime import datetime, timezone
 
+from epub_writer import EPUBWriteError, edit_book
+
 warnings.filterwarnings("ignore")
 
 DRY_RUN = False
@@ -50,13 +52,13 @@ def emit(json_data, text=""):
 def convert_epub(input_path, output_path):
     """Convert EPUB2 to EPUB3 using epublib."""
     try:
-        from epublib import EPUB
+        import epublib  # noqa: F401
     except ImportError:
         die("epublib required. Install with: pip install epublib")
 
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    with EPUB(input_path) as book:
+    with edit_book(input_path, output_path) as book:
         changes = []
 
         # 1. Add dcterms:modified if missing
@@ -122,8 +124,7 @@ def convert_epub(input_path, output_path):
         if pkg:
             pkg["version"] = "3.0"
 
-        book.write(output_path)
-        return changes
+    return changes
 
 
 def main():
@@ -175,4 +176,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except EPUBWriteError as exc:
+        die(exc)

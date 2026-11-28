@@ -30,6 +30,8 @@ import os
 import sys
 import warnings
 
+from epub_writer import EPUBWriteError, edit_book, open_book
+
 warnings.filterwarnings("ignore")
 
 DRY_RUN = False
@@ -71,12 +73,6 @@ def resolve_output(original, output_flag):
         return output_flag
     base, ext = os.path.splitext(original)
     return f"{base}-edited{ext}"
-
-
-def open_book(path):
-    """Open an EPUB for editing."""
-    from epublib import EPUB
-    return EPUB(path)
 
 
 # ═══════════════════════════════════════════════════════════
@@ -152,7 +148,7 @@ def cmd_metadata(args):
         return
 
     check_deps()
-    with open_book(args.epub) as book:
+    with edit_book(args.epub, output) as book:
         if args.title:
             book.metadata.title = args.title
         if args.author:
@@ -164,7 +160,6 @@ def cmd_metadata(args):
             book.metadata.add_dc('creator', args.author)
         if args.language:
             book.metadata.language = args.language
-        book.write(output)
 
     emit({"status": "updated", "output": output},
          f"Metadata updated → {output}")
@@ -195,14 +190,13 @@ def cmd_add_chapter(args):
     else:
         chapter_name = f"Text/{chapter_name}"
 
-    with open_book(args.epub) as book:
+    with edit_book(args.epub, output) as book:
         new_resource = create_resource_from_path(args.content, chapter_name)
         kwargs = {"resource": new_resource, "add_to_spine": True, "add_to_toc": True}
         if args.after:
             kwargs["after"] = args.after
         book.resources.add(**kwargs)
         book.update_manifest_properties()
-        book.write(output)
 
     emit({"status": "added", "chapter": chapter_name, "output": output},
          f"Chapter added → {output}")
@@ -221,10 +215,9 @@ def cmd_remove_chapter(args):
         return
 
     check_deps()
-    with open_book(args.epub) as book:
+    with edit_book(args.epub, output) as book:
         try:
             book.resources.remove(args.id)
-            book.write(output)
         except KeyError:
             die(f"Chapter not found: {args.id}")
 
@@ -246,9 +239,8 @@ def cmd_reorder_spine(args):
         return
 
     check_deps()
-    with open_book(args.epub) as book:
+    with edit_book(args.epub, output) as book:
         book.spine.reorder(order)
-        book.write(output)
 
     emit({"status": "reordered", "spine": order, "output": output},
          f"Spine reordered → {output}")
@@ -269,10 +261,9 @@ def cmd_rename_resource(args):
         return
 
     check_deps()
-    with open_book(args.epub) as book:
+    with edit_book(args.epub, output) as book:
         try:
             book.resources.rename(from_path, to_path)
-            book.write(output)
         except KeyError:
             die(f"Resource not found: {from_path}")
 
@@ -301,7 +292,7 @@ def cmd_inject_css(args):
 
     css_filename = f"Styles/{os.path.basename(args.css)}"
 
-    with open_book(args.epub) as book:
+    with edit_book(args.epub, output) as book:
         # Add CSS as a resource
         css_resource = create_resource_from_path(args.css, css_filename)
         book.resources.add(resource=css_resource, add_to_spine=False, add_to_toc=False)
@@ -313,7 +304,6 @@ def cmd_inject_css(args):
             doc.soup.head.append(link)
 
         book.update_manifest_properties()
-        book.write(output)
 
     emit({"status": "injected", "css": css_filename, "output": output},
          f"CSS injected → {output}")
@@ -332,9 +322,8 @@ def cmd_update_manifest(args):
         return
 
     check_deps()
-    with open_book(args.epub) as book:
+    with edit_book(args.epub, output) as book:
         book.update_manifest_properties()
-        book.write(output)
 
     emit({"status": "updated", "output": output},
          f"Manifest properties updated → {output}")
@@ -447,4 +436,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except EPUBWriteError as exc:
+        die(exc)

@@ -309,16 +309,30 @@ if [[ "$HAS_EPUBLIB" -eq 1 ]]; then
 
   # Test metadata subcommand
   EDIT_OUT="$TMPDIR/edit-meta.epub"
-  if python3 "$SCRIPTS/epub-edit" metadata "$TEST_EPUB" --title "Updated Test" --output "$EDIT_OUT" --json 2>/dev/null; then
+  if python3 "$SCRIPTS/epub-edit" metadata "$TEST_EPUB" --title "Updated Test" --output "$EDIT_OUT" --json; then
     pass "edit metadata: exits OK"
-    NEW_TITLE=$(python3 -c "import json,subprocess; r=subprocess.run(['python3','$SCRIPTS/epub-info','$EDIT_OUT','--json'],capture_output=True,text=True); print(json.loads(r.stdout)['metadata'].get('title',''))" 2>/dev/null)
-    if [ "$NEW_TITLE" = "Updated Test" ]; then
-      pass "edit metadata: title confirmed updated"
+    if python3 "$SCRIPTS/epub-info" "$EDIT_OUT" --json > "$TMPDIR/edit-meta.json"; then
+      if NEW_TITLE=$(python3 -c 'import json,sys; print(json.load(sys.stdin)["metadata"]["title"])' < "$TMPDIR/edit-meta.json") &&
+        [ "$NEW_TITLE" = "Updated Test" ]; then
+        pass "edit metadata: title confirmed updated"
+      else
+        fail "edit metadata: title not updated (got '$NEW_TITLE')"
+      fi
     else
-      fail "edit metadata: title not updated (got '$NEW_TITLE')"
+      fail "edit metadata: epub-info $EDIT_OUT --json failed"
     fi
   else
     fail "edit metadata: exits non-zero"
+  fi
+
+  IN_PLACE_EPUB="$TMPDIR/edit-in-place.epub"
+  cp "$TEST_EPUB" "$IN_PLACE_EPUB"
+  if python3 "$SCRIPTS/epub-edit" metadata "$IN_PLACE_EPUB" --title "In-place Test" --in-place --json &&
+    python3 "$SCRIPTS/epub-info" "$IN_PLACE_EPUB" --json > "$TMPDIR/in-place.json" &&
+    python3 -c 'import json,sys; sys.exit(json.load(sys.stdin)["metadata"]["title"] != "In-place Test")' < "$TMPDIR/in-place.json"; then
+    pass "edit metadata --in-place: title confirmed updated"
+  else
+    fail "edit metadata --in-place: title readback failed for $IN_PLACE_EPUB"
   fi
 else
   skip "edit: epublib not installed"
