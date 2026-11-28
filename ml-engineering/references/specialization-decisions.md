@@ -185,6 +185,39 @@ families are dependent; group bootstrap by the unit of independence, not individ
 near-duplicate examples. Small or unrepresentative sets support pilot decisions
 only. Document multiple comparisons and avoid selecting the best noise spike.
 
+### Worked study: a coding adapter in its deployment harness
+
+Suppose a candidate adapter improved task completion in the training harness
+and the deployment harness has a different tool parser and context policy.
+Freeze a held-out repository roster and use separate development repositories
+for task repair, checkpoint selection and any adapter merge tuning. Pin model
+artifacts, harness revisions, chat templates, tool parsers, tool access,
+compaction, decoding and budgets.
+
+| Decision | Comparison |
+| --- | --- |
+| Does the adapter help in deployment? | Pair base and adapter on the same tasks, inside the actual deployment harness, at the same reasoning effort and budget. |
+| Is it better than the strongest practical incumbent? | Include the base model's stronger supported reasoning setting under the deployment resource ceiling. Label the different settings as system configurations. |
+| Does the gain travel? | Hold the task family fixed when changing harnesses. Hold the harness fixed when changing task families. If both change together, report the combined shift. |
+| Is a merged artifact viable? | Compare it with the base and each specialist in each target harness. Check per-harness regressions before acting on the pooled score. |
+
+Keep the roster denominator, missing grades with reasons, timeouts and paired
+newly solved and lost cases. Report resource use on tasks both variants solve
+and total measured serving cost across all attempts divided by accepted tasks.
+Account separately for the one-time adaptation and evaluation cost. A pooled
+gain can coexist with consequential losses in one harness. [Hugging Face study](https://huggingface.co/blog/harness-adapters-at-scale#evaluation-results) · [Released model card](https://huggingface.co/harness-hub/Qwen3.8-27B-super-adapter#results)
+
+For verifier-based training, [qualify the grader](../../agent-evals-and-observability/references/graders.md#qualify-executable-graders-before-admitting-tasks)
+before screening difficulty. Use repeated incumbent attempts in the target
+harness and preserve all-pass, all-fail, mixed and unscored groups. Uniform
+binary outcomes supply no within-group correctness advantage in those sampled
+groups. Keep easy and hard tasks in regression coverage as appropriate.
+For token-level training on harness rollouts, preserve the serving engine's
+actual per-call prompt and response token IDs, sampling log probabilities and
+loss masks. Merge adjacent training sequences only when the recorded token
+prefix holds. Template rendering, parser changes and compaction can break it.
+[Hugging Face task screen](https://huggingface.co/blog/harness-adapters-at-scale#difficulty-check-with-the-base-model) · [Agent Lightning](https://arxiv.org/html/2608.17528v1)
+
 ## Saved-receipt comparison helper
 
 `scripts/compare_task_runs.py` compares one attempt per task from two pinned JSON

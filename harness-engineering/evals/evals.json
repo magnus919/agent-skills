@@ -3,6 +3,16 @@
   "skill_name": "harness-engineering",
   "evals": [
     {
+      "id": "learned-adapter-harness-qualification",
+      "prompt": "We replaced the base checkpoint with a trained LoRA in our deployed desktop agent. A teammate calls it a harness change and proposes comparing old Pi plus the base model with the new desktop harness plus the adapter. What should the harness owner hold fixed and who owns the specialization study?",
+      "expected_output": "Routes model specialization to ML engineering and specifies a baseline that isolates the adapter inside the actual deployed runtime.",
+      "assertions": [
+        "Routes the learned model adapter comparison to ml-engineering.",
+        "Keeps the actual deployment harness fixed for the first base-to-adapter comparison.",
+        "Identifies the proposed cross-harness comparison as changing both the model artifact and the runtime."
+      ]
+    },
+    {
       "id": "advisory-judge-retry-vs-repeat",
       "prompt": "A monitoring worker scores finished agent traces. Retries double-bill calls and the project also needs a deliberate judge-stability replay. Design the runtime boundary.",
       "expected_output": "Runs versioned advisory scoring asynchronously with explicit failure status; distinguishes idempotent retries from fresh stability samples.",

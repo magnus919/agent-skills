@@ -23,6 +23,34 @@ Deterministic checks should target properties such as parseability, exact identi
 
 A model judge needs the task contract, only the evidence required to judge it, an anchored rubric with counterexamples, an abstain/insufficient-context path, and a structured rationale. Do not ask a judge to verify external facts it cannot access. Blind candidate identity and irrelevant metadata; randomize order in pairwise work; test order reversal and legitimate format/length variation. Sampled pairs, tournaments, active selection, and full round robins are different designs with different coverage and cost.
 
+## Qualify executable graders before admitting tasks
+
+Run the same frozen grader against these controls in independently reset fixtures.
+Use the acceptance contract to predict each result before running it.
+
+| Control | Expected observation |
+| --- | --- |
+| Valid reference | Earns the expected passing score. |
+| Independently prepared valid alternative, where the contract permits one | Passes even when incidental implementation or formatting differs. |
+| Untouched starting state | Scores below the passing threshold. |
+| Plausible incomplete result | Fails for the missing requirement after the grader reaches the relevant check. |
+| Fresh replay of a control | Reproduces the expected score for a deterministic grader. |
+
+For a task that exports every input record to CSV, seed three distinct records.
+Accept the reference and a second export with equivalent parsed records and
+different permitted quoting. Reject an untouched fixture and an export with
+the right header but only two records. A header-only grader falsely accepts the
+partial export. An exact-string grader can falsely reject equivalent quoting.
+An image that fails to start or a verifier timeout leaves the control unscored.
+
+Bind the observed outcomes to the task, fixture and grader revisions. Keep
+false accepts, false rejects, inconsistent scores and infrastructure failures
+visible. Withhold the task from scored use when a required control fails or
+lacks evidence. Repair the cause and rerun affected controls before admission.
+For scorer designs with expected variance, define acceptable repeat behavior
+before the trial. Task validity and a model's probability of solving it are
+separate observations. [Tasksmith acceptance criteria](https://huggingface.github.io/Repo2RLEnv/pipelines/tasksmith/#acceptance) · [Hugging Face validation study](https://huggingface.co/blog/harness-adapters-at-scale#validation-with-openenv-validate)
+
 ## Calibrate And Revalidate
 
 1. Freeze rubric, calibration cases, human-review instructions, and candidate identities before the comparison.
