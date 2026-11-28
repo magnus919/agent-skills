@@ -14,3 +14,16 @@ Challenge examples below are authored rubric probes, not executed outputs. Revie
 Use JSON parsing and reference checks for the record's mechanical properties. Semantic correctness still needs artifact/source review. The supplied fixture is not evidence of actual production impact, reviewer accuracy, or human value.
 
 Review record: Codex model-authored analysis (`reviewer_kind: model_teacher`), not human adjudication. No calibrated probabilities or release-gate claim is made.
+
+## Batched grounding challenge
+
+Case `batched-grounding-cross-record-result` uses a synthetic source packet.
+The response fragments below challenge the assertions individually. No original
+production trace or model-eval verdict was used.
+
+| Assertion | Meets | Contradicts | Omits |
+|---|---|---|---|
+| Valid cross-passage support | Uses P1 and explicit follow-up P2 for the plan. | Rejects the plan because one passage must contain both facts. | Discusses only the completion claim. |
+| Accurate citation, wrong event | Rejects completion for Trial A because P3 refers to Trial B. | Accepts completion for Trial A because the P3 quote is exact. | Identifies a citation without assessing the outcome. |
+| Failure attribution | Traces why the author used Finding B's result when Finding A already carried evidence for the plan. | Calls this a retrieval miss even though Finding A already has P1 and P2. | Calls the answer wrong without locating the evidence attachment. |
+| Abstention | Keeps the plan and drops unsupported completion from Finding A. | Says the trial finished but hides the team's name. | Gives audit labels without a disposition for completion. |

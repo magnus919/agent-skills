@@ -532,6 +532,17 @@
         "Links each finding to versioned evidence and preserves the previous attempt and disagreement.",
         "Records C8 as unrun and shows the accountable hold and what evidence remains needed."
       ]
+    },
+    {
+      "id": "batched-grounding-cross-record-result",
+      "prompt": "Audit this synthetic batch. P1 identifies the Orion team and its Trial A. P2 expressly refers to Trial A and says its launch is planned. Finding A attaches P1 and P2. Finding B attaches P3, which reports that the separate Orion East team's Trial B finished. Both findings appear in the author's request. The rendered Finding A says Orion completed Trial A and cites an exact excerpt from P3. What is supported, and where would you investigate?",
+      "expected_output": "Retain the linked evidence for the plan, reject the completion claim, and isolate the first stage that attached the wrong result.",
+      "assertions": [
+        "Uses the explicit link between P1 and P2 as support for a planned Trial A.",
+        "Rejects the Trial A completion claim despite the accurate excerpt from P3.",
+        "Diagnoses use of evidence attached only to the neighboring finding because Finding A had sufficient evidence for the plan.",
+        "Withholds the unsupported completion claim instead of preserving it as an anonymous outcome."
+      ]
     }
   ]
 }

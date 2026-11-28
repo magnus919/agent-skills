@@ -964,6 +964,27 @@
         "Assigns diagnosis of B to the schema owner or names an accountable owner for that interface.",
         "Limits new work in progress in response to the growing review backlog."
       ]
+    },
+    {
+      "id": "revision-batch-reject-ancestor-address",
+      "prompt": "In a synthetic replay, the current revision batch offers R7 and R8. The local lineage record shows R7 descended from R3. The model returns an edit addressed to R3. The next checkpoint still contains R7 with the same payload. The report says R7 was revised because R3 appears in its lineage. How should the harness handle this response and the replay?",
+      "expected_output": "Reject the out-of-batch address before it has effects and determine whether R7 changed by comparing its checkpoints.",
+      "assertions": [
+        "Rejects R3 as an edit address because the current batch did not offer it.",
+        "Rejects the edit before writing or caching its effects.",
+        "Compares R7 directly between checkpoints to determine whether this invocation changed it."
+      ]
+    },
+    {
+      "id": "trace-condition-loss-through-deduplication",
+      "prompt": "Diagnose this synthetic trace. The source allows a retry only after confirming that no write happened. Extraction kept that condition in candidate C8. The dedup judge marked C8 a duplicate of C2, which says only that retry is available. The planner sent C2 alone to the writer. The final brief recommends retry without the condition. A teammate proposes changing the writer prompt. What would you inspect and validate first?",
+      "expected_output": "Localize the first loss to the deduplication handoff and propose a falsifiable recovery check before tuning the writer.",
+      "assertions": [
+        "Identifies the C8-to-C2 deduplication handoff as the first observed loss of the non-write condition.",
+        "Inspects the actual evidence window exposed to the duplicate judge.",
+        "Requires the retained representation to preserve the non-write condition before treating C8 as covered.",
+        "Replays the affected path to verify the condition reaches the final brief."
+      ]
     }
   ]
 }
