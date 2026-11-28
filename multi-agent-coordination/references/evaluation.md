@@ -39,8 +39,26 @@ prerequisites and deliberate corroboration. Count each task once, and report con
 violations independently of correctness. Establish evidence at any wider team size or lower
 per-worker allowance before applying the verdict there.
 
-[s³](https://arxiv.org/html/2611.08615v1) and [Scaling Discovery through Test-Time Communication](https://arxiv.org/html/2609.21032)
+[s³](https://arxiv.org/html/2611.08615v1) and [Scaling Discovery through Test-Time Communication](https://arxiv.org/html/2609.21032v1)
 motivate these comparisons. Their results vary with the task, baseline and budget.
+
+### Worked comparison: finding an answer in product documentation
+
+Use one held-out roster where every arm can search the same documentation. Give
+each arm the same total budget and deadline. Compare one agent using the full
+allowance, four isolated attempts with an in-budget selector, and four workers
+who can exchange evidence. Reserve budget for the communicating arm's synthesis.
+Run the same team with messages and shared notes disabled if the question is
+whether that channel contributes. Give all final answers to the same blinded
+reviewer with one citation and correctness rubric. Count one outcome per task
+and charge failed attempts, selection and synthesis to their arms.
+
+If the team exceeds solo but ties independent attempts, the result supports
+additional attempts. If the team also exceeds independent attempts and loses
+the gain with sharing disabled, inspect which verified findings were reused and
+whether the improvement clears the declared threshold at actual cost. Use a
+separate fixture with one necessary fact held by each worker to check handoff
+reliability. Compare peer sharing with a fixed authorized collector on that fixture.
 
 ## Observe more than task status
 

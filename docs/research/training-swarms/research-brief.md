@@ -24,6 +24,8 @@ The paper’s cited test-time communication study supplies a useful check with m
 
 Confidence is high in the experimental-design recommendation, moderate in the proposed diagnostics as useful mechanism checks, and low in any expected gain for heterogeneous production teams. The paper’s shared reward motivates task-level scoring, with a guard against proxy incentives such as rewarding messages or workers spawned. Kimi's orchestrator-only training shows why a catalog experiment should record which policy, prompt or routing layer changed. Reinforcement learning is optional research background for this skill. [s³ reward ablations](https://arxiv.org/html/2611.08615v1) · [Kimi K2.5](https://www.kimi.com/en/blog/kimi-k2-5#2-agent-swarm)
 
+When the task calls for post-training, the [ML engineering reference](../../../ml-engineering/references/cooperative-post-training.md) covers the choice between an orchestrator intervention and a shared worker policy, the controls each choice needs, and what to measure on held-out serving tasks.
+
 ## Open questions
 
 - On a representative task, does sharing improve acceptance over independent attempts after charging recipient context, selector, integration and review?

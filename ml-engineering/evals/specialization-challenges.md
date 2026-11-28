@@ -5,6 +5,20 @@ Author-written satisfying/contradictory/omitted examples, not executed model gra
 Artifact checks require a complete inventory; semantic claims require readable artifacts.
 Presence of a filename or policy phrase does not prove correct design or execution.
 
+## cooperative-post-training-target
+
+Added 2026-11-28 for the new case. These examples review the rubric and supply
+no executed model results.
+
+| Assertion | Satisfying | Contradiction | Omission |
+|---|---|---|---|
+| 1 | Train or alter dispatch while pinning the workers. | Update every worker and attribute the gain to routing. | Recommends fine-tuning without identifying a component. |
+| 2 | Compare against a fixed-checkpoint dispatch prompt or scheduler repair. | Assumes training is necessary because the current prompt failed. | Gives only training variants. |
+| 3 | Train the worker policy with comparable team and individual reward arms. | Keep worker reward purely individual and assume a successful peer will fix sharing. | Proposes messaging without an incentive comparison. |
+| 4 | Leave raw facts worker-local and pass only authorized evidence. | Copy every restricted input to all workers. | Gives a training design without specifying who sees the facts. |
+| 5 | Track training updates and team rollouts, then cap serving compute independently. | Give the trained arm a larger serving budget because its training budget was smaller. | Gives a single unexplained compute number. |
+| 6 | Measure held-out accepted cases and all serving usage, including failed runs. | Treat a late-training token reduction as held-out savings. | Lists held-out correctness without measuring usage. |
+
 ## classifier-versus-generative-baselines
 
 | Assertion | Satisfying | Contradiction | Omission |
