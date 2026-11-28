@@ -68,7 +68,7 @@ Senior-to-principal release engineering methodology: designing and operating the
 |------|-----------|
 | `references/role-and-career.md` | Understanding the release engineering role — org placement, day-to-day, Senior/Staff/Principal leveling, and evidence separating levels |
 | `references/skills-competency-model.md` | Mapping the technical and professional skills release engineers master, and which ones differentiate at senior and above |
-| `references/release-process-models.md` | Choosing a process model — trunk-based, GitFlow, GitHub Flow, release branches, release trains — and matching cadence to the org |
+| `references/release-process-models.md` | Choosing a branching, merge queue, or release model and matching cadence to the organization |
 | `references/cd-and-pipeline-stages.md` | Designing CD pipelines — build-once promotion, stage gates, push-on-green, pipeline-as-code, hermetic builds, environment parity |
 | `references/progressive-delivery.md` | Planning canary, blue/green, ring, or percentage rollouts; metric and error-budget gates; auto-rollback triggers |
 | `references/change-governance-and-compliance.md` | Building audit-ready change control — SOC 2 CC8.1, SOX ITGC, PCI back-out, evidence chains, separation of duties, emergency change |

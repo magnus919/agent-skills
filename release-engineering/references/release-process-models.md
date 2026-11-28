@@ -19,7 +19,45 @@ TBD is the default recommendation for cloud/SaaS teams that can automate build, 
 
 ### Merge Queues
 
-Under high PR volume, keeping `main` green is itself a bottleneck. **Merge queues** (GitHub merge queue, Graphite, Trunk.io) dynamically group ready PRs, run CI against the combined set, and only merge when the group passes — replacing fragile "rebase-and-retest" manual rituals. GitHub's own data is the reference point: its merge queue ships **2,500+ PRs/month into its monorepo from 500+ engineers**, and reduced average wait time by ~33% after launch. A merge queue is an enabler of TBD, not a substitute for it: it keeps the trunk green while preserving small, frequent merges.
+Route eligible PRs through a protected integration path. Review the proposed
+change and run fast feedback before admission. Run required integration
+checks on the candidate that represents the proposed landing. Protect the
+target against routine bypasses. If maintaining your own integration path,
+advance the target only from the base covered by the evidence, or rebuild.
+This takes routine freshness rebases out of the author's work. Actual merge
+conflicts still go back to the change owner.
+
+| Approach | Evidence and cost | Use when |
+|-----------|-------------------|----------|
+| Serial integration | One candidate checked against the current target at a time. The check cycle limits peak throughput. | The gate is fast, traffic is light, or a queue rollout is beginning. A single integration coordinator can use the forge's strict up-to-date protection. |
+| Speculative train | Checks run in parallel on successive proposed states. An earlier removal invalidates affected later candidates and spends extra CI. | Ready changes wait on a reliable gate and runners have spare capacity. |
+| Tested batch or rollup | One test run covers the combined result. A failure requires isolation or splitting. | CI has substantial fixed overhead and the combined result is the required unit of evidence. Require separate evidence for intermediate states that must be independently usable. |
+
+For queue order A → B → C, parallel CI can test `main+A`, `main+A+B`,
+and `main+A+B+C`. If B fails, A can proceed. C needs new evidence on its
+replacement candidate without B, or waits if it depends on B. Cancel
+obsolete runs and bind required results to the live candidate. Frequent
+priority jumps invalidate in-flight work too. Reserve them for the defined
+emergency path and preserve required checks.
+
+**Tune the measured bottleneck.** Track ready-to-merge wait separately from
+review wait and runner wait. Compare landed PRs per hour, tail latency,
+discarded CI minutes, ejections, red-main time, and merge-to-deploy lag.
+Start shallow and raise concurrency when ready PRs queue behind reliable
+checks and runners have headroom. When runner wait and discarded builds
+dominate, fix flaky checks, reduce scope overlap, or reduce speculative
+depth. Keep deployment backpressure visible if green changes accumulate
+faster than they can ship. [Uber's production experience](https://www.uber.com/de/en/blog/slashing-ci-costs-at-uber/)
+
+**Verify the forge's controls.** For GitHub Actions, required queue checks
+need the `merge_group` event and the group's candidate and base. GitHub's
+build concurrency controls candidate dispatch. Merge limits group landings
+after checks pass and do not combine their builds. In a pilot, check a clean
+landing, two individually passing changes that fail together, and a
+replacement candidate after an earlier PR is removed. Verify that missing
+or stale evidence cannot satisfy a required check. Route execution of an
+authorized PR to `verified-delivery`.
+ [GitHub merge queue](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue) · [GitLab merge trains](https://docs.gitlab.com/ci/pipelines/merge_trains/) · [Rust compiler CI](https://rustc-dev-guide.rust-lang.org/tests/ci.html)
 
 ### Branch Protection and Review Workflow
 
@@ -166,7 +204,7 @@ Process-model problems announce themselves before they cause incidents. Watch fo
 |---------|--------------|-----|
 | Long-lived branches accumulate divergent fixes that never reach mainline | Branch lifecycle unenforced | Schedule branch deletion/merge-back; track every backport |
 | `main` is frequently red | Batches too large; incomplete work not flag-gated | Shrink batches; hide in-flight work behind flags |
-| PRs sit unmerged for days | No merge queue; PRs too big | Add a merge queue; split PRs |
+| PRs sit unmerged for days | Review, integration CI, or conflicts constrain flow | Measure stage wait and address the constrained stage |
 | Every release needs weeks of stabilization | Cadence mismatch or oversize batches | Smaller trains; flag-gated deferral of unfinished work |
 | Cherry-pick rate on release branches stays high for months | Fixes are not merging back to trunk | Enforce merge-back as a release criterion |
 | Merges regularly conflict | Long-lived feature branches | Move to trunk-based / short-lived branches |
@@ -179,7 +217,7 @@ Any of these persisting is a process-model defect, not a personnel problem — t
 
 > **Gotcha — trunk-based without the prerequisites:** Merging to trunk daily without fast automated tests and feature flags just moves the pain: broken `main` becomes everyone's problem. TBD is a contract — merge small, keep tests green, hide incomplete work.
 
-> **Gotcha — merge queues treated as a magic shield:** Merge queues keep `main` green under volume but do not reduce batch size. If PRs still sit unmerged for days, the queue is masking an integration bottleneck, not fixing one.
+> **Gotcha — queue throughput can hide delivery lag.** Track how long green changes sit on trunk before release. A rising deployment backlog calls for deployment capacity or merge backpressure.
 
 > **Gotcha — cherry-pick archaeology:** Release branches that are never merged back force engineers to re-apply fixes by hand. Track every cherry-pick with a ticket and a changelog entry so the "did this fix ship?" question has a machine-answerable record.
 

@@ -18,8 +18,8 @@ compatibility: No runtime dependency.
 Carry an authorized change from implementation through merge and post-merge
 verification through a sequence of live-state gates. Every gate is verified
 against the actual state of the repository, PR, CI, and review system before
-the next step runs, and every gate verdict is bound to the exact head SHA it
-was verified on. Because hard limits (tool-call budgets, context exhaustion,
+the next step runs. Bind every verdict to the exact revision it covers.
+Because hard limits (tool-call budgets, context exhaustion,
 worker replacement, session interruptions) can end the work before the
 delivery boundary is reached, this skill defines a durable interruption
 handoff and a resumption protocol that treats the next re-entry as a resume
@@ -51,16 +51,17 @@ it does not widen it.
 
 Preserved boundaries at every gate:
 
-- **Merge boundary** — merge only when merge is explicitly authorized and the
-  CI and review gates pass on the exact head being merged.
+- **Merge boundary** — merge only within the explicit grant, using the
+  repository's protected path and current CI and review evidence.
 - **Review boundary** — address review feedback inside a bounded loop; never
   force past unresolved review objections.
 - **Security boundary** — security findings from CI or review are gates, not
   warnings; they are never bypassed, weakened, or retried until clean by
   suppression.
-- **Exact-head boundary** — all gate evidence binds to the exact head SHA.
-  A moved head invalidates prior evidence until it is re-verified on the new
-  head.
+- **Revision boundary** — identify the current PR head, the revision each
+  required check actually ran on, and which change the review covers. A new
+  head requires reconciling CI and review under forge policy. A replacement
+  integration candidate requires its own required checks.
 - **Non-convergence boundary** — after three non-converging fix or review
   passes at any gate, stop and report the evidence.
 - **Post-merge verification boundary** — the delivery is not complete until
@@ -69,16 +70,19 @@ Preserved boundaries at every gate:
 ## Delivery gates
 
 Run the gates in order. At each gate, check live state first, then act, then
-record evidence bound to the current head SHA.
+record the relevant revision and evidence.
 
 1. **Change ready** — implementation complete and local verification passes
    at the working head.
 2. **PR open** — the PR exists and its identity and head SHA are recorded.
-3. **CI green** — CI passes on the exact PR head SHA.
+3. **CI green** — required PR checks pass for the current PR head and the
+   candidate the forge associates with it.
 4. **Review satisfied** — review requirements of the repository's policy are
    met on the exact head SHA.
-5. **Merge** — only when gates 3 and 4 hold on the exact head and merge is
-   within the granted authorization.
+5. **Merge** — when gates 3 and 4 hold and merge is authorized, use the
+   protected path. If it enqueues the PR, follow the current candidate and
+   required checks until the forge confirms the merge or reports a blocker.
+   Load [merge queue delivery](references/merge-queue-delivery.md).
 6. **Post-merge verification** — the merged state is confirmed (branch,
    PR status, post-merge checks) before any completion claim.
 
@@ -126,17 +130,18 @@ completes.
    is identified.
 2. PR — it exists, is open, and its head SHA is compared with the handoff's
    `head_sha`.
-3. CI — status on the exact head.
+3. CI — status for the current PR head and any current integration candidate.
 4. Reviews — state against the repository's policy on the exact head.
 5. Watchers — whether recorded watchers, processes, or workers are still
    alive; never spawn a duplicate of a live one.
 
 Then continue with the next already-authorized gated step. Gate evidence
-recorded in the handoff stays valid only for the head it was verified on.
+recorded in the handoff stays valid only for the revision and scope verified.
 If the head moved (new commits, rebase, force push), reconcile first: fetch,
 re-verify CI and review on the new head, update the handoff's `head_sha`, and
-only then continue. Mutations — commits, pushes, merges, comments — happen
-only after verification.
+only then continue. A queue candidate can change while the PR head stays
+fixed. Reconcile queue membership and the live candidate before resuming a
+merge watch. Mutations happen only after verification.
 
 For dependent PRs, also reconcile their target, prerequisite changes, and the
 integrated state that the checks actually covered. See
@@ -214,3 +219,4 @@ user explicitly granted.
 | Reference | When to load |
 |-----------|-------------|
 | `references/interruption-handoff.md` | You are recording, locating, validating, or reconciling an interruption handoff — field schema, durability rules, and worked examples |
+| `references/merge-queue-delivery.md` | The protected merge path enqueues a PR, its candidate changes, or a queued merge is interrupted |

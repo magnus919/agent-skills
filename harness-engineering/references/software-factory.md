@@ -56,6 +56,28 @@ query the forge or target history for the exact candidate before retrying.
 Persist the result outside the worker's session; a later worker should recover
 from the last confirmed action, not guess from the prior model's prose.
 
+### Worked queue failure with dependent work
+
+A changes export logging. B introduces a CSV schema revision. C updates the
+importer to require B's schema. A separate documentation change D has no
+dependency on B. The queue reports a failing integration check for B after
+it accepted A, B, and D. C is waiting for its prerequisite.
+
+- The integration owner lets A proceed if its candidate passes. On removal
+  of B, D can stay in the queue, but its prior result covered a candidate
+  with B. Follow D's rebuilt candidate and wait for its required checks.
+- The schema owner diagnoses B. Keep C held until B lands or both are in an
+  explicitly supported, jointly validated group. Record the dependency and
+  failure owner in the factory's work record. Have the schema owner reserve
+  shared contract edits and use a compatible transition when consumers can
+  be migrated independently.
+- When review or integration is saturated, cap new work in progress at the
+  constrained stage. Track review wait, ready-queue wait, and discarded CI
+  separately before adding workers or speculative builds.
+
+Use `release-engineering` to design and size the queue, and
+`verified-delivery` to follow the live candidate through authorized landing.
+
 See the [evidence and source limits](https://github.com/magnus919/agent-skills/blob/main/docs/research/factory-handoffs-and-review/evidence.md).
 The linked case is illustrative, not proof of a specific harness's reliability.
 
