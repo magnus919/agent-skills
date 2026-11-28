@@ -438,6 +438,19 @@
       ]
     },
     {
+      "id": "cooperative-post-training-target",
+      "prompt": "Our documentation agents answer well when assigned the right section. In the main workflow the lead sends several workers to the same section, then skips an unsearched one. In a separate restricted-input workflow, task assignments are correct, but a worker that holds a required fact rarely sends it because the worker only gets credit for its own final answer. A tutorial reports using 37.4% fewer generated tokens late in training. Propose a pilot for each workflow and tell us what evidence would justify a serving-efficiency claim.",
+      "expected_output": "Two bounded pilots isolate the trainable component and incentive, and identify the held-out serving evidence needed to decide whether to adopt either change.",
+      "assertions": [
+        "For the dispatch failure, tests an orchestrator intervention with worker policies held fixed.",
+        "Includes a fixed-policy prompt or harness control before attributing gains to training.",
+        "For the sharing failure, tests worker-level adaptation with a team reward against an individual-reward control.",
+        "Keeps each worker's input access within the assigned information boundary during the sharing pilot.",
+        "Specifies how to account for training rollout resources separately from matched serving allowances.",
+        "Requires actual held-out serving usage alongside accepted outcomes before claiming an efficiency gain."
+      ]
+    },
+    {
       "id": "gguf-version-security-boundary",
       "prompt": "Our guide says GGUF is executable, vLLM cannot use it except via a llama.cpp backend added in 2025, and AWQ is always faster on NVIDIA. Correct this guidance using the current official vLLM GGUF documentation without inventing compatibility for every release.",
       "expected_output": "A version-scoped container/support/security explanation replaces categorical compatibility and performance claims.",
