@@ -95,6 +95,17 @@
         "Records current target and head, stale evidence, grant state, and authorized remaining checks and reconciliation.",
         "Names the operator decision, its risk and the unresolved effect separately from any code rollback."
       ]
+    },
+    {
+      "id": "reconcile-rebuilt-queue-candidate",
+      "prompt": "Resume authorized delivery of PR #41. Its head stays P41. The handoff has queue candidate Q1, which included PR #40. The forge removed #40 and says #41 remains queued on Q2. Q1 just reported green, Q2 is pending, and the forge has no merge record for #41. What should the resumed session do and record?",
+      "expected_output": "Reconcile the current queue entry, treat the old result as superseded, and continue watching Q2 through verified landing.",
+      "assertions": [
+        "Records P41 as the PR head and Q2 as the current integration candidate.",
+        "Uses required checks on Q2 rather than the late Q1 result to assess integration readiness.",
+        "Continues watching the existing queue entry without submitting a duplicate merge request.",
+        "Keeps delivery pending until the forge reports a merge into the intended target and the landing is verified."
+      ]
     }
   ]
 }

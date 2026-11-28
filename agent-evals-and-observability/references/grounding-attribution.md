@@ -14,6 +14,33 @@ For each sampled response, record a minimized claim identifier, claim text only 
 4. If both retrieval and generation are inadequate, retain both labels and avoid forcing a single root cause.
 5. If the source itself is stale, conflicting, or unavailable, mark the case inconclusive and record the source limitation.
 
+### Batched authoring
+
+For each finding, compare its attached evidence, the full request the
+author received, and the rendered claims and citations. Determine whether
+the source establishes the relationship between the named subject and the
+reported result. Give separate verdicts for exact quote binding and factual
+support. Two accurately cited fragments can still describe different events.
+
+- If the source supports the relationship but the finding's evidence omits
+  it, inspect how evidence was attached to that finding. Evidence present
+  only in a neighboring record can explain how an author saw it without
+  establishing a valid evidence link for the current finding.
+- If the finding has sufficient evidence and the rendered text attaches
+  the wrong result, inspect generation and citation binding. Restricting
+  the author to one record can prevent evidence from leaking across rows.
+  Missing support still needs to be attached upstream or treated as missing.
+- Allow corroboration across passages when a verified reference joins
+  them. Preserve scope and intent, and treat a nearby result as context
+  unless it has its own support. Withhold an unsupported claim, including
+  anonymous phrasing that would still imply the same unverified result.
+
+Synthetic example. One passage introduces a study and its Orion team.
+A later passage explicitly refers back to that study and records a planned
+trial, while an adjacent item reports an unrelated team's completed trial.
+The two Orion passages support the plan. An accurate quote from the
+adjacent item still cannot support an Orion outcome.
+
 Retrieval precision/recall, answer relevance, faithfulness, and claim factuality measure different properties. Do not average them into one quality claim without a declared decision rule. A fluent or semantically similar answer is not evidence of factual support.
 
 ## Required cases
