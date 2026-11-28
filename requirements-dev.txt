@@ -9,5 +9,5 @@ mypy>=2.4.1
 radon>=6.0.1
 deptry>=0.25.1
 bandit>=1.9.4
-loguru>=0.7.3
+loguru>=0.8.0
 PyYAML>=6.0.4
