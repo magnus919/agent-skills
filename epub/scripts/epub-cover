@@ -21,6 +21,8 @@ import os
 import sys
 import warnings
 
+from epub_writer import EPUBWriteError, edit_book
+
 warnings.filterwarnings("ignore")
 
 DRY_RUN = False
@@ -85,22 +87,16 @@ def main():
         return
 
     try:
-        from epublib import EPUB
+        import epublib  # noqa: F401
     except ImportError:
         die("epublib required. Install with: python3 -m pip install epublib")
-
-    import shutil
-
-    # Work on a temp copy to avoid EOFError on same-file write
-    tmp = output + '.tmp'
-    shutil.copy(args.epub, tmp)
 
     cover_ext = os.path.splitext(args.image)[1].lower()
     mime_map = {'.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png',
                  '.gif': 'image/gif', '.svg': 'image/svg+xml'}
     cover_mime = mime_map.get(cover_ext, 'image/png')
 
-    with EPUB(tmp) as book:
+    with edit_book(args.epub, output) as book:
         # Add cover image as resource
         from epublib.resources.create import create_resource_from_path
         cover_img = create_resource_from_path(args.image, f'Images/cover{cover_ext}')
@@ -133,10 +129,6 @@ def main():
         book.resources.add(resource=cover_page, add_to_spine=True, spine_position=0, add_to_toc=False)
 
         book.update_manifest_properties()
-        book.write(output)
-
-    if tmp != output:
-        os.remove(tmp)
 
     emit({'status': 'added', 'output': output, 'cover_image': f'Images/cover{cover_ext}',
           'cover_page': 'Text/cover.xhtml'},
@@ -144,4 +136,7 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except EPUBWriteError as exc:
+        die(exc)

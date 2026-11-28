@@ -3,6 +3,16 @@
   "skill_name": "epub",
   "evals": [
     {
+      "id": "in-place-epub-edit-write-failure",
+      "prompt": "I asked you to update the title of my only EPUB copy in place. Before replacing the original, your validation found that the staged archive contains a container.xml with no namespace and the package XML cannot be parsed. Can you mark the edit complete?",
+      "expected_output": "Reports the edit as failed, preserves the existing book, and requires a valid package and an independent readback of the new title before reporting success.",
+      "assertions": [
+        "Reports the edit as failed because the generated EPUB cannot be read as a valid package.",
+        "Keeps the original EPUB available for a retry.",
+        "Requires a subsequent readback to verify the requested title before reporting success."
+      ]
+    },
+    {
       "id": "script-selection-for-conversion-task",
       "prompt": "I have a folder of 200 old EPUB2 books and I need them upgraded to EPUB3 with a proper table of contents, plus a report of any that failed to convert cleanly. How do I do this?",
       "expected_output": "Chooses epub-convert for the EPUB2 → EPUB3 upgrade (adds the EPUB3 NAV document, updates namespaces, keeps NCX for compatibility) wrapped in epub-batch for multi-file processing across the glob, e.g. `scripts/epub-batch convert \"books/*.epub\"` or looping epub-convert per file with `--validate --json` to catch failures. Suggests running epub-validate on outputs so failures surface as JSON, and notes epub-repair (--diagnose --json, then auto-fix) as the follow-up for files that fail validation. Follows cli-builder conventions: --json for machine-readable output, errors to stderr, non-interactive.",
