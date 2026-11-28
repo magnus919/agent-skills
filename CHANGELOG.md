@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.11.0](https://github.com/magnus919/agent-skills/compare/v0.10.0...v0.11.0) (2026-11-28)
+
+
+### Features
+
+* test the value of multi-agent communication ([#893](https://github.com/magnus919/agent-skills/issues/893)) ([a907601](https://github.com/magnus919/agent-skills/commit/a9076015817680c027c20e876a2da198c80f37b2))
+
+
+### Bug Fixes
+
+* preserve namespaces across EPUB writes ([#897](https://github.com/magnus919/agent-skills/issues/897)) ([85e5e25](https://github.com/magnus919/agent-skills/commit/85e5e25352d5694639155715521c1f6e24e5eac7)), closes [#895](https://github.com/magnus919/agent-skills/issues/895)
+
 ## [0.10.0](https://github.com/magnus919/agent-skills/compare/v0.9.0...v0.10.0) (2026-11-27)
 
 
