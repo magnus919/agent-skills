@@ -45,8 +45,10 @@ a diagram, a prompt or a terminal status indicator.
    requirement revision, delivery surface, acceptance owner, total time/cost and
    stop conditions in [the charter](templates/team-charter.md). Identify consequential
    decisions and who has authority plus enough context to make each one.
-2. **Test whether division helps.** Establish a single-agent or sequential baseline.
-   Separate independent investigation from tightly coupled decisions. Partition
+2. **Test whether division helps.** Compare a communicating team with independent
+   attempts for solo-solvable work, or with a simple authorized collector when
+   required facts are distributed. Keep a single-agent or sequential baseline where
+   feasible. Separate independent investigation from tightly coupled decisions. Partition
    by coherent context, resources and verifiable outputs, not job titles. Use
    [decomposition and topology](references/decomposition-and-topology.md). Start
    with one accountable lead and only the workers justified by task structure.

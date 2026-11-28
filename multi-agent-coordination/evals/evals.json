@@ -271,6 +271,35 @@
         "Identifies an authorized way to return the result to Mei.",
         "Denies the unverified guest a privileged lookup while their authority is unresolved."
       ]
+    },
+    {
+      "id": "communication-versus-independent-attempts",
+      "prompt": "Four support-research agents share notes and accept 84 cases at a 40k total token allowance. One agent accepts 70 cases at 10k. The team also searches extra collections and uses an unmetered model judge. Any worker using the standard collections could solve any case. What can we infer, and how would you rerun the comparison?",
+      "expected_output": "Withhold attribution to communication and design a comparison that tests sharing under a common resource budget and search scope.",
+      "assertions": [
+        "Explains why the observed gain cannot be attributed to communication under the current comparison.",
+        "Compares a strong single agent, four independent attempts and four communicating workers.",
+        "Applies a common aggregate resource allowance to all comparison arms.",
+        "Gives all arms access to the same eligible sources.",
+        "Uses the same held-out cases in each arm.",
+        "Applies the same acceptance rule to each arm.",
+        "Specifies how the operational selector will choose among independent results without using hidden reference answers.",
+        "Includes selector cost in the comparison budget.",
+        "Uses accepted integrated cases per attempted case and retains stopped or timed-out cases in the denominator."
+      ]
+    },
+    {
+      "id": "distributed-facts-versus-synthesis",
+      "prompt": "Four intake workers each hold a private item. Two items have the same value and different source IDs. Policy permits a narrow source-linked summary to the decision owner. In trace A one sender retransmits and a different source never arrives. In trace B all four items are delivered and read, but the decision drops an equal value. The team wants to expand to twelve workers after raising message volume. Diagnose both traces and design a bounded test.",
+      "expected_output": "Distinguish incomplete transfer from incorrect synthesis, and propose a scoped comparison against a simple authorized collection protocol.",
+      "assertions": [
+        "Uses a simple authorized collector or fixed handoff as the practical comparison.",
+        "Limits a no-sharing control to testing dependence on access to distributed information.",
+        "Identifies missing source coverage in trace A.",
+        "Identifies incorrect synthesis after complete delivery and reading in trace B.",
+        "Deduplicates retransmission by stable source or assignment identity while preserving equal values from different sources.",
+        "Requires accepted aggregation evidence at the proposed team size before supporting expansion."
+      ]
     }
   ]
 }
