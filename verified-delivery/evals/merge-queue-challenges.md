@@ -13,7 +13,9 @@ The examples are rubric checks, with no model run or live queue execution.
 | size-merge-queue-for-runner-capacity · merge limit | Says the setting groups landings and leaves candidate build count alone. | Says increasing the setting shares CI runs. | Discusses concurrency without addressing merge limits. |
 | Same case · per-prefix safety | Retains required results for each landed prefix. | Lets only the final green group cover earlier failing prefixes. | Proposes tuning without stating the evidence required to land. |
 | Same case · bottleneck | Reduces speculative depth during high invalidation or adds capacity for measured runner contention. | Raises concurrency immediately despite growing runner wait and discarded builds. | Says to keep monitoring without an adjustment to test. |
-| Same case · measures | Compares landed PRs per hour, wasted CI minutes, and ready-to-merge latency. | Counts completed CI jobs as landed work. | Reports runtime only. |
+| Same case · landed throughput | Compares landed PRs per hour. | Counts completed CI jobs as landed work. | Reports runner latency only. |
+| Same case · discarded CI | Counts runtime spent on superseded candidates. | Treats every cancelled candidate as zero work. | Reports aggregate CI minutes alone. |
+| Same case · ready-to-merge latency | Measures how long eligible PRs take to land, including requeues. | Measures time to review approval as queue latency. | Reports build runtime alone. |
 | hold-dependent-work-after-queue-ejection · dependency | Holds C until B lands, or proposes a supported jointly tested group. | Lands C alone before the schema exists. | Reports B and D without accounting for C. |
 | Same case · independent work | Continues D on a candidate without B after required checks pass. | Uses D's prior green result with B to land D. | Calls D independent without stating which candidate needs checks. |
 | Same case · failure ownership | Makes the schema owner responsible for diagnosing B. | Assigns B to the documentation author solely because D followed B. | Says someone should look at the failure. |

@@ -128,8 +128,9 @@ completes.
 
 1. Repository — the remote matches the handoff's `repository`; branch state
    is identified.
-2. PR — it exists, is open, and its head SHA is compared with the handoff's
-   `head_sha`.
+2. PR — check its current state and compare its head with the recorded
+   `head_sha`. If it merged during the interruption, verify the merge and
+   resume at post-merge verification.
 3. CI — status for the current PR head and any current integration candidate.
 4. Reviews — state against the repository's policy on the exact head.
 5. Watchers — whether recorded watchers, processes, or workers are still

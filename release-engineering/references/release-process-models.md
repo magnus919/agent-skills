@@ -56,8 +56,7 @@ after checks pass and do not combine their builds. In a pilot, check a clean
 landing, two individually passing changes that fail together, and a
 replacement candidate after an earlier PR is removed. Verify that missing
 or stale evidence cannot satisfy a required check. Route execution of an
-authorized PR to `verified-delivery`.
- [GitHub merge queue](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue) · [GitLab merge trains](https://docs.gitlab.com/ci/pipelines/merge_trains/) · [Rust compiler CI](https://rustc-dev-guide.rust-lang.org/tests/ci.html)
+authorized PR to `verified-delivery`. [GitHub merge queue](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue) · [GitLab merge trains](https://docs.gitlab.com/ci/pipelines/merge_trains/) · [Rust compiler CI](https://rustc-dev-guide.rust-lang.org/tests/ci.html)
 
 ### Branch Protection and Review Workflow
 

@@ -8,7 +8,9 @@
     "Explains that GitHub's merge limits group landings and do not combine merge-group CI builds.",
     "Preserves required validation for each prefix instead of using a green final batch as evidence for all prefixes.",
     "Targets runner contention or excessive invalidation before adding more speculative builds.",
-    "Measures landed throughput, discarded CI work, and ready-to-merge latency in the proposed experiment."
+    "Measures landed PRs per unit time in the proposed experiment.",
+    "Measures discarded CI work in the proposed experiment.",
+    "Measures ready-to-merge latency in the proposed experiment."
   ]
 }
 ]}
